@@ -1,4 +1,4 @@
-from collection.file_open import *
+from fortools.collection.file_open import *
 
 def file_open(path):
     file_extension = signature_db(path)

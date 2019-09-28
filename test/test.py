@@ -1,4 +1,4 @@
-from log import *
+from fortools.log import *
 
 file = file_open('Application.evtx')
 
