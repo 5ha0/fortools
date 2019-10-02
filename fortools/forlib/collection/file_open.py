@@ -1,4 +1,5 @@
 import Evtx.Evtx as evtx
+import zipfile
 
 def signature_db(path):
     file_extension = path.split('.')[1]
@@ -23,7 +24,9 @@ def reg_open(path):
     return path
 
 def zip_open(path):
-    return path
+    file = open(path, 'rb')
+    z = zipfile.ZipFile(file, 'r')
+    return z
 
 def jpeg_open(path):
     return path

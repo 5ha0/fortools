@@ -12,7 +12,8 @@ class unknown():
 
 class log():
     def file_open(path):
-        return file_open_func(path)
+        file = log_analysis(evtx_open(path))
+        return file
 
 class registry():
     def __init__(self, path):
@@ -20,3 +21,8 @@ class registry():
 
     def file_open(self):
         return file_open_func(self)
+
+class file():
+    def file_open(path):
+        file = zip_open(path)
+        return file
