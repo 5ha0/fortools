@@ -1,5 +1,5 @@
 
 
-def iconcache_open(path)
+def iconcache_open(path):
 	file = open(path,'rb')
 	return file
