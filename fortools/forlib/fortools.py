@@ -1,28 +1,39 @@
 from forlib.collection.file_open import *
 from forlib.processing.file_analysis import *
 
-def file_open_func(path):
-    file_extension = signature_db(path)
-    file = log_analysis(extension_file_open(file_extension, path))
-    return file
 
 class unknown():
     def file_open(path):
-        return file_open_func(path)
+        extension = signature_db(path)
+        if extension == 'evtx':
+            return evtx_open(path)
+        elif extension == 'jpeg':
+            return jpeg_open(path)
+        elif extension == 'lnk':
+            return 0
+
 
 class log():
     def file_open(path):
-        file = log_analysis(evtx_open(path))
+        if signature_db(path) == 'evtx':#evtx
+            file = evtx_analysis(evtx_open(path))
+        else:
+            file = log_nalysis(normal_file_oepn(path))
         return file
 
-class registry():
-    def __init__(self, path):
-        self.path = path
-
-    def file_open(self):
-        return file_open_func(self)
 
 class file():
     def file_open(path):
-        file = zip_open(path)
+        extension = signature_db(path)
+        if extension == 'zip':
+            return zip_open(path)
+        elif extension == 'jpeg':
+            return jpeg_open(path)
+        elif extension == 'jpg':
+            print('jpg')
+
+
+class system_temp():
+    def file_open(path):
+        file = systemp_open(path)
         return file
