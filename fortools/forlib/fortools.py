@@ -2,7 +2,7 @@ from forlib.collection.file_open import *
 from forlib.processing.file_analysis import *
 
 
-class unknown():
+class unknown:
     def file_open(path):
         extension = signature_db(path)
         if extension == 'evtx':
@@ -13,7 +13,7 @@ class unknown():
             return 0
 
 
-class log():
+class log:
     def file_open(path):
         if signature_db(path) == 'evtx':#evtx
             file = evtx_analysis(evtx_open(path))
@@ -22,7 +22,7 @@ class log():
         return file
 
 
-class file():
+class file:
     def file_open(path):
         extension = signature_db(path)
         if extension == 'zip':
@@ -33,7 +33,22 @@ class file():
             print('jpg')
 
 
-class system_temp():
+class system_temp:
     def file_open(path):
         file = systemp_open(path)
         return file
+
+
+class lnk:
+    def file_open(path):
+        return binary_open(path)
+
+
+class recycle:
+    def file_open(path):
+        return binary_open(path)
+
+
+class jumplist:
+    def file_open(path):
+        return binary_open(path)

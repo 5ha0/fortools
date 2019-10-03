@@ -1,5 +1,3 @@
-import string
-
 signatures = [{
     'file_extension': 'zip',
     'hex': ['0x50', '0x4b', '0x3', '0x4'],

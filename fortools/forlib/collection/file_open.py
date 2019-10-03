@@ -28,5 +28,9 @@ def systemp_open(path):
     return [f for f in listdir(path)]
 
 
+def binary_open(path):
+    return open(path, 'rb')
+
+
 def normal_file_oepn(path):
     return open(path, 'r')
