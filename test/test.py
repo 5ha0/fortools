@@ -21,7 +21,7 @@ import os, datetime
 '''
 reg_file = registry.file_open("test/NTUSER.DAT")
 print("==================[+]registry microsoft information==================\n")
-reg_info = reg_file.get_ms()
+reg_info = reg_file.get_find_key("microsoft")
 print("\n==================[+]registry recent file-----need decode modify==================\n")
 reg_recent = reg_file.recent_docs()
 '''
