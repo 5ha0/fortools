@@ -46,8 +46,8 @@ class recycle:
 		file = open(path,'rb')
 		return file  
 	
-class thumnail:
-	def thumnail_open(path)
+class thumbnail:
+	def thumbnail_open(path)
 	file = open(path,'rb')
 	return file
 
@@ -56,7 +56,7 @@ class log:
         if signature_db(path) == 'evtx':#evtx
             file = evtx_analysis(evtx_open(path))
         else:
-            file = log_nalysis(normal_file_oepn(path))
+            file = log_analysis(normal_file_oepn(path))
         return file
 
 class registry():
