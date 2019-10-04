@@ -13,27 +13,32 @@ class unknown:
         elif extension == 'lnk':
             return 0
 
+
 class jumplist:
     def jumplist_open(path):
 	    file = open(path,'rb')
 	    return file
-    
+
+
 class iconcache:
     def iconcache_open(path):
 	    file = open(path,'rb')
 	    return file
-    
+
+
 class lnk:
     def lnk_open(path):
 	    file = open(path, 'rb')
 	    return file
-    
+
+
 class prefetch:
     def prefetch_open(path):
 	file = open(path,'rb')
 	if file.read(3) == 'MAM':
 		file = decompress.decomp('path')
 	return file
+
 
 class recycle:
   def recycle_open(path):
@@ -45,11 +50,13 @@ class recycle:
 	elif file_kind.find('I') != -1:
 		file = open(path,'rb')
 		return file  
-	
+
+
 class thumbnail:
 	def thumbnail_open(path)
 	file = open(path,'rb')
 	return file
+
 
 class log:
     def file_open(path):
@@ -59,6 +66,7 @@ class log:
             file = log_analysis(normal_file_oepn(path))
         return file
 
+
 class registry():
     def __init__(self, path):
         self.path = path
@@ -66,7 +74,8 @@ class registry():
     def file_open(path):
         file = reg_analysis(reg_open(path))
         return file
-    
+
+
 class file:
     def file_open(path):
         extension = signature_db(path)
@@ -98,8 +107,7 @@ class jumplist:
     def file_open(path):
         return binary_open(path)
 
+
 class ie:
     def file_open(path):
         return binary_open(path)
-
-
