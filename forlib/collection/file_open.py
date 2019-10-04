@@ -41,7 +41,7 @@ def binary_open(path):
 def normal_file_oepn(path):
     return open(path, 'r')
 
-def thum_open(path):
+def thumb_open(path):
     return path
 
 def pf_open(path):
