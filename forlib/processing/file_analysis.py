@@ -58,8 +58,8 @@ class reg_analysis():
                         if find_val in value:
                             print (key.path())
 
-    def get_ms(self):
-        self.rec(self.reg.root(), self.find_path, "microsoft")
+    def get_find_key(self, keyword):
+        self.rec(self.reg.root(), self.find_path, keyword)
 
     def recent_docs(self):
         recent = self.reg.open("SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs")
