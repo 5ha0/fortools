@@ -16,45 +16,45 @@ class unknown:
 
 class jumplist:
     def jumplist_open(path):
-	    file = open(path,'rb')
-	    return file
+	file = open(path,'rb')
+	return file
 
 
 class iconcache:
     def iconcache_open(path):
-	    file = open(path,'rb')
-	    return file
+	file = open(path,'rb')
+	return file
 
 
 class lnk:
     def lnk_open(path):
-	    file = open(path, 'rb')
-	    return file
+	file = open(path, 'rb')
+	return file
 
 
 class prefetch:
     def prefetch_open(path):
 	file = open(path,'rb')
 	if file.read(3) == 'MAM':
-		file = decompress.decomp('path')
+	    file = decompress.decomp('path')
 	return file
 
 
 class recycle:
-  def recycle_open(path):
-	file_kind = path.split('\\')[-1]
+    def recycle_open(path):
+        file_kind = path.split('\\')[-1]
 	if file_kind.find('R') != -1:
-		file_extension = path.split('.')[1]
-		file = file_open.extension_file_open(file_extension,path)
-		return file
+	    file_extension = path.split('.')[1]
+	    file = file_open.extension_file_open(file_extension,path)
+	    return file
 	elif file_kind.find('I') != -1:
-		file = open(path,'rb')
-		return file  
+	    file = open(path,'rb')
+	    return file  
 
 
 class thumbnail:
-	def thumbnail_open(path)
-	file = open(path,'rb')
+    def thumbnail_open(path):
+        file = open(path,'rb')
 	return file
 
 
