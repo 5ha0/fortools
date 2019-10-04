@@ -45,6 +45,11 @@ class recycle:
 	elif file_kind.find('I') != -1:
 		file = open(path,'rb')
 		return file  
+	
+class thumnail:
+	def thumnail_open(path)
+	file = open(path,'rb')
+	return file
 
 class log:
     def file_open(path):
