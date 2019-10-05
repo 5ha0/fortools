@@ -6,6 +6,8 @@ from os import listdir
 from PIL import Image
 import forlib.collection.signature as sig
 from Registry import Registry
+import decompress
+import decompress_mem0
 
 def signature_db(path):
     file_extension_recycle = path.split('\')[-1]
@@ -49,15 +51,20 @@ def thumb_open(path):
     return path
 
                                         
-def pf_open(path):
+def prefetch_open(path):
     file = open(path,'rb')
         if file.read(3)  == 'MAM':
-            f.close()
-            decompress = decompress.decomp('path')
-            return decompress
+            file = decompress.decomp(path)
     return file
-
-                                        
+                                  
+def superfetch_open(path):
+    file = open(path,'rb')
+         if file.read(3)  == 'MAM':
+            file = decompress.decomp(path)
+        elif file.read(4) == 'MAM0':
+            file = decompress_mem0.decomp(path)
+    return file
+                                    
 def chrome_open(path):
     open_chrome_file = open(path, "rb")
     format=open_chrome_file.read(15).decode()
