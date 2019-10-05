@@ -1,6 +1,5 @@
 from forlib.collection.file_open import *
 from forlib.collection.decompress import *
-from forlib.collection.decompress_mem0 import *
 from forlib.processing.file_analysis import *
 
 
@@ -45,8 +44,6 @@ class superfetch:
         file = open(path,'rb')
         if file.read(3) == 'MAM':
             file = decompress.decomp(path)
-        elif file.read(4) == 'MAM0':
-            file = decompress_mem0.decomp(path)
         return file
 
 class recycle:
