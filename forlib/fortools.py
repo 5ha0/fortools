@@ -1,5 +1,6 @@
 from forlib.collection.file_open import *
 from forlib.collection.decompress import *
+from forlib.collection.decompress_mem0 import *
 from forlib.processing.file_analysis import *
 
 
@@ -36,9 +37,17 @@ class prefetch:
     def prefetch_open(path):
 	file = open(path,'rb')
 	if file.read(3) == 'MAM':
-	    file = decompress.decomp('path')
+	    file = decompress.decomp(path)
 	return file
 
+class superfetch:
+    def superfetch_open:
+        file = open(path,'rb')
+        if file.read(3) == 'MAM'
+            file = decompress.decomp(path)
+        elif file.read(4) == 'MAM0'
+            file = decompress_mem0.decomp(path)
+        return file
 
 class recycle:
     def recycle_open(path):
@@ -46,10 +55,9 @@ class recycle:
 	if file_kind.find('R') != -1:
 	    file_extension = path.split('.')[1]
 	    file = file_open.extension_file_open(file_extension,path)
-	    return file
 	elif file_kind.find('I') != -1:
 	    file = open(path,'rb')
-	    return file  
+	return file  
 
 
 class thumbnail:
