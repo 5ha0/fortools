@@ -1,6 +1,7 @@
 import Evtx.Evtx as evtx
 import zipfile
 import os
+import sqlite3
 from os import listdir
 from PIL import Image
 import forlib.collection.signature as sig
@@ -56,6 +57,30 @@ def pf_open(path):
             return decompress
     return file
 
+                                        
+def chrome_open(path):
+    open_chrome_file = open(path, "rb")
+    format=open_chrome_file.read(15).decode()
+
+    if format=="SQLite format 3":
+        conn=sqlite3.connect(path)
+        db_cursor=conn.cursor()
+        return db_cursor
+    else:
+        return open_chrome_file
+                                        
+        
+def firefox_open(path):
+    open_firefox_file = open(path, "rb")
+    format=open_firefox_file.read(15).decode()
+
+    if format=="SQLite format 3":
+        conn=sqlite3.connect(path)
+        db_cursor=conn.cursor()
+        return db_cursor
+    else:
+        return open_firefox_file
+                                        
                                         
 def lnk_open(path):
     file = open(path,'rb')
