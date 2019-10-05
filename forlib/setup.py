@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="forlib",
+    name="fortools",
     version="0.0.1",
     author="5ha0",
     author_email="bobbaeha@gmail.com",
