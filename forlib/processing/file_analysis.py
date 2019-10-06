@@ -1,13 +1,9 @@
 import json
-<<<<<<< HEAD
-
-=======
 from lxml import etree
 import datetime
 from Registry import Registry
->>>>>>> master
 
-class evtx_analysis():
+class Evtx_analysis():
     def __init__(self, file):
         self.file = file
         self.evtx_xml = self.make_xml()
@@ -24,11 +20,7 @@ class evtx_analysis():
             print(i)
 
 
-<<<<<<< HEAD
-class log_nalysis():
-=======
-class log_analysis():
->>>>>>> master
+class Log_analysis():
     def __init__(self, file):
         self.file = file
 
@@ -46,13 +38,12 @@ class log_analysis():
         return json.dumps(log_obj, ensure_ascii=False, indent='\t')
 
 
-class file_analysis():
+class Files_analysis():
     def __init__(self, file):
         self.file = file
-<<<<<<< HEAD
-=======
+
         
-class reg_analysis():
+class Reg_analysis():
     def __init__(self, file):
         self.reg = file
 
@@ -75,4 +66,3 @@ class reg_analysis():
         recent = self.reg.open("SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs")
         for i, v in enumerate(recent.values()):
             print ('{} > {} : {}'.format(recent.timestamp(), v.name(), v.value().decode('utf-16')))
->>>>>>> master
