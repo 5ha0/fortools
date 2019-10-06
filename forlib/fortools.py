@@ -38,9 +38,15 @@ class Prefetch:
     def prefetch_open(path):
 	file = open(path,'rb')
 	if file.read(3) == 'MAM':
-	    file = decompress.decomp('path')
+	    file = decompress.decomp(path)
 	return file
 
+class superfetch:
+    def superfetch_open:
+        file = open(path,'rb')
+        if file.read(3) == 'MAM':
+            file = decompress.decomp(path)
+        return file
 
 class Recycle:
     def recycle_open(path):
@@ -48,10 +54,9 @@ class Recycle:
 	if file_kind.find('R') != -1:
 	    file_extension = path.split('.')[1]
 	    file = file_open.extension_file_open(file_extension,path)
-	    return file
 	elif file_kind.find('I') != -1:
 	    file = open(path,'rb')
-	    return file  
+	return file  
 
 
 class Thumbnail:
