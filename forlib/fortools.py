@@ -1,21 +1,14 @@
 from forlib.collection.file_open import *
-<<<<<<< HEAD
 from forlib.processing.file_analysis import *
-
-
-class unknown:
-=======
 from forlib.collection.decompress import *
 from forlib.processing.file_analysis import *
 
 
 class Unknown:
->>>>>>> master
     def file_open(path):
         extension = signature_db(path)
         if extension == 'evtx':
             return evtx_open(path)
-<<<<<<< HEAD
         elif extension == 'jpeg':
             return jpeg_open(path)
         elif extension == 'lnk':
@@ -23,7 +16,6 @@ class Unknown:
 
 
 class log:
-=======
         elif extension == 'jpg':
             return jpeg_open(path)
         elif extension == 'lnk':
@@ -82,18 +74,15 @@ class Thumbnail:
 
 
 class Log:
->>>>>>> master
     def file_open(path):
         if signature_db(path) == 'evtx':#evtx
             file = evtx_analysis(evtx_open(path))
         else:
-<<<<<<< HEAD
             file = log_nalysis(normal_file_oepn(path))
         return file
 
 
 class file:
-=======
             file = log_analysis(normal_file_oepn(path))
         return file
 
@@ -105,12 +94,10 @@ class Registry:
 
 
 class Files:
->>>>>>> master
     def file_open(path):
         extension = signature_db(path)
         if extension == 'zip':
             return zip_open(path)
-<<<<<<< HEAD
         elif extension == 'jpeg':
             return jpeg_open(path)
         elif extension == 'jpg':
@@ -118,19 +105,16 @@ class Files:
 
 
 class system_temp:
-=======
         elif extension == 'jpg':
             return jpeg_open(path)
 
 
 class System_temp:
->>>>>>> master
     def file_open(path):
         file = systemp_open(path)
         return file
 
 
-<<<<<<< HEAD
 class lnk:
     def file_open(path):
         return binary_open(path)
@@ -141,9 +125,6 @@ class recycle:
         return binary_open(path)
 
 
-class jumplist:
-=======
 class Ie:
->>>>>>> master
     def file_open(path):
         return binary_open(path)
