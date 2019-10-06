@@ -41,8 +41,8 @@ class Prefetch:
 	    file = decompress.decomp(path)
 	return file
 
-class superfetch:
-    def superfetch_open:
+class Superfetch:
+    def superfetch_open(path):
         file = open(path,'rb')
         if file.read(3) == 'MAM':
             file = decompress.decomp(path)
