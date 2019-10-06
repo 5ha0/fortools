@@ -1,6 +1,5 @@
 from forlib.fortools import log
 from forlib.fortools import file
-<<<<<<< HEAD
 from forlib.fortools import unknown
 
 zip_file = file.file_open('./zip_test.zip')
@@ -42,4 +41,3 @@ reg_recent = reg_file.recent_docs()
 
 evtx_file = log.file_open('C:\Windows\System32\winevt\Logs\Application.evtx')
 evtx_file.get_event_ID(10)
->>>>>>> master
