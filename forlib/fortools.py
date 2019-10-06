@@ -14,6 +14,7 @@ class Unknown:
         elif extension == 'lnk':
             return 0
 
+
 class Log:
     def file_open(path):
         if signature_db(path) == 'evtx':#evtx
@@ -26,7 +27,7 @@ class Registry:
         file = Reg_analysis(reg_open(path))
         return file
 
-
+'''
 class Prefetch:
     def file_open(path):
         file = binary_open(path)
@@ -41,7 +42,7 @@ class Superfetch:
         if file.read(3) == 'MAM':
             file = decompress.decomp(path)
         return file
-
+'''
 
 class Lnk:
     def file_open(path):
@@ -52,7 +53,7 @@ class Jumplist:
     def file_open(path):
         return binary_open(path)
 
-
+'''
 class Recycle:
     def file_open(path):
         file_kind = path.split('\\')[-1]
@@ -62,7 +63,7 @@ class Recycle:
         elif file_kind.find('I') != -1:
             file = binary_open(path)
         return file
-
+'''
 
 class Thumbnail:
     def file_open(path):
