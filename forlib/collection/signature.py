@@ -43,12 +43,9 @@ signatures = [{
 def sig_check(path):
     with open(path, "rb") as f:
         header = f.read(32)
-    #
-    # print('header: '+str(header))
+
     for sig in signatures:
         for i in range(0, sig['len']):
             if sig['hex'][i] != hex(header[sig['offset']+i]):
                 break
             return sig['file_extension']
-#
-# print(sig_check('C:\\Users\\Baeha\\Desktop\\fortools_pro\\Application.evtx'))

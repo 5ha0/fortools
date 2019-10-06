@@ -3,36 +3,38 @@ from forlib.collection.decompress import *
 from forlib.processing.file_analysis import *
 
 
-class unknown:
+class Unknown:
     def file_open(path):
         extension = signature_db(path)
         if extension == 'evtx':
             return evtx_open(path)
-        elif extension == 'jpeg':
+        elif extension == 'jpg':
             return jpeg_open(path)
         elif extension == 'lnk':
-            return 0
+            return lnk_open(path)
+        elif extension == 'zip':
+            return lnk_open(path)
 
 
-class jumplist:
+class Jumplist:
     def jumplist_open(path):
 	file = open(path,'rb')
 	return file
 
 
-class iconcache:
+class Iconcache:
     def iconcache_open(path):
 	file = open(path,'rb')
 	return file
 
 
-class lnk:
+class Lnk:
     def lnk_open(path):
 	file = open(path, 'rb')
 	return file
 
 
-class prefetch:
+class Prefetch:
     def prefetch_open(path):
 	file = open(path,'rb')
 	if file.read(3) == 'MAM':
@@ -40,7 +42,7 @@ class prefetch:
 	return file
 
 
-class recycle:
+class Recycle:
     def recycle_open(path):
         file_kind = path.split('\\')[-1]
 	if file_kind.find('R') != -1:
@@ -52,13 +54,13 @@ class recycle:
 	    return file  
 
 
-class thumbnail:
+class Thumbnail:
     def thumbnail_open(path):
         file = open(path,'rb')
 	return file
 
 
-class log:
+class Log:
     def file_open(path):
         if signature_db(path) == 'evtx':#evtx
             file = evtx_analysis(evtx_open(path))
@@ -67,47 +69,27 @@ class log:
         return file
 
 
-class registry():
-    def __init__(self, path):
-        self.path = path
-        
+class Registry:
     def file_open(path):
         file = reg_analysis(reg_open(path))
         return file
 
 
-class file:
+class Files:
     def file_open(path):
         extension = signature_db(path)
         if extension == 'zip':
             return zip_open(path)
-        elif extension == 'jpeg':
-            return jpeg_open(path)
         elif extension == 'jpg':
-            print('jpg')
+            return jpeg_open(path)
 
 
-class system_temp:
+class System_temp:
     def file_open(path):
         file = systemp_open(path)
         return file
 
 
-class lnk:
-    def file_open(path):
-        return binary_open(path)
-
-
-class recycle:
-    def file_open(path):
-        return binary_open(path)
-
-
-class jumplist:
-    def file_open(path):
-        return binary_open(path)
-
-
-class ie:
+class Ie:
     def file_open(path):
         return binary_open(path)

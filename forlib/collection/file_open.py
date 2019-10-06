@@ -51,10 +51,10 @@ def thumb_open(path):
                                         
 def pf_open(path):
     file = open(path,'rb')
-        if file.read(3)  == 'MAM':
-            f.close()
-            decompress = decompress.decomp('path')
-            return decompress
+    if file.read(3)  == 'MAM':
+        f.close()
+        decompress = decompress.decomp('path')
+        return decompress
     return file
 
                                         
