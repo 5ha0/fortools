@@ -125,6 +125,11 @@ class recycle:
         return binary_open(path)
 
 
-class Ie:
+class ie:
     def file_open(path):
         return binary_open(path)
+
+
+class edge:
+   def file_open(path):
+	return binary_open(path)
