@@ -40,4 +40,5 @@ reg_recent = reg_file.recent_docs()
 '''
 
 evtx_file = log.file_open('C:\Windows\System32\winevt\Logs\Application.evtx')
-evtx_file.get_event_ID(10)
+#evtx_file.show_all_record()
+evtx_file.eventID(15)
