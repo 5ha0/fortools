@@ -4,7 +4,11 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
+<<<<<<< HEAD
     name="forlib",
+=======
+    name="fortools",
+>>>>>>> master
     version="0.0.1",
     author="5ha0",
     author_email="bobbaeha@gmail.com",
@@ -17,4 +21,8 @@ setuptools.setup(
     classifiers=[
       "Programming Language :: Python :: 3",
     ],
+<<<<<<< HEAD
 )
+=======
+)
+>>>>>>> master

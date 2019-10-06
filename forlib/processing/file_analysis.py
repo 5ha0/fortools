@@ -1,5 +1,11 @@
 import json
+<<<<<<< HEAD
 
+=======
+from lxml import etree
+import datetime
+from Registry import Registry
+>>>>>>> master
 
 class evtx_analysis():
     def __init__(self, file):
@@ -18,7 +24,11 @@ class evtx_analysis():
             print(i)
 
 
+<<<<<<< HEAD
 class log_nalysis():
+=======
+class log_analysis():
+>>>>>>> master
     def __init__(self, file):
         self.file = file
 
@@ -39,3 +49,30 @@ class log_nalysis():
 class file_analysis():
     def __init__(self, file):
         self.file = file
+<<<<<<< HEAD
+=======
+        
+class reg_analysis():
+    def __init__(self, file):
+        self.reg = file
+
+    def rec(self, key, find_path, find_val):
+        find_path(key, find_val)
+        for subkey in key.subkeys():
+            self.rec(subkey, find_path, find_val)
+
+    def find_path(self, key, find_val):
+        for value in [v.value() for v in key.values()
+                        if v.value_type() == Registry.RegSZ
+                        or v.value_type() == Registry.RegExpandSZ]:
+                        if find_val in value:
+                            print (key.path())
+
+    def get_find_key(self, keyword):
+        self.rec(self.reg.root(), self.find_path, keyword)
+
+    def recent_docs(self):
+        recent = self.reg.open("SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs")
+        for i, v in enumerate(recent.values()):
+            print ('{} > {} : {}'.format(recent.timestamp(), v.name(), v.value().decode('utf-16')))
+>>>>>>> master
