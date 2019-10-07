@@ -1,42 +1,31 @@
-import Evtx.Evtx as evtx
+import pyevtx
 import zipfile
 import os
-<<<<<<< HEAD
-from os import listdir
-from PIL import Image
-import forlib.collection.signature as sig
-
-
-def signature_db(path):
-=======
 import sqlite3
 from os import listdir
 from PIL import Image
 import forlib.collection.signature as sig
+import forlib.collection.decompress as decompress
 from Registry import Registry
-import decompress
+
 
 def signature_db(path):
-    file_extension_recycle = path.split('\')[-1]
-    if file_extionsion_recycle =='$I':
+    file_extension_recycle = path.split('\\')[-1]
+    if file_extension_recycle =='$I':
         return recycle_open(path)
-                                        
->>>>>>> master
     return sig.sig_check(path)
 
 
 def evtx_open(path):
-    return evtx.Evtx(path)
+    evtx_file = pyevtx.file()
+    evtx_file.open(path)
+    return evtx_file
 
-<<<<<<< HEAD
 
-=======
-                                        
 def reg_open(path):
     return Registry.Registry(path)
 
                                         
->>>>>>> master
 def zip_open(path):
     file = open(path, 'rb')
     z = zipfile.ZipFile(file, 'r')
@@ -57,29 +46,27 @@ def binary_open(path):
 
 def normal_file_oepn(path):
     return open(path, 'r')
-<<<<<<< HEAD
-=======
 
                                         
 def thumb_open(path):
     return path
 
                                         
-def prefetch_open(path):
-    file = open(path,'rb')
-    if file.read(3)  == 'MAM':
-        f.close()
-        decompress = decompress.decomp('path')
-        return decompress
-    if file.read(3)  == 'MAM':
-        file = decompress.decomp(path)
-    return file
+# def prefetch_open(path):
+#     file = open(path, 'rb')
+#     if file.read(3) == 'MAM':
+#         file.close()
+#         decompress = decompress.decomp('path')
+#         return decompress
+#     if file.read(3)  == 'MAM':
+#         file = decompress.decomp(path)
+#     return file
                                   
-def superfetch_open(path):
-    file = open(path,'rb')
-    if file.read(3)  == 'MAM':
-        file = decompress.decomp(path)
-    return file
+# def superfetch_open(path):
+#     file = open(path,'rb')
+#     if file.read(3)  == 'MAM':
+#         file = decompress.decomp(path)
+#     return file
                                     
 def chrome_open(path):
     open_chrome_file = open(path, "rb")
@@ -118,4 +105,3 @@ def recycle_open(path):
 def jumplist_open(path):
     file = open(path,'rb')
     return file
->>>>>>> master
