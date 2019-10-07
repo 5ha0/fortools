@@ -80,7 +80,11 @@ class Reg_analysis():
                         if v.value_type() == Registry.RegSZ
                         or v.value_type() == Registry.RegExpandSZ]:
                         if find_val in value:
-                            print (key.path())
+                            reg_key_obj = {
+                                "find" : find_val,
+                                "key" : key.path()
+                            }
+                            print (reg_key_obj)
 
     def get_find_key(self, keyword):
         self.rec(self.reg.root(), self.find_path, keyword)
@@ -93,4 +97,4 @@ class Reg_analysis():
                     "name" : v.name(),
                     "data" : v.value().decode('utf-16')}
             print(json.dumps(reg_obj))
-            print ('{} > {} : {}'.format(recent.timestamp(), v.name(), v.value().decode('utf-16')))
+            #print ('{} > {} : {}'.format(recent.timestamp(), v.name(), v.value().decode('utf-16')))
