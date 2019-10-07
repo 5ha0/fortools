@@ -1,4 +1,4 @@
-from forlib.fortools import log
+from forlib.fortools import Log
 from forlib.fortools import file
 from forlib.fortools import unknown
 
