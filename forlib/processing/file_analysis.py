@@ -80,7 +80,11 @@ class Reg_analysis():
                         if v.value_type() == Registry.RegSZ
                         or v.value_type() == Registry.RegExpandSZ]:
                         if find_val in value:
-                            print (key.path())
+                            reg_key_obj = {
+                                "find_keyword" : find_val,
+                                "key" : key.path()
+                            }
+                            print (print(json.dumps(reg_key_obj)))
 
     def get_find_key(self, keyword):
         self.rec(self.reg.root(), self.find_path, keyword)
@@ -88,4 +92,9 @@ class Reg_analysis():
     def recent_docs(self):
         recent = self.reg.open("SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs")
         for i, v in enumerate(recent.values()):
-            print ('{} > {} : {}'.format(recent.timestamp(), v.name(), v.value().decode('utf-16')))
+            reg_obj  = {
+                    "time" : str(recent.timestamp()),
+                    "name" : v.name(),
+                    "data" : v.value().decode('utf-16')}
+            print(json.dumps(reg_obj))
+            #print ('{} > {} : {}'.format(recent.timestamp(), v.name(), v.value().decode('utf-16')))

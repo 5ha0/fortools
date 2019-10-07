@@ -51,22 +51,23 @@ def normal_file_oepn(path):
 def thumb_open(path):
     return path
 
-                                        
-# def prefetch_open(path):
-#     file = open(path, 'rb')
-#     if file.read(3) == 'MAM':
-#         file.close()
-#         decompress = decompress.decomp('path')
-#         return decompress
-#     if file.read(3)  == 'MAM':
-#         file = decompress.decomp(path)
-#     return file
+'''                                        
+def prefetch_open(path):
+    file = open(path, 'rb')
+    if file.read(3) == 'MAM':
+        file.close()
+        decompress = decompress.decomp('path')
+        return decompress
+    if file.read(3)  == 'MAM':
+        file = decompress.decomp(path)
+    return file
                                   
-# def superfetch_open(path):
-#     file = open(path,'rb')
-#     if file.read(3)  == 'MAM':
-#         file = decompress.decomp(path)
-#     return file
+def superfetch_open(path):
+    file = open(path,'rb')
+    if file.read(3)  == 'MAM':
+        file = decompress.decomp(path)
+    return file
+'''
                                     
 def chrome_open(path):
     open_chrome_file = open(path, "rb")
