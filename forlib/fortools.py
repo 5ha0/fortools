@@ -1,30 +1,29 @@
-from forlib.collection.file_open import *
-from forlib.processing.file_analysis import *
 from forlib.collection.decompress import *
-from forlib.processing.file_analysis import *
+import forlib.processing.file_analysis as file_analysis
+import forlib.collection.file_open as file_open
 
 
 class Unknown:
     def file_open(path):
-        extension = signature_db(path)
+        extension = file_open.signature_db(path)
         if extension == 'evtx':
-            return evtx_open(path)
+            return file_open.evtx_open(path)
         elif extension == 'jpeg':
-            return jpeg_open(path)
-        elif extension == 'lnk':
+            return file_open.jpeg_open(path)
+        elif file_open.extension == 'lnk':
             return 0
 
 
 class Log:
     def file_open(path):
         if signature_db(path) == 'evtx':#evtx
-            file = Evtx_analysis(evtx_open(path))
+            file = file_analysis.Evtx_analysis(file_open.evtx_open(path))
         return file
 
 
 class Registry:
     def file_open(path):
-        file = Reg_analysis(reg_open(path))
+        file = file_analysis.Reg_analysis(file_open.reg_open(path))
         return file
 
 '''
@@ -46,12 +45,12 @@ class Superfetch:
 
 class Lnk:
     def file_open(path):
-        return binary_open(path)
+        return file_open.binary_open(path)
 
 
 class Jumplist:
     def file_open(path):
-        return binary_open(path)
+        return file_open.binary_open(path)
 
 '''
 class Recycle:
@@ -67,34 +66,34 @@ class Recycle:
 
 class Thumbnail:
     def file_open(path):
-        return binary_open(path)
+        return file_open.binary_open(path)
 
 
 class Iconcache:
     def file_open(path):
-        return binary_open(path)
+        return file_open.binary_open(path)
 
 
 class Files:
     def file_open(path):
-        extension = signature_db(path)
+        extension = file_open.signature_db(path)
         if extension == 'zip':
-            return zip_open(path)
+            return file_open.zip_open(path)
         elif extension == 'jpg' or extension == 'jpeg':
-            return jpeg_open(path)
+            return file_open.jpeg_open(path)
 
 
 class System_temp:
     def file_open(path):
-        file = systemp_open(path)
+        file = file_open.systemp_open(path)
         return file
 
 
 class Ie:
     def file_open(path):
-        return binary_open(path)
+        return file_open.binary_open(path)
 
 
 class Edge:
     def file_open(path):
-        return binary_open(path)
+        return file_open.binary_open(path)
