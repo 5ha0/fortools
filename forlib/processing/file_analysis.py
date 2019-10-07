@@ -88,4 +88,9 @@ class Reg_analysis():
     def recent_docs(self):
         recent = self.reg.open("SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs")
         for i, v in enumerate(recent.values()):
+            reg_obj  = {
+                    "time" : str(recent.timestamp()),
+                    "name" : v.name(),
+                    "data" : v.value().decode('utf-16')}
+            print(json.dumps(reg_obj))
             print ('{} > {} : {}'.format(recent.timestamp(), v.name(), v.value().decode('utf-16')))
