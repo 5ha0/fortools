@@ -1,4 +1,5 @@
 import json
+from os import listdir
 from lxml import etree
 import datetime
 from Registry import Registry
@@ -98,3 +99,18 @@ class Reg_analysis():
                     "data" : v.value().decode('utf-16')}
             print(json.dumps(reg_obj))
             #print ('{} > {} : {}'.format(recent.timestamp(), v.name(), v.value().decode('utf-16')))
+
+class System_temp_analysis():
+    def __init__(self, file):
+        self._file = file
+
+    def get_temp(self, path):
+        files = [f for f in listdir(path)]
+        for i in range(files.__len__()):
+            print(files[i])
+
+        file_count = files.__len__()
+        file_size = files.__sizeof__()
+        print("File Count : %d" %file_count)
+        print("File Size : %d" %file_size)
+

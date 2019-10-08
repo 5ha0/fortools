@@ -36,7 +36,9 @@ def jpeg_open(path):
 
 
 def systemp_open(path):
-    return [f for f in listdir(path)]
+    user_profile = os.environ['USERPROFILE']
+    temp_path = user_profile + '\Local Settings\Temp'
+    return temp_path
 
 
 def binary_open(path):

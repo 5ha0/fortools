@@ -86,7 +86,7 @@ class Files:
 
 class System_temp:
     def file_open(path):
-        file = systemp_open(path)
+        file = System_temp_analysis(systemp_open(path))
         return file
 
 

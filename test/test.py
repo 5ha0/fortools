@@ -1,8 +1,9 @@
-from forlib.fortools import log
-from forlib.fortools import file
-from forlib.fortools import unknown
+from forlib.fortools import Log
+from forlib.fortools import Files
+from forlib.fortools import Unknown
 
-zip_file = file.file_open('./zip_test.zip')
+
+zip_file = Files.file_open('./zip_test.zip')
 zip_info = zip_file.infolist()
 file_info = []
 
@@ -12,10 +13,9 @@ for i in range(zip_info.__len__()):
 
 #evtx_file = log.file_open('C:\Windows\System32\winevt\Logs\Application.evtx')
 #evtx_file.get_event_ID(10)
-=======
-from forlib.fortools import registry
-from forlib.fortools import unknown
-from forlib.fortools import system_temp
+
+from forlib.fortools import Registry
+from forlib.fortools import System_temp
 import os, datetime
 
 # user_profile = os.environ['USERPROFILE']
@@ -39,6 +39,22 @@ print("\n==================[+]registry recent file-----need decode modify=======
 reg_recent = reg_file.recent_docs()
 '''
 
-evtx_file = log.file_open('C:\Windows\System32\winevt\Logs\Application.evtx')
+evtx_file = Log.file_open('C:\Windows\System32\winevt\Logs\Application.evtx')
 #evtx_file.show_all_record()
 evtx_file.eventID(15)
+
+user_temp_path = r'C:\Users\sjms1\Local Settings\Temp'
+user_temp = System_temp.file_open(user_temp_path)
+print(user_temp_path)
+user_temp.get_temp(user_temp_path)
+
+windows_temp_path = r'C:\Windows\Temp'
+windows_temp = System_temp.file_open(windows_temp_path)
+print(windows_temp_path)
+windows_temp.get_temp(windows_temp_path)
+
+
+
+
+
+
