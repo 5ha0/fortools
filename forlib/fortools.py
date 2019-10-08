@@ -16,7 +16,7 @@ class Unknown:
 
 class Log:
     def file_open(path):
-        if signature_db(path) == 'evtx':#evtx
+        if file_open.signature_db(path) == 'evtx':#evtx
             file = file_analysis.Evtx_analysis(file_open.evtx_open(path))
         return file
 
