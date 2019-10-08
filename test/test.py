@@ -13,7 +13,13 @@ for i in range(zip_info.__len__()):
     file_info.append(zip_info[i])
     print(file_info[i])
 
-
+reg_file = Registry.file_open("test/NTUSER.DAT")
+print("==================[+]registry microsoft information==================\n")
+#reg_info = reg_file.get_find_key("microsoft")
+reg_info = reg_file.get_recent_excel()
+print("\n==================[+]registry recent file-----need decode modify==================\n")
+reg_recent = reg_file.get_recent_docs()
+        
 # user_profile = os.environ['USERPROFILE']
 # systemp_file = system_temp.file_open(user_profile+'\Local Settings\Temp')
 # for i in range(systemp_file.__len__()):
