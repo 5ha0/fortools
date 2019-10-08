@@ -2,7 +2,17 @@ from forlib.fortools import Log
 from forlib.fortools import Files
 from forlib.fortools import Unknown
 from forlib.fortools import System_temp
-import os
+from forlib.fortools import Registry
+from forlib.fortools import System_temp
+
+zip_file = Files.file_open('./zip_test.zip')
+zip_info = zip_file.infolist()
+file_info = []
+
+for i in range(zip_info.__len__()):
+    file_info.append(zip_info[i])
+    print(file_info[i])
+
 
 # user_profile = os.environ['USERPROFILE']
 # systemp_file = system_temp.file_open(user_profile+'\Local Settings\Temp')
