@@ -112,7 +112,7 @@ class Reg_analysis():
     def get_find_key(self, keyword):
         self.rec(self.reg.root(), self.find_path, keyword)
 
-    def recent_docs(self):
+    def get_recent_docs(self):
         recent = self.reg.open("SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs")
         for i, v in enumerate(recent.values()):
             reg_obj  = {
@@ -121,7 +121,25 @@ class Reg_analysis():
                     "data" : v.value().decode('utf-16')}
             print(json.dumps(reg_obj))
             #print ('{} > {} : {}'.format(recent.timestamp(), v.name(), v.value().decode('utf-16')))
-
+    
+    def get_recent_MRU(self):
+        recent = self.reg.open("Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU")
+        for i, v in enumerate(recent.values()):
+            reg_obj  = {
+                    "time" : str(recent.timestamp()),
+                    "name" : v.name(),
+                    "data" : v.value().decode('utf-16')}
+            print(json.dumps(reg_obj))
+    
+    def recent_excel(self):
+        recent = self.reg.open("Software\\Microsoft\\Office\\11.0\\Excel\\Recent Files")
+        for i, v in enumerate(recent.values()):
+            reg_obj  = {
+                    "time" : str(recent.timestamp()),
+                    "name" : v.name(),
+                    "path" : v.value()}
+            print(json.dumps(reg_obj))
+    
 class System_temp_analysis():
     def __init__(self, file):
         self._file = file
