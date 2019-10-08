@@ -98,7 +98,7 @@ class Reg_analysis():
         for subkey in key.subkeys():
             self.rec(subkey, find_path, find_val)
 
-    def find_path(self, key, find_val):
+    def get_find_path(self, key, find_val):
         for value in [v.value() for v in key.values()
                         if v.value_type() == Registry.RegSZ
                         or v.value_type() == Registry.RegExpandSZ]:
