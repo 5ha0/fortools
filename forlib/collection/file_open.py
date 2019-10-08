@@ -5,8 +5,9 @@ import sqlite3
 from os import listdir
 from PIL import Image
 import forlib.collection.signature as sig
-from Registry import Registry
 import forlib.collection.decompress as decompress
+from Registry import Registry
+
 
 def signature_db(path):
     file_extension_recycle = path.split('\\')[-1]

@@ -22,7 +22,7 @@ import os, datetime
 # systemp_file = system_temp.file_open(user_profile+'\Local Settings\Temp')
 # for i in range(systemp_file.__len__()):
 #   print(systemp_file[i])
-
+#
 # zip_file = file.file_open('./zip_test.zip')
 # zip_info = zip_file.infolist()
 # file_info = []
@@ -48,10 +48,10 @@ user_temp = System_temp.file_open(user_temp_path)
 print(user_temp_path)
 user_temp.get_temp(user_temp_path)
 
-windows_temp_path = r'C:\Windows\Temp'
-windows_temp = System_temp.file_open(windows_temp_path)
-print(windows_temp_path)
-windows_temp.get_temp(windows_temp_path)
+# windows_temp_path = r'C:\Windows\Temp'
+# windows_temp = System_temp.file_open(windows_temp_path)
+# print(windows_temp_path)
+# windows_temp.get_temp(windows_temp_path)
 
 
 
