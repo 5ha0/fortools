@@ -139,7 +139,17 @@ class Reg_analysis():
                     "name" : v.name(),
                     "path" : v.value()}
             print(json.dumps(reg_obj))
-    
+            
+    def get_recent_ppt(self):
+        recent = self.reg.open("Software\\Microsoft\\Office\\11.0\\PowerPoint\\Recent File List")
+        for i, v in enumerate(recent.values()):
+            reg_obj  = {
+                    "time" : str(recent.timestamp()),
+                    "name" : v.name(),
+                    "path" : v.value()}
+            print(json.dumps(reg_obj))
+            
+            
 class System_temp_analysis():
     def __init__(self, file):
         self._file = file
