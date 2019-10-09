@@ -17,6 +17,7 @@ reg_file = Registry.file_open("test/NTUSER.DAT")
 print("==================[+]registry microsoft information==================\n")
 #reg_info = reg_file.get_find_key("microsoft")
 reg_info = reg_file.get_recent_excel()
+reg_info = reg_file.get_recent_ppt()
 print("\n==================[+]registry recent file-----need decode modify==================\n")
 reg_recent = reg_file.get_recent_docs()
         
