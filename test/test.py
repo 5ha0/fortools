@@ -13,13 +13,13 @@ for i in range(zip_info.__len__()):
     file_info.append(zip_info[i])
     print(file_info[i])
 
-reg_file = Registry.file_open("test/NTUSER.DAT")
-print("==================[+]registry microsoft information==================\n")
+#reg_file = Registry.file_open("test/NTUSER.DAT")
+#print("==================[+]registry microsoft information==================\n")
 #reg_info = reg_file.get_find_key("microsoft")
-reg_info = reg_file.get_recent_excel()
-reg_info = reg_file.get_recent_ppt()
-print("\n==================[+]registry recent file-----need decode modify==================\n")
-reg_recent = reg_file.get_recent_docs()
+#reg_info = reg_file.get_recent_excel()
+#reg_info = reg_file.get_recent_ppt()
+#print("\n==================[+]registry recent file-----need decode modify==================\n")
+#reg_recent = reg_file.get_recent_docs()
         
 # user_profile = os.environ['USERPROFILE']
 # systemp_file = system_temp.file_open(user_profile+'\Local Settings\Temp')
@@ -34,7 +34,7 @@ reg_recent = reg_file.get_recent_docs()
 #     file_info.append(zip_info[i])
 #     print(file_info[i])
 
-<<<<<<< HEAD
+
 '''
 reg_file = registry.file_open("test/NTUSER.DAT")
 print("==================[+]registry microsoft information==================\n")
@@ -47,30 +47,29 @@ reg_recent = reg_file.recent_docs()
 #evtx_file.show_all_record()
 #evtx_file.eventID(6003)
 
-user_temp_path = r'C:\Users\sjms1\Local Settings\Temp'
+user_temp_path = r'C:\Users\sjms1\AppData\Local\Temp'
 user_temp = System_temp.file_open(user_temp_path)
-print(user_temp_path)
+print("\n==================[+]User Temp Folder information=====================\n")
 user_temp.get_temp(user_temp_path)
 
 
-
-# windows_temp_path = r'C:\Windows\Temp'
-# windows_temp = System_temp.file_open(windows_temp_path)
-# print(windows_temp_path)
-# windows_temp.get_temp(windows_temp_path)
-
+windows_temp_path = r'C:\Windows\Temp'
+windows_temp = System_temp.file_open(windows_temp_path)
+print("\n==================[+]Windows Temp Folder information==================\n")
+windows_temp.get_temp(windows_temp_path)
 
 
 
 
-=======
+
+
 # evtx_file = Log.file_open('C:\Windows\System32\winevt\Logs\Application.evtx')
 # evtx_file.show_all_record()
 # evtx_file.xml_with_num(104)
 # evtx_file.eventID(1000)
 # evtx_file.level(4)
->>>>>>> 44034b48ae9548764158daf9e1439b4f94dd8fa5
 
-webLog_file = Log.file_open('C:\\inetpub\\logs\\LogFiles\\W3SVC1\\u_ex191007.log')
+
+#webLog_file = Log.file_open('C:\\inetpub\\logs\\LogFiles\\W3SVC1\\u_ex191007.log')
 # webLog_file.show_all_record()
-webLog_file.date('2019-10-07')
+#webLog_file.date('2019-10-07')

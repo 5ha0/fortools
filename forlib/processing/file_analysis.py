@@ -3,16 +3,15 @@ from os import listdir
 from lxml import etree
 import datetime
 from Registry import Registry
-
-<<<<<<< HEAD
+import os.path, time
 
 class Evtx_analysis():
     evtx_json = []
-=======
+
 class log_analysis():
     class Evtx_analysis():
         evtx_json = []
->>>>>>> 44034b48ae9548764158daf9e1439b4f94dd8fa5
+
 
         def __init__(self, file):
             self.evtx_file = file
@@ -160,8 +159,9 @@ class System_temp_analysis():
 
     def get_temp(self, path):
         files = [f for f in listdir(path)]
+
         for i in range(files.__len__()):
-            print(files[i])
+            print("[%d] "%(i+1) + files[i])
 
         file_count = files.__len__()
         file_size = files.__sizeof__()
