@@ -136,7 +136,6 @@ class Reg_analysis():
         for i, v in enumerate(recent.values()):
             reg_obj  = {
                     "time" : str(recent.timestamp()),
-                    "name" : v.name(),
                     "path" : v.value()}
             print(json.dumps(reg_obj))
             
@@ -145,7 +144,6 @@ class Reg_analysis():
         for i, v in enumerate(recent.values()):
             reg_obj  = {
                     "time" : str(recent.timestamp()),
-                    "name" : v.name(),
                     "path" : v.value()}
             print(json.dumps(reg_obj))
             
