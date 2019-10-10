@@ -71,7 +71,7 @@ class Thumbnail:
         return file_open.binary_open(path)
 
 
-class Iconcache:
+class Icon_cache:
     def file_open(path):
         return file_open.binary_open(path)
 
@@ -99,3 +99,4 @@ class Ie:
 class Edge:
     def file_open(path):
         return file_open.binary_open(path)
+

@@ -4,6 +4,7 @@ from forlib.fortools import Unknown
 from forlib.fortools import System_temp
 from forlib.fortools import Registry
 from forlib.fortools import System_temp
+from forlib.fortools import Icon_cache
 
 zip_file = Files.file_open('./zip_test.zip')
 zip_info = zip_file.infolist()
@@ -58,7 +59,8 @@ windows_temp = System_temp.file_open(windows_temp_path)
 print("\n==================[+]Windows Temp Folder information==================\n")
 windows_temp.get_temp(windows_temp_path)
 
-
+icon_cache_path = r'C:\Users\sjms1\AppData\Local\IconCache.db'
+icon_cache = Icon_cache.file_open(icon_cache_path)
 
 
 
