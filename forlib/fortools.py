@@ -90,7 +90,17 @@ class System_temp:
         file = file_analysis.System_temp_analysis(file_open.systemp_open(path))
         return file
 
+    
+class Chrome:
+    def file_open(path):
+        return file_open.chrome_open(path)
+    
+    
+class Firefox:
+    def file_open(path):
+        return file_open.firefox_open(path)
 
+    
 class Ie:
     def file_open(path):
         return file_open.binary_open(path)
