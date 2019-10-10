@@ -4,6 +4,7 @@ from lxml import etree
 import datetime
 from Registry import Registry
 
+
 class Evtx_analysis():
     evtx_json = []
 

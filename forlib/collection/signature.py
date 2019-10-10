@@ -44,7 +44,6 @@ def sig_check(path):
     with open(path, "rb") as f:
         header = f.read(32)
 
-
     for sig in signatures:
         for i in range(0, sig['len']):
             if sig['hex'][i] != hex(header[sig['offset']+i]):

@@ -39,14 +39,16 @@ print("\n==================[+]registry recent file-----need decode modify=======
 reg_recent = reg_file.recent_docs()
 '''
 
-evtx_file = Log.file_open('C:\Windows\System32\winevt\Logs\Application.evtx')
+#evtx_file = Log.file_open('C:\Windows\System32\winevt\Logs\Application.evtx')
 #evtx_file.show_all_record()
-evtx_file.eventID(15)
+#evtx_file.eventID(6003)
 
 user_temp_path = r'C:\Users\sjms1\Local Settings\Temp'
 user_temp = System_temp.file_open(user_temp_path)
 print(user_temp_path)
 user_temp.get_temp(user_temp_path)
+
+
 
 # windows_temp_path = r'C:\Windows\Temp'
 # windows_temp = System_temp.file_open(windows_temp_path)
