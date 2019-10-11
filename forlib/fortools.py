@@ -17,9 +17,9 @@ class Unknown:
 class Log:
     def file_open(path):
         if file_open.signature_db(path) == 'evtx':#evtx
-            file = file_analysis.log_analysis.Evtx_analysis(file_open.evtx_open(path))
+            file = file_analysis.LogAnalysis.EvtxAnalysis(file_open.evtx_open(path))
         else:
-            file = file_analysis.log_analysis.webLog_analysis(file_open.normal_file_oepn(path))
+            file = file_analysis.LogAnalysis.WebLogAnalysis(file_open.normal_file_oepn(path))
         return file
 
 
