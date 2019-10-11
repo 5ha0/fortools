@@ -25,7 +25,7 @@ class Log:
 
 class Registry:
     def file_open(path):
-        file = file_analysis.Reg_analysis(file_open.reg_open(path))
+        file = file_analysis.RegAnalysis(file_open.reg_open(path))
         return file
 
 '''
