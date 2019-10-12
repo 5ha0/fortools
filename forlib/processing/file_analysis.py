@@ -5,11 +5,9 @@ import datetime
 from Registry import Registry
 import os.path, time
 
-class EvtxAnalysis():
-    evtx_json = []
 
-class LogAnalysis():
-    class EvtxAnalysis():
+class LogAnalysis:
+    class EvtxAnalysis:
         evtx_json = []
 
 
@@ -54,7 +52,7 @@ class LogAnalysis():
         def xml_with_num(self, num):
             print(self.evtx_file.records[num].get_xml_string())
 
-    class WebLogAnalysis():
+    class WebLogAnalysis:
         def __init__(self, file):
             self.file = file
             self.weblog_json = self.make_json()
@@ -89,12 +87,12 @@ class LogAnalysis():
                     print(self.weblog_json[i])
 
 
-class FilesAnalysis():
+class FilesAnalysis:
     def __init__(self, file):
         self.file = file
 
         
-class RegAnalysis():
+class RegAnalysis:
     def __init__(self, file):
         self.reg = file
 
@@ -153,7 +151,7 @@ class RegAnalysis():
             print(json.dumps(reg_obj))
             
             
-class System_temp_analysis():
+class System_temp_analysis:
     def __init__(self, file):
         self._file = file
 
