@@ -1,22 +1,8 @@
-from forlib.fortools import log
-from forlib.fortools import file
-from forlib.fortools import unknown
-
-zip_file = file.file_open('./zip_test.zip')
-zip_info = zip_file.infolist()
-file_info = []
-
-for i in range(zip_info.__len__()):
-    file_info.append(zip_info[i])
-    print(file_info[i])
-
-#evtx_file = log.file_open('C:\Windows\System32\winevt\Logs\Application.evtx')
-#evtx_file.get_event_ID(10)
-=======
-from forlib.fortools import registry
-from forlib.fortools import unknown
-from forlib.fortools import system_temp
-import os, datetime
+from forlib.fortools import Log
+from forlib.fortools import Files
+from forlib.fortools import Unknown
+from forlib.fortools import System_temp
+import os
 
 # user_profile = os.environ['USERPROFILE']
 # systemp_file = system_temp.file_open(user_profile+'\Local Settings\Temp')
@@ -31,14 +17,14 @@ import os, datetime
 #     file_info.append(zip_info[i])
 #     print(file_info[i])
 
-'''
-reg_file = registry.file_open("test/NTUSER.DAT")
-print("==================[+]registry microsoft information==================\n")
-reg_info = reg_file.get_find_key("microsoft")
-print("\n==================[+]registry recent file-----need decode modify==================\n")
-reg_recent = reg_file.recent_docs()
-'''
+evtx_file = Log.file_open('C:\Windows\System32\winevt\Logs\Application.evtx')
+# evtx_file.show_all_record()
+# evtx_file.xml_with_num(104)
+evtx_file.eventid(1000)
+# evtx_file.level(4)
+#evtx_file.favorite.logon()
 
-evtx_file = log.file_open('C:\Windows\System32\winevt\Logs\Application.evtx')
-#evtx_file.show_all_record()
-evtx_file.eventID(15)
+# webLog_file = Log.file_open('.\\u_ex191007.log')#C:\\inetpub\\logs\\LogFiles\\W3SVC1\\u_ex191007.log')
+# webLog_file.show_all_record()
+# #webLog_file.date('2019-10-07')
+# webLog_file.cs_method('GET')
