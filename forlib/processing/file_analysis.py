@@ -14,12 +14,12 @@ class Files_analysis:
     def __init__(self, file):
         self.file = file
 
-    class jpeg_analysis():
+    class jpeg_analysis:
         def __init__(self, file):
             self.file = file
 
         
-class Reg_analysis():
+class Reg_analysis:
     def __init__(self, file):
         self.reg = file
 
