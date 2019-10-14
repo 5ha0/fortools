@@ -4,6 +4,7 @@ class EvtxAnalysis:
     def __init__(self, file):
         self.evtx_file = file
         self.evtx_json = self.make_json()
+        self.favorite = favorite(self.evtx_json)
 
     def show_all_record(self):
         for i in self.evtx_json:
@@ -42,21 +43,29 @@ class EvtxAnalysis:
     def xml_with_num(self, num):
         print(self.evtx_file.records[num].get_xml_string())
 
-    class favorite:
-        def logon(self): #detect valid logon record
-            print('logon')
 
-        def marfind(self): #detect marfind record
-            print('user')
+class favorite:
+    def __init__(self, json):
+        self.evtx_json = json
 
-        def user(self): #detect account info
-            print('user')
+    def logon(self): #detect valid logon record
+        EvtxAnalysis.eventid(self, 4624)
 
-        def authority(self): #detect time of elevation of authority
-            print('user')
+    def remote(self): #detect remote logon record
+        EvtxAnalysis.eventid(self, 540)
+        EvtxAnalysis.eventid(self, 4776)
 
-        def logon_type(self): #filtering based on logon type
-            print('user')
+    def marfind(self): #detect marfind record
+        print('user')
+
+    def user(self): #detect account info
+        print('user')
+
+    def authority(self): #detect time of elevation of authority
+        print('user')
+
+    def logon_type(self): #filtering based on logon type
+        print('user')
 
 
 class WebLogAnalysis:
