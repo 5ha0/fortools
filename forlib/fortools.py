@@ -1,4 +1,3 @@
-from forlib.collection.decompress import *
 import forlib.processing.file_analysis as file_analysis
 import forlib.collection.file_open as file_open
 
@@ -16,8 +15,11 @@ class Unknown:
 
 class Log:
     def file_open(path):
-        if signature_db(path) == 'evtx':#evtx
-            file = file_analysis.Evtx_analysis(file_open.evtx_open(path))
+        if file_open.signature_db(path) == 'evtx':  # evtx
+            file = file_open.evtx_open(path)
+            file = file_analysis.LogAnalysis.EvtxAnalysis(file)
+        else:
+            file = file_analysis.LogAnalysis.WebLogAnalysis(file_open.normal_file_oepn(path))
         return file
 
 
