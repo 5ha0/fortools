@@ -55,7 +55,7 @@ class favorite:
         EvtxAnalysis.eventid(self, 540)
         EvtxAnalysis.eventid(self, 4776)
 
-    def marfind(self): #detect marfind record
+    def malfind(self): #detect malfind record
         print('user')
 
     def user(self): #detect account info
