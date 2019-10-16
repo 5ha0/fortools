@@ -29,7 +29,7 @@ class Registry:
         return file
 
 class Prefetch:
-    def prefetch_open(path):
+    def file_open(path):
         file = file_open.prefetch_open(path)
         return file
 
