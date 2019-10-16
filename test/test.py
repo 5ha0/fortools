@@ -63,7 +63,10 @@ icon_cache_path = r'C:\Users\sjms1\AppData\Local\IconCache.db'
 icon_cache = Icon_cache.file_open(icon_cache_path)
 
 
-
+reg_file = Registry.file_open("test/Users/forensic/NTUSER.DAT")
+result = reg_file.get_userassist()
+for i in range(len(result)):
+    print(result[i])
 
 # evtx_file = Log.file_open('C:\Windows\System32\winevt\Logs\Application.evtx')
 # evtx_file.show_all_record()
