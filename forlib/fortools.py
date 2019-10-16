@@ -29,18 +29,9 @@ class Registry:
         return file
 
 class Prefetch:
-        file = open(path, 'rb')
-        if file.read(3) == b'MAM':
-            file.close()
-            decompressed = decompress1.decompress(path)
-##            basename = os.path.basename(path)
-##            dirname = os.path.dirname(path)
-##            path_name = path.split('\')
-##            path = path_name[-1]
-            file = open(path+, 'wb')
-            file.write(decompressed)
-            print(decompressed)
-         return file
+    def prefetch_open(path):
+        file = file_open.prefetch_open(path)
+        return file
 
 
 '''
