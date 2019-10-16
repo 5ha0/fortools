@@ -23,7 +23,6 @@ class Prefetch:
         if file.read(3) == b'MAM':
             file.close()
             decompressed = decompress1.decompress(path)
-            path = path.split()
             file = open('C:\\Users\\graci\\Desktop\\1\\newpf.pf', 'wb')
             file.write(decompressed)
             print(decompressed)
