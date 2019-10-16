@@ -51,17 +51,21 @@ def normal_file_oepn(path):
 def thumb_open(path):
     return path
 
-'''                                        
+                                       
 def prefetch_open(path):
-    file = open(path, 'rb')
-    if file.read(3) == 'MAM':
-        file.close()
-        decompress = decompress.decomp('path')
-        return decompress
-    if file.read(3)  == 'MAM':
-        file = decompress.decomp(path)
-    return file
-                                  
+        file = open(path, 'rb')
+        if file.read(3) == b'MAM':
+            file.close()
+            decompressed = decompress1.decompress(path)
+##            basename = os.path.basename(path)
+##            dirname = os.path.dirname(path)
+##            path_name = path.split('\')
+##            path = path_name[-1]
+            file = open(++'-1'+, 'wb')
+            file.write(decompressed)
+            print(decompressed)
+        return file
+'''                                  
 def superfetch_open(path):
     file = open(path,'rb')
     if file.read(3)  == 'MAM':
