@@ -25,7 +25,9 @@ class Log:
 
 class Registry:
     def file_open(path):
-        file = file_analysis.RegAnalysis(file_open.reg_open(path))
+        if file_open.signature_db(path) == 'regf':
+            # 현재 NTUSER 함수로만 넘어감 
+            file = file_analysis.RegAnalysis.NTUSER(file_open.reg_open(path))
         return file
 
 class Prefetch:
