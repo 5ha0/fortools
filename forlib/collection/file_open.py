@@ -64,6 +64,18 @@ def prefetch_open(path):
             file = open(++'-1'+, 'wb')
             file.write(decompressed)
             print(decompressed)
+            
+        file.seek(0)
+        version = struct.unpack_from('I', file.read(4))[0]
+            
+        if version != 23 and version != 30:
+            print ('error: not supported version')
+
+        signature = file.read(4)
+        if signature != 'SCCA':
+            print('not prefetch file')
+        
+        print('Success file open')
         return file
 '''                                  
 def superfetch_open(path):
