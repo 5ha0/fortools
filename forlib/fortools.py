@@ -28,14 +28,22 @@ class Registry:
         file = file_analysis.RegAnalysis(file_open.reg_open(path))
         return file
 
-'''
 class Prefetch:
-    def file_open(path):
-        file = binary_open(path)
-        if file.read(3) == 'MAM':
-            file = decompress.decomp(path)
-        return file
+        file = open(path, 'rb')
+        if file.read(3) == b'MAM':
+            file.close()
+            decompressed = decompress1.decompress(path)
+##            basename = os.path.basename(path)
+##            dirname = os.path.dirname(path)
+##            path_name = path.split('\')
+##            path = path_name[-1]
+            file = open(path+, 'wb')
+            file.write(decompressed)
+            print(decompressed)
+         return file
 
+
+'''
 
 class Superfetch:
     def file_open(path):
