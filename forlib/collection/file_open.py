@@ -61,7 +61,7 @@ def prefetch_open(path):
 ##            dirname = os.path.dirname(path)
 ##            path_name = path.split('\')
 ##            path = path_name[-1]
-            file = open(++'-1'+, 'wb')
+            file = open(path, 'wb')
             file.write(decompressed)
             print(decompressed)
             
