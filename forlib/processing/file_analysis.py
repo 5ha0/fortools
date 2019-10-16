@@ -4,7 +4,15 @@ from lxml import etree
 import datetime
 from Registry import Registry
 import os.path, time
-
+from argparse import ArgumentParser
+import binascii
+import ctypes
+from datetime import datetime,timedelta
+import ntpath
+import os
+import struct
+import sys
+import tempfile
 
 class LogAnalysis:
     class EvtxAnalysis:
