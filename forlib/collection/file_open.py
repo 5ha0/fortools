@@ -7,7 +7,7 @@ from PIL import Image
 import forlib.collection.signature as sig
 import forlib.collection.decompress as decompress
 from Registry import Registry
-
+import struct
 
 def signature_db(path):
     file_extension_recycle = path.split('\\')[-1]
@@ -56,7 +56,7 @@ def prefetch_open(path):
         file = open(path, 'rb')
         if file.read(3) == b'MAM':
             file.close()
-            decompressed = decompress1.decompress(path)
+            decompressed = decompress.decompress(path)
 ##            basename = os.path.basename(path)
 ##            dirname = os.path.dirname(path)
 ##            path_name = path.split('\')
