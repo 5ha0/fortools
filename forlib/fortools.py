@@ -1,7 +1,5 @@
-from forlib.collection.file_open import *
-from forlib.processing.file_analysis import *
-from forlib.collection.decompress import *
-from forlib.processing.file_analysis import *
+import forlib.processing.file_analysis as file_analysis
+import forlib.collection.file_open as file_open
 
 
 class Unknown:
@@ -17,14 +15,20 @@ class Unknown:
 
 class Log:
     def file_open(path):
-        if signature_db(path) == 'evtx':#evtx
-            file = Evtx_analysis(evtx_open(path))
+        if file_open.signature_db(path) == 'evtx':#evtx
+            file = file_analysis.EvtxAnalysis(file_open.evtx_open(path))
         return file
 
 
 class Registry:
     def file_open(path):
-        file = Reg_analysis(reg_open(path))
+        if file_open.signature_db(path) == 'regf':
+            file = file_analysis.RegAnalysis.NTUSER(file_open.reg_open(path))
+        return file
+
+class FileSystem:
+    def file_open(path):
+        file = file_analysis.FSAnalysis.DD(file_open.fs_open(path))
         return file
 
 '''
@@ -98,3 +102,8 @@ class Ie:
 class Edge:
     def file_open(path):
         return binary_open(path)
+
+class Prefetch:
+    def file_open(path):
+        file = file_analysis.PrefetchAnalysis(file_open.prefetch_open(path))
+        return file
