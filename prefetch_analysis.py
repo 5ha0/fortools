@@ -23,19 +23,20 @@ class Prefetch:
         if file.read(3) == b'MAM':
             file.close()
             decompressed = decompress1.decompress(path)
-            file = open(path, 'wb')
+            path = path.split()
+            file = open('C:\\Users\\graci\\Desktop\\1\\newpf.pf', 'wb')
             file.write(decompressed)
+            print(decompressed)
 
         file.seek(0)
         version = struct.unpack_from('I', file.read(4))[0]
-        print(version)
             
         if version != 23 and version != 30:
             print ('error: not supported version')
 
-##        signature = file.read(4)
-##        if signature != 'SCCA':
-##            print('not prefetch file')
+        signature = file.read(4)
+        if signature != 'SCCA':
+            print('not prefetch file')
         
         print('Success file open')
         return file
@@ -58,17 +59,17 @@ class Prefetch:
         time = '%016x' %time
         time = int(time,16)/10.
         last_run_time =  datetime(1601, 1, 1) + timedelta(microseconds=time)+timedelta(hours=9)  
-        print("File Last Run Time: " + str(last_run_time) +'UTC+9:00')
+        print("File Last Run Time: " + str(last_run_time) +' UTC+9:00')
 
     def pf_create_time(path):
         time = datetime.fromtimestamp(os.path.getctime(path))
-        print ('file create time: '+str(time) +'UTC+9:00')
+        print ('file create time: '+str(time) +' UTC+9:00')
 
     def pf_write_time(path):
         time = datetime.fromtimestamp(os.path.getmtime(path))
-        print ('file create time: '+ str(time) +'UTC+9:00')
+        print ('file create time: '+ str(time) +' UTC+9:00')
 
-    def pf_count():
+    def pf_num_launch():
         global file
         global version
         if version == 23:
@@ -94,5 +95,9 @@ class Prefetch:
         for i in resource:
             print('NO{}: {}'.format(count,i))
             count += 1
+
+##class favorite:
+##    def time_stamp:
+
 
 
