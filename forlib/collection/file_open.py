@@ -1,7 +1,6 @@
 import pyevtx
 import zipfile
 import os
-import sqlite3
 from os import listdir
 from PIL import Image
 import forlib.collection.signature as sig
