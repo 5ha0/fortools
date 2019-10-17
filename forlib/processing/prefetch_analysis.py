@@ -7,8 +7,6 @@ import os
 import struct
 import sys
 import tempfile
-import decompress
-
 
 
 class Prefetch:
