@@ -76,7 +76,7 @@ class Prefetch:
 class favorite:
     ##def time:
         
-    def loaded_list:
+    def loaded_list():
         self.file.seek(100)
         file_list_offset=struct.unpack_from('I', self.file.read(4))[0]
         file_list_size=struct.unpack_from('I', self.file.read(4))[0]
@@ -102,7 +102,6 @@ class favorite:
             pf_obj = {
                 "Num" : count,
                 "Ref_file" : i
-                "Run_count" : num_launch
             }
             print(json.dumps(pf_obj))
         return resourcce, num_launch
