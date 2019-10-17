@@ -96,9 +96,7 @@ def chrome_open(path):
     format=open_chrome_file.read(15).decode()
 
     if format=="SQLite format 3":
-        conn=sqlite3.connect(path)
-        db_cursor=conn.cursor()
-        return db_cursor
+        return path
     else:
         return open_chrome_file
                                         
@@ -108,9 +106,7 @@ def firefox_open(path):
     format=open_firefox_file.read(15).decode()
 
     if format=="SQLite format 3":
-        conn=sqlite3.connect(path)
-        db_cursor=conn.cursor()
-        return db_cursor
+        return path
     else:
         return open_firefox_file
                                         
