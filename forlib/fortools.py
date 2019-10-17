@@ -32,7 +32,7 @@ class Registry:
 
 class Prefetch:
     def file_open(path):
-        file = file_open.prefetch_open(path)
+        file = file_analysis.Prefetch(file_open.prefetch_open(path))
         return file
 
 
