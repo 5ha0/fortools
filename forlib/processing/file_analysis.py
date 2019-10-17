@@ -124,8 +124,8 @@ class System_temp_analysis:
         print("File Count : %d" %file_count)
         print("File Size : %d" %file_size)
         
-        
 
+"""
 class Prefetch:
 
     def dt_from_win32_ts(timestamp):
@@ -175,4 +175,10 @@ class Prefetch:
         for i in resource:
             print('NO{}: {}'.format(count,i))
             count += 1
+
+"""
+class FsLog:
+    def __init__(self, file):
+        self._file = file
+
 
