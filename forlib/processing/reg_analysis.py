@@ -1,18 +1,19 @@
 from Registry import Registry
 import json
 import codecs
-
+from datetime import datetime
+import time
 class NTAnalysis:
     def __init__(self, file):
         self.reg = file
 
-    def rec(self, key, get_path, find_val):
+    def __rec(self, key, get_path, find_val):
 #        get_path(key, find_val)
         for subkey in key.subkeys():
-            self.rec(subkey, get_path, find_val)
+            self.__rec(subkey, get_path, find_val)
         get_path(key,find_val)
 
-    def get_path(self, key, find_val):
+    def __get_path(self, key, find_val):
         for value in [v.value() for v in key.values()
                         if v.value_type() == Registry.RegSZ
                         or v.value_type() == Registry.RegExpandSZ]:
@@ -24,19 +25,17 @@ class NTAnalysis:
                             print(json.dumps(reg_key_obj))
 
     def find_key(self, keyword):
-        self.rec(self.reg.root(), self.get_path, keyword)
+        self.__rec(self.reg.root(), self.__get_path, keyword)
 
     def get_recent_docs(self):
         recent = self.reg.open("SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs")
         for i, v in enumerate(recent.values()):
-            '''
+ 
             reg_obj  = {
                     "time" : str(recent.timestamp()),
                     "name" : v.name(),
                     "data" : v.value().decode('utf-16').encode('utf-8')}
             print(json.dumps(reg_obj))
-            '''
-            print ('{} > {} : {}'.format(recent.timestamp(), v.name(), v.value().decode('utf-16')))
     
     def get_recent_MRU(self):
         recent = self.reg.open("Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU")
@@ -47,22 +46,44 @@ class NTAnalysis:
                     "data" : v.value().decode('utf-16')}
             print(json.dumps(reg_obj))
     
-    def print_ms(self, recent):
-        ret_obj  = dict()
+    def __print_ms(self, recent):
         ret_list = list()
         for i, v in enumerate(recent.values()):
+            file_name = v.value().split("*")[1]
             reg_obj = {
-                    "time" : str(recent.timestamp()),
-                    "path" : v.value()
+                    "MS time" : str(recent.timestamp()),
+                    "path" : file_name
                     }
-            ret_obj["no."+str(i+1)] = json.dumps(reg_obj)
-        ret_list.append(ret_obj)
+            ret_list.append(reg_obj)
         return ret_list
 
     def get_ms_offic(self):
-        ret_ms = list()
-        recent1 = self.reg.open("Software\\Microsoft\\Office\\11.0\\Excel\\Recent Files")
-        print(self.print_ms(recent1))
+        path  = "Software\\Microsoft\\Office"
+        version = self.reg.open(path)
+        a = list()
+        for items in version.subkeys():
+            a.append(items.name())
+        
+        if a[0] == '11.0':    
+            recent1 = self.reg.open(path + "\\%s\\Excel\\Recent Files" %(a[0]))
+            recent2 = self.reg.open(path + "\\%s\\PowerPoint\\Recent File List" %(a[0]))
+            recent3 = self.reg.open(path + "\\%s\\Word\\Recent File List" %(a[0]))
+
+        if a[0] == '16.0':
+            path2 = path+"\\%s\\Excel\\User MRU"%(a[0])
+            LiveId = self.reg.open(path2)
+            b = list()
+            for items in LiveId.subkeys():
+                b.append(items.name())
+
+            recent1 = self.reg.open(path + "\\%s\\Excel\\User MRU\\%s\\File MRU" %(a[0], b[0]))
+            recent2 = self.reg.open(path + "\\%s\\PowerPoint\\User MRU\\%s\\File MRU" %(a[0], b[0]))
+            recent3 = self.reg.open(path + "\\%s\\Word\\User MRU\\%s\\File MRU" %(a[0], b[0]))
+
+        xls = self.__print_ms(recent1)
+        ppt = self.__print_ms(recent2)
+        word = self.__print_ms(recent3)
+        return xls+ppt+word
         #ret_ms.append(self.print_ms(recent1))
 
     def get_userassist(self):
@@ -70,24 +91,21 @@ class NTAnalysis:
         # F4 : 바로가기 목록
         path = "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\UserAssist"
         user = self.reg.open(path)
-        count = 0
         ret_list = list()
         for items in user.subkeys():
             keys = self.reg.open(path+"\\%s" %(items.name()))
             for userassist_keys in keys.subkeys():
                 for userassist_values in userassist_keys.values():
+                    print(userassist_values.values())
                     file_name = codecs.decode(userassist_values.name(), 'rot_13')
                     reg_obj = {
                         "GUID" : str(items.name()),
                         "file" : file_name
                     }
-                    # count = count+1
-                    # ret_obj = dict()
-                    # ret_obj["no" + str(count)] = reg_obj
                     ret_list.append(reg_obj)
         return ret_list
                
-# SYSTME 임
+
 class SYSAnalysis:
     def __init__(self, file):
         self.reg = file
