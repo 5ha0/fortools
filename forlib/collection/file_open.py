@@ -56,7 +56,7 @@ def prefetch_open(path):
         file = open(path, 'rb')
         if file.read(3) == b'MAM':
             file.close()
-            decompressed = decompress1.decompress(path)
+            decompressed = decompress.decompress(path)
 
             dirname = os.path.dirname(path)
             basename = os.path.basename(path)
