@@ -56,27 +56,33 @@ def prefetch_open(path):
         file = open(path, 'rb')
         if file.read(3) == b'MAM':
             file.close()
-            decompressed = decompress.decompress(path)
-##            basename = os.path.basename(path)
-##            dirname = os.path.dirname(path)
-##            path_name = path.split('\')
-##            path = path_name[-1]
-            file = open(path, 'wb')
-            file.write(decompressed)
-            print(decompressed)
+            decompressed = decompress1.decompress(path)
+
+            dirname = os.path.dirname(path)
+            basename = os.path.basename(path)
+            base = os.path.splitext(basename)
+            basename = base[0]
+            exetension = base[-1]
             
-        file.seek(0)
+            file = open(dirname+'\\'+basename+'-1'+exetension,'wb')
+            file.write(decompressed)
+            file.close()
+            
+        file = open(dirname+'\\'+basename+'-1'+exetension,'rb')
         version = struct.unpack_from('I', file.read(4))[0]
             
         if version != 23 and version != 30:
             print ('error: not supported version')
 
         signature = file.read(4)
-        if signature != 'SCCA':
+        print(signature)
+        if signature != b'SCCA':
             print('not prefetch file')
         
         print('Success file open')
         return file
+    
+    
 '''                                  
 def superfetch_open(path):
     file = open(path,'rb')
