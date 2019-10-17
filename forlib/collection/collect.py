@@ -6,14 +6,23 @@ import sys
 
 
 class FsLogExtractor:
-    def __init__(self, image, volume):
-        self._file = image
-        self._volume = volume
-        self._img = pytsk3.Img_Info(self._volume)
-        self._fs = pytsk3.FS_Info(self._img)
+    def __init__(self, image):
+        self._image = image
+        self._img_handle = pytsk3.Img_Info(self._image)
+        self._partition_table = pytsk3.Volume_Info(self._img_handle)
+        self._fs = pytsk3.FS_Info(self._img_handle)
 
-    # @abstractmethod
-    def extract(self, output_path, file_name, output_file):
+    @property
+    def partition_table(self):
+        return self._partition_table
+
+    @property
+    def fs(self):
+        return self._fs
+
+    def extract(self, output_path, file_name: str, output_file: str):
+        if not os.path.exists(output_path):
+            os.mkdir(output_path)
         file = self._fs.open(file_name)
         with open(os.path.join(output_path, output_file), "wb") as output:
             offset = 0
@@ -49,10 +58,16 @@ class LogfileExtractor(FsLogExtractor):
     def extract(self, output_path=os.path.join(os.curdir, "fslog"), file_name="/$Logfile", output_file="$Logfile"):
         super().extract(output_path, file_name, output_file)
 
+
 def main():
-    image_file = os.path.join("/mnt/hgfs/#DFC2019/ARTIFACT/ART400/", "ART400.RAW")
-    usn = UsnJrnlExtractor(image_file, '\\\\.\\'+str(sys.argv[1]))
-    usn.extract()
+    image_file = os.path.join("/home/heero/Desktop", "ART400.RAW")
+    usn = UsnJrnlExtractor(image_file)
+    for partition in usn.partition_table:
+        print("[+] Type              {}".format(partition.desc))
+        print("\t[-] Number       {}".format(partition.addr))
+        print("\t[-] Start Sector {}".format(partition.start))
+        print("\t[-] sector Count {}".format(partition.len))
+    # usn.extract()
 
 if __name__ == "__main__":
     main()
