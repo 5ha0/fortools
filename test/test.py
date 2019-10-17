@@ -54,6 +54,8 @@ icon_cache_path = r'C:\Users\sjms1\AppData\Local\IconCache.db'
 icon_cache = Icon_cache.file_open(icon_cache_path)
 
 reg_ms = Registry.file_open("test/NTUSER.DAT")
+print("\n========================[+]registry find key========================\n")
+print(reg_file.find_key("microsoft"))
 print("\n==================[+]registry micosoft information==================\n")
 res = reg_file.get_ms_offic()
 for i in range(len(res)):
