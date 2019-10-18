@@ -10,6 +10,7 @@ class LogAnalysis:
     def WebLogAnalysis(file):
         return log.WebLogAnalysis(file)
 
+
 class Files_analysis:
     def __init__(self, file):
         self.file = file
@@ -17,6 +18,11 @@ class Files_analysis:
     class jpeg_analysis:
         def __init__(self, file):
             self.file = file
+            
+            
+class JumplistAnalysis:
+    def jumplist_analysis(file):
+        return jump.JumplistAnalysis(file)
 
         
 class Reg_analysis:
