@@ -17,7 +17,7 @@ class LogAnalysis:
 class FilesAnalysis:
     def jpeg_analysis(file):
         return files.JPEGLogAnalysis(file)
-
+            
         
 class Reg_analysis():
     def __init__(self, file):
