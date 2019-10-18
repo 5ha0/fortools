@@ -131,7 +131,9 @@ class Favorite:
         EvtxAnalysis.eventid(self, 4776)
 
     def malfind(self): #detect malfind record
-        EvtxAnalysis.eventid(self, 4776)
+
+    def user(self): #detect account info
+        print('user')
 
     def authority(self): #detect time of elevation of authority
         print('user')
