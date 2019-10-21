@@ -3,6 +3,7 @@ import pyevtx
 import olefile
 import zipfile
 import sqlite3
+import PyPDF2
 from PIL import Image
 from Registry import Registry
 from os import listdir
@@ -43,6 +44,9 @@ def file_open(path):
     elif extension == 'systemp':
         file = systemp_open(path)
         return file
+    elif extension == 'PDF document':
+        file = pdf_open(path)
+        return files_analysis.PDFAnalysis(file)
     #PNG image data
 
 
@@ -121,6 +125,6 @@ def ole_open(path):
     return file
 
 
-class Log:
-    def newone(self):
-        print('hi')
+def pdf_open(path):
+    file = PyPDF2.PdfFileReader(open(path, 'rb'))
+    return file

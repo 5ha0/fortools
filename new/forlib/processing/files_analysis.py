@@ -1,4 +1,5 @@
 from PIL.ExifTags import TAGS
+import datetime
 
 
 # jpeg data: time, latitude, longitude
@@ -53,9 +54,34 @@ class JPEGAnalysis:
         print(self.jpeg_json)
 
 
+# pdf analysis: author, creator, create Time, modification Time, pdf Version
+class PDFAnalysis:
+    def __init__(self, file):
+        self.file = file
+        self.file_json = self.__make_json()
+
+    def __make_json(self):
+        info = self.file.getDocumentInfo()
+        info_obj = dict()
+        info_obj["author"] = info['/Author']
+        info_obj["creator"] = info['/Creator']
+        time_info = info['/CreationDate'].replace("'", ':', 1)
+        info_obj["creation"] = datetime.datetime.strptime(time_info[2:-1], "%Y%m%d%H%M%S%z").isoformat()
+        time_info = info['/ModDate'].replace("'", ':', 1)
+        info_obj["modification"] = datetime.datetime.strptime(time_info[2:-1], "%Y%m%d%H%M%S%z").isoformat()
+        info_obj["pdf version"] = info['/PDFVersion']
+        return info_obj
+
+    def pdf_info(self):
+        return self.file_json
+
+
 class HWPAnalysis:
     def __init__(self, file):
         self.file = file
 
     def showlist(self):
-        print(self.file.listdir(streams=True, storages=False))
+        name = self.file.listdir(streams=True, storages=False)
+        # f = open('C:\\Users\\Baeha\\Desktop\\newFortools\\data\\header', 'wb')
+        # f.write(self.file.openstream(name[5]).read())
+        # f.close()
