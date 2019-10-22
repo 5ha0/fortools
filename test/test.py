@@ -5,6 +5,7 @@ from forlib.fortools import System_temp
 from forlib.fortools import Registry
 from forlib.fortools import System_temp
 from forlib.fortools import Icon_cache
+from forlib.fortools import FileSystem
 
 zip_file = Files.file_open('./zip_test.zip')
 zip_info = zip_file.infolist()
@@ -67,6 +68,9 @@ result = reg_file.get_userassist()
 for i in range(len(result)):
     print(result[i])
 
+fs_file = FileSystem.file_open("../test/ntfs.dd")
+fs_file.fslog_extract()    
+    
 # evtx_file = Log.file_open('C:\Windows\System32\winevt\Logs\Application.evtx')
 # evtx_file.show_all_record()
 # evtx_file.xml_with_num(104)
