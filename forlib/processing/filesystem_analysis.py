@@ -15,17 +15,17 @@ class DDAnalysis:
             file_w.write(buf)
         print("[+] Success Extract : " + output_name)
 
-    def __UsnJrnl_extract(self, filename):
-        fs = pytsk3.FS_Info(self.file)
-        f  = fs.open(filename)
-        found=False
+#     def __UsnJrnl_extract(self, filename):
+#         fs = pytsk3.FS_Info(self.file)
+#         f  = fs.open(filename)
+#         found=False
 
-        for attr in f:
-            if attr.info.name == '$J':
-                found=True
-                break
-        if not found:
-            print("[-] $J is not found")
+#         for attr in f:
+#             if attr.info.name == '$J':
+#                 found=True
+#                 break
+#         if not found:
+#             print("[-] $J is not found")
 
         with open('$UsnJrnl','wb') as o:
             offset=0
@@ -37,7 +37,7 @@ class DDAnalysis:
     def fslog_extract(self):
         mft_list = self.__mft_log_extract('/$MFT','$MFT')
         log_list = self.__mft_log_extract('/$LogFile', '$LogFile')
-        UsnJrnl = self.__UsnJrnl_extract('/$Extend/$UsnJrnl')
+#         UsnJrnl = self.__UsnJrnl_extract('/$Extend/$UsnJrnl')
 
 
     
