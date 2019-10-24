@@ -1,12 +1,14 @@
 import pyevtx
 import zipfile
 import os
+import sqlite3
 from os import listdir
 from PIL import Image
 import forlib.collection.signature as sig
-import forlib.collection.decompress as decompress
 from Registry import Registry
+import forlib.collection.decompress as decompress
 import struct
+import pytsk3
 
 def signature_db(path):
     file_extension_recycle = path.split('\\')[-1]
@@ -30,6 +32,8 @@ def zip_open(path):
     z = zipfile.ZipFile(file, 'r')
     return z
 
+def fs_open(path):
+    return pytsk3.Img_Info(path)
 
 def jpeg_open(path):
     return Image.open(path)
