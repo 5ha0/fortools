@@ -117,24 +117,18 @@ def normal_file_oepn(path):
 
 def chrome_open(path):
     open_chrome_file = open(path, "rb")
-    format = open_chrome_file.read(15).decode()
-
-    if format == "SQLite format 3":
-        conn = sqlite3.connect(path)
-        db_cursor = conn.cursor()
-        return db_cursor
+    file_format = open_chrome_file.read(15).decode()
+    if file_format == "SQLite format 3":
+        return path
     else:
         return open_chrome_file
 
 
 def firefox_open(path):
     open_firefox_file = open(path, "rb")
-    format = open_firefox_file.read(15).decode()
-
-    if format == "SQLite format 3":
-        conn = sqlite3.connect(path)
-        db_cursor = conn.cursor()
-        return db_cursor
+    file_format = open_firefox_file.read(15).decode()
+    if file_format == "SQLite format 3":
+        return path
     else:
         return open_firefox_file
 
