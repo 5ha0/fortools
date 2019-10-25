@@ -4,7 +4,16 @@ from lxml import etree
 import datetime
 from Registry import Registry
 import os.path, time
-
+from argparse import ArgumentParser
+import binascii
+import ctypes
+from datetime import datetime,timedelta
+import ntpath
+import os
+import struct
+import sys
+import tempfile
+import forlib.processing.reg_analysis as regf
 
 class LogAnalysis:
     class EvtxAnalysis:
@@ -93,62 +102,11 @@ class FilesAnalysis:
 
         
 class RegAnalysis:
-    def __init__(self, file):
-        self.reg = file
+    def NTUSER(file):
+        return regf.NTAnalysis(file)
 
-    def rec(self, key, find_path, find_val):
-        find_path(key, find_val)
-        for subkey in key.subkeys():
-            self.rec(subkey, find_path, find_val)
-
-    def find_path(self, key, find_val):
-        for value in [v.value() for v in key.values()
-                        if v.value_type() == Registry.RegSZ
-                        or v.value_type() == Registry.RegExpandSZ]:
-                        if find_val in value:
-                            reg_key_obj = {
-                                "find_keyword" : find_val,
-                                "key" : key.path()
-                            }
-                            print (print(json.dumps(reg_key_obj)))
-
-    def find_key(self, keyword):
-        self.rec(self.reg.root(), self.find_path, keyword)
-
-    def get_recent_docs(self):
-        recent = self.reg.open("SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs")
-        for i, v in enumerate(recent.values()):
-            reg_obj  = {
-                    "time" : str(recent.timestamp()),
-                    "name" : v.name(),
-                    "data" : v.value().decode('utf-16')}
-            print(json.dumps(reg_obj))
-            #print ('{} > {} : {}'.format(recent.timestamp(), v.name(), v.value().decode('utf-16')))
-    
-    def get_recent_MRU(self):
-        recent = self.reg.open("Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU")
-        for i, v in enumerate(recent.values()):
-            reg_obj  = {
-                    "time" : str(recent.timestamp()),
-                    "name" : v.name(),
-                    "data" : v.value().decode('utf-16')}
-            print(json.dumps(reg_obj))
-    
-    def recent_excel(self):
-        recent = self.reg.open("Software\\Microsoft\\Office\\11.0\\Excel\\Recent Files")
-        for i, v in enumerate(recent.values()):
-            reg_obj  = {
-                    "time" : str(recent.timestamp()),
-                    "path" : v.value()}
-            print(json.dumps(reg_obj))
-            
-    def get_recent_ppt(self):
-        recent = self.reg.open("Software\\Microsoft\\Office\\11.0\\PowerPoint\\Recent File List")
-        for i, v in enumerate(recent.values()):
-            reg_obj  = {
-                    "time" : str(recent.timestamp()),
-                    "path" : v.value()}
-            print(json.dumps(reg_obj))
+    def SYSTEM(file):
+        return regf.SYSAnalysis(file)
             
             
 class System_temp_analysis:
@@ -165,4 +123,6 @@ class System_temp_analysis:
         file_size = files.__sizeof__()
         print("File Count : %d" %file_count)
         print("File Size : %d" %file_size)
+        
+        
 

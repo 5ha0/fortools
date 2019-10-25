@@ -25,17 +25,18 @@ class Log:
 
 class Registry:
     def file_open(path):
-        file = file_analysis.RegAnalysis(file_open.reg_open(path))
+        if file_open.signature_db(path) == 'regf':
+            # 현재 NTUSER 함수로만 넘어감 
+            file = file_analysis.RegAnalysis.NTUSER(file_open.reg_open(path))
         return file
 
-'''
 class Prefetch:
     def file_open(path):
-        file = binary_open(path)
-        if file.read(3) == 'MAM':
-            file = decompress.decomp(path)
+        file = file_analysis.Prefetch(file_open.prefetch_open(path))
         return file
 
+
+'''
 
 class Superfetch:
     def file_open(path):

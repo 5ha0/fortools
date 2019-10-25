@@ -5,6 +5,7 @@ from forlib.fortools import System_temp
 from forlib.fortools import Registry
 from forlib.fortools import System_temp
 from forlib.fortools import Icon_cache
+from forlib.fortools import FileSystem
 
 zip_file = Files.file_open('./zip_test.zip')
 zip_info = zip_file.infolist()
@@ -35,15 +36,6 @@ for i in range(zip_info.__len__()):
 #     file_info.append(zip_info[i])
 #     print(file_info[i])
 
-
-'''
-reg_file = registry.file_open("test/NTUSER.DAT")
-print("==================[+]registry microsoft information==================\n")
-reg_info = reg_file.get_find_key("microsoft")
-print("\n==================[+]registry recent file-----need decode modify==================\n")
-reg_recent = reg_file.recent_docs()
-'''
-
 #evtx_file = Log.file_open('C:\Windows\System32\winevt\Logs\Application.evtx')
 #evtx_file.show_all_record()
 #evtx_file.eventID(6003)
@@ -62,9 +54,23 @@ windows_temp.get_temp(windows_temp_path)
 icon_cache_path = r'C:\Users\sjms1\AppData\Local\IconCache.db'
 icon_cache = Icon_cache.file_open(icon_cache_path)
 
+reg_ms = Registry.file_open("test/NTUSER.DAT")
+print("\n========================[+]registry find key========================\n")
+print(reg_file.find_key("microsoft"))
+print("\n==================[+]registry micosoft information==================\n")
+res = reg_file.get_ms_offic()
+for i in range(len(res)):
+    print(res[i])
+    
+reg_file = Registry.file_open("test/Users/forensic/NTUSER.DAT")
+print("\n==================[+]registry userassist information==================\n")
+result = reg_file.get_userassist()
+for i in range(len(result)):
+    print(result[i])
 
-
-
+fs_file = FileSystem.file_open("../test/ntfs.dd")
+fs_file.fslog_extract()    
+    
 # evtx_file = Log.file_open('C:\Windows\System32\winevt\Logs\Application.evtx')
 # evtx_file.show_all_record()
 # evtx_file.xml_with_num(104)

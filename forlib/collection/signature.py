@@ -37,6 +37,11 @@ signatures = [{
     'file_extension': 'evtx',
     'hex': ['0x45', '0x6c', '0x66', '0x46', '0x69', '0x6c', '0x65', '0x0'],
     'len': 8,
+    'offset': 0},
+    {
+    'file_extension': 'regf',
+    'hex': ['0x72', '0x65', '0x67', '0x66'],
+    'len': 8,
     'offset': 0}
 ]
 
