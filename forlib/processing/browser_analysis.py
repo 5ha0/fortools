@@ -24,7 +24,7 @@ class Chrome:
         urls_open=urls_cursor.execute("SELECT * FROM urls")
         no=0
         for url in urls_open:
-            no+=1
+            no += 1
             mkdict=dict()
             mkdict["type"]="url"
             mkdict["browser"]="chrome"
@@ -48,7 +48,7 @@ class Chrome:
             mkdict["type"] = "cookies"
             mkdict["browser"] = "chrome"
             for i in range(0, len(col_name)):
-                if col_name[i][0]=="encrypted_value":
+                if col_name[i][0] == "encrypted_value":
                     mkdict[col_name[i][0]] = win32crypt.CryptUnprotectData(cookie[i], None, None, None, 0)[1].decode()
                 else: mkdict[col_name[i][0]] = cookie[i]
             mkdictno = dict()
@@ -108,18 +108,21 @@ class Chrome:
         downloads_open = downloads_cursor.execute("SELECT downloads.*, downloads_url_chains.* FROM downloads, downloads_url_chains WHERE downloads.id=downloads_url_chains.id")
         no = 1
         for download in downloads_open:
-            mkdict = dict()
-            mkdict["type"] = "downloads"
-            mkdict["browser"] = "chrome"
-            for i in range(0, len(download)):
-                if i>=len(col_name_downloads):
-                    mkdict[col_name_chain[i-len(col_name_downloads)][0]]=download[i]
-                else:
-                    mkdict[col_name_downloads[i][0]] = download[i]
-            mkdictno = dict()
-            mkdictno["no" + str(no)] = mkdict
-            downloads.append(mkdictno)
-            no += 1
+            if download[len(download)-len(col_name_chain)+1]==0:
+                if no !=1:
+                    downloads[no-2]["url_chain"]=temp
+                mkdict = dict()
+                mkdict["type"] = "downloads"
+                mkdict["browser"] = "chrome"
+                for i in range(0, len(col_name_downloads)):
+                        mkdict[col_name_downloads[i][0]] = download[i]
+                mkdictno = dict()
+                mkdictno["no" + str(no)] = mkdict
+                downloads.append(mkdictno)
+                no += 1
+                temp=dict()
+            temp[download[len(download)-len(col_name_chain)+1]] = download[len(download)-len(col_name_chain)+2]
+        downloads[no - 2]["url_chain"] = temp
         print("downloads")
         print(downloads)
 
@@ -149,14 +152,14 @@ class Chrome:
 
 class Ie:
     def __init__(self, file):
-        self.ie_file = file
+        self.file = file
 
 
 class Firefox:
     def __init__(self, file):
-        self.ie_file = file
+        self.file = file
 
 
 class Edge:
     def __init__(self, file):
-        self.ie_file = file
+        self.file = file
