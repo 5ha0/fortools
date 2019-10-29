@@ -1,3 +1,12 @@
+from forlib.openAPI import *
+from forlib.outcome.visualize import *
+from forlib.openAPI import LinuxLog
+from forlib.processing import log_analysis
+from forlib.processing import files_analysis
+from forlib.processing import jump_analysis
+from forlib.processing import reg_analysis
+
+
 class EvtxLog:
     def file_open(path):
         extension = sig_check(path)
@@ -32,7 +41,7 @@ class WebLog:
         class ErrLog:
             def file_open(path):
                 file = normal_file_oepn(path)
-                return log_analysis.WebAnalysis.ApacheLog.Error(file)
+                return log_analysis.WebLog.ApacheLog.Error(file)
 
     # class IIS:
 
