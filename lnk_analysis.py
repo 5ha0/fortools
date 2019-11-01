@@ -182,7 +182,8 @@ def show_command():
         print ('SW_SHOWMINNOACTIVE') 
     else:
         print ('SW_SHOWNORMAL(default)')
-#############################################33333
+        
+############################################
 
 def linkinfo_off():
     global file
@@ -311,7 +312,8 @@ def localbase_path():
         locbasepath.append(i)
     print('localbasepath: ' + locbasepath[0])
 
-
+############################################
+    
 def extradata():
     global file
     global start_off
@@ -338,8 +340,8 @@ def extradata():
         string_size  = string_size + b
         string_size = struct.unpack('<i', string_size)[0]
         string_off = string_size + string_off + 2
-        relative_path = str(file.read(string_size))
-        relative_path = relative_path.replace('\x00','').encode('utf-8', 'ignore').decode('utf-8')
+##        relative_path = str(file.read(string_size))
+##        relative_path = relative_path.replace('\x00','').encode('utf-8', 'ignore').decode('utf-8')
     elif 'HasWorkingDir' in lnk_flag:
         file.seek(string_off)
         string_size = file.read(2)
