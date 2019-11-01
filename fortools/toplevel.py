@@ -6,7 +6,8 @@ from forlib.processing import files_analysis
 from forlib.processing import jump_analysis
 from forlib.processing import thumbnail_analysis
 from forlib.processing import reg_analysis
-
+from forlib.processing import lnk_analysis
+from forlib.processing import recycle_analysis
 
 class EvtxLog:
     def file_open(path):
@@ -74,10 +75,18 @@ class LNK:
     def file_open(path):
         extension = sig_check(path)
         if extension == 'MS Windows shortcut':
-            file = binary_open(path)
-            return lnk_analysis.LNKAnalysis(file)
+            file = file_open(path)
+            return lnk_analysis.LnkAnalysis(file)
 
 
+class Recycle:
+    def file_open(path):
+        extension = sig_check(path)
+        if extension == 'recycle':
+            file = file_open(path)
+            return Recycle_analysis.RecycleAnalysis(file)
+        
+        
 class Registry:
     def file_open(path):
         extension = sig_check(path)
