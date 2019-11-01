@@ -26,7 +26,7 @@ class IconcacheAnalysis:
         self.file.seek(0)
         self.size = struct.unpack_from('<I', self.file.read(4))[0]
         
-        self.file.seek(size)
+        self.file.seek(self.size)
         path_num = struct.unpack_from('<i', self.file.read(4))[0]
         
         self.signature = self.file.read(2)
@@ -54,7 +54,7 @@ class IconcacheAnalysis:
 
 
     def section_two():
-        self.file.seek(size)
+        self.file.seek(self.size)
         path_length = self.file.read(2)
         b = (b'\x00\x00')
         path_length  = path_length + b
@@ -77,7 +77,7 @@ class IconcacheAnalysis:
         self.size = self.size + path_length * path_num + 14
     
     def section_three():
-        self.file.seek(size)
+        self.file.seek(self.size)
         path_length = self.file.read(2)
         b = (b'\x00\x00')
         path_length  = path_length + b
