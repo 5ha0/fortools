@@ -13,7 +13,7 @@ class Lnk:
     global info_flag
     global extra_off
     global extra_data
-    
+    global linkinfo_flag
 def file_open(path):
     global file
     file = open(path,'rb')
@@ -192,11 +192,15 @@ def linkinfo_off():
     global lnk_flag
     global locbase_path_uni
     global info_flag
+    global linkinfo_flag
     
     link_flags()
     
     if 'HasLinkInfo' not in lnk_flag:
-        return print('this file does not have link info')
+        linkinfo_flag = None
+    else:
+        linkinfo_flag = 'True'
+        
     if 'HasLinkTargetIDList' not in lnk_flag:
         start_off = 76
     else:    
@@ -209,7 +213,7 @@ def linkinfo_off():
 
     file.seek(start_off)
     info_size = struct.unpack('<i', file.read(4))[0]
-    info_header_size = struct.unpack('<i', file.read(4))[0]
+    info_header_size = file.read(4)
     if info_header_size == '\x00\x00\x00\x1C':
         info_option = 'False'
     else:
@@ -237,16 +241,19 @@ def volume():
     global file
     global info_flag
     global start_off
+    global linkinfo_flag
                           
     linkinfo_off()
-    print(info_flag)                      
-    if info_flag != 'A':
+    
+    if linkinfo_flag != 'True':
+        print('this file does not have link info')
+        return 0
+    elif info_flag != 'A':
         return print('do not have volumeid')
                           
     vol_off = start_off + 12
     file.seek(vol_off)
-    volumeid_off = struct.unpack('<l', file.read(4))[0]
-
+    volumeid_off = struct.unpack('<i', file.read(4))[0]
     volumeid_off = volumeid_off + start_off
     file.seek(volumeid_off)
 
@@ -279,10 +286,13 @@ def localbase_path():
     global info_flag
     global start_off
     global locbase_path_uni
-    
+    global linkinfo_flag
     linkinfo_off()
-                          
-    if info_flag != 'A':
+
+    if linkinfo_flag != 'True':
+        print('this file does not have link info')
+        return 0
+    elif info_flag != 'A':
         return print('do not have locabasepath, locabasepathunicode')
     elif locbase_path_uni != 'True':
         print('locbasepathoffsetunicode : 0\n locbasepathunicode : do not know')
