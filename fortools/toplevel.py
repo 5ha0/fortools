@@ -9,6 +9,7 @@ from forlib.processing import reg_analysis
 from forlib.processing import lnk_analysis
 from forlib.processing import recycle_analysis
 from forlib.processing import iconcache_analysis
+from forlib.processing import prefetch_analysis
 
 class EvtxLog:
     def file_open(path):
@@ -95,6 +96,14 @@ class Iconcache:
             file = file_open(path)
             return iconcache_analysis.IconcacheAnalysis(file)
         
+
+class Prefetch:
+    def file_open(path):
+        extension = sig_check(path)
+        if extension == 'SCCA:
+            file = file_open(path)
+            return prefetch_analysis.PrefetchAnalysis(file)
+        
         
 class Registry:
     def file_open(path):
@@ -119,5 +128,7 @@ class Thumbnail:
         file = cache_open(path)
         return thumbnail_analysis.Thumbnail_analysis_windows(file)
 
+    
+    
 
 
