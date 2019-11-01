@@ -3,7 +3,7 @@ import struct
 from bitstring import BitArray
 import binascii
 
-class Lnk:
+class LnkAnalysis:
 
     def __init__(self,file):
         self.file = file
