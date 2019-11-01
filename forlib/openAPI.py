@@ -15,6 +15,7 @@ from forlib.processing import reg_analysis
 from forlib.processing import thumbnail_analysis
 from forlib.processing import lnk_analysis
 from forlib.processing import recycle_analysis
+from forlib.processing import iconcache_analysis
 
 def sig_check(path):
     extension = magic.from_file(path).split(',')[0]
@@ -71,6 +72,9 @@ def file_open(path):
     elif extension == 'recycle':
         file = recycle_open(path)
         return recycle_analysis.RecycleAnalysis(file)
+    elif extension == 'iconcache':
+        file = iconcache_open(path)
+        return iconcache_analysis.IconcacheAnalysis(file)
 
     # elif extension == 'PE32+ executable (console) x86-64':
     #     file =
@@ -173,3 +177,8 @@ def recycle_open(path):
     elif '$I' in file_extension_recycle:
         recycle_file = open(path, 'rb')
         return recycle_file
+
+    
+def iconcache_open(path):
+    iconcache_file = open(path, 'rb')
+    return iconcache_file
