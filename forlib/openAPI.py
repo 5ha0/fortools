@@ -64,6 +64,9 @@ def file_open(path):
     elif extension == 'Cache':
         file = cache_open(path)
         return thumbnail_analysis.Thumbnail_analysis_windows(file)
+    elif extension == 'lnk':
+        file = lnk_open(path)
+        return lnk_analysis.(file)
     # elif extension == 'PE32+ executable (console) x86-64':
     #     file =
     # PNG image data
@@ -149,3 +152,7 @@ def pdf_open(path):
 def cache_open(path):
     cache_file = open(path, "rb")
     return cache_file
+
+def lnk_open(path):
+    lnk_file = open(path, 'rb')
+    return lnk_file
