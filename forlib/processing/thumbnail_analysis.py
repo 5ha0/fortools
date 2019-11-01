@@ -94,7 +94,7 @@ class Thumbnail_analysis_windows:
         num = 0
 
         while True:
-  
+
             try:
                 file.seek(start_offset)
                 entry.clear()

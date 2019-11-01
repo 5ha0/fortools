@@ -75,7 +75,7 @@ class LNK:
         extension = sig_check(path)
         if extension == 'MS Windows shortcut':
             file = binary_open(path)
-            #return lnk_analysis.LNKAnalysis(file)
+            return lnk_analysis.LNKAnalysis(file)
 
 
 class Registry:
@@ -99,3 +99,6 @@ class Thumbnail:
         # if extension == 'Cache':
         file = cache_open(path)
         return thumbnail_analysis.Thumbnail_analysis_windows(file)
+
+
+
