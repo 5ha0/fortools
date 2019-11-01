@@ -8,6 +8,7 @@ from forlib.processing import thumbnail_analysis
 from forlib.processing import reg_analysis
 from forlib.processing import lnk_analysis
 from forlib.processing import recycle_analysis
+from forlib.processing import iconcache_analysis
 
 class EvtxLog:
     def file_open(path):
@@ -84,7 +85,15 @@ class Recycle:
         extension = sig_check(path)
         if extension == 'recycle':
             file = file_open(path)
-            return Recycle_analysis.RecycleAnalysis(file)
+            return recycle_analysis.RecycleAnalysis(file)
+     
+    
+class Iconcache:
+    def file_open(path):
+        extension = sig_check(path)
+        if extension == 'iconcache':
+            file = file_open(path)
+            return iconcache_analysis.IconcacheAnalysis(file)
         
         
 class Registry:
@@ -102,6 +111,7 @@ class JumpList:
             file = ole_open(path)
             return jump_analysis.JumplistAnalysis(file)
 
+        
 class Thumbnail:
     def file_open(path):
         # extension = sig_check(path)
