@@ -109,24 +109,24 @@ class LnkAnalysis:
     def link_flags():
         self.file
         
-        file.seek(20)
-        flags = struct.unpack('<i', file.read(4))
+        self.file.seek(20)
+        flags = struct.unpack('<i', self.file.read(4))
         file_flags = BitArray(hex(flags[0]))
         link_flag(file_flags.bin)
     
     def file_attribute():
         self.file
         
-        file.seek(24)
-        attributes = struct.unpack('<i', file.read(4))
+        self.file.seek(24)
+        attributes = struct.unpack('<i', self.file.read(4))
         flag_atributes = BitArray(hex(attributes[0]))
         lnk_attrib(flag_atributes.bin)
 
     def creation_time():
         self.file
         
-        file.seek(28)
-        c_time = file.read(8)
+        self.file.seek(28)
+        c_time = self.file.read(8)
         c_time = struct.unpack('<q', c_time)
         c_time = convert_time(c_time)
         print('Creation Time: ' + c_time)
@@ -134,8 +134,8 @@ class LnkAnalysis:
     def access_time():
         self.file
     
-        file.seek(36)
-        a_time = file.read(8)
+        self.file.seek(36)
+        a_time = self.file.read(8)
         a_time = struct.unpack_from('<q', a_time)[0]
         a_time = convert_time(a_time)
         print('Access Time: ' + a_time)
@@ -143,8 +143,8 @@ class LnkAnalysis:
     def write_time():
         self.file
         
-        file.seek(44)
-        w_time = file.read(8)
+        self.file.seek(44)
+        w_time = self.file.read(8)
         w_time = struct.unpack('<q', w_time)[0]
         w_time = convert_time(w_time)
         print('Write Time: ' + w_time)
@@ -152,23 +152,23 @@ class LnkAnalysis:
     def file_size():
         self.file
         
-        file.seek(52)
-        file_size = struct.unpack('<l', file.read(4))[0]
+        self.file.seek(52)
+        file_size = struct.unpack('<l', self.file.read(4))[0]
         print('Targrt File Size : '+str(file_size)+'bytes')
 
     def iconindex():
         self.file
         
-        file.seek(56)
-        iconindex = struct.unpack('<l', file.read(4))[0]
+        self.file.seek(56)
+        iconindex = struct.unpack('<l', self.file.read(4))[0]
         print('Iconindex : '+ str(iconindex))
 
 
     def show_command():
         self.file
         
-        file.seek(60)
-        showcomand = struct.unpack('<i', file.read(4))[0]
+        self.file.seek(60)
+        showcomand = struct.unpack('<i', self.file.read(4))[0]
         showcomand = hex(showcomand)
         if showcomand == hex(0x1):
             print ('SW_SHOWNORMAL')
@@ -182,54 +182,54 @@ class LnkAnalysis:
 ############################################
 
     def linkinfo_off():
-        slef.file
-        slef.start_off
-        slef.info_size
-        slef.lnk_flag
-        slef.locbase_path_uni
-        slef.info_flag
-        slef.linkinfo_flag
+        self.file
+        self.start_off
+        self.info_size
+        self.lnk_flag
+        self.locbase_path_uni
+        self.info_flag
+        self.linkinfo_flag
     
         link_flags()
     
-        if 'HasLinkInfo' not in slef.lnk_flag:
-            slef.linkinfo_flag = None
+        if 'HasLinkInfo' not in self.lnk_flag:
+            self.linkinfo_flag = None
         else:
-            slef.linkinfo_flag = 'True'
+            self.linkinfo_flag = 'True'
         
-        if 'HasLinkTargetIDList' not in slef.lnk_flag:
-            slef.start_off = 76
+        if 'HasLinkTargetIDList' not in self.lnk_flag:
+            self.start_off = 76
         else:    
             self.file.seek(76)
             items_hex = self.file.read(2)
             b = (b'\x00\x00')
             items_hex  = items_hex + b
             idlistsize = struct.unpack('<i', items_hex)[0]
-            slef.start_off = 78+idlistsize
+            self.start_off = 78+idlistsize
 
-        self.file.seek(start_off)
-        slef.info_size = struct.unpack('<i', self.file.read(4))[0]
+        self.file.seek(self.start_off)
+        self.info_size = struct.unpack('<i', self.file.read(4))[0]
         info_header_size = self.file.read(4)
         if info_header_size == '\x00\x00\x00\x1C':
             info_option = 'False'
         else:
             info_option = 'True'              
-        slef.info_flag = file.read(4)
-        if slef.info_flag == '\x00\x00\x00\x01':
-            slef.info_flag = 'A'
+        self.info_flag = self.file.read(4)
+        if self.info_flag == '\x00\x00\x00\x01':
+            self.info_flag = 'A'
             volume = 'True'
             locbase_path = 'True'
             net = None
             if info_option == 'True':
-                slef.locbase_path_uni ='True'
+                self.locbase_path_uni ='True'
             else:
-                slef.locbase_path_uni = None 
+                self.locbase_path_uni = None 
         else:
-            slef.info_flag = 'B'
+            self.info_flag = 'B'
             volume = None
             locbase_path = None
             net = 'True'
-            slef.locbase_path_uni = None
+            self.locbase_path_uni = None
     
     def volume():
         self.file
@@ -308,7 +308,7 @@ class LnkAnalysis:
         locbasepath_off = struct.unpack('<l', self.file.read(4))[0]
         locbasepath_off = locbasepath_off + self.start_off
                           
-        file.seek(locbasepath_off)
+        self.file.seek(locbasepath_off)
         locbasepath = self.file.read(100)
         locbasepath = locbasepath.decode('utf-8', 'ignore')
         locbasepath = []
@@ -337,7 +337,7 @@ class LnkAnalysis:
             string_size  = string_size + b
             string_size = struct.unpack('<i', string_size)[0]
             string_off = string_size + string_off + 2
-        elif 'HasRelativePath' self.in lnk_flag:
+        elif 'HasRelativePath' in self.lnk_flag:
             self.file.seek(string_off)
             string_size = self.file.read(2)
             b = (b'\x00\x00')
@@ -347,7 +347,7 @@ class LnkAnalysis:
 ##        relative_path = str(file.read(string_size))
 ##        relative_path = relative_path.replace('\x00','').encode('utf-8', 'ignore').decode('utf-8')
         elif 'HasWorkingDir' in self.lnk_flag:
-            file.seek(string_off)
+            self.file.seek(string_off)
             string_size = self.file.read(2)
             b = (b'\x00\x00')
             string_size  = string_size + b
