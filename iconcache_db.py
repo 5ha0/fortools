@@ -1,4 +1,3 @@
-##This only analyzes the Iconcache.db
 import struct
 import json
 
@@ -10,8 +9,6 @@ def file_open(path):
     global size
     file = open(path,'rb')
     size = struct.unpack_from('I',file.read(4))[0]
-    print(str(size))
-##    for i in file
     
 def file_version():
     global file
@@ -54,7 +51,7 @@ def section_one():
     i = 0
     while i != path_num:
         filepaths = file.read(read_num)
-        filepaths = filepaths.decode('utf-16')
+        filepaths = filepaths.decode('utf16', 'ignore')
         filepaths = filepaths.replace('\x00','')
         print(str(filepaths)+'\n')
         i += 1
@@ -81,7 +78,7 @@ def section_two():
     i = 0
     while i != path_num:
         filepaths = file.read(read_num)
-        filepaths = filepaths.decode('utf-16')
+        filepaths = filepaths.decode('utf-16', 'ignore')
         filepaths = filepaths.replace('\x00','')
         print(str(filepaths)+'\n')
         i += 1
@@ -107,7 +104,7 @@ def section_three():
     i = 0
     while i != path_num:
         filepaths = file.read(read_num)
-        filepaths = filepaths.decode('utf-16')
+        filepaths = filepaths.decode('utf-16', 'ignore')
         filepaths = filepaths.replace('\x00','')
         print(str(filepaths)+'\n')
         i += 1
