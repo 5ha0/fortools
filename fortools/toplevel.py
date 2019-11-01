@@ -95,5 +95,9 @@ class JumpList:
 
 class Thumbnail:
     def file_open(path):
-        file = file_open(path)
-        return thumbnail_analysis(file)
+        extension = sig_check(path)
+        if extension == 'Cache':
+            file = cache_open(path)
+            thumbnail = thumbnail_analysis.Thumbnail_analysis_windows(file)
+            thumbnail.get_data(path, file)
+            return thumbnail

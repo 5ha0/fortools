@@ -1,6 +1,6 @@
 import os
 import sys
-from internal import check
+from forlib.processing.internal import check
 
 class Thumbnail_analysis:
     def __init__(self):
@@ -23,7 +23,7 @@ class Thumbnail_analysis_windows:
                                "Windows_8_1": 0x1F,
                                "Windows_10": 0x20}
 
-    def get_data(self, path):
+    def get_data(self, path, file):
         #file = open(path, "rb")
 
         db_header = {"signature": None,

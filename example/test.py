@@ -5,8 +5,8 @@ from fortools import *
 # file.get_info()
 # file = file_open('C:\\Windows\\System32\\winevt\\Logs\\Security.evtx')
 # file.show_all_record()
-log_file = EvtxLog.file_open('C:\\Windows\\System32\\winevt\\Logs\\Security.evtx')
-log_file.show_all_record()
+#log_file = EvtxLog.file_open('C:\\Windows\\System32\\winevt\\Logs\\Security.evtx')
+#log_file.show_all_record()
 # log_file.
 # log_file = file_open('C:\\Windows\\System32\\winevt\\Logs\\Security.evtx')
 
@@ -58,6 +58,8 @@ file.showlist()
 # file = file_open('.\\data\\result.evtx')
 # file.get_string()
 '''
-path = r'C:\Users\sjms1\AppData\Local\Microsoft\Windows\Explorer\thumbacache_96.db'
-file = file_open(path)
-file.get_data()
+path = 'C:\\Users\\sjms1\\AppData\\Local\\Microsoft\\Windows\\Explorer\\thumbcache_96.db'
+thumbnail = file_open(path)
+thumbnail.get_data()
+
+

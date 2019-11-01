@@ -61,7 +61,7 @@ def file_open(path):
     elif extension == 'UTF-8 Unicode text':
         file = codecs.open(path, 'r', encoding='utf8')
         return log_analysis.TextLogAnalysis(file)
-    elif extension == 'cache':
+    elif extension == 'Cache':
         file = cache_open(path)
         return thumbnail_analysis.Thumbnail_analysis_windows(file)
     # elif extension == 'PE32+ executable (console) x86-64':
