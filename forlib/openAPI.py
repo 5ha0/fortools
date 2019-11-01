@@ -64,7 +64,7 @@ def file_open(path):
     elif extension == 'Cache':
         file = cache_open(path)
         return thumbnail_analysis.Thumbnail_analysis_windows(file)
-    elif extension == 'lnk':
+    elif extension == 'MS Windows shortcut':
         file = lnk_open(path)
         return lnk_analysis.LnkAnalysis(file)
     # elif extension == 'PE32+ executable (console) x86-64':
