@@ -14,11 +14,13 @@ class Prefetch:
     def __init__(self,file):
         self.file = file
  
-    def pf_size(self):
-        self.file.seek(12)
-        size = struct.unpack_from('I', self.file.read(4))[0]
-        print(size)
-        return size
+    def pf_file_name(self):
+        self.file.seek(16)
+        file_name = self.file.read(58)
+        file_name = file_name.decode('utf16', 'ignore')
+        file_name = file_name.replace('\x00','')
+        print('Executable File Name: ' + file_name)
+        return file_name
         
     def pf_last_run_time(self):
         self.file.seek(128)
@@ -40,6 +42,9 @@ class Prefetch:
         return time
     
     def pf_num_launch(self):
+        self.file.seek(0)
+        version = struct.unpack_from('I', self.file.read(4))[0]
+        
         if version == 23:
             self.file.seek(152)
             print('File Run Count:'+ str(struct.unpack_from('I', self.file.read(4))[0]))
