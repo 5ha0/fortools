@@ -9,7 +9,7 @@ import sys
 import tempfile
 
 
-class Prefetch:
+class PrefetchAnalysis:
 
     def __init__(self,file):
         self.file = file
