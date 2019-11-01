@@ -58,3 +58,6 @@ file.showlist()
 # file = file_open('.\\data\\result.evtx')
 # file.get_string()
 '''
+path = r'C:\Users\sjms1\AppData\Local\Microsoft\Windows\Explorer\thumbacache_96.db'
+file = file_open(path)
+file.get_data()

@@ -4,6 +4,7 @@ from forlib.openAPI import LinuxLog
 from forlib.processing import log_analysis
 from forlib.processing import files_analysis
 from forlib.processing import jump_analysis
+from forlib.processing import thumbnail_analysis
 from forlib.processing import reg_analysis
 
 
@@ -91,3 +92,8 @@ class JumpList:
         if extension == 'Composite Document File V2 Document':
             file = ole_open(path)
             return jump_analysis.JumplistAnalysis(file)
+
+class Thumbnail:
+    def file_open(path):
+        file = file_open(path)
+        return thumbnail_analysis(file)

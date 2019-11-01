@@ -12,6 +12,7 @@ from forlib.processing import log_analysis
 from forlib.processing import jump_analysis
 from forlib.processing import files_analysis
 from forlib.processing import reg_analysis
+from forlib.processing import thumbnail_analysis
 
 
 def sig_check(path):
@@ -60,6 +61,9 @@ def file_open(path):
     elif extension == 'UTF-8 Unicode text':
         file = codecs.open(path, 'r', encoding='utf8')
         return log_analysis.TextLogAnalysis(file)
+    elif extension == 'cache':
+        file = cache_open(path)
+        return thumbnail_analysis.Thumbnail_analysis_windows(file)
     # elif extension == 'PE32+ executable (console) x86-64':
     #     file =
     # PNG image data
@@ -141,3 +145,7 @@ def ole_open(path):
 def pdf_open(path):
     file = PyPDF2.PdfFileReader(open(path, 'rb'))
     return file
+
+def cache_open(path):
+    cache_file = open(path, "rb")
+    return cache_file

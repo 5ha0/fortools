@@ -24,7 +24,7 @@ class Thumbnail_analysis_windows:
                                "Windows_10": 0x20}
 
     def get_data(self, path):
-        file = open(path, "rb")
+        #file = open(path, "rb")
 
         db_header = {"signature": None,
                      "version": None,
