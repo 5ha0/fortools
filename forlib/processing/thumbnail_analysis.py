@@ -15,7 +15,7 @@ class Thumbnail_analysis:
             return False
 
 class Thumbnail_analysis_windows:
-    def __init__(self):
+    def __init__(self, file):
         self.window_version = { "Windows_7": 0x15,
                                "Windows_8": 0x1A,
                                "Windows_8v2": 0x1C,
@@ -23,8 +23,8 @@ class Thumbnail_analysis_windows:
                                "Windows_8_1": 0x1F,
                                "Windows_10": 0x20}
 
-    def get_data(self, path, file):
-        #file = open(path, "rb")
+    def get_data(self, path):
+        file = open(path, "rb")
 
         db_header = {"signature": None,
                      "version": None,
@@ -92,9 +92,9 @@ class Thumbnail_analysis_windows:
             start_offset = 24
 
         num = 0
-        cache_data = {}
 
         while True:
+  
             try:
                 file.seek(start_offset)
                 entry.clear()
@@ -170,7 +170,6 @@ class Thumbnail_analysis_windows:
                           "entry_hash": None,
                           "size": None,
                           "dimension": None,
-                          "data": None,
                           "header_checksum": None,
                           "data_checksum": None,
                           "system": None,
@@ -195,6 +194,12 @@ class Thumbnail_analysis_windows:
             print({num:cache_file})
 
         file.close()
+
+
+
+
+
+
 
 
 

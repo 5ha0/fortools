@@ -66,7 +66,7 @@ def file_open(path):
         return thumbnail_analysis.Thumbnail_analysis_windows(file)
     elif extension == 'lnk':
         file = lnk_open(path)
-        return lnk_analysis.(file)
+        #return lnk_analysis.(file)
     # elif extension == 'PE32+ executable (console) x86-64':
     #     file =
     # PNG image data

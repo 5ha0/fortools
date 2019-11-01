@@ -58,8 +58,11 @@ file.showlist()
 # file = file_open('.\\data\\result.evtx')
 # file.get_string()
 '''
-path = 'C:\\Users\\sjms1\\AppData\\Local\\Microsoft\\Windows\\Explorer\\thumbcache_96.db'
-thumbnail = file_open(path)
-thumbnail.get_data()
+path = r'C:\Users\sjms1\AppData\Local\Microsoft\Windows\Explorer\thumbcache_16.db'
+thumbnail = Thumbnail.file_open(path)
+print(thumbnail)
+thumbnail.get_data(path)
+
+
 
 
