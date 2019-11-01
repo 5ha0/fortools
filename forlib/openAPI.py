@@ -154,13 +154,16 @@ def pdf_open(path):
     file = PyPDF2.PdfFileReader(open(path, 'rb'))
     return file
 
+
 def cache_open(path):
     cache_file = open(path, "rb")
     return cache_file
 
+
 def lnk_open(path):
     lnk_file = open(path, 'rb')
     return lnk_file
+
 
 def recycle_open(path):
     recycle_file_extension = path.split('\\')[-1]
