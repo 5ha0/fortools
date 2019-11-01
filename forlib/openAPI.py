@@ -13,7 +13,8 @@ from forlib.processing import jump_analysis
 from forlib.processing import files_analysis
 from forlib.processing import reg_analysis
 from forlib.processing import thumbnail_analysis
-
+from forlib.processing import lnk_analysis
+from forlib.processing import recycle_analysis
 
 def sig_check(path):
     extension = magic.from_file(path).split(',')[0]
@@ -67,6 +68,9 @@ def file_open(path):
     elif extension == 'MS Windows shortcut':
         file = lnk_open(path)
         return lnk_analysis.LnkAnalysis(file)
+    elif extension == 'recycle':
+        file = recycle_open(path)
+        return recycle_analysis.RecycleAnalysis(file)
 
     # elif extension == 'PE32+ executable (console) x86-64':
     #     file =
@@ -157,3 +161,12 @@ def cache_open(path):
 def lnk_open(path):
     lnk_file = open(path, 'rb')
     return lnk_file
+
+def recycle_open(path):
+    recycle_file_extension = path.split('\\')[-1]
+    if '$R' in recycle_file_extension:
+        recycle_file = file_open(path)
+        return recycle_file
+    elif '$I' in file_extension_recycle:
+        recycle_file = open(path, 'rb')
+        return recycle_file
