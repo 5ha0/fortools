@@ -275,136 +275,140 @@ class Lnk:
         print('Volumelable: ' + volumelable)
 
     def localbase_path():
-        global file
-        global info_flag
-        global start_off
-        global locbase_path_uni
-        global linkinfo_flag
+        self.file
+        self.info_flag
+        self.start_off
+        self.locbase_path_uni
+        self.linkinfo_flag
     
         linkinfo_off()
 
-        if linkinfo_flag != 'True':
+        if self.linkinfo_flag != 'True':
             print('this file does not have link info')
             return 0
-        elif info_flag != 'A':
+        elif self.info_flag != 'A':
             return print('do not have locabasepath, locabasepathunicode')
-        elif locbase_path_uni != 'True':
+        elif self.locbase_path_uni != 'True':
             print('locbasepathoffsetunicode : 0\n locbasepathunicode : do not know')
         else:
-            locbase_path_off_uni = start_off + 28
-        file.seek(locbase_path_off_uni)
-        locbase_path_off_uni = struct.unpack('<l', file.read(4))[0]
-        locbase_path_uni = locbase_path_off_uni + start_off
-        file.seek(locbase_path_uni)
-        locbase_path_uni = file.read(100)
-        locbase_path_uni = locbase_path_uni.decode('utf-8')
-        locbase_path_uni = []
-        for i in locbase_path_uni.split('\x00\x00'):
-            locbase_path_uni.append(i)
-        print('localbasepathunicode: ' + locbase_path_uni[0])
+            locbase_path_off_uni = self.start_off + 28
+        self.file.seek(locbase_path_off_uni)
+        locbase_path_off_uni = struct.unpack('<l', self.file.read(4))[0]
+        self.locbase_path_uni = locbase_path_off_uni + self.start_off
+        self.file.seek(self.locbase_path_uni)
+        self.locbase_path_uni = self.file.read(100)
+        self.locbase_path_uni = self.locbase_path_uni.decode('utf-8','ignore')
+        self.locbase_path_uni = []
+        for i in self.locbase_path_uni.split('\x00\x00'):
+            self.locbase_path_uni.append(i)
+        print('Localbasepathunicode: ' + self.locbase_path_uni[0])
 
-    locbasepath_off = start_off + 16
-    file.seek(locbasepath_off)
-    locbasepath_off = struct.unpack('<l', file.read(4))[0]
-    locbasepath_off = locbasepath_off + start_off
+        locbasepath_off = self.start_off + 16
+        self.file.seek(locbasepath_off)
+        locbasepath_off = struct.unpack('<l', self.file.read(4))[0]
+        locbasepath_off = locbasepath_off + self.start_off
                           
-    file.seek(locbasepath_off)
-    locbasepath = file.read(100)
-    locbasepath = locbasepath.decode('utf-8')
-    locbasepath = []
-    for i in locbasepath.split('\x00\x00'):
-        locbasepath.append(i)
-    print('localbasepath: ' + locbasepath[0])
+        file.seek(locbasepath_off)
+        locbasepath = self.file.read(100)
+        locbasepath = locbasepath.decode('utf-8', 'ignore')
+        locbasepath = []
+        for i in locbasepath.split('\x00\x00'):
+            locbasepath.append(i)
+        print('Localbasepath: ' + locbasepath[0])
 
 ############################################
     
-def extradata():
-    global file
-    global start_off
-    global info_size
-    global lnk_flag
-    global extra_off
-    global extra_data
+    def extradata():
+        self.file
+        self.start_off
+        self.info_size
+        self.lnk_flag
+        self.extra_off
+        self.extra_data
     
-    linkinfo_off()
+        linkinfo_off()
     
-    string_off = start_off + info_size
+        string_off = self.start_off + self.info_size
     
-    if 'HasName' in lnk_flag:
-        file.seek(string_off)
-        string_size = file.read(2)
-        b = (b'\x00\x00')
-        string_size  = string_size + b
-        string_size = struct.unpack('<i', string_size)[0]
-        string_off = string_size + string_off + 2
-    elif 'HasRelativePath' in lnk_flag:
-        file.seek(string_off)
-        string_size = file.read(2)
-        b = (b'\x00\x00')
-        string_size  = string_size + b
-        string_size = struct.unpack('<i', string_size)[0]
-        string_off = string_size + string_off + 2
+        if 'HasName' in self.lnk_flag:
+            self.file.seek(string_off)
+            string_size = self.file.read(2)
+            b = (b'\x00\x00')
+            string_size  = string_size + b
+            string_size = struct.unpack('<i', string_size)[0]
+            string_off = string_size + string_off + 2
+        elif 'HasRelativePath' self.in lnk_flag:
+            self.file.seek(string_off)
+            string_size = self.file.read(2)
+            b = (b'\x00\x00')
+            string_size  = string_size + b
+            string_size = struct.unpack('<i', string_size)[0]
+            string_off = string_size + string_off + 2
 ##        relative_path = str(file.read(string_size))
 ##        relative_path = relative_path.replace('\x00','').encode('utf-8', 'ignore').decode('utf-8')
-    elif 'HasWorkingDir' in lnk_flag:
-        file.seek(string_off)
-        string_size = file.read(2)
-        b = (b'\x00\x00')
-        string_size  = string_size + b
-        string_size = struct.unpack('<i', string_size)[0]
-        string_off = string_size + string_off + 2
-    elif 'HasArguments' in lnk_flag:
-        file.seek(string_off)
-        string_size = file.read(2)
-        b = (b'\x00\x00')
-        string_size  = string_size + b
-        string_size = struct.unpack('<i', string_size)[0]
-        string_off = string_size + string_off + 2
-    elif 'HasIconLocation' in lnk_flag:
-        file.seek(string_off)
-        string_size = file.read(2)
-        b = (b'\x00\x00')
-        string_size  = string_size + b
-        string_size = struct.unpack('<i', string_size)[0]
-        string_off = string_size + string_off + 2
+        elif 'HasWorkingDir' in self.lnk_flag:
+            file.seek(string_off)
+            string_size = self.file.read(2)
+            b = (b'\x00\x00')
+            string_size  = string_size + b
+            string_size = struct.unpack('<i', string_size)[0]
+            string_off = string_size + string_off + 2
+        elif 'HasArguments' in self.lnk_flag:
+            self.file.seek(string_off)
+            string_size = self.file.read(2)
+            b = (b'\x00\x00')
+            string_size  = string_size + b
+            string_size = struct.unpack('<i', string_size)[0]
+            string_off = string_size + string_off + 2
+        elif 'HasIconLocation' in self.lnk_flag:
+            self.file.seek(string_off)
+            string_size = self.file.read(2)
+            b = (b'\x00\x00')
+            string_size  = string_size + b
+            string_size = struct.unpack('<i', string_size)[0]
+            string_off = string_size + string_off + 2
         
-    extra_off = string_off
-    block_signature = extra_off + 4
-    file.seek(block_signature)
-    block_signature = file.read(4)
-    if block_signature == '\xA0\x00\x00\x03':
-        extra_data = 'True'
-    else:
-        extra_data = None
+        self.extra_off = string_off
+        block_signature = self.extra_off + 4
+        self.file.seek(block_signature)
+        block_signature = self.file.read(4)
+        if block_signature == '\xA0\x00\x00\x03':
+            self.extra_data = 'True'
+        else:
+            self.extra_data = None
 
-def netbios():
-    global file
-    global extra_data
-    global extra_off
-    extradata()
-    if extra_data != 'True':
-        return print('not have extra data')
-    netbios = string_off + 16
-    file.seek(netbios)
-    netbios = str(file.read(16))
-    netbios = netbios.replace('\x00','').encode('utf-8', 'ignore').decode('utf-8')
-    print('netbios: ' + str(netbios))
+    def netbios():
+        self.file
+        self.extra_data
+        self.extra_off
+        
+        extradata()
+        
+        if self.extra_data != 'True':
+            return print('not have extra data')
+        netbios = self.extra_off + 16
+        self.file.seek(netbios)
+        netbios = str(self.file.read(16))
+        netbios = netbios.replace('\x00','').encode('utf-8', 'ignore').decode('utf-8')
+        print('NetBios: ' + str(netbios))
 
-def machine_id():
-    global file
-    global extra_data
-    global extra_off
-    extradata()
-    if extra_data != 'True':
-        return print('not have extra data')
-    netbios = string_off + 32
-    file.seek(netbios)
-    droid = str(file.read(32))
-    droid = droid.replace('\x00','').encode('utf-8', 'ignore').decode('utf-8')
-    print('droid' + str(droid))
-    droidbirth = str(file.read(32))
-    droidbirth = droidbirth.replace('\x00','').encode('utf-8', 'ignore').decode('utf-8')
-    print('droidbirth' + str(droidbirth))
+    def machine_id():
+        self.file
+        self.extra_data
+        self.extra_off
+        
+        extradata()
+        
+        if self.extra_data != 'True':
+            return print('not have extra data')
+        droid = self.extra_off + 32
+        self.file.seek(droid)
+        droid = str(self.file.read(32))
+        droid = droid.replace('\x00','').encode('utf-8', 'ignore').decode('utf-8')
+        print('Droid' + str(droid))
+        droidbirth = str(self.file.read(32))
+        droidbirth = droidbirth.replace('\x00','').encode('utf-8', 'ignore').decode('utf-8')
+        print('DroidBirth' + str(droidbirth))
     
         
     
