@@ -70,15 +70,16 @@ def file_open(path):
     elif extension == 'MS Windows shortcut':
         file = lnk_open(path)
         return lnk_analysis.LnkAnalysis(file)
-    elif extension == 'recycle':
-        file = recycle_open(path)
-        return recycle_analysis.RecycleAnalysis(file)
     elif extension == 'data':
-        file = iconcache_open(path)
-        return iconcache_analysis.IconcacheAnalysis(file)
-    elif extension == 'SCCA':
-        file = prefetch_open(path)
-        return prefetch_analysis.PrefetchAnalysis(file)
+        if '$I' in path:
+            file = recycle_open(path)
+            return recycle_analysis.RecycleAnalysis(file)
+        if 'iconcache.db' in path:
+            file = iconcache_open(path)
+            return iconcache_analysis.IconcacheAnalysis(file)
+        if '.pf' in path:
+            file = prefetch_open(path)
+            return prefetch_analysis.PrefetchAnalysis(file)
     
     # elif extension == 'Extensible storage engine DataBase':
     # elif extension == 'SQLite 3.x database' :    
