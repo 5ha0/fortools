@@ -158,7 +158,7 @@ def firefox_open(path):
         return open_firefox_file
     
     
-def IEnEdge_open(path):
+def ie_edge_open(path):
     return pyesedb.open(path, 'rb')
 
 
