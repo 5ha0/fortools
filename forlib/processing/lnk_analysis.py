@@ -101,12 +101,6 @@ class LnkAnalysis:
             else:
                 continue
 
-    def __convert_time(time):
-        time = '%016x' % time
-        time = int(time, 16) / 10.
-        time = datetime(1601, 1, 1) + timedelta(microseconds=time) + timedelta(hours=9)
-        return time
-
     ## has link target id list has link info -- linkinfo flags
     def __link_flags(self):
         self.file.seek(20)
@@ -360,6 +354,13 @@ class LnkAnalysis:
         droidbirth = str(self.file.read(32))
         droidbirth = droidbirth.replace('\x00', '').encode('utf-8', 'ignore').decode('utf-8')
         print('DroidBirth' + str(droidbirth))
+
+
+def convert_time(time):
+    time = '%016x' % time
+    time = int(time, 16) / 10.
+    time = datetime(1601, 1, 1) + timedelta(microseconds=time) + timedelta(hours=9)
+    return time        
 
 ##def favorite():
 ##    timestamp
