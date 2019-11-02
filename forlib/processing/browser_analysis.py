@@ -217,7 +217,7 @@ class Firefox:
         print(json.dumps(downloads, indent=4))
 
 
-class IEnEdge:
+class Ie_Edge:
     def __init__(self, file):
         self.file = file
 
