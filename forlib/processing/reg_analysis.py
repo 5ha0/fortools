@@ -248,13 +248,26 @@ class SWAnalysis:
 
     def get_network_info(self):
         key = self.reg.open("Microsoft\\Windows NT\\CurrentVersion\\NetworkCards")
-        a = list()
+        card_num = list()
+        network_info = dict()
+        ret_list = list()
         for v in key.subkeys():
-            a.append(v.name())
+            card_num.append(v.name())
 
-        # for item in a:
-        #     path = self.reg.open("Microsoft\\Windows NT\\CurrentVersion\\NetworkCards\\%s" %item)
-        #     for v in path.values():
+        for item in card_num:
+            path = self.reg.open("Microsoft\\Windows NT\\CurrentVersion\\NetworkCards\\%s" %item)
+            for v in path.values():
+                if v.name() == "ServiceName":
+                    network_info['ServiceName'] = v.value()
+                if v.name() == "Description":
+                    network_info['Description'] = v.value()
+
+            net_obj = {
+                "ServiceName" : network_info['ServiceName'],
+                "Description" : network_info['Description']
+            }
+            ret_list.append(net_obj)
+        return ret_list
                 
 
 class SAMAnalysis:
