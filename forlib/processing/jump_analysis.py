@@ -43,25 +43,13 @@ class JumplistAnalysis:
         local = file_data[78+lnk_id_list_size[0]+path_offset[0]:78+lnk_id_list_size[0]+path_offset[0] + size]
         return local.decode('ascii')[:-2]
 
-
     def access_count(self):
-        self.destlist.seek(148)
-        cnt = self.destlist.read(4)
-        self.destlist.seek(0)
-        new = struct.unpack('<i', cnt)
-        return new[0]
-
-    def path(self):
-        self.destlist.seek(162)
-        path = self.destlist.read(400)
-        self.destlist.seek(0)
-        return path.decode('ascii')
+        cnt = struct.unpack("<l", self.destlist[148:152])
+        return cnt[0]
 
     def recent_time(self):
-        self.destlist.seek(132)
-        time = self.destlist.read(8)
-        self.destlist.seek(0)
-        return time
+        time = struct.unpack("<q", self.destlist[132:140])
+        return str(convert_time(time[0]))
 
     def show_info(self):
         for i in self.json_list:
