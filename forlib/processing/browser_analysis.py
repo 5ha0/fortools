@@ -1,7 +1,7 @@
 import json
 import sqlite3
 # import win32crypt #pip install pywin32
-import pyesedb
+# import pyesedb
 # import binascii
 # import base64
 
@@ -220,7 +220,7 @@ class Firefox:
 
 class Ie_Edge:
     def __init__(self, file):
-        self.file = pyesedb.open(file, 'rb')
+        self.file = file
 
     def __get_ContainerID(self,group):
         ContainerID = dict()
