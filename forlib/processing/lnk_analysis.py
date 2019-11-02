@@ -16,7 +16,7 @@ class LnkAnalysis:
         self.extra_data
         self.linkinfo_flag
         
-    def link_flag(flags_to_parse):   
+    def link_flag(self, flags_to_parse):   
         flags = { 0: "HasLinkTargetIDList",
                  1: "HasLinkInfo",
                  2: "HasName",
@@ -55,7 +55,7 @@ class LnkAnalysis:
 
         return self.lnk_flag
         
-    def lnk_attrib(attrib_to_parse):    
+    def lnk_attrib(self, attrib_to_parse):    
         attrib = { 0: "FILE_ATTRIBUTE_READONLY",
                   1: "FILE_ATTRIBUTE_HIDDEN",
                   2: "FILE_ATTRIBUTE_SYSTEM",
@@ -83,7 +83,7 @@ class LnkAnalysis:
                           
         return lnk_attributes
 
-    def drive_type_list(drive):
+    def drive_type_list(self, drive):
         drive_type = {
             0: 'DRIVE_UNKNOWN',
             1: 'DRIVE_NO_ROOT_DIR',
@@ -107,7 +107,7 @@ class LnkAnalysis:
         return time
 
 ## has link target id list has link info -- linkinfo flags
-    def link_flags():
+    def link_flags(self):
         self.file
         
         self.file.seek(20)
@@ -115,7 +115,7 @@ class LnkAnalysis:
         file_flags = BitArray(hex(flags[0]))
         link_flag(file_flags.bin)
     
-    def file_attribute():
+    def file_attribute(self):
         self.file
         
         self.file.seek(24)
@@ -123,7 +123,7 @@ class LnkAnalysis:
         flag_atributes = BitArray(hex(attributes[0]))
         lnk_attrib(flag_atributes.bin)
 
-    def creation_time():
+    def creation_time(self):
         self.file
         
         self.file.seek(28)
@@ -132,7 +132,7 @@ class LnkAnalysis:
         c_time = convert_time(c_time)
         print('Creation Time: ' + c_time)
 
-    def access_time():
+    def access_time(self):
         self.file
     
         self.file.seek(36)
@@ -141,7 +141,7 @@ class LnkAnalysis:
         a_time = convert_time(a_time)
         print('Access Time: ' + a_time)
 
-    def write_time():
+    def write_time(self):
         self.file
         
         self.file.seek(44)
@@ -150,14 +150,14 @@ class LnkAnalysis:
         w_time = convert_time(w_time)
         print('Write Time: ' + w_time)
 
-    def file_size():
+    def file_size(self):
         self.file
         
         self.file.seek(52)
         file_size = struct.unpack('<l', self.file.read(4))[0]
         print('Targrt File Size : '+str(file_size)+'bytes')
 
-    def iconindex():
+    def iconindex(self):
         self.file
         
         self.file.seek(56)
@@ -165,7 +165,7 @@ class LnkAnalysis:
         print('Iconindex : '+ str(iconindex))
 
 
-    def show_command():
+    def show_command(self):
         self.file
         
         self.file.seek(60)
@@ -182,7 +182,7 @@ class LnkAnalysis:
         
 ############################################
 
-    def linkinfo_off():
+    def linkinfo_off(self):
         self.file
         self.start_off
         self.info_size
@@ -232,7 +232,7 @@ class LnkAnalysis:
             net = 'True'
             self.locbase_path_uni = None
     
-    def volume():
+    def volume(self):
         self.file
         self.info_flag
         self.start_off
@@ -275,7 +275,7 @@ class LnkAnalysis:
         volumelable = volumelable.decode('cp1252')
         print('Volumelable: ' + volumelable)
 
-    def localbase_path():
+    def localbase_path(self):
         self.file
         self.info_flag
         self.start_off
@@ -319,7 +319,7 @@ class LnkAnalysis:
 
 ############################################
     
-    def extradata():
+    def extradata(self):
         self.file
         self.start_off
         self.info_size
@@ -378,7 +378,7 @@ class LnkAnalysis:
         else:
             self.extra_data = None
 
-    def netbios():
+    def netbios(self):
         self.file
         self.extra_data
         self.extra_off
@@ -393,7 +393,7 @@ class LnkAnalysis:
         netbios = netbios.replace('\x00','').encode('utf-8', 'ignore').decode('utf-8')
         print('NetBios: ' + str(netbios))
 
-    def machine_id():
+    def machine_id(self):
         self.file
         self.extra_data
         self.extra_off
