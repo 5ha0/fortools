@@ -144,6 +144,21 @@ class Thumbnail:
         return thumbnail_analysis.Thumbnail_analysis_windows(file)
 
     
+class Browser:
+    class Chrome:
+        def file_open(path):
+            chrome_file= browser_analysis.Chrome(path)
+            return chrome_file
+
+    class Firefox:
+        def file_open(path):
+            firefox_file = browser_analysis.Firefox(path)
+            return firefox_file
+
+    class Ie_Edge:
+        def file_open(path):
+            ie_edge_file = browser_analysis.Ie_Edge(ie_edge_open(path))
+            return ie_edge_file    
     
 
 
