@@ -100,7 +100,7 @@ class Iconcache:
 class Prefetch:
     def file_open(path):
         extension = sig_check(path)
-        if extension == 'SCCA:
+        if extension == 'SCCA':
             file = file_open(path)
             return prefetch_analysis.PrefetchAnalysis(file)
         
