@@ -63,7 +63,8 @@ class PrefetchAnalysis:
         filenames = filenames.decode('cp1252')
         for i in filenames.split('\x00\x00'):
             resource.append(i.replace('\x00',''))
-
+        
+        count = 0
         for i in resource:
             count += 1
             pf_obj = {
@@ -71,7 +72,7 @@ class PrefetchAnalysis:
                 "Ref_file" : i
             }
             print(json.dumps(pf_obj))
-        return resourcce
+        return resource
     
 ##class favorite:
 ##    def time_stamp:
