@@ -75,7 +75,7 @@ def file_open(path):
     elif extension == 'recycle':
         file = recycle_open(path)
         return recycle_analysis.RecycleAnalysis(file)
-    elif extension == 'iconcache':
+    elif extension == 'data':
         file = iconcache_open(path)
         return iconcache_analysis.IconcacheAnalysis(file)
     elif extension == 'SCCA':
