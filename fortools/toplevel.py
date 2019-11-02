@@ -86,7 +86,7 @@ class Lnk:
 class Recycle:
     def file_open(path):
         extension = sig_check(path)
-        if extension == 'recycle':
+        if extension == 'data':
             file = recycle_open(path)
             return recycle_analysis.RecycleAnalysis(file)
      
@@ -94,7 +94,7 @@ class Recycle:
 class Iconcache:
     def file_open(path):
         extension = sig_check(path)
-        if extension == 'iconcache':
+        if extension == 'data':
             file = iconcache_open(path)
             return iconcache_analysis.IconcacheAnalysis(file)
         
@@ -102,7 +102,7 @@ class Iconcache:
 class Prefetch:
     def file_open(path):
         extension = sig_check(path)
-        if extension == 'SCCA':
+        if extension == 'data':
             file = prefetch_open(path)
             return prefetch_analysis.PrefetchAnalysis(file)
         
@@ -110,7 +110,7 @@ class Prefetch:
 class RegistryHive:
     def file_open(path):
         extension = sig_check(path)
-        if extension == 'MS Windows registry file':
+        if extension == 'data':
             file = reg_open(path)
             if Registry.HiveType.NTUSER == file.hive_type():
                 return reg_analysis.NTAnalysis(file)
