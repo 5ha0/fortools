@@ -64,8 +64,8 @@ class NTAnalysis:
             file_name = v.raw_data().decode('utf-16').split("*")[1]
             print("test : ", dir(v))
             reg_obj = {
-                    "MS time" : v.timestamp(),
-                    "path" : file_name
+                    "MS Key Last Written time" : recent.timestamp().strftime('%Y-%m-%d %H:%M:%S (UTC)'),
+                    "path" : file_name[:-1]
                     }
             ret_list.append(reg_obj)
         return ret_list
@@ -94,11 +94,13 @@ class NTAnalysis:
                 recent1 = self.reg.open(path + "\\%s\\Excel\\User MRU\\%s\\File MRU" %(a[0], b[0]))
                 recent2 = self.reg.open(path + "\\%s\\PowerPoint\\User MRU\\%s\\File MRU" %(a[0], b[0]))
                 recent3 = self.reg.open(path + "\\%s\\Word\\User MRU\\%s\\File MRU" %(a[0], b[0]))
-                xls  = self.__print_ms(recent1)
-                ppt  = self.__print_ms(recent2)
-                word = self.__print_ms(recent3)
+
             except:
                 print("[-] This(excel or ppt or word) is not include this registry")
+
+            xls = self.__print_ms(recent1)
+            ppt = self.__print_ms(recent2)
+            word = self.__print_ms(recent3)
 
             return xls+ppt+word
             #ret_ms.append(self.print_ms(recent1))
@@ -166,38 +168,45 @@ class SYSAnalysis:
         net_key = self.reg.open(path)
         guid_list = list()
         ret_list = list()
-        
+        network_dict = dict()
         for v in net_key.subkeys():
             guid_list.append(v.name())
 
         for i in guid_list:
             key3 = self.reg.open(path + "\\%s" % i)
-            results_dict = dict()  
             for v in key3.values():
                 if v.name() == "Domain":
-                    results_dict['Domain'] = v.value()
+                    network_dict['Domain'] = v.value()
                 if v.name() == "IPAddress":
                     # Sometimes the IP would end up in a list here so just doing a little check
-                    results_dict['IPAddress'] = v.value()[0]
+                    network_dict['IPAddress'] = v.value()[0]
                 if v.name() == "DhcpIPAddress":
-                    results_dict['DhcpIPAddress'] = v.value()
+                    network_dict['DhcpIPAddress'] = v.value()
                 if v.name() == "DhcpServer":
-                    results_dict['DhcpServer'] = v.value()            
+                    network_dict['DhcpServer'] = v.value()
                 if v.name() == "DhcpSubnetMask":
-                    results_dict['DhcpSubnetMask'] = v.value()
+                    network_dict['DhcpSubnetMask'] = v.value()
                
-            if (not 'Domain' in results_dict) or (results_dict['Domain'] == ''): 
-                results_dict['Domain'] = "N/A"
-            if (not 'IPAddress' in results_dict) or (results_dict['IPAddress'] == ''): 
-                results_dict['IPAddress'] = "N/A"
-            if (not 'DhcpIPAddress' in results_dict) or (results_dict['DhcpIPAddress'] == ''): 
-                results_dict['DhcpIPAddress'] = "N/A"
-            if (not 'DhcpServer' in results_dict) or (results_dict['DhcpServer'] == ''): 
-                results_dict['DhcpServer'] = "N/A"
-            if (not 'DhcpSubnetMask' in results_dict) or (results_dict['DhcpSubnetMask'] == ''): 
-                results_dict['DhcpSubnetMask'] = "N/A"
-            
-            ret_list.append(results_dict)    
+            if (not 'Domain' in network_dict) or (network_dict['Domain'] == ''):
+                network_dict['Domain'] = "N/A"
+            if (not 'IPAddress' in network_dict) or (network_dict['IPAddress'] == ''):
+                network_dict['IPAddress'] = "N/A"
+            if (not 'DhcpIPAddress' in network_dict) or (network_dict['DhcpIPAddress'] == ''):
+                network_dict['DhcpIPAddress'] = "N/A"
+            if (not 'DhcpServer' in network_dict) or (network_dict['DhcpServer'] == ''):
+                network_dict['DhcpServer'] = "N/A"
+            if (not 'DhcpSubnetMask' in network_dict) or (network_dict['DhcpSubnetMask'] == ''):
+                network_dict['DhcpSubnetMask'] = "N/A"
+
+            net_obj = {
+                "Domain" : network_dict['Domain'],
+                "IPAddress" : network_dict['IPAddress'],
+                "DhcpIPAddress" : network_dict['DhcpIPAddress'],
+                "DhcpServer" : network_dict['DhcpServer'],
+                "DhcpSubnetMask" : network_dict['DhcpSubnetMask']
+            }
+            ret_list.append(net_obj)
+
         return ret_list
             
 class SWAnalysis:
@@ -213,9 +222,8 @@ class SWAnalysis:
     def get_info(self):
         ret_list = []
         os_info = self.reg.open("Microsoft\\Windows NT\\CurrentVersion")
-        
+        os_dict = dict()
         for v in os_info.values():
-            os_dict = dict()
             if v.name() == "CurrentVersion":
                 os_dict['CurrentVersion'] = v.value()
             if v.name() == "CurrentBuild":
@@ -223,26 +231,46 @@ class SWAnalysis:
             if v.name() == "InstallDate":
                 os_dict['InstallDate'] = time.strftime('%Y-%m-%d %H:%M:%S (UTC)', time.gmtime(v.value()))
             if v.name() == "RegisteredOwner":
-                os_dict["RegisteredOwner"] = v.value()
+                os_dict['RegisteredOwner'] = v.value()
             if v.name() == "EditionID":
                 os_dict['EditionID'] = v.value()
             if v.name() == "ProductName":
                 os_dict['ProductName'] = v.value()
-            
-            ret_list.append(os_dict)
+
+        os_obj = {
+            "CurrentVersion" : os_dict['CurrentVersion'],
+            "CurrentBuild" : os_dict['CurrentBuild'],
+            "InstallDate" : os_dict['InstallDate'],
+            "RegisteredOwner" : os_dict['RegisteredOwner'],
+            "EditionID" : os_dict['EditionID'],
+            "ProductName" : os_dict['ProductName']
+        }
+        ret_list.append(os_obj)
             
         return ret_list
 
     def get_network_info(self):
         key = self.reg.open("Microsoft\\Windows NT\\CurrentVersion\\NetworkCards")
-        a = list()
+        card_num = list()
+        network_info = dict()
+        ret_list = list()
         for v in key.subkeys():
-            a.append(v.name())
+            card_num.append(v.name())
 
-        # for item in a:
-        #     path = self.reg.open("Microsoft\\Windows NT\\CurrentVersion\\NetworkCards\\%s" %item)
-        #     for v in path.values():
-                
+        for item in card_num:
+            path = self.reg.open("Microsoft\\Windows NT\\CurrentVersion\\NetworkCards\\%s" %item)
+            for v in path.values():
+                if v.name() == "ServiceName":
+                    network_info['ServiceName'] = v.value()
+                if v.name() == "Description":
+                    network_info['Description'] = v.value()
+
+            net_obj = {
+                "ServiceName" : network_info['ServiceName'],
+                "Description" : network_info['Description']
+            }
+            ret_list.append(net_obj)
+        return ret_list
 
 class SAMAnalysis:
     def __init__(self, file):
