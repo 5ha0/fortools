@@ -254,33 +254,33 @@ class IEnEdge:
         return get_date.strftime("%Y-%m-%d %H:%M:%S")
 
 
-    def cache(self):
-        cache=[]
-        cache_container_id= self.__get_ContainerID("Content")
-        no = 1
-        for containerid in cache_container_id.keys():
-            col_name = self.__get_schema(containerid)
-            cache_container = self.file.get_table_by_name(containerid)
-            if col_name == None: continue #없는경우
+#     def cache(self):
+#         cache=[]
+#         cache_container_id= self.__get_ContainerID("Content")
+#         no = 1
+#         for containerid in cache_container_id.keys():
+#             col_name = self.__get_schema(containerid)
+#             cache_container = self.file.get_table_by_name(containerid)
+#             if col_name == None: continue #없는경우
 
-            mkdict = dict()
-            mkdict["group"] = "cache"
-            mkdict["browser"] = "IE10+ Edge"
-            mkdict["containerid"]=containerid
-            if (cache_container.number_of_records == 0):
-                mkdict["containerEmpty"] = 0
-            else:
-                mkdict["containerEmpty"] = 0
-            for row in cache_container.records:
-                for i in range(0, len(col_name)):
-                    if row.get_value_data(i)==None:
-                        mkdict[col_name[i][0]]=None
-                    else:  mkdict[col_name[i][0]] = str(row.get_value_data(i))
-            mkdictno = dict()
-            mkdictno["no" + str(no)] = mkdict
-            cache.append(mkdictno)
-            no += 1
-        print(json.dumps(cache,indent=4))
+#             mkdict = dict()
+#             mkdict["group"] = "cache"
+#             mkdict["browser"] = "IE10+ Edge"
+#             mkdict["containerid"]=containerid
+#             if (cache_container.number_of_records == 0):
+#                 mkdict["containerEmpty"] = 0
+#             else:
+#                 mkdict["containerEmpty"] = 0
+#             for row in cache_container.records:
+#                 for i in range(0, len(col_name)):
+#                     if row.get_value_data(i)==None:
+#                         mkdict[col_name[i][0]]=None
+#                     else:  mkdict[col_name[i][0]] = str(row.get_value_data(i))
+#             mkdictno = dict()
+#             mkdictno["no" + str(no)] = mkdict
+#             cache.append(mkdictno)
+#             no += 1
+#         print(json.dumps(cache,indent=4))
 
     def cookies(self):
         cookies=[]
