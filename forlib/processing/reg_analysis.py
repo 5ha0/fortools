@@ -34,11 +34,8 @@ class NTAnalysis:
         ret_list = list()
         
         for i, v in enumerate(recent.values()):
-            #print(" FUCCCCK : ", dir(recent.values()[1].raw_data()))
             if i == 0:
                 continue
-            print(" SHIIIIT : ", v.raw_data())
-            print(" DAAAMMM : ", v.raw_data().decode("utf-16").encode('utf-8').split(' '))
             #print(v.value().decode('utf-16'))
             reg_obj  = {
                     "time" : str(recent.timestamp()),
@@ -91,7 +88,8 @@ class NTAnalysis:
             b = list()
             for items in LiveId.subkeys():
                 b.append(items.name())
-
+            
+            # 형식 수정 예정
             try:
                 recent1 = self.reg.open(path + "\\%s\\Excel\\User MRU\\%s\\File MRU" %(a[0], b[0]))
                 recent2 = self.reg.open(path + "\\%s\\PowerPoint\\User MRU\\%s\\File MRU" %(a[0], b[0]))
