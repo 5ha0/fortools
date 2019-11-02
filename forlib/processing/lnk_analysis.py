@@ -17,7 +17,7 @@ class LnkAnalysis:
         self.extra_data
         self.linkinfo_flag
 
-    def link_flag(self, flags_to_parse):
+    def __link_flag(self, flags_to_parse):
         flags = {0: "HasLinkTargetIDList",
                  1: "HasLinkInfo",
                  2: "HasName",
@@ -56,7 +56,7 @@ class LnkAnalysis:
 
         return self.lnk_flag
 
-    def lnk_attrib(self, attrib_to_parse):
+    def __lnk_attrib(self, attrib_to_parse):
         attrib = {0: "FILE_ATTRIBUTE_READONLY",
                   1: "FILE_ATTRIBUTE_HIDDEN",
                   2: "FILE_ATTRIBUTE_SYSTEM",
@@ -84,7 +84,7 @@ class LnkAnalysis:
 
         return lnk_attributes
 
-    def drive_type_list(self, drive):
+    def __drive_type_list(self, drive):
         drive_type = {
             0: 'DRIVE_UNKNOWN',
             1: 'DRIVE_NO_ROOT_DIR',
@@ -101,14 +101,14 @@ class LnkAnalysis:
             else:
                 continue
 
-    def convert_time(time):
+    def __convert_time(time):
         time = '%016x' % time
         time = int(time, 16) / 10.
         time = datetime(1601, 1, 1) + timedelta(microseconds=time) + timedelta(hours=9)
         return time
 
     ## has link target id list has link info -- linkinfo flags
-    def link_flags(self):
+    def __link_flags(self):
         self.file.seek(20)
         flags = struct.unpack('<i', self.file.read(4))
         file_flags = BitArray(hex(flags[0]))
@@ -166,7 +166,7 @@ class LnkAnalysis:
 
     ############################################
 
-    def linkinfo_off(self):
+    def __linkinfo_off(self):
         link_flags()
 
         if 'HasLinkInfo' not in self.lnk_flag:
@@ -284,7 +284,7 @@ class LnkAnalysis:
 
     ############################################
 
-    def extradata(self):
+    def __extradata(self):
         linkinfo_off()
 
         string_off = self.start_off + self.info_size
