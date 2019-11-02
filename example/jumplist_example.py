@@ -1,6 +1,6 @@
 from fortools import *
 
-file = JumpList.file_open('C:\\Users\\Baeha\\Desktop\\newFortools\\data\\4cb9c5750d51c07f.automaticDestinations-ms')
+file = JumpList.file_open('path')
 
 # show information from destlist
 access_cnt = file.access_count()
