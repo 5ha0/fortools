@@ -1,4 +1,5 @@
-from forlib.processing.lnk_analysis import *
+from forlib.processing.lnk_analysis import convert_time
+import struct
 
 
 class JumplistAnalysis:
