@@ -10,6 +10,7 @@ from forlib.processing import lnk_analysis
 from forlib.processing import recycle_analysis
 from forlib.processing import iconcache_analysis
 from forlib.processing import prefetch_analysis
+from forlib.processing import browser_analysis
 
 class EvtxLog:
     def file_open(path):
