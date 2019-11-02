@@ -81,7 +81,10 @@ def file_open(path):
     elif extension == 'SCCA':
         file = prefetch_open(path)
         return prefetch_analysis.PrefetchAnalysis(file)
-
+    
+    # elif extension == 'Extensible storage engine DataBase':
+    # elif extension == 'SQLite 3.x database' :    
+    
     # elif extension == 'PE32+ executable (console) x86-64':
     #     file =
     # PNG image data
