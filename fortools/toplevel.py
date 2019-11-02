@@ -73,11 +73,11 @@ class Files:
             return files_analysis.PDFAnalysis(file)
 
 
-class LNK:
+class Lnk:
     def file_open(path):
         extension = sig_check(path)
         if extension == 'MS Windows shortcut':
-            file = file_open(path)
+            file = lnk_open(path)
             return lnk_analysis.LnkAnalysis(file)
 
 
