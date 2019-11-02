@@ -110,7 +110,7 @@ class Registry:
         extension = sig_check(path)
         if extension == 'MS Windows registry file':
             file = reg_open(path)
-            #return reg_analysis.RegistryAnalysis(file)
+            return reg_analysis.RegistryAnalysis(file)
 
 
 class JumpList:
