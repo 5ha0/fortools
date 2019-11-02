@@ -10,6 +10,7 @@ from forlib.processing import lnk_analysis
 from forlib.processing import recycle_analysis
 from forlib.processing import iconcache_analysis
 from forlib.processing import prefetch_analysis
+from Registry import Registry
 
 class EvtxLog:
     def file_open(path):
@@ -105,13 +106,25 @@ class Prefetch:
             return prefetch_analysis.PrefetchAnalysis(file)
         
         
-class Registry:
+class RegistryHive:
     def file_open(path):
         extension = sig_check(path)
         if extension == 'MS Windows registry file':
             file = reg_open(path)
-            return reg_analysis.RegistryAnalysis(file)
-
+            if Registry.HiveType.NTUSER == file.hive_type():
+                return reg_analysis.NTAnalysis(file)
+            elif Registry.HiveType.SAM == file.hive_type():
+                return reg_analysis.SAMAnalysis(file)
+            elif Registry.HiveType.SOFTWARE == file.hive_type():
+                return reg_analysis.SWAnalysis(file)
+            elif Registry.HiveType.SYSTEM == file.hive_type():
+                return reg_analysis.SYSAnalysis(file)
+            elif Registry.HiveType.SYSTEM == file.hive_type():
+                print("[-] To be continue")
+            else:
+                print("[-] This is not HiveFile")
+        else:
+            print("[-] This is not Registry file")
 
 class JumpList:
     def file_open(path):
