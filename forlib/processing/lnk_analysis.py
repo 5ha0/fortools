@@ -94,10 +94,11 @@ class LnkAnalysis:
             6: 'DRIVE_RAMDISK'
             }
     
-        if drive != 0:
-            print ('drive_type: '+format(drive_type[drive]))
-        else:
-            continue
+        for count, items in enumerate(drive):
+            if int(items) == 1:
+                print ('drive_type: '+format(drive_type[drive]))
+            else:
+                continue
 
     def convert_time(time):
         time = '%016x' %time
