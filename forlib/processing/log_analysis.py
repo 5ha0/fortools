@@ -12,7 +12,7 @@ class EvtxAnalysis:
     def __init__(self, file):
         self.evtx_file = file
         self.evtx_json = self.__make_json()
-        self.favorite = EvtxGet.Favorite(self.evtx_json)
+        self.favorite = Favorite(self.evtx_json)
 
     def show_all_record(self):
         for i in self.evtx_json:
@@ -81,31 +81,30 @@ class EvtxAnalysis:
 
 
 # favorite method for evtx log
-class EvtxGet:
-    class Favorite:
+class Favorite:
 
-        result = []
+    result = []
 
-        def __init__(self, json):
-            self.evtx_json = json
-            self.accountType = AccountType(self.evtx_json)
+    def __init__(self, json):
+        self.evtx_json = json
+        self.accountType = AccountType(self.evtx_json)
 
-        # detect valid logon record
-        def logon(self):
-            EvtxAnalysis.eventid(self, 4624)
+    # detect valid logon record
+    def logon(self):
+        EvtxAnalysis.eventid(self, 4624)
 
-        # detect remote logon record
-        def remote(self):
-            EvtxAnalysis.eventid(self, 540)
-            EvtxAnalysis.eventid(self, 4776)
+    # detect remote logon record
+    def remote(self):
+        EvtxAnalysis.eventid(self, 540)
+        EvtxAnalysis.eventid(self, 4776)
 
-        # detect malfind record
-        def malfind(self):
-            EvtxAnalysis.eventid(self, 4776)
+    # detect malfind record
+    # def malfind(self):
+    #     EvtxAnalysis.eventid(self, 4776)
 
-        # detect time of elevation of authority
-        def authority(self):
-            print('user')
+    # detect time of elevation of authority
+    # def authority(self):
+    #     print('user')
 
 
 # filtering based on logon type
@@ -141,47 +140,168 @@ class LinuxLogAnalysis:
         def __parse(self):
             log_parse(self.file)
 
-    class ApacheLog:
-        class Error:
-            def __init__(self, file):
-                self.file = file
-                self.json = self.__parse()
 
-            def __parse(self):
-                err_parse(self.file)
+class ApacheLog:
+    class Error:
+        def __init__(self, file):
+            self.file = file
+            self.json = err_parse(self.file)
 
-        class Access:
-            def __init__(self, file):
-                self.file = file
-                self.json = self.__parse()
+        def show_info(self):
+            for i in range(0, len(self.json)):
+                print(self.json[i])
 
-            def __parse(self):
-                access_parse(self.file)
+        def date(self, date):
+            for i in range(1, len(self.json)):
+                if self.json[i]["date"] == date:
+                    print(self.json[i])
 
-            def date(self, date):
-                for i in range(0, len(self.json)):
-                    if self.json["date"] == date:
-                        print(self.json[i])
+        def pid(self, pid):
+            for i in range(1, len(self.json)):
+                if self.json[i]["pid"] == pid:
+                    print(self.json[i])
+
+    class Access:
+        def __init__(self, file):
+            self.file = file
+            self.json = access_parse(self.file)
+
+        def show_info(self):
+            for i in range(0, len(self.json)):
+                print(self.json[i])
+
+        def date(self, date):
+            for i in range(1, len(self.json)):
+                if self.json[i]["date"] == date:
+                    print(self.json[i])
+
+        def ip(self, ip):
+            for i in range(1, len(self.json)):
+                if self.json[i]["ip"] == ip:
+                    print(self.json[i])
+
+        def method(self, method):
+            for i in range(1, len(self.json)):
+                if self.json[i]["method"] == method:
+                    print(self.json[i])
+
+        def respond(self, respond):
+            for i in range(1, len(self.json)):
+                if int(self.json[i]["respond code"]) == respond:
+                    print(self.json[i])
 
 
-def err_parse(file):
+class IIS:
+    def __init__(self, file):
+        self.file = file
+        self.json = iis_parse(self.file)
+
+    def show_info(self):
+        for i in self.json:
+            print(i)
+
+    def date(self, date):
+        for i in range(0, len(self.json)):
+            if self.json[i]['no' + str(i)]['date'] == date:
+                print(self.json[i])
+
+    def cs_method(self, method):
+        for i in range(0, len(self.json)):
+            if self.json[i]['no' + str(i)]['cs-method'] == method:
+                print(self.json[i])
+
+    def s_port(self, port):
+        for i in range(0, len(self.json)):
+            if self.json[i]['no' + str(i)]['s-port'] == port:
+                print(self.json[i])
+
+    def sc_status(self, status):
+        for i in range(0, len(self.json)):
+            if self.json[i]['no' + str(i)]['sc-status'] == status:
+                print(self.json[i])
+
+
+def iis_parse(file):
+    json_list = []
+    fields = None
     while True:
         line = file.readline()
         if line == '':
             break
-        line_parse = line.split(']')
+        elif line[0] == '#' and line[0:7] != '#Fields':
+            continue
+        if line[0:7] == '#Fields':
+            fields = line.split(' ')
+            continue
+        try:
+            log_line = line.split()
+            log_obj = dict()
+            for i in range(1, len(log_line) - 1):
+                log_obj[fields[i]] = log_line[i - 1]
+        except:
+            print('IIS Log Err, plz check format of file.')
+        json_list.append(log_obj)
+    return json_list
+
+
+def err_parse(file):
+    date_r = r'\w{3} \w{3} \d{2} \d{2}:\d{2}:\d{2}.\d+ \d{4}'
+    pid = r'pid +\d+'
+    tid = r'tid \d+'
+    info = r'AH\d+:.+'
+    json_list = []
+    while True:
+        line = file.readline()
+        if line == '':
+            break
+        try:
+            log_obj = dict()
+            date = datetime.datetime.strptime(str(re.search(date_r, line).group()), "%a %b %d %H:%M:%S.%f %Y")
+            log_obj["date"] = date.strftime('%m/%d')
+            log_obj["time"] = date.strftime('%H:%M:%S')
+            log_obj["pid"] = re.search(pid, line).group()[4:]
+            log_obj["tid"] = re.search(tid, line).group()[4:]
+            log_obj["info"] = re.search(info, line).group()
+        except:
+            continue
+        json_list.append(log_obj)
+    return json_list
+
+
+def access_parse(file):
+    ip = r'(\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3})|(::1)'
+    date_r = r'\d{1,2}/\w{1,3}/\d{1,4}:\d{2}:\d{2}:\d{2} [+]\d{4}'
+    method = r'GET|PUSH|PUT|POST|HEAD|OPTIONS|Head|T'
+    respond = r' \d{3} '
+    uri = r'( /+\S+)|( \*)'
+    url = r'(http|https)://\S+'
+
+    json_list = []
+    while True:
+        line = file.readline()
+        if line == '':
+            break
         log_obj = dict()
-        info = ''
-        date = datetime.datetime.strptime(str(line_parse[0][1:]), "%a %b %d %H:%M:%S.%f %Y")
-        log_obj["date"] = date.strftime('%m/%d')
-        log_obj["time"] = date.strftime('%H:%M:%S')
-        log_obj["npm"] = line_parse[2]
-        log_obj["source"] = line_parse[4][:-1]
-        for i in range(5, len(line_parse)):
-            info = info + line_parse[i] + ' '
-        log_obj["info"] = info
-        print(log_obj)
-    return log_obj
+        try:
+            log_obj["ip"] = re.search(ip, line).group()
+            date = re.search(date_r, line).group()
+            date = datetime.datetime.strptime(date, '%d/%b/%Y:%H:%M:%S %z')
+            log_obj["date"] = str(date.strftime('%Y/%m/%d'))
+            log_obj["time"] = str(date.strftime('%H:%M:%S'))
+            log_obj["method"] = re.search(method, line).group()
+            log_obj["respond code"] = re.search(respond, line).group()[1:-1]
+        except:
+            continue
+        try:
+            log_obj["uri"] = re.search(uri, line).group()[1:]
+        except:
+            log_obj["uri"] = 'none'
+        try:
+            log_obj["url"] = re.search(url, line).group()
+        except:
+            log_obj["url"] = 'none'
+        json_list.append(log_obj)
+    return json_list
 
 
 def log_parse(file):
@@ -202,124 +322,3 @@ def log_parse(file):
         log_obj["info"] = info
         print(log_obj)
     return log_obj
-
-
-def access_parse(file):
-    err = []
-    while True:
-        line = file.readline()
-        if line == '':
-            break
-        ip = r'\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}'
-        date = r'\d{1,2}/\w{1,3}/\d{1,4}:\d{2}:\d{2}:\d{2} [+]\d{4}'
-        method = r'GET|PUSH|PUT|POST|HEAD|OPTIONS'
-        respond = r' \d{3} '
-        line_parse = line.split(' ')
-        log_obj = dict()
-        info = ''
-        try:
-            log_obj["ip"] = re.search(ip, line).group()
-        except:
-            try:
-                log_obj["ip"] = re.search('::1', line).group()
-            except:
-                err.append(line)
-        try:
-            date = re.search(date, line).group()
-            date = datetime.datetime.strptime(date, '%d/%b/%Y:%H:%M:%S %z')
-            log_obj["date"] = str(date.strftime('%Y/%m/%d'))
-            log_obj["time"] = str(date.strftime('%H:%M:%S'))
-        except:
-            err.append(line)
-        try:
-            log_obj["method"] = re.search(method, line).group()
-        except:
-            err.append(line)
-        try:
-            log_obj["respond code"] = re.search(respond, line).group()[1:-1]
-        except:
-            err.append(line)
-        log_obj["uri"] = line_parse[7]
-        log_obj["url"] = line_parse[11]
-        print(log_obj)
-    return log_obj
-
-'''
-class TextLogAnalysis:
-    def __init__(self, file):
-        self.file = file
-        self.weblog_json = self.__make_json()
-
-    def __make_json(self):
-        idx = 0
-        json_list = []
-        fields = None
-        while True:
-            line = self.file.readline()
-            if line == '':
-                break
-            elif line[0] == '#' and line[0:7] != '#Fields':
-                continue
-            if line[0:7] == '#Fields':
-                fields = line.split(' ')
-                continue
-
-            if fields is None:
-                # apache log
-                if line[0] == '[':
-                    log_line = line.split(']')
-                    log_obj = dict()
-                    log_obj['date'] = log_line[0][1:]
-                    log_obj['type'] = log_line[1][2:]
-                    log_obj['pid'] = log_line[2][6:].split(':')[0]
-                    log_obj['info'] = log_line[3]
-                # syslog
-                else:
-                    try:
-                        log_line = line.split(':')
-                        log_line_split = log_line[2].split()
-                        log_obj = dict()
-                        log_time = log_line[0].split(' ')
-                        log_obj['date'] = log_time[0]+' '+log_time[1]
-                        log_obj['time'] = log_time[2]+':'+log_line[1]+':'+log_line_split[0]
-                        log_obj['system'] = log_line_split[1]
-                        log_obj['source'] = log_line_split[2]
-                        log_obj['info'] = log_line[3:]
-                    except:
-                        print('Linux Log Err, plz check format of file.')
-            else:
-                try:
-                    log_line = line.split()
-                    log_obj = dict()
-                    for i in range(1, len(log_line)-1):
-                        log_obj[fields[i]] = log_line[i - 1]
-                except:
-                    print('Web Log Err, plz check format of file.')
-            json_list.append({'no' + str(idx): log_obj})
-            idx = idx + 1
-        return json_list
-
-    def show_all_record(self):
-        for i in self.weblog_json:
-            print(i)
-
-    def date(self, date):
-        for i in range(0, len(self.weblog_json)):
-            if self.weblog_json[i]['no' + str(i)]['date'] == date:
-                print(self.weblog_json[i])
-
-    def cs_method(self, method):
-        for i in range(0, len(self.weblog_json)):
-            if self.weblog_json[i]['no' + str(i)]['cs-method'] == method:
-                print(self.weblog_json[i])
-
-    def s_port(self, port):
-        for i in range(0, len(self.weblog_json)):
-            if self.weblog_json[i]['no' + str(i)]['s-port'] == port:
-                print(self.weblog_json[i])
-
-    def sc_status(self, status):
-        for i in range(0, len(self.weblog_json)):
-            if self.weblog_json[i]['no' + str(i)]['sc-status'] == status:
-                print(self.weblog_json[i])
-'''
