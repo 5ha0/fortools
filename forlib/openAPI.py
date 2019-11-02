@@ -37,8 +37,6 @@ def file_open(path):
     elif extension == 'JPEG image data':
         file = jpeg_open(path)
         return files_analysis.JPEGAnalysis(file)
-    elif extension == 'MS Windows shortcut':
-        return binary_open(path)
     elif extension == 'MS Windows registry file':
         file = reg_analysis(reg_open(path))
         return file
