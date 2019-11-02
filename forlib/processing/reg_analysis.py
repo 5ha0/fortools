@@ -64,8 +64,8 @@ class NTAnalysis:
             file_name = v.raw_data().decode('utf-16').split("*")[1]
             print("test : ", dir(v))
             reg_obj = {
-                    "MS time" : v.timestamp(),
-                    "path" : file_name
+                    "MS Key Last Written time" : recent.timestamp().strftime('%Y-%m-%d %H:%M:%S (UTC)'),
+                    "path" : file_name[:-1]
                     }
             ret_list.append(reg_obj)
         return ret_list
@@ -94,12 +94,12 @@ class NTAnalysis:
                 recent1 = self.reg.open(path + "\\%s\\Excel\\User MRU\\%s\\File MRU" %(a[0], b[0]))
                 recent2 = self.reg.open(path + "\\%s\\PowerPoint\\User MRU\\%s\\File MRU" %(a[0], b[0]))
                 recent3 = self.reg.open(path + "\\%s\\Word\\User MRU\\%s\\File MRU" %(a[0], b[0]))
-                xls  = self.__print_ms(recent1)
-                ppt  = self.__print_ms(recent2)
-                word = self.__print_ms(recent3)
+
             except:
                 print("[-] This(excel or ppt or word) is not include this registry")
-
+            xls  = self.__print_ms(recent1)
+            ppt  = self.__print_ms(recent2)
+            word = self.__print_ms(recent3)
             return xls+ppt+word
             #ret_ms.append(self.print_ms(recent1))
            
