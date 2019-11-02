@@ -86,7 +86,7 @@ class Recycle:
     def file_open(path):
         extension = sig_check(path)
         if extension == 'recycle':
-            file = file_open(path)
+            file = recycle_open(path)
             return recycle_analysis.RecycleAnalysis(file)
      
     
@@ -94,7 +94,7 @@ class Iconcache:
     def file_open(path):
         extension = sig_check(path)
         if extension == 'iconcache':
-            file = file_open(path)
+            file = iconcache_open(path)
             return iconcache_analysis.IconcacheAnalysis(file)
         
 
@@ -102,7 +102,7 @@ class Prefetch:
     def file_open(path):
         extension = sig_check(path)
         if extension == 'SCCA':
-            file = file_open(path)
+            file = prefetch_open(path)
             return prefetch_analysis.PrefetchAnalysis(file)
         
         
