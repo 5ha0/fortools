@@ -5,6 +5,7 @@ import zipfile
 import sqlite3
 import PyPDF2
 import codecs
+import pyesedb
 from PIL import Image
 from Registry import Registry
 from os import listdir
@@ -152,6 +153,10 @@ def firefox_open(path):
         return path
     else:
         return open_firefox_file
+    
+    
+def IEnEdge_open(path):
+    return pyesedb.open(path, 'rb')
 
 
 def ole_open(path):
