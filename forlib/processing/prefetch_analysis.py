@@ -43,20 +43,20 @@ class PrefetchAnalysis:
     
     def pf_num_launch(self):
         self.file.seek(0)
-        version = struct.unpack_from('I', self.file.read(4))[0]
+        version = struct.unpack_from('<I', self.file.read(4))[0]
         
         if version == 23:
             self.file.seek(152)
-            print('File Run Count:'+ str(struct.unpack_from('I', self.file.read(4))[0]))
+            print('File Run Count:'+ str(struct.unpack_from('<I', self.file.read(4))[0]))
         elif version ==30:
             self.file.seek(208)
-            print('File Run Count:'+ str(struct.unpack_from('I', self.file.read(4))[0]))
+            print('File Run Count:'+ str(struct.unpack_from('<I', self.file.read(4))[0]))
         return num_launch
     
     def pf_file_list():
         self.file.seek(100)
-        file_list_offset=struct.unpack_from('I', self.file.read(4))[0]
-        file_list_size=struct.unpack_from('I', self.file.read(4))[0]
+        file_list_offset=struct.unpack_from('<I', self.file.read(4))[0]
+        file_list_size=struct.unpack_from('<I', self.file.read(4))[0]
         resource = []
         self.file.seek(file_list_offset)
         filenames = self.file.read(file_list_size)
