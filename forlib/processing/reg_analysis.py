@@ -78,9 +78,26 @@ class NTAnalysis:
             a.append(items.name())
         
         if a[0] == '11.0':    
-            recent1 = self.reg.open(path + "\\%s\\Excel\\Recent Files" %(a[0]))
-            recent2 = self.reg.open(path + "\\%s\\PowerPoint\\Recent File List" %(a[0]))
-            #recent3 = self.reg.open(path + "\\%s\\Word\\Recent File List" %(a[0]))
+            try:
+                recent1 = self.reg.open(path + "\\%s\\Excel\\Recent Files" %(a[0]))
+                xls = self.__print_ms(recent1)
+            except:
+                xls = []
+                
+            try:
+                recent2 = self.reg.open(path + "\\%s\\PowerPoint\\Recent File List" %(a[0]))
+                ppt = self.__print_ms(recent2)
+            except:
+                ppt = []
+                
+            try:
+                recent3 = self.reg.open(path + "\\%s\\Word\\Recent File List" %(a[0]))
+                word = self.__print_ms(recent3)
+            except:
+                word = []
+            
+            return xls+ppt+word
+                
 
         if a[0] == '16.0':
             path2 = path+"\\%s\\Excel\\User MRU"%(a[0])
@@ -89,17 +106,24 @@ class NTAnalysis:
             for items in LiveId.subkeys():
                 b.append(items.name())
             
-            # 형식 수정 예정
             try:
                 recent1 = self.reg.open(path + "\\%s\\Excel\\User MRU\\%s\\File MRU" %(a[0], b[0]))
-                recent2 = self.reg.open(path + "\\%s\\PowerPoint\\User MRU\\%s\\File MRU" %(a[0], b[0]))
-                recent3 = self.reg.open(path + "\\%s\\Word\\User MRU\\%s\\File MRU" %(a[0], b[0]))
-
+                xls = self.__print_ms(recent1)
             except:
-                print("[-] This(excel or ppt or word) is not include this registry")
-            xls  = self.__print_ms(recent1)
-            ppt  = self.__print_ms(recent2)
-            word = self.__print_ms(recent3)
+                xls = []
+
+            try:
+                recent2 = self.reg.open(path + "\\%s\\PowerPoint\\User MRU\\%s\\File MRU" %(a[0], b[0]))
+                ppt = self.__print_ms(recent2)
+            except:
+                ppt = []
+
+            try:
+                recent3 = self.reg.open(path + "\\%s\\Word\\User MRU\\%s\\File MRU" %(a[0], b[0]))
+                word = self.__print_ms(recent3)
+            except:
+                word = []
+
             return xls+ppt+word
             #ret_ms.append(self.print_ms(recent1))
            
