@@ -19,6 +19,7 @@ from forlib.processing import recycle_analysis
 from forlib.processing import iconcache_analysis
 from forlib.processing import prefetch_analysis
 from forlib import decompress1
+from forlib import signature as sig
 
 def sig_check(path):
     extension = magic.from_file(path).split(',')[0]
@@ -27,7 +28,11 @@ def sig_check(path):
 
 def file_open(path):
     extension = sig_check(path)
-    print('extension: ' + extension)
+    if extension[:11] == 'cannot open':
+        extension = sig.sig_check(path)
+        print('extension: ' + extension)
+    else:
+        print('extension: ' + extension)
     if extension == 'MS Windows Vista Event Log':
         file = evtx_open(path)
         return log_analysis.EvtxAnalysis(file)
