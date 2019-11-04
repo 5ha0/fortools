@@ -20,6 +20,7 @@ from forlib.processing import iconcache_analysis
 from forlib.processing import prefetch_analysis
 from forlib import decompress1
 from forlib import signature as sig
+from forlib import calc_hash as calc_hash
 
 def sig_check(path):
     extension = magic.from_file(path).split(',')[0]
@@ -27,6 +28,8 @@ def sig_check(path):
 
 
 def file_open(path):
+    calc_hash.get_md5_hash(path)
+    calc_hash.get_sha1_hash(path)
     extension = sig_check(path)
     if extension[:11] == 'cannot open':
         extension = sig.sig_check(path)
