@@ -28,8 +28,6 @@ def sig_check(path):
 
 
 def file_open(path):
-    calc_hash.get_md5_hash(path)
-    calc_hash.get_sha1_hash(path)
     extension = sig_check(path)
     if extension[:11] == 'cannot open':
         extension = sig.sig_check(path)
@@ -107,11 +105,13 @@ class EvtxLog:
 class LinuxLog:
     class SysLog:
         def file_open(path):
+            calc_hash.get_hash(path)
             file = normal_file_oepn(path)
             return log_analysis.LinuxLogAnalysis.SysLog(file)
 
     class AuthLog:
         def file_open(path):
+            calc_hash.get_hash(path)
             file = normal_file_oepn(path)
             return log_analysis.LinuxLogAnalysis.AuthLog(file)
 
@@ -121,11 +121,13 @@ class LinuxLog:
 class Apache:
     class AccessLog:
         def file_open(path):
+            calc_hash.get_hash(path)
             file = normal_file_oepn(path)
             return log_analysis.ApacheLog.Access(file)
 
     class ErrLog:
         def file_open(path):
+            calc_hash.get_hash(path)
             file = normal_file_oepn(path)
             return log_analysis.ApacheLog.Error(file)
 
@@ -133,6 +135,7 @@ class Apache:
 # class IIS:
 class IIS:
     def file_open(path):
+        calc_hash.get_hash(path)
         file = normal_file_oepn(path)
         return log_analysis.IIS(file)
 
@@ -140,21 +143,25 @@ class IIS:
 class Files:
     class MSOld:
         def file_open(path):
+            calc_hash.get_hash(path)
             file = file_open(path)
             return files_analysis.MSOldAnalysis(file)
 
     class HWP:
         def file_open(path):
+            calc_hash.get_hash(path)
             file = file_open(path)
             return files_analysis.HWPAnalysis(file)
 
     class JPEG:
         def file_open(path):
+            calc_hash.get_hash(path)
             file = file_open(path)
             return files_analysis.JPEGAnalysis(file)
 
     class PDF:
         def file_open(path):
+            calc_hash.get_hash(path)
             file = file_open(path)
             return files_analysis.PDFAnalysis(file)
 
@@ -163,6 +170,7 @@ class Lnk:
     def file_open(path):
         extension = sig_check(path)
         if extension == 'MS Windows shortcut':
+            calc_hash.get_hash(path)
             file = lnk_open(path)
             return lnk_analysis.LnkAnalysis(file)
 
@@ -171,6 +179,7 @@ class Recycle:
     def file_open(path):
         extension = sig_check(path)
         if extension == 'data':
+            calc_hash.get_hash(path)
             file = recycle_open(path)
             return recycle_analysis.RecycleAnalysis(file)
      
@@ -179,6 +188,7 @@ class Iconcache:
     def file_open(path):
         extension = sig_check(path)
         if extension == 'data':
+            calc_hash.get_hash(path)
             file = iconcache_open(path)
             return iconcache_analysis.IconcacheAnalysis(file)
         
@@ -187,6 +197,7 @@ class Prefetch:
     def file_open(path):
         extension = sig_check(path)
         if extension == 'data':
+            calc_hash.get_hash(path)
             file = prefetch_open(path)
             return prefetch_analysis.PrefetchAnalysis(file)
         
@@ -216,6 +227,7 @@ class JumpList:
     def file_open(path):
         extension = sig_check(path)
         if extension == 'Composite Document File V2 Document':
+            calc_hash.get_hash(path)
             file = ole_open(path)
             return jump_analysis.JumplistAnalysis(file)
 
@@ -224,6 +236,7 @@ class Thumbnail:
     def file_open(path):
         # extension = sig_check(path)
         # if extension == 'Cache':
+        calc_hash.get_hash(path)
         file = cache_open(path)
         return thumbnail_analysis.Thumbnail_analysis_windows(file)
 
