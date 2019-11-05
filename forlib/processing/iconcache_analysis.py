@@ -51,6 +51,8 @@ class IconcacheAnalysis:
             i += 1
 
         self.size = self.size + path_length * path_num + 12
+        
+        return filepaths
 
 
     def section_two(self):
@@ -75,6 +77,9 @@ class IconcacheAnalysis:
             i += 1
 
         self.size = self.size + path_length * path_num + 14
+        
+        return filepaths
+    
     
     def section_three(self):
         self.file.seek(self.size)
@@ -96,3 +101,5 @@ class IconcacheAnalysis:
             filepaths = filepaths.replace('\x00','')
             print(str(filepaths)+'\n')
             i += 1
+            
+        return filepaths
