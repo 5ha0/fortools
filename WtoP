@@ -1,0 +1,23 @@
+import os
+import comtypes.client
+import time
+#import #docx
+
+wdFormatPDF = 17
+
+# write your path and file name
+in_file = r'C:\Users\00\Desktop\sample.docx'
+out_file = r'C:\Users\00\Desktop\sample2.pdf'
+
+print ('check your file path: ' + in_file)
+print ('check your file path: ' + out_file)
+
+word = comtypes.client.CreateObject('InternetExplorer.Application')
+word.Visible = True
+time.sleep(3)
+
+doc = word.Documents.Open(in_file)
+doc.SaveAs(out_file, FileFormat=wdFormatPDF)
+doc.Close()
+word.Visible = False 
+word.Quit() 
