@@ -53,7 +53,7 @@ class PrefetchAnalysis:
             print('File Run Count:'+ str(struct.unpack_from('<I', self.file.read(4))[0]))
         return num_launch
     
-    def pf_file_list():
+    def pf_file_list(self):
         self.file.seek(100)
         file_list_offset=struct.unpack_from('<I', self.file.read(4))[0]
         file_list_size=struct.unpack_from('<I', self.file.read(4))[0]
