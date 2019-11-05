@@ -24,7 +24,7 @@ class RecycleAnalysis:
         filedatetime = '%016x' %filedatetime
         filedatetime = int(filedatetime,16)/10.
         filedatetime =  datetime(1601, 1, 1) + timedelta(microseconds=filedatetime)+timedelta(hours=9)  
-        print('File Time: ' + str(filedatetime) + '+ UTC-9')
+        print('File Time: ' + str(filedatetime) + '+ UTC+9:00')
 
 
     def r_path(self):
