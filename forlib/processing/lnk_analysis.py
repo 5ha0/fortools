@@ -297,6 +297,7 @@ class LnkAnalysis:
             string_size = string_size + b
             string_size = struct.unpack('<i', string_size)[0]
             string_off = string_size + string_off + 2
+        ## if you want to read string, use this
         ##        relative_path = str(file.read(string_size))
         ##        relative_path = relative_path.replace('\x00','').encode('utf-8', 'ignore').decode('utf-8')
         elif 'HasWorkingDir' in self.lnk_flag:
