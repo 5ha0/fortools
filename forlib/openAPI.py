@@ -70,11 +70,11 @@ def file_open(path):
         file = systemp_open(path)
         return file
     elif extension == 'PDF document':
-        return Files.PDF.file_open(file)
+        return Files.PDF.file_open(path)
     elif extension == 'Cache':
         return Thumbnail.file_open(path)
     elif extension == 'MS Windows shortcut':
-        return LNK.file_open(path)
+        return Lnk.file_open(path)
     elif extension == 'data':
         if '$I' in path:
             return Recycle.file_open(path)
