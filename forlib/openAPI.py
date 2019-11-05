@@ -37,8 +37,7 @@ def file_open(path):
     else:
         print('extension: ' + extension)
     if extension == 'MS Windows Vista Event Log':
-        file = evtx_open(path)
-        return log_analysis.EvtxAnalysis(file)
+        return EvtxLog.file_open(path)
     elif extension == 'ASCII text':
         file = normal_file_oepn(path)
         return log_analysis.TextLogAnalysis(file)
@@ -108,22 +107,95 @@ def file_open(path):
     # PNG image data
 
 
+class EvtxLog:
+    def file_open(path):
+        extension = sig_check(path)
+        if extension == 'MS Windows Vista Event Log':
+            calc_hash.get_hash(path)
+            file = evtx_open(path)
+            return log_analysis.EvtxAnalysis(file)
+        print("check your file format. This is not EVTX file.")
+        return -1
+
+
 class LinuxLog:
-    # auth.log, syslog
-    def normal_log(path):
+    class SysLog:
+        def file_open(path):
+            file = normal_file_oepn(path)
+            return log_analysis.LinuxLogAnalysis.SysLog(file)
+
+    class AuthLog:
+        def file_open(path):
+            file = normal_file_oepn(path)
+            return log_analysis.LinuxLogAnalysis.AuthLog(file)
+
+    # class History
+
+
+class Apache:
+    class AccessLog:
+        def file_open(path):
+            file = normal_file_oepn(path)
+            return log_analysis.ApacheLog.Access(file)
+
+    class ErrLog:
+        def file_open(path):
+            file = normal_file_oepn(path)
+            return log_analysis.ApacheLog.Error(file)
+
+
+# class IIS:
+class IIS:
+    def file_open(path):
         file = normal_file_oepn(path)
-        log_analysis.LinuxLogAnalysis.AuthLog(file)
+        return log_analysis.IIS(file)
 
-    class Apache:
-        # err log
-        def apache_err(path):
-            file = normal_file_oepn(path)
-            log_analysis.LinuxLogAnalysis.ApacheLog.Error(file)
 
-        # access log
-        def apache_access(path):
-            file = normal_file_oepn(path)
-            log_analysis.LinuxLogAnalysis.ApacheLog.Access(file)
+class Files:
+    class MSOld:
+        class PPT:
+            def file_open(path):
+                file = file_open(path)
+                return files_analysis.MSOldAnalysis(file)
+
+    class HWP:
+        def file_open(path):
+            file = file_open(path)
+            return files_analysis.HWPAnalysis(file)
+
+    class JPEG:
+        def file_open(path):
+            file = file_open(path)
+            return files_analysis.JPEGAnalysis(file)
+
+    class PDF:
+        def file_open(path):
+            file = file_open(path)
+            return files_analysis.PDFAnalysis(file)
+
+
+class LNK:
+    def file_open(path):
+        extension = sig_check(path)
+        if extension == 'MS Windows shortcut':
+            file = binary_open(path)
+            #return lnk_analysis.LNKAnalysis(file)
+
+
+class Registry:
+    def file_open(path):
+        extension = sig_check(path)
+        if extension == 'MS Windows registry file':
+            file = reg_open(path)
+            return reg_analysis.RegistryAnalysis(file)
+
+
+class JumpList:
+    def file_open(path):
+        extension = sig_check(path)
+        if extension == 'Composite Document File V2 Document':
+            file = ole_open(path)
+            return jump_analysis.JumplistAnalysis(file)
 
 
 def evtx_open(path):
