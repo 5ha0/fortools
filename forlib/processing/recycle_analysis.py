@@ -1,11 +1,7 @@
-import os.path
 from struct import unpack
-import struct
 import binascii
 from datetime import datetime
 from datetime import timedelta
-import string
-import sys
 
 class RecycleAnalysis:
     def __init__(self, file):
