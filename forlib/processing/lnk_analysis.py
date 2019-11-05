@@ -49,7 +49,7 @@ class LnkAnalysis:
 
         for count, items in enumerate(flags_to_parse):
             if int(items) == 1:
-                print('Link flag : ' + format(flags[count]))
+                print('Link Flag : ' + format(flags[count]))
                 self.lnk_flag.append(format(flags[count]))
             else:
                 continue
@@ -77,7 +77,7 @@ class LnkAnalysis:
         lnk_attributes = []
         for count, items in enumerate(attrib_to_parse):
             if int(items) == 1:
-                print('attrib: ' + format(attrib[count]))
+                print('Link Attribute: ' + format(attrib[count]))
                 lnk_attributes.append(format(attrib[count]))
             else:
                 continue
@@ -97,7 +97,7 @@ class LnkAnalysis:
 
         for count, items in enumerate(drive):
             if int(items) == 1:
-                print('drive_type: ' + format(drive_type[drive]))
+                print('Drive Type: ' + format(drive_type[drive]))
             else:
                 continue
 
@@ -119,21 +119,21 @@ class LnkAnalysis:
         c_time = self.file.read(8)
         c_time = struct.unpack('<q', c_time)
         c_time = convert_time(c_time)
-        print('Creation Time: ' + c_time)
+        print('Creation Time: ' + c_time + 'UTC+9:00')
 
     def access_time(self):
         self.file.seek(36)
         a_time = self.file.read(8)
         a_time = struct.unpack_from('<q', a_time)[0]
         a_time = convert_time(a_time)
-        print('Access Time: ' + a_time)
+        print('Access Time: ' + a_time + 'UTC+9:00')
 
     def write_time(self):
         self.file.seek(44)
         w_time = self.file.read(8)
         w_time = struct.unpack('<q', w_time)[0]
         w_time = convert_time(w_time)
-        print('Write Time: ' + w_time)
+        print('Write Time: ' + w_time + 'UTC+9:00')
 
     def file_size(self):
         self.file.seek(52)
