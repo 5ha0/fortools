@@ -6,6 +6,7 @@ from os import listdir
 from os import path
 import time
 import json
+from zipfile import ZipFile
 
 # jpeg data: time, latitude, longitude
 class JPEGAnalysis:
@@ -145,6 +146,30 @@ class MSOldAnalysis:
             file_obj["creating_application"] = 'no info'
         print(file_obj)
         return file_obj
+
+
+class ZIPAnalysis:
+    def __init__(self, file):
+        self.file = file
+
+    def get_info(self):
+        num = 1
+        for info in self.file.infolist():
+            print("[%d]FileName: " % num + os.path.basename(info.filename))
+            print("\tComment: " + str(info.comment))
+            print("\tModified: " + str(datetime.datetime(*info.date_time)))
+            print("\tSystem: " + str(info.create_system) + "(0 = Windows, 3 = Unix)")
+            print("\tZIP version: " + str(info.create_version))
+            print("\tCompressed: " + str(info.compress_size) + " bytes")
+            print("\tUncompressed: " + str(info.file_size) + " bytes")
+            print("\tCRC: " + str(info.CRC))
+            print("\tVolume: " + str(info.volume))
+            print("\tInternal attr: " + str(info.internal_attr))
+            print("\tExternal attr: " + str(info.external_attr))
+            print("\tHeader offset: " + hex(info.header_offset))
+            print("\tFlag bits: " + str(info.flag_bits))
+            print("\tRaw time: " + str(info._raw_time))
+            num += 1
 
 def file_list(in_path):
 

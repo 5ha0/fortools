@@ -64,7 +64,7 @@ def file_open(path):
     elif extension == 'iconcache':
         return binary_open(path)
     elif extension == 'Zip archive data':
-        return zip_open(path)
+        return Files.ZIP.file_open(path)
     elif extension == 'Hangul (Korean) Word Processor File 5.x':
         return Files.HWP.file_open(path)
     elif extension == 'systemp':
@@ -171,6 +171,12 @@ class Files:
             calc_hash.get_hash(path)
             file = file_open(path)
             return files_analysis.PDFAnalysis(file)
+
+    class ZIP:
+        def file_open(path):
+            calc_hash.get_hash(path)
+            file = zip_open(path)
+            return files_analysis.ZIPAnalysis(file)
 
         
 class Lnk:
@@ -374,6 +380,6 @@ def prefetch_open(path):
     version = struct.unpack_from('I', prefetch_file.read(4))[0]
             
     if version != 23 and version != 30:
-        print ('error: not supported version')
+        print('error: not supported version')
 
     return prefetch_file

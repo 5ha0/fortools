@@ -64,10 +64,17 @@ file.showlist()
 #icon_path = r'C:\Users\sjms1\AppData\Local\Microsoft\Windows\Explorer\iconcache_48.db'
 #thumbnail = Thumbnail.file_open(path)
 #thumbnail.get_data(path)
+
 #------------------------ Windows 7 -----------------------------#
 # path = r'C:\Users\sjms1\Desktop\Explorer\thumbcache_96.db'
 # thumbnail = Thumbnail.file_open(path)
 # thumbnail.get_data(path)
 
-path = r"C:\Users"
-files_analysis.file_list(path)
+#------------------------ filelist ------------------------------#
+#path = r"C:\Users"
+#files_analysis.file_list(path)
+
+#------------------------ ZipFile -------------------------------#
+path = r'C:\Users\sjms1\Desktop\Educate\cos.jar'
+file = Files.ZIP.file_open(path)
+file.get_info()
