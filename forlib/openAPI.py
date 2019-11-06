@@ -30,7 +30,7 @@ def sig_check(path):
 
 def file_open(path):
     extension = sig_check(path)
-    if extension[:11] == 'cannot open':
+    if extension[:11] == 'cannot open' or extension == 'data':
         extension = sig.sig_check(path)
         print('extension: ' + extension)
     else:
