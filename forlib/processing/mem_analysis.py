@@ -52,7 +52,7 @@ class MemAnalysis:
     def cmdline(self):
         ret_list = list()
 
-        ret = subprocess.Popen("python3 %s -f %s windows.cmdline" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret = subprocess.Popen("python %s -f %s windows.cmdline" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
         # 실행 결과값을 가져와 특정 문장을 제외 후 결과만을 가져오기 위함
         reg_list = self.__regx(ret)
@@ -71,7 +71,7 @@ class MemAnalysis:
     def dlldump(self):
         ret_list = list()
 
-        ret = subprocess.Popen("python3 %s -f %s windows.dlldump" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret = subprocess.Popen("python %s -f %s windows.dlldump" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
 
         reg_list = self.__regx(ret)
@@ -89,7 +89,7 @@ class MemAnalysis:
     def dlllist(self):
         ret_list = list()
 
-        ret = subprocess.Popen("python3 %s -f %s windows.dlllist" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret = subprocess.Popen("python %s -f %s windows.dlllist" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
 
         reg_list = self.__regx(ret)
@@ -110,7 +110,7 @@ class MemAnalysis:
     def driverirp(self):
         ret_list = list()
 
-        ret = subprocess.Popen("python3 %s -f %s windows.driverirp" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret = subprocess.Popen("python %s -f %s windows.driverirp" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
 
         reg_list = self.__regx(ret)
@@ -131,7 +131,7 @@ class MemAnalysis:
     def driverscan(self):
         ret_list = list()
 
-        ret = subprocess.Popen("python3 %s -f %s windows.driverscan" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret = subprocess.Popen("python %s -f %s windows.driverscan" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
 
         reg_list = self.__regx(ret)
@@ -152,7 +152,7 @@ class MemAnalysis:
     def filescan(self):
         ret_list = list()
 
-        ret = subprocess.Popen("python3 %s -f %s windows.filescan" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret = subprocess.Popen("python %s -f %s windows.filescan" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
 
         reg_list = self.__regx(ret)
@@ -162,7 +162,7 @@ class MemAnalysis:
     def handles(self):
         ret_list = list()
 
-        ret = subprocess.Popen("python3 %s -f %s windows.handles" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret = subprocess.Popen("python %s -f %s windows.handles" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
 
         reg_list = self.__regx(ret)
@@ -184,7 +184,7 @@ class MemAnalysis:
     def info(self):
         ret_list = list()
 
-        ret = subprocess.Popen("python3 %s -f %s windows.info" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret = subprocess.Popen("python %s -f %s windows.info" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
 
         reg_list = self.__regx(ret)
@@ -204,7 +204,7 @@ class MemAnalysis:
         return ret_list
 
     def mutantscan(self):
-        ret = subprocess.Popen("python3 %s -f %s windows.mutantscan" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret = subprocess.Popen("python %s -f %s windows.mutantscan" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
         reg_list = self.__regx(ret)
         ret_list = self.__scan(reg_list)
@@ -213,7 +213,7 @@ class MemAnalysis:
     def malfind(self):
         ret_list = list()
 
-        ret = subprocess.Popen("python3 %s -f %s windows.malfind" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret = subprocess.Popen("python %s -f %s windows.malfind" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
 
         for line in iter(ret.stdout.readline, ""):
@@ -240,21 +240,21 @@ class MemAnalysis:
         # return ret_list
 
     def pslist(self):
-        ret = subprocess.Popen("python3 %s -f %s windows.pslist" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret = subprocess.Popen("python %s -f %s windows.pslist" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
         reg_list = self.__regx(ret)
         ret_list = self.__process(reg_list)
         return ret_list
 
     def psscan(self):
-        ret = subprocess.Popen("python3 %s -f %s windows.psscan" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret = subprocess.Popen("python %s -f %s windows.psscan" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
         reg_list = self.__regx(ret)
         ret_list = self.__process(reg_list)
         return ret_list
 
     def pstree(self):
-        ret = subprocess.Popen("python3 %s -f %s windows.pstree" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret = subprocess.Popen("python %s -f %s windows.pstree" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
         reg_list = self.__regx(ret)
         ret_list = self.__process(reg_list)
@@ -263,7 +263,7 @@ class MemAnalysis:
     def reg_certificates(self):
         ret_list = list()
 
-        ret = subprocess.Popen("python3 %s -f %s windows.registry.certificates" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret = subprocess.Popen("python %s -f %s windows.registry.certificates" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
 
         reg_list = self.__regx(ret)
@@ -282,7 +282,7 @@ class MemAnalysis:
     def reg_hivelist(self):
         ret_list = list()
 
-        ret = subprocess.Popen("python3 %s -f %s windows.registry.hivelist" % (self.vol_path, self.file),
+        ret = subprocess.Popen("python %s -f %s windows.registry.hivelist" % (self.vol_path, self.file),
                                shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
 
@@ -300,7 +300,7 @@ class MemAnalysis:
     def reg_hivescan(self):
         ret_list = list()
 
-        ret = subprocess.Popen("python3 %s -f %s windows.registry.hivescan" % (self.vol_path, self.file),
+        ret = subprocess.Popen("python %s -f %s windows.registry.hivescan" % (self.vol_path, self.file),
                                shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
 
@@ -317,7 +317,7 @@ class MemAnalysis:
     def reg_printkey(self):
         ret_list = list()
 
-        ret = subprocess.Popen("python3 %s -f %s windows.registry.printkey" % (self.vol_path, self.file),
+        ret = subprocess.Popen("python %s -f %s windows.registry.printkey" % (self.vol_path, self.file),
                                shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
 
@@ -340,7 +340,7 @@ class MemAnalysis:
     def reg_userassist(self):
         ret_list = list()
 
-        ret = subprocess.Popen("python3 %s -f %s windows.registry.userassist" % (self.vol_path, self.file),
+        ret = subprocess.Popen("python %s -f %s windows.registry.userassist" % (self.vol_path, self.file),
                                shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
 
@@ -349,7 +349,7 @@ class MemAnalysis:
 
     def vadinfo(self):
         ret_list = list()
-        ret = subprocess.Popen("python3 %s -f %s windows.vadinfo" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret = subprocess.Popen("python %s -f %s windows.vadinfo" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
         reg_list = self.__regx(ret)
         for i in range(1, len(reg_list)):
