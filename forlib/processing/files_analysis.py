@@ -1,6 +1,11 @@
 from PIL.ExifTags import TAGS
 import datetime
-
+import os
+from datetime import date, time, timedelta
+from os import listdir
+from os import path
+import time
+import json
 
 # jpeg data: time, latitude, longitude
 class JPEGAnalysis:
@@ -140,3 +145,27 @@ class MSOldAnalysis:
             file_obj["creating_application"] = 'no info'
         print(file_obj)
         return file_obj
+
+def file_list(in_path):
+
+    files = [f for f in listdir(in_path)]
+    file_length = len(files)
+    filename=[]
+
+    for i in range(file_length):
+        filename.append(0)
+
+    for i in range(file_length):
+        filename.append(files[i])
+        mt = time.ctime(path.getmtime(in_path + '\\' + files[i]))
+        ct = time.ctime(path.getctime(in_path + '\\' + files[i]))
+
+        file_obj = {
+            "no" + str(i+1) : {
+                "Name" : files[i],
+                "Modified TIme" : mt,
+                "Created Time" : ct
+            }
+        }
+        print(json.dumps(file_obj))
+    print("Total: " + str(file_length))

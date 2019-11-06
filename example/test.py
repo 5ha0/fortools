@@ -58,11 +58,16 @@ file.showlist()
 # file = file_open('.\\data\\result.evtx')
 # file.get_string()
 '''
-path = r'C:\Users\sjms1\AppData\Local\Microsoft\Windows\Explorer\thumbcache_16.db'
-thumbnail = Thumbnail.file_open(path)
-print(thumbnail)
-thumbnail.get_data(path)
+#------------------------ Windows 10 -----------------------------#
+#path = r'C:\Users\sjms1\AppData\Local\Microsoft\Windows\Explorer\thumbcache_96.db'
+#path = r'C:\Users\sjms1\Desktop\win7_explorer\thumbcache_96.db'
+#icon_path = r'C:\Users\sjms1\AppData\Local\Microsoft\Windows\Explorer\iconcache_48.db'
+#thumbnail = Thumbnail.file_open(path)
+#thumbnail.get_data(path)
+#------------------------ Windows 7 -----------------------------#
+# path = r'C:\Users\sjms1\Desktop\Explorer\thumbcache_96.db'
+# thumbnail = Thumbnail.file_open(path)
+# thumbnail.get_data(path)
 
-
-
-
+path = r"C:\Users"
+files_analysis.file_list(path)

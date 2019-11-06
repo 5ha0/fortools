@@ -1,5 +1,6 @@
 import os
 import sys
+import struct
 from forlib.processing.internal import check
 
 class Thumbnail_analysis:
@@ -94,7 +95,6 @@ class Thumbnail_analysis_windows:
         num = 0
 
         while True:
-
             try:
                 file.seek(start_offset)
                 entry.clear()
@@ -138,7 +138,7 @@ class Thumbnail_analysis_windows:
                     continue
                 else:
                     break
-
+            #if(struct.unpack(str, entry.get("entry_hash"))) == 0:
             if int(entry.get("entry_hash"), 16) == 0:
                 start_offset = file.tell()
                 continue
@@ -194,6 +194,7 @@ class Thumbnail_analysis_windows:
             print({num:cache_file})
 
         file.close()
+
 
 
 

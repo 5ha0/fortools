@@ -5,7 +5,7 @@ import zipfile
 import sqlite3
 import PyPDF2
 import codecs
-import pyesedb
+
 from PIL import Image
 from Registry import Registry
 from os import listdir
