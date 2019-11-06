@@ -78,3 +78,18 @@ file.showlist()
 path = r'C:\Users\sjms1\Desktop\Educate\cos.jar'
 file = Files.ZIP.file_open(path)
 file.get_info()
+
+#Browser
+# google_cookie_path="C:\Users\JH\AppData\Local\Google\Chrome\User Data\Default\Cookies"
+# google_history_path="C:\Users\JH\AppData\Local\Google\Chrome\User Data\Default\History"
+# google_downloads_path="C:\Users\JH\AppData\Local\Google\Chrome\User Data\Default\History"
+# firefox_cookie_path="C:\Users\JH\AppData\Roaming\Mozilla\Firefox\Profiles\{random}\cookies.sqlite"
+# firefox_history_path="C:\Users\JH\AppData\Roaming\Mozilla\Firefox\Profiles\{random}\places.sqlite"
+# firefox_download_path="C:\Users\JH\AppData\Roaming\Mozilla\Firefox\Profiles\{random}\places.sqlite"
+# webcachev01_path=""
+
+# Browser.Firefox.file_open(firefox_cookies_path).cookies()
+# Browser.Chrome.file_open(google_history_path).history()
+# Browser.Ie_Edge.file_open(webcachev01_path).cookies()
+
+

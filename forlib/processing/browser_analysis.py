@@ -223,7 +223,7 @@ class Ie_Edge:
         Containers = self.file.get_table_by_name("Containers")
         for record in Containers.records:
             if record.get_value_data_as_string(8) == group:
-                #containerid랑directory
+                #get containerid, directory
                 ContainerID["Container_" + str(record.get_value_data_as_integer(0))] = record.get_value_data_as_string(10)
         return ContainerID
 
@@ -255,10 +255,10 @@ class Ie_Edge:
         for containerid in cache_container_id.keys():
             col_name = self.__get_schema(containerid)
             cache_container = self.file.get_table_by_name(containerid)
-            if col_name == None: continue #없는경우
-
+            if col_name == None: continue 
+            
             mkdict = dict()
-            mkdict["group"] = "cache"
+            mkdict["type"] = "cache"
             mkdict["browser"] = "IE10+ Edge"
             mkdict["containerid"]=containerid
             if (cache_container.number_of_records == 0):
@@ -313,8 +313,8 @@ class Ie_Edge:
 
     def history(self):
         history=[]
-        history_noContainer=[]
-        history_emptyContainer=[]
+        history_noContainer=[]#없는 container 저장하는 list
+        history_emptyContainer=[]#빈 container 저장하는 list
         history_container_id= self.__get_ContainerID("History")
         no = 0
         for containerid in history_container_id.keys():
@@ -338,7 +338,6 @@ class Ie_Edge:
                     binary_data=visit.get_value_data(21)
                     size_a=bytes.decode(binascii.hexlify(binary_data[58:62][::-1]))
                     size= int(size_a,16)*2
-                    # title=bytes.decode(binascii.hexlify(binary_data[62:62+size][::-1]))
                     title = bytes.decode(binascii.hexlify(binary_data[62:62 + size]))
                     mkdict["title"] = bytes.fromhex(title).decode("utf-16")
                 except:
@@ -358,8 +357,8 @@ class Ie_Edge:
 
     def downloads(self):
        downloads = []
-       downloads_noContainer = []
-       downloads_emptyContainer = []
+       downloads_noContainer = []#없는 container 저장하는 list
+       downloads_emptyContainer = []#빈 container 저장하는 list
        downloads_container_id= self.__get_ContainerID("iedownload")
        no = 0
        for containerid in downloads_container_id.keys():
@@ -371,7 +370,7 @@ class Ie_Edge:
            if (downloads_container.number_of_records == 0):
                downloads_emptyContainer.append(containerid)
                continue
-           print(containerid)
+           
            for download in downloads_container.records:
                no+=1
                mkdict = dict()
