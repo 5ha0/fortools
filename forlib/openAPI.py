@@ -18,6 +18,7 @@ from forlib.processing import lnk_analysis
 from forlib.processing import recycle_analysis
 from forlib.processing import iconcache_analysis
 from forlib.processing import prefetch_analysis
+from forlib.processing import mem_analysis
 from forlib import decompress1
 from forlib import signature as sig
 from forlib import calc_hash as calc_hash
@@ -89,7 +90,13 @@ def file_open(path):
     # elif extension == 'PE32+ executable (console) x86-64':
     #     file =
     # PNG image data
-
+    
+class Mem:
+    def mem_open(path):
+        extension = sig_check(path)
+        if extension == 'data' or extension == 'block special':
+            calc_hash.get_hash(path)
+            return mem_analysis.MemAnalysis(path)
 
 class EvtxLog:
     def file_open(path):
