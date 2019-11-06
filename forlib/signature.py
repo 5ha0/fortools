@@ -1,3 +1,5 @@
+from forlib import decompress1
+
 signatures = [{
     'file_extension': 'Zip archive data',
     'hex': ['0x50', '0x4b', '0x3', '0x4'],
@@ -53,6 +55,11 @@ signatures = [{
     'hex': ['0x01', '0x0', '0x0', '0x0', '0x0', '0x0', '0x0', '0x0'],
     'len': 8,
     'offset': 0}
+    {
+    'file_extension': 'MAM',#magic : data
+    'hex': ['0x4D', '0x41', '0x4D'],
+    'len': 3,
+    'offset': 0}
     
     
 ]
@@ -66,4 +73,27 @@ def sig_check(path):
         for i in range(0, sig['len']):
             if sig['hex'][i] != hex(header[sig['offset']+i]):
                 break
+                
+            if sig['file_extension'] = 'MAM':
+                extension = prefetch()
+                return extension
+            
             return sig['file_extension']
+        
+def prefetch():
+    f.close()
+    decompressed = decompress1.decompress(path)
+
+    dirname = os.path.dirname(path)
+    basename = os.path.basename(path)
+    base = os.path.splitext(basename)
+    basename = base[0]
+    exetension = base[-1]
+            
+    prefetch_file = open(dirname+'\\'+basename+'-1'+exetension,'wb')
+    prefetch_file.write(decompressed)
+    prefetch_file.close()
+            
+    prefetch_file = open(dirname+'\\'+basename+'-1'+exetension,'rb')
+                
+    sig_check()
