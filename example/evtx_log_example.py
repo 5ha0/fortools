@@ -25,19 +25,19 @@ log_file.xml_with_num(1)
 log_file.eventid()
 
 # search information with date.
-log_file.date()
+log_file.date('%Y-%m-%d', '%Y-%m-%d')
 
 # search information with level.
 log_file.level()
 
 # favorite is function that binds frequently used events.
-# get information about logon event log.
-log_file.favorite.logon()
-
 # get information about remote event log.
-log_file.favorite.remote()
+log_file.Favorite.remote()
 
 # get information about account event log.
-log_file.favorite.accountType.verify_account()
-log_file.favorite.accountType.change_pwd()
-log_file.favorite.accountType.delete_account()
+log_file.Favorite.AccountType.logon
+log_file.Favorite.AccountType.login_failed()
+log_file.Favorite.AccountType.verify_account()
+log_file.Favorite.AccountType.change_pwd()
+log_file.Favorite.AccountType.delete_account()
+log_file.Favorite.AccountType.add_privileged_group()

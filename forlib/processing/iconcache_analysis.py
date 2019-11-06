@@ -7,7 +7,7 @@ class IconcacheAnalysis:
         self.size
         self.signature
         
-    def file_version():
+    def file_version(self):
         self.file.seek(12)
         build_num = self.file.read(4)
         if build_num == b'\xB1\x1D\x01\x06':
@@ -22,7 +22,7 @@ class IconcacheAnalysis:
             print('not supported version')
             return none
 
-    def section_one():
+    def section_one(self):
         self.file.seek(0)
         self.size = struct.unpack_from('<I', self.file.read(4))[0]
         
@@ -51,9 +51,11 @@ class IconcacheAnalysis:
             i += 1
 
         self.size = self.size + path_length * path_num + 12
+        
+        return filepaths
 
 
-    def section_two():
+    def section_two(self):
         self.file.seek(self.size)
         path_length = self.file.read(2)
         b = (b'\x00\x00')
@@ -75,8 +77,11 @@ class IconcacheAnalysis:
             i += 1
 
         self.size = self.size + path_length * path_num + 14
+        
+        return filepaths
     
-    def section_three():
+    
+    def section_three(self):
         self.file.seek(self.size)
         path_length = self.file.read(2)
         b = (b'\x00\x00')
@@ -96,3 +101,5 @@ class IconcacheAnalysis:
             filepaths = filepaths.replace('\x00','')
             print(str(filepaths)+'\n')
             i += 1
+            
+        return filepaths

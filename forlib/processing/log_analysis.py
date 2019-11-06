@@ -6,19 +6,17 @@ import re
 
 # analysis part for evtx file
 class EvtxAnalysis:
-
-    result = []
-
     def __init__(self, file):
+        self._result = []
         self.evtx_file = file
         self.evtx_json = self.__make_json()
-        self.favorite = Favorite(self.evtx_json)
+        self.Favorite = Favorite(self.evtx_json)
 
     def show_all_record(self):
         for i in self.evtx_json:
             print(i)
-            self.result.append(i)
-        return self.result
+            self._result.append(i)
+        return self._result
 
     def __make_json(self):
         json_list = []
@@ -47,7 +45,7 @@ class EvtxAnalysis:
                         log_obj["number"] = i
                         log_obj["string"] = dict2_type['Event']['EventData']['Data']
                         json_list.append(log_obj)
-                except:
+                except Exception as e:
                     pass
                 finally:
                     print(log_obj)
@@ -56,21 +54,22 @@ class EvtxAnalysis:
     def eventid(self, num):
         for i in range(0, len(self.evtx_json)):
             if self.evtx_json[i]['eventID'] == num:
-                self.result.append(self.evtx_json[i])
+                self._result.append(self.evtx_json[i])
                 print(self.evtx_json[i])
-        return self.result
+        return self._result
 
     def level(self, num):
         for i in range(0, len(self.evtx_json)):
             if self.evtx_json[i]['level'] == num:
                 print(self.evtx_json[i])
-                self.result.append(self.evtx_json[i])
-        return self.result
+                self._result.append(self.evtx_json[i])
+        return self._result
 
-    def date(self, date):
+    def date(self, date1, date2):
         for i in range(0, len(self.evtx_json)):
             c_date = self.evtx_json[i]['create Time'].split('.')[0]
-            if c_date == str(date):
+            if datetime.datetime.strptime(date1, "%Y-%m-%d") <= datetime.datetime.strptime(c_date, "%Y-%m-%d %H:%M:%S")\
+                    <= datetime.datetime.strptime(date2, "%Y-%m-%d")+datetime.timedelta(1):
                 print(self.evtx_json[i])
                 self.result.append(self.evtx_json[i])
         return self.result
@@ -82,35 +81,82 @@ class EvtxAnalysis:
 
 # favorite method for evtx log
 class Favorite:
-
-    result = []
-
     def __init__(self, json):
+        self._result = []
         self.evtx_json = json
-        self.accountType = AccountType(self.evtx_json)
-
-    # detect valid logon record
-    def logon(self):
-        EvtxAnalysis.eventid(self, 4624)
+        self.AccountType = AccountType(self.evtx_json)
 
     # detect remote logon record
     def remote(self):
         EvtxAnalysis.eventid(self, 540)
         EvtxAnalysis.eventid(self, 4776)
 
-    # detect malfind record
-    # def malfind(self):
-    #     EvtxAnalysis.eventid(self, 4776)
+    # app error(1000), app hang(1002)
+    def app_crashes(self):
+        EvtxAnalysis.eventid(self, 1000)
+        EvtxAnalysis.eventid(self, 1002)
 
-    # detect time of elevation of authority
-    # def authority(self):
-    #     print('user')
+    # windows error reporting(1001)
+    def error_report(self):
+        EvtxAnalysis.eventid(self,1001)
+
+    def service_fails(self):
+        EvtxAnalysis.eventid(self, 7022)
+        EvtxAnalysis.eventid(self, 7023)
+        EvtxAnalysis.eventid(self, 7024)
+        EvtxAnalysis.eventid(self, 7026)
+        EvtxAnalysis.eventid(self, 7031)
+        EvtxAnalysis.eventid(self, 7032)
+        EvtxAnalysis.eventid(self, 7034)
+
+    # rule add(2004), rule change(2005), rule deleted(2006, 2033), fail to load group policy(2009)
+    def firewall(self):
+        EvtxAnalysis.eventid(self, 2004)
+        EvtxAnalysis.eventid(self, 2005)
+        EvtxAnalysis.eventid(self, 2006)
+        EvtxAnalysis.eventid(self, 2009)
+        EvtxAnalysis.eventid(self, 2033)
+
+    # new device(43), new mass storage installation(400, 410)
+    def usb(self):
+        EvtxAnalysis.eventid(self, 43)
+        EvtxAnalysis.eventid(self, 400)
+        EvtxAnalysis.eventid(self, 410)
+
+    # starting a wireless connection(8000, 8011), successfully connected(8001), disconnect(8003), failed(8002)
+    def wireless(self):
+        EvtxAnalysis.eventid(self, 8000)
+        EvtxAnalysis.eventid(self, 8001)
+        EvtxAnalysis.eventid(self, 8002)
+        EvtxAnalysis.eventid(self, 8003)
+        EvtxAnalysis.eventid(self, 8011)
+        EvtxAnalysis.eventid(self, 10000)
+        EvtxAnalysis.eventid(self, 10001)
+        EvtxAnalysis.eventid(self, 11000)
+        EvtxAnalysis.eventid(self, 11001)
+        EvtxAnalysis.eventid(self, 11002)
+        EvtxAnalysis.eventid(self, 11004)
+        EvtxAnalysis.eventid(self, 11005)
+        EvtxAnalysis.eventid(self, 11006)
+        EvtxAnalysis.eventid(self, 11010)
+        EvtxAnalysis.eventid(self, 12011)
+        EvtxAnalysis.eventid(self, 12012)
+        EvtxAnalysis.eventid(self, 12013)
 
 
 # filtering based on logon type
 class AccountType:
     def __init__(self, evtx_json):
         self.evtx_json = evtx_json
+        self._result = []
+
+    # detect valid logon record
+    def logon(self):
+        EvtxAnalysis.eventid(self, 4624)
+
+    # detect failed user account login
+    def login_failed(self):
+        EvtxAnalysis.eventid(self, 4625)
 
     def change_pwd(self):
         EvtxAnalysis.eventid(self, 4723)
@@ -120,6 +166,11 @@ class AccountType:
 
     def verify_account(self):
         EvtxAnalysis.eventid(self, 4720)
+
+    def add_privileged_group(self):
+        EvtxAnalysis.eventid(self, 4728)
+        EvtxAnalysis.eventid(self, 4732)
+        EvtxAnalysis.eventid(self, 4756)
 
 
 # analysis for LinuxLog

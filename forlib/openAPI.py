@@ -18,7 +18,10 @@ from forlib.processing import lnk_analysis
 from forlib.processing import recycle_analysis
 from forlib.processing import iconcache_analysis
 from forlib.processing import prefetch_analysis
+from forlib.processing import mem_analysis
 from forlib import decompress1
+from forlib import signature as sig
+from forlib import calc_hash as calc_hash
 
 def sig_check(path):
     extension = magic.from_file(path).split(',')[0]
@@ -27,16 +30,15 @@ def sig_check(path):
 
 def file_open(path):
     extension = sig_check(path)
-    print('extension: ' + extension)
+    if extension[:11] == 'cannot open':
+        extension = sig.sig_check(path)
+        print('extension: ' + extension)
+    else:
+        print('extension: ' + extension)
     if extension == 'MS Windows Vista Event Log':
-        file = evtx_open(path)
-        return log_analysis.EvtxAnalysis(file)
-    elif extension == 'ASCII text':
-        file = normal_file_oepn(path)
-        return log_analysis.TextLogAnalysis(file)
+        return EvtxLog.file_open(path)
     elif extension == 'JPEG image data':
-        file = jpeg_open(path)
-        return files_analysis.JPEGAnalysis(file)
+        return Files.JPEG.file_oepn(path)
     elif extension == 'MS Windows registry file':
         file = reg_open(path)
         if Registry.HiveType.NTUSER == file.hive_type():
@@ -54,9 +56,9 @@ def file_open(path):
     elif extension == 'Composite Document File V2 Document':
         file = ole_open(path)
         if file.listdir(streams=True, storages=False)[-1][0] == 'DestList':
-            return jump_analysis.JumplistAnalysis(file)
+            return JumpList.file_open(path)
         else: # if file.listdir(streams=True, storages=False)[-1][0] == 'PowerPoint Document':
-            return files_analysis.MSOldAnalysis(file)
+            return Files.MSOld.file_open(file)
     elif extension == 'thumb':
         return binary_open(path)
     elif extension == 'iconcache':
@@ -64,33 +66,23 @@ def file_open(path):
     elif extension == 'Zip archive data':
         return zip_open(path)
     elif extension == 'Hangul (Korean) Word Processor File 5.x':
-        file = ole_open(path)
-        return files_analysis.HWPAnalysis(file)
+        return Files.HWP.file_open(path)
     elif extension == 'systemp':
         file = systemp_open(path)
         return file
     elif extension == 'PDF document':
-        file = pdf_open(path)
-        return files_analysis.PDFAnalysis(file)
-    elif extension == 'UTF-8 Unicode text':
-        file = codecs.open(path, 'r', encoding='utf8')
-        return log_analysis.TextLogAnalysis(file)
+        return Files.PDF.file_open(path)
     elif extension == 'Cache':
-        file = cache_open(path)
-        return thumbnail_analysis.Thumbnail_analysis_windows(file)
+        return Thumbnail.file_open(path)
     elif extension == 'MS Windows shortcut':
-        file = lnk_open(path)
-        return lnk_analysis.LnkAnalysis(file)
+        return Lnk.file_open(path)
     elif extension == 'data':
         if '$I' in path:
-            file = recycle_open(path)
-            return recycle_analysis.RecycleAnalysis(file)
+            return Recycle.file_open(path)
         if 'iconcache.db' in path:
-            file = iconcache_open(path)
-            return iconcache_analysis.IconcacheAnalysis(file)
+            return Iconcache.file_open(path)
         if '.pf' in path:
-            file = prefetch_open(path)
-            return prefetch_analysis.PrefetchAnalysis(file)
+            return Prefetch.file_open(path)
     
     # elif extension == 'Extensible storage engine DataBase':
     # elif extension == 'SQLite 3.x database' :    
@@ -98,24 +90,179 @@ def file_open(path):
     # elif extension == 'PE32+ executable (console) x86-64':
     #     file =
     # PNG image data
+    
+class Mem:
+    def mem_open(path):
+        extension = sig_check(path)
+        if extension == 'data' or extension == 'block special':
+            calc_hash.get_hash(path)
+            return mem_analysis.MemAnalysis(path)
+
+class EvtxLog:
+    def file_open(path):
+        extension = sig_check(path)
+        if extension == 'MS Windows Vista Event Log':
+            calc_hash.get_hash(path)
+            file = evtx_open(path)
+            return log_analysis.EvtxAnalysis(file)
+        print("check your file format. This is not EVTX file.")
+        return -1
 
 
 class LinuxLog:
-    # auth.log, syslog
-    def normal_log(path):
+    class SysLog:
+        def file_open(path):
+            calc_hash.get_hash(path)
+            file = normal_file_oepn(path)
+            return log_analysis.LinuxLogAnalysis.SysLog(file)
+
+    class AuthLog:
+        def file_open(path):
+            calc_hash.get_hash(path)
+            file = normal_file_oepn(path)
+            return log_analysis.LinuxLogAnalysis.AuthLog(file)
+
+    # class History
+
+
+class Apache:
+    class AccessLog:
+        def file_open(path):
+            calc_hash.get_hash(path)
+            file = normal_file_oepn(path)
+            return log_analysis.ApacheLog.Access(file)
+
+    class ErrLog:
+        def file_open(path):
+            calc_hash.get_hash(path)
+            file = normal_file_oepn(path)
+            return log_analysis.ApacheLog.Error(file)
+
+
+# class IIS:
+class IIS:
+    def file_open(path):
+        calc_hash.get_hash(path)
         file = normal_file_oepn(path)
-        log_analysis.LinuxLogAnalysis.AuthLog(file)
+        return log_analysis.IIS(file)
 
-    class Apache:
-        # err log
-        def apache_err(path):
-            file = normal_file_oepn(path)
-            log_analysis.LinuxLogAnalysis.ApacheLog.Error(file)
 
-        # access log
-        def apache_access(path):
-            file = normal_file_oepn(path)
-            log_analysis.LinuxLogAnalysis.ApacheLog.Access(file)
+class Files:
+    class MSOld:
+        def file_open(path):
+            calc_hash.get_hash(path)
+            file = file_open(path)
+            return files_analysis.MSOldAnalysis(file)
+
+    class HWP:
+        def file_open(path):
+            calc_hash.get_hash(path)
+            file = file_open(path)
+            return files_analysis.HWPAnalysis(file)
+
+    class JPEG:
+        def file_open(path):
+            calc_hash.get_hash(path)
+            file = file_open(path)
+            return files_analysis.JPEGAnalysis(file)
+
+    class PDF:
+        def file_open(path):
+            calc_hash.get_hash(path)
+            file = file_open(path)
+            return files_analysis.PDFAnalysis(file)
+
+        
+class Lnk:
+    def file_open(path):
+        extension = sig_check(path)
+        if extension == 'MS Windows shortcut':
+            calc_hash.get_hash(path)
+            file = lnk_open(path)
+            return lnk_analysis.LnkAnalysis(file)
+
+
+class Recycle:
+    def file_open(path):
+        extension = sig_check(path)
+        if extension == 'data':
+            calc_hash.get_hash(path)
+            file = recycle_open(path)
+            return recycle_analysis.RecycleAnalysis(file)
+     
+    
+class Iconcache:
+    def file_open(path):
+        extension = sig_check(path)
+        if extension == 'data':
+            calc_hash.get_hash(path)
+            file = iconcache_open(path)
+            return iconcache_analysis.IconcacheAnalysis(file)
+        
+
+class Prefetch:
+    def file_open(path):
+        extension = sig_check(path)
+        if extension == 'data':
+            calc_hash.get_hash(path)
+            file = prefetch_open(path)
+            return prefetch_analysis.PrefetchAnalysis(file)
+        
+        
+class RegistryHive:
+    def file_open(path):
+        extension = sig_check(path)
+        if extension == 'data':
+            file = reg_open(path)
+            if Registry.HiveType.NTUSER == file.hive_type():
+                return reg_analysis.NTAnalysis(file)
+            elif Registry.HiveType.SAM == file.hive_type():
+                return reg_analysis.SAMAnalysis(file)
+            elif Registry.HiveType.SOFTWARE == file.hive_type():
+                return reg_analysis.SWAnalysis(file)
+            elif Registry.HiveType.SYSTEM == file.hive_type():
+                return reg_analysis.SYSAnalysis(file)
+            elif Registry.HiveType.SYSTEM == file.hive_type():
+                print("[-] To be continue")
+            else:
+                print("[-] This is not HiveFile")
+        else:
+            print("[-] This is not Registry file")
+
+
+class JumpList:
+    def file_open(path):
+        extension = sig_check(path)
+        if extension == 'Composite Document File V2 Document':
+            calc_hash.get_hash(path)
+            file = ole_open(path)
+            return jump_analysis.JumplistAnalysis(file)
+
+        
+class Thumbnail:
+    def file_open(path):
+        # extension = sig_check(path)
+        # if extension == 'Cache':
+        calc_hash.get_hash(path)
+        file = cache_open(path)
+        return thumbnail_analysis.Thumbnail_analysis_windows(file)
+
+    
+class Browser:
+    class Chrome:
+        def file_open(path):
+            chrome_file= browser_analysis.Chrome(path)
+            return chrome_file
+
+    class Firefox:
+        def file_open(path):
+            firefox_file = browser_analysis.Firefox(path)
+            return firefox_file
+
+    class Ie_Edge:
+        def file_open(path):
+            ie_edge_file = browser_analysis.Ie_Edge(ie_edge_open(path))
+            return ie_edge_file    
 
 
 def evtx_open(path):
