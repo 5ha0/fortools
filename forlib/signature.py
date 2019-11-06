@@ -1,4 +1,5 @@
 from forlib import decompress1
+import os
 
 signatures = [{
     'file_extension': 'Zip archive data',
@@ -44,24 +45,22 @@ signatures = [{
     'file_extension': 'regf',
     'hex': ['0x72', '0x65', '0x67', '0x66'],
     'len': 4,
-    'offset': 0}
+    'offset': 0},
     {
     'file_extension': 'prefetch',#magic : data
     'hex': ['0x41', '0x43', '0x43', '0x53'],#0x434353
     'len': 4,
-    'offset': 4}
+    'offset': 4},
     {
     'file_extension': 'recycle_i',#magic : data
     'hex': ['0x01', '0x0', '0x0', '0x0', '0x0', '0x0', '0x0', '0x0'],
     'len': 8,
-    'offset': 0}
+    'offset': 0},
     {
     'file_extension': 'MAM',#magic : data
     'hex': ['0x4D', '0x41', '0x4D'],
     'len': 3,
     'offset': 0}
-    
-    
 ]
 
 
@@ -74,13 +73,13 @@ def sig_check(path):
             if sig['hex'][i] != hex(header[sig['offset']+i]):
                 break
                 
-            if sig['file_extension'] = 'MAM':
-                extension = prefetch()
+            if sig['file_extension'] == 'MAM':
+                extension = prefetch(path, f)
                 return extension
             
             return sig['file_extension']
         
-def prefetch():
+def prefetch(path, f):
     f.close()
     decompressed = decompress1.decompress(path)
 
@@ -96,4 +95,4 @@ def prefetch():
             
     prefetch_file = open(dirname+'\\'+basename+'-1'+exetension,'rb')
                 
-    sig_check()
+    return sig_check()
