@@ -184,7 +184,7 @@ class SYSAnalysis:
                     "path" : v.value()}
             print(json.dumps(reg_obj))
 
-        def get_network_info(self):
+    def get_network_info(self):
         path = "ControlSet00%s\\services\\Tcpip\\Parameters\\Interfaces" % self.__control_set_check(self.reg)
         print(path)
         net_key = self.reg.open(path)
