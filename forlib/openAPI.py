@@ -344,13 +344,8 @@ def lnk_open(path):
 
 
 def recycle_open(path):
-    recycle_file_extension = path.split('\\')[-1]
-    if '$R' in recycle_file_extension:
-        recycle_file = file_open(path)
-        return recycle_file
-    elif '$I' in file_extension_recycle:
-        recycle_file = open(path, 'rb')
-        return recycle_file
+    recycle_file = open(path, 'rb')
+    return recycle_file
 
     
 def iconcache_open(path):
@@ -360,24 +355,8 @@ def iconcache_open(path):
 
 def prefetch_open(path):
     prefetch_file = open(path, 'rb')
-    if prefetch_file.read(3) == b'MAM':
-        prefetch_file.close()
-        decompressed = decompress1.decompress(path)
-
-        dirname = os.path.dirname(path)
-        basename = os.path.basename(path)
-        base = os.path.splitext(basename)
-        basename = base[0]
-        exetension = base[-1]
-            
-        prefetch_file = open(dirname+'\\'+basename+'-1'+exetension,'wb')
-        prefetch_file.write(decompressed)
-        prefetch_file.close()
-            
-    prefetch_file = open(dirname+'\\'+basename+'-1'+exetension,'rb')
+    
     version = struct.unpack_from('I', prefetch_file.read(4))[0]
-            
     if version != 23 and version != 30:
         print('error: not supported version')
-
     return prefetch_file
