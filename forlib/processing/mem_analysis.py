@@ -332,7 +332,7 @@ class MemAnalysis:
                 "Key" : value[3],
                 "Name" : value[4],
                 "Data" : value[5],
-                "Volatile" : value[6]
+                "Volatile" : value[6][:-1]
             }
             ret_list.append(plist_obj)
         return ret_list
