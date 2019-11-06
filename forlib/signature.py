@@ -30,8 +30,8 @@ signatures = [{
     'offset': 0},
     {
     'file_extension': 'MS Windows shortcut',
-    'hex': ['0x4c', '0x0', '0x0', '0x0'],
-    'len': 4,
+    'hex': ['0x4c', '0x0', '0x0', '0x0', '0x01', '0x14', '0x02', '0x0'],
+    'len': 8,
     'offset': 0},
     {
     'file_extension': 'MS Windows Vista Event Log',
@@ -41,8 +41,20 @@ signatures = [{
     {
     'file_extension': 'regf',
     'hex': ['0x72', '0x65', '0x67', '0x66'],
+    'len': 4,
+    'offset': 0}
+    {
+    'file_extension': 'prefetch',#magic : data
+    'hex': ['0x41', '0x43', '0x43', '0x53'],#0x434353
+    'len': 4,
+    'offset': 4}
+    {
+    'file_extension': 'recycle_i',#magic : data
+    'hex': ['0x01', '0x0', '0x0', '0x0', '0x0', '0x0', '0x0', '0x0'],
     'len': 8,
     'offset': 0}
+    
+    
 ]
 
 
