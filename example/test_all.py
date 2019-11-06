@@ -5,8 +5,8 @@ from fortools import *
 # file.get_info()
 # file = file_open('C:\\Windows\\System32\\winevt\\Logs\\Security.evtx')
 # file.show_all_record()
-log_file = EvtxLog.file_open('C:\\Windows\\System32\\winevt\\Logs\\Security.evtx')
-log_file.show_all_record()
+#log_file = EvtxLog.file_open('C:\\Windows\\System32\\winevt\\Logs\\Security.evtx')
+#log_file.show_all_record()
 # log_file.
 # log_file = file_open('C:\\Windows\\System32\\winevt\\Logs\\Security.evtx')
 
@@ -58,3 +58,34 @@ file.showlist()
 # file = file_open('.\\data\\result.evtx')
 # file.get_string()
 '''
+#------------------------ Windows 10 -----------------------------#
+#path = r'C:\Users\sjms1\AppData\Local\Microsoft\Windows\Explorer\thumbcache_96.db'
+#path = r'C:\Users\sjms1\Desktop\win7_explorer\thumbcache_96.db'
+#icon_path = r'C:\Users\sjms1\AppData\Local\Microsoft\Windows\Explorer\iconcache_48.db'
+#thumbnail = Thumbnail.file_open(path)
+#thumbnail.get_data(path)
+
+#------------------------ Windows 7 -----------------------------#
+# path = r'C:\Users\sjms1\Desktop\Explorer\thumbcache_96.db'
+# thumbnail = Thumbnail.file_open(path)
+# thumbnail.get_data(path)
+
+#------------------------ ZipFile -------------------------------#
+path = r'C:\Users\sjms1\Desktop\Educate\cos.jar'
+file = Files.ZIP.file_open(path)
+file.get_info()
+
+#Browser
+# google_cookie_path="C:\Users\JH\AppData\Local\Google\Chrome\User Data\Default\Cookies"
+# google_history_path="C:\Users\JH\AppData\Local\Google\Chrome\User Data\Default\History"
+# google_downloads_path="C:\Users\JH\AppData\Local\Google\Chrome\User Data\Default\History"
+# firefox_cookie_path="C:\Users\JH\AppData\Roaming\Mozilla\Firefox\Profiles\{random}\cookies.sqlite"
+# firefox_history_path="C:\Users\JH\AppData\Roaming\Mozilla\Firefox\Profiles\{random}\places.sqlite"
+# firefox_download_path="C:\Users\JH\AppData\Roaming\Mozilla\Firefox\Profiles\{random}\places.sqlite"
+# webcachev01_path=""
+
+# Browser.Firefox.file_open(firefox_cookies_path).cookies()
+# Browser.Chrome.file_open(google_history_path).history()
+# Browser.Ie_Edge.file_open(webcachev01_path).cookies()
+
+
