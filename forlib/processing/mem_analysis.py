@@ -216,7 +216,7 @@ class MemAnalysis:
         ret_list = self.__process(reg_list)
         return ret_list
 
-    def pstree(self):
+    def vadinfo(self):
         ret_list = list()
         ret = subprocess.Popen("python3 %s -f %s windows.vadinfo" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1)
