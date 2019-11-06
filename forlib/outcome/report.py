@@ -14,16 +14,22 @@ class DocxExport:
 
         self.document = document
 
-    def make_table(self, data, row, col):
-        table = self.document.add_table(rows=row, cols=col)
-        table.styles = 'table'
+    def make_table(self, data):
+        table = self.document.add_table(rows=1, cols=len(data[0].keys()))
+        table.style = 'Table Grid'
+        table.rows[0].style = "borderColor:red;background-color:gray"
+
+        col_list = list(data[0].keys())
 
         hdr_cells = table.rows[0].cells
-        for i in range(0, len(data["x"])):
-            hdr_cells[i].text = data["x"][i]
+        for i in range(0, len(data[0].keys())):
+            hdr_cells[i].text = str(col_list[i])
 
-        row_cells = table.add_rows().cells
-        row_cells[0].text = 'in process'
+        for i in range(0, len(data)):
+            row_cells = table.add_row().cells
+            result = list(data[i].values())
+            for j in range(0, len(data[0].keys())):
+                row_cells[j].text = str(result[j])
 
     def insert_img(self, path):
         self.document.add_picture(path)
