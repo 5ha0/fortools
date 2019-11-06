@@ -30,7 +30,7 @@ def sig_check(path):
 
 def file_open(path):
     extension = sig_check(path)
-    if extension[:11] == 'cannot open' or extension == 'data':
+    if extension[:11] == 'cannot open':
         extension = sig.sig_check(path)
         print('extension: ' + extension)
     else:
@@ -77,11 +77,9 @@ def file_open(path):
     elif extension == 'MS Windows shortcut':
         return Lnk.file_open(path)
     elif extension == 'data':
-        if '$I' in path:
+        if extension == 'recycle_i':
             return Recycle.file_open(path)
-        if 'iconcache.db' in path:
-            return Iconcache.file_open(path)
-        if '.pf' in path:
+        if extension == 'prefetch':
             return Prefetch.file_open(path)
     
     # elif extension == 'Extensible storage engine DataBase':
