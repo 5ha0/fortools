@@ -9,13 +9,13 @@ class LnkAnalysis:
     def __init__(self, file):
         self.file = file
         self.lnk_flag = []
-        self.locbase_path_uni
-        self.start_off
-        self.info_size
-        self.info_flag
-        self.extra_off
-        self.extra_data
-        self.linkinfo_flag
+        self.locbase_path_uni = None
+        self.start_off = None
+        self.info_size = None
+        self.info_flag = None
+        self.extra_off = None
+        self.extra_data = None
+        self.linkinfo_flag = None
 
     def __link_flag(self, flags_to_parse):
         flags = {0: "HasLinkTargetIDList",
@@ -49,7 +49,7 @@ class LnkAnalysis:
 
         for count, items in enumerate(flags_to_parse):
             if int(items) == 1:
-                print('Link flag : ' + format(flags[count]))
+                print('Link Flag : ' + format(flags[count]))
                 self.lnk_flag.append(format(flags[count]))
             else:
                 continue
@@ -77,7 +77,7 @@ class LnkAnalysis:
         lnk_attributes = []
         for count, items in enumerate(attrib_to_parse):
             if int(items) == 1:
-                print('attrib: ' + format(attrib[count]))
+                print('Link Attribute: ' + format(attrib[count]))
                 lnk_attributes.append(format(attrib[count]))
             else:
                 continue
@@ -97,7 +97,7 @@ class LnkAnalysis:
 
         for count, items in enumerate(drive):
             if int(items) == 1:
-                print('drive_type: ' + format(drive_type[drive]))
+                print('Drive Type: ' + format(drive_type[drive]))
             else:
                 continue
 
@@ -106,34 +106,34 @@ class LnkAnalysis:
         self.file.seek(20)
         flags = struct.unpack('<i', self.file.read(4))
         file_flags = BitArray(hex(flags[0]))
-        link_flag(file_flags.bin)
+        self.__link_flag(file_flags.bin)
 
     def file_attribute(self):
         self.file.seek(24)
         attributes = struct.unpack('<i', self.file.read(4))
         flag_atributes = BitArray(hex(attributes[0]))
-        lnk_attrib(flag_atributes.bin)
+        self.__lnk_attrib(flag_atributes.bin)
 
     def creation_time(self):
         self.file.seek(28)
         c_time = self.file.read(8)
         c_time = struct.unpack('<q', c_time)
         c_time = convert_time(c_time)
-        print('Creation Time: ' + c_time)
+        print('Creation Time: ' + str(c_time) + 'UTC+9:00')
 
     def access_time(self):
         self.file.seek(36)
         a_time = self.file.read(8)
         a_time = struct.unpack_from('<q', a_time)[0]
         a_time = convert_time(a_time)
-        print('Access Time: ' + a_time)
+        print('Access Time: ' + str(a_time) + 'UTC+9:00')
 
     def write_time(self):
         self.file.seek(44)
         w_time = self.file.read(8)
         w_time = struct.unpack('<q', w_time)[0]
         w_time = convert_time(w_time)
-        print('Write Time: ' + w_time)
+        print('Write Time: ' + str(w_time) + 'UTC+9:00')
 
     def file_size(self):
         self.file.seek(52)
@@ -161,7 +161,7 @@ class LnkAnalysis:
     ############################################
 
     def __linkinfo_off(self):
-        link_flags()
+        self.__link_flags()
 
         if 'HasLinkInfo' not in self.lnk_flag:
             self.linkinfo_flag = None
@@ -203,7 +203,7 @@ class LnkAnalysis:
             self.locbase_path_uni = None
 
     def volume(self):
-        linkinfo_off()
+        self.__linkinfo_off()
 
         if self.linkinfo_flag != 'True':
             print('this file does not have link info')
@@ -241,7 +241,7 @@ class LnkAnalysis:
         print('Volumelable: ' + volumelable)
 
     def localbase_path(self):
-        linkinfo_off()
+        self.__linkinfo_off()
 
         if self.linkinfo_flag != 'True':
             print('this file does not have link info')
@@ -277,49 +277,38 @@ class LnkAnalysis:
         print('Localbasepath: ' + locbasepath[0])
 
     ############################################
+    def __extradata_size(self, string_off):
+        self.file.seek(string_off)
+        string_size = self.file.read(2)
+        b = (b'\x00\x00')
+        string_size = string_size + b
+        string_size = struct.unpack('<i', string_size)[0]
+        string_off = string_size + string_off + 2
+        # if you want to read string, use this
+        # relative_path = str(file.read(string_size))
+        # relative_path = relative_path.replace('\x00','').encode('utf-8', 'ignore').decode('utf-8')
+        return string_off
 
     def __extradata(self):
-        linkinfo_off()
+        self.__linkinfo_off()
 
         string_off = self.start_off + self.info_size
 
         if 'HasName' in self.lnk_flag:
-            self.file.seek(string_off)
-            string_size = self.file.read(2)
-            b = (b'\x00\x00')
-            string_size = string_size + b
-            string_size = struct.unpack('<i', string_size)[0]
-            string_off = string_size + string_off + 2
+            string_off = self.__extradata_size(string_off)
+
         elif 'HasRelativePath' in self.lnk_flag:
-            self.file.seek(string_off)
-            string_size = self.file.read(2)
-            b = (b'\x00\x00')
-            string_size = string_size + b
-            string_size = struct.unpack('<i', string_size)[0]
-            string_off = string_size + string_off + 2
-        ##        relative_path = str(file.read(string_size))
-        ##        relative_path = relative_path.replace('\x00','').encode('utf-8', 'ignore').decode('utf-8')
+            string_off = self.__extradata_size(string_off)
+
         elif 'HasWorkingDir' in self.lnk_flag:
-            self.file.seek(string_off)
-            string_size = self.file.read(2)
-            b = (b'\x00\x00')
-            string_size = string_size + b
-            string_size = struct.unpack('<i', string_size)[0]
-            string_off = string_size + string_off + 2
+            string_off = self.__extradata_size(string_off)
+
         elif 'HasArguments' in self.lnk_flag:
-            self.file.seek(string_off)
-            string_size = self.file.read(2)
-            b = (b'\x00\x00')
-            string_size = string_size + b
-            string_size = struct.unpack('<i', string_size)[0]
-            string_off = string_size + string_off + 2
+            string_off = self.__extradata_size(string_off)
+
         elif 'HasIconLocation' in self.lnk_flag:
-            self.file.seek(string_off)
-            string_size = self.file.read(2)
-            b = (b'\x00\x00')
-            string_size = string_size + b
-            string_size = struct.unpack('<i', string_size)[0]
-            string_off = string_size + string_off + 2
+            string_off = self.__extradata_size(string_off)
+
 
         self.extra_off = string_off
         block_signature = self.extra_off + 4
@@ -331,7 +320,7 @@ class LnkAnalysis:
             self.extra_data = None
 
     def netbios(self):
-        extradata()
+        self.__extradata()
 
         if self.extra_data != 'True':
             return print('not have extra data')
@@ -342,7 +331,7 @@ class LnkAnalysis:
         print('NetBios: ' + str(netbios))
 
     def machine_id(self):
-        extradata()
+        self.__extradata()
 
         if self.extra_data != 'True':
             return print('not have extra data')

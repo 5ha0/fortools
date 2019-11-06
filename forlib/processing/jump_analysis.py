@@ -31,7 +31,7 @@ class JumplistAnalysis:
                         data_list["path"] = 'none'
                     self.json_list.append(data_list)
                 else:
-                    self.destlist = data
+                    self.destlist = file_data
             except:
                 pass
 

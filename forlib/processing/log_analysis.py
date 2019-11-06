@@ -65,10 +65,11 @@ class EvtxAnalysis:
                 self._result.append(self.evtx_json[i])
         return self._result
 
-    def date(self, date):
+    def date(self, date1, date2):
         for i in range(0, len(self.evtx_json)):
             c_date = self.evtx_json[i]['create Time'].split('.')[0]
-            if c_date == str(date):
+            if datetime.datetime.strptime(date1, "%Y-%m-%d") <= datetime.datetime.strptime(c_date, "%Y-%m-%d %H:%M:%S")\
+                    <= datetime.datetime.strptime(date2, "%Y-%m-%d")+datetime.timedelta(1):
                 print(self.evtx_json[i])
                 self.result.append(self.evtx_json[i])
         return self.result

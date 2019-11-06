@@ -1,6 +1,8 @@
 import os
 import sys
+import struct
 from forlib.processing.internal import check
+
 
 class Thumbnail_analysis:
     def __init__(self):
@@ -124,8 +126,12 @@ class Thumbnail_analysis_windows:
                     entry.update({"width": int(check.convert_endian(file.read(4), 4, True, 'd'), 10)})
                     entry.update({"height": int(check.convert_endian(file.read(4), 4, True, 'd'), 10)})
                     file.seek(4, 1)
+                    data_checksum = file.read(8)
                     entry.update({"data_checksum": check.convert_endian(file.read(8), 8, True, 'x')})
-                    entry.update({"header_checksum": check.convert_endian(file.read(8), 8, True, 'x')})
+                    header_checksum = file.read(8)
+                    entry.update({"header_checksum": check.convert_endian(header_checksum, 8, True, 'x')})
+                    if header_checksum == b'\x00\x00\x00\x00\x00\x00\x00\x00':
+                        break
 
                 else:
                     break
@@ -138,7 +144,7 @@ class Thumbnail_analysis_windows:
                     continue
                 else:
                     break
-
+            #if(struct.unpack(str, entry.get("entry_hash"))) == 0:
             if int(entry.get("entry_hash"), 16) == 0:
                 start_offset = file.tell()
                 continue
@@ -194,6 +200,7 @@ class Thumbnail_analysis_windows:
             print({num:cache_file})
 
         file.close()
+
 
 
 

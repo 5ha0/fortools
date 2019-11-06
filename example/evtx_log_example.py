@@ -25,7 +25,7 @@ log_file.xml_with_num(1)
 log_file.eventid()
 
 # search information with date.
-log_file.date()
+log_file.date('%Y-%m-%d', '%Y-%m-%d')
 
 # search information with level.
 log_file.level()

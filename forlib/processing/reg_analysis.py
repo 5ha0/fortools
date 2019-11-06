@@ -185,12 +185,21 @@ class SYSAnalysis:
             print(json.dumps(reg_obj))
 
         def get_network_info(self):
+            path = "ControlSet00%s\\services\\Tcpip\\Parameters\\Interfaces" % self.__control_set_check(self.reg)
+            print(path)
+            net_key = self.reg.open(path)
+            guid_list = list()
+            ret_list = list()
+            network_dict = dict()
+
+    def get_network_info(self):
         path = "ControlSet00%s\\services\\Tcpip\\Parameters\\Interfaces" % self.__control_set_check(self.reg)
         print(path)
         net_key = self.reg.open(path)
         guid_list = list()
         ret_list = list()
         network_dict = dict()
+
         for v in net_key.subkeys():
             guid_list.append(v.name())
 

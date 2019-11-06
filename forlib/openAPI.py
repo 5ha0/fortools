@@ -5,7 +5,8 @@ import zipfile
 import sqlite3
 import PyPDF2
 import codecs
-import pyesedb
+import struct
+
 from PIL import Image
 from Registry import Registry
 from os import listdir
@@ -18,6 +19,7 @@ from forlib.processing import lnk_analysis
 from forlib.processing import recycle_analysis
 from forlib.processing import iconcache_analysis
 from forlib.processing import prefetch_analysis
+from forlib.processing import mem_analysis
 from forlib import decompress1
 from forlib import signature as sig
 from forlib import calc_hash as calc_hash
@@ -63,24 +65,22 @@ def file_open(path):
     elif extension == 'iconcache':
         return binary_open(path)
     elif extension == 'Zip archive data':
-        return zip_open(path)
+        return Files.ZIP.file_open(path)
     elif extension == 'Hangul (Korean) Word Processor File 5.x':
         return Files.HWP.file_open(path)
     elif extension == 'systemp':
         file = systemp_open(path)
         return file
     elif extension == 'PDF document':
-        return Files.PDF.file_open(file)
+        return Files.PDF.file_open(path)
     elif extension == 'Cache':
         return Thumbnail.file_open(path)
     elif extension == 'MS Windows shortcut':
-        return LNK.file_open(path)
+        return Lnk.file_open(path)
     elif extension == 'data':
-        if '$I' in path:
+        if extension == 'recycle_i':
             return Recycle.file_open(path)
-        if 'iconcache.db' in path:
-            return Iconcache.file_open(path)
-        if '.pf' in path:
+        if extension == 'prefetch':
             return Prefetch.file_open(path)
     
     # elif extension == 'Extensible storage engine DataBase':
@@ -89,7 +89,13 @@ def file_open(path):
     # elif extension == 'PE32+ executable (console) x86-64':
     #     file =
     # PNG image data
-
+    
+class Mem:
+    def mem_open(path):
+        extension = sig_check(path)
+        if extension == 'data' or extension == 'block special':
+            calc_hash.get_hash(path)
+            return mem_analysis.MemAnalysis(path)
 
 class EvtxLog:
     def file_open(path):
@@ -164,6 +170,12 @@ class Files:
             calc_hash.get_hash(path)
             file = file_open(path)
             return files_analysis.PDFAnalysis(file)
+
+    class ZIP:
+        def file_open(path):
+            calc_hash.get_hash(path)
+            file = zip_open(path)
+            return files_analysis.ZIPAnalysis(file)
 
         
 class Lnk:
@@ -333,13 +345,8 @@ def lnk_open(path):
 
 
 def recycle_open(path):
-    recycle_file_extension = path.split('\\')[-1]
-    if '$R' in recycle_file_extension:
-        recycle_file = file_open(path)
-        return recycle_file
-    elif '$I' in file_extension_recycle:
-        recycle_file = open(path, 'rb')
-        return recycle_file
+    recycle_file = open(path, 'rb')
+    return recycle_file
 
     
 def iconcache_open(path):
@@ -349,24 +356,8 @@ def iconcache_open(path):
 
 def prefetch_open(path):
     prefetch_file = open(path, 'rb')
-    if prefetch_file.read(3) == b'MAM':
-        prefetch_file.close()
-        decompressed = decompress1.decompress(path)
-
-        dirname = os.path.dirname(path)
-        basename = os.path.basename(path)
-        base = os.path.splitext(basename)
-        basename = base[0]
-        exetension = base[-1]
-            
-        prefetch_file = open(dirname+'\\'+basename+'-1'+exetension,'wb')
-        prefetch_file.write(decompressed)
-        prefetch_file.close()
-            
-    prefetch_file = open(dirname+'\\'+basename+'-1'+exetension,'rb')
+    
     version = struct.unpack_from('I', prefetch_file.read(4))[0]
-            
     if version != 23 and version != 30:
-        print ('error: not supported version')
-
+        print('error: not supported version')
     return prefetch_file
