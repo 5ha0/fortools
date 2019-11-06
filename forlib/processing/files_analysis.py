@@ -147,7 +147,7 @@ class MSOldAnalysis:
         print(file_obj)
         return file_obj
 
-
+# zip analysis: filename, comment, MAC time, zip version, Compressed size, Uncompressed size, crc, Raw time
 class ZIPAnalysis:
     def __init__(self, file):
         self.file = file
@@ -171,8 +171,8 @@ class ZIPAnalysis:
             print("\tRaw time: " + str(info._raw_time))
             num += 1
 
+# Print files in folder
 def file_list(in_path):
-
     files = [f for f in listdir(in_path)]
     file_length = len(files)
     filename=[]

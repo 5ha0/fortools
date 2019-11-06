@@ -126,6 +126,7 @@ class Thumbnail_analysis_windows:
                     entry.update({"width": int(check.convert_endian(file.read(4), 4, True, 'd'), 10)})
                     entry.update({"height": int(check.convert_endian(file.read(4), 4, True, 'd'), 10)})
                     file.seek(4, 1)
+                    data_checksum = file.read(8)
                     entry.update({"data_checksum": check.convert_endian(file.read(8), 8, True, 'x')})
                     header_checksum = file.read(8)
                     entry.update({"header_checksum": check.convert_endian(header_checksum, 8, True, 'x')})
