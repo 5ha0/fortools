@@ -283,3 +283,13 @@ class MemAnalysis:
         ret_list = self.__processing(reg_list, keyList)
 
         return ret_list
+
+    def timeliner(self):
+        ret      = subprocess.Popen("python3 %s -f %s timeliner.Timeliner" % (self.vol_path, self.file), shell=True, stdin=None,
+                               stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
+        keyList  = ["Plugin", "Description", "Created Date", "Modified Date", "Accessed Date", "Changed Date"]
+
+        reg_list = self.__regx(ret)
+        ret_list = self.__processing(reg_list, keyList)
+
+        return ret_list
