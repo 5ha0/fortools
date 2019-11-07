@@ -208,14 +208,16 @@ class Iconcache:
 
 class Prefetch:
     def file_open(path):
-        result = sig.sig_check(path)
-        extension = result[0]
-        path_new = result[1]
-        print(extension)
+        extension = sig.sig_check(path)
         if extension == 'prefetch':
             calc_hash.get_hash(path)
-            file = prefetch_open(path_new)
-            return prefetch_analysis.PrefetchAnalysis(file)
+            dirname = os.path.dirname(path)
+            basename = os.path.basename(path)
+            base = os.path.splitext(basename)
+            basename = base[0]
+            exetension = base[-1]
+            file = prefetch_open(dirname + '\\' + basename + '-1' + exetension)
+            return prefetch_analysis.PrefetchAnalysis(file, path)
         
         
 class RegistryHive:
