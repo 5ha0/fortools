@@ -59,7 +59,8 @@ result = file.handles()
 #
 # Lists process memory ranges that potentially contain injected code
 # result = file.malfind()
-
+## Runs all relevant plugins that provide time related information and orders the results by time
+#result = file.timeliner()
 for i in range(len(result)):
     print(result[i])
 
