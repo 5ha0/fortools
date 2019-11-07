@@ -73,6 +73,7 @@ class PrefetchAnalysis:
             print(json.dumps(pf_obj))
         return resource
     
+<<<<<<< HEAD
 class Favorite:
     
     def __init__(self, file):

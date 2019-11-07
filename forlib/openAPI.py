@@ -6,6 +6,7 @@ import sqlite3
 import PyPDF2
 import struct
 import codecs
+import struct
 
 from PIL import Image
 from Registry import Registry

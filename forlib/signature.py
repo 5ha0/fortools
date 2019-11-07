@@ -48,7 +48,7 @@ signatures = [{
     'offset': 0},
     {
     'file_extension': 'prefetch',#magic : data
-    'hex': ['0x41', '0x43', '0x43', '0x53'],#0x434353
+    'hex': ['0x53', '0x43', '0x43', '0x41'],#0x434353
     'len': 4,
     'offset': 4},
     {
@@ -58,7 +58,7 @@ signatures = [{
     'offset': 0},
     {
     'file_extension': 'MAM',#magic : data
-    'hex': ['0x4D', '0x41', '0x4D'],
+    'hex': ['0x4d', '0x41', '0x4d'],
     'len': 3,
     'offset': 0}
 ]
@@ -67,18 +67,19 @@ signatures = [{
 def sig_check(path):
     with open(path, "rb") as f:
         header = f.read(32)
-
     for sig in signatures:
         for i in range(0, sig['len']):
             if sig['hex'][i] != hex(header[sig['offset']+i]):
                 break
                 
             if sig['file_extension'] == 'MAM':
-                extension = prefetch(path, f)
-                return extension
+                path = prefetch(path, f)
+                extension = sig_check(path)
+                return [extension, path]
             
             return sig['file_extension']
-        
+
+
 def prefetch(path, f):
     f.close()
     decompressed = decompress1.decompress(path)
@@ -89,10 +90,8 @@ def prefetch(path, f):
     basename = base[0]
     exetension = base[-1]
             
-    prefetch_file = open(dirname+'\\'+basename+'-1'+exetension,'wb')
+    prefetch_file = open(dirname+'\\'+basename+'-1'+exetension, 'wb')
     prefetch_file.write(decompressed)
     prefetch_file.close()
-            
-    prefetch_file = open(dirname+'\\'+basename+'-1'+exetension,'rb')
-                
-    return sig_check()
+
+    return dirname+'\\'+basename+'-1'+exetension
