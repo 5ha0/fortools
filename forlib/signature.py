@@ -60,7 +60,17 @@ signatures = [{
     'file_extension': 'MAM',#magic : data
     'hex': ['0x4d', '0x41', '0x4d'],
     'len': 3,
-    'offset': 0}
+    'offset': 0},
+    {
+        'file_extension': 'Thumb_Icon',  # magic : data
+        'hex': ['0x43', '0x4d', '0x4d', '0x4d'],
+        'len': 4,
+        'offset': 0},
+    {
+        'file_extension': 'Icon',  # magic : data
+        'hex': ['0x57', '0x69', '0x6e', '0x34'],
+        'len': 4,
+        'offset': 4}
 ]
 
 
