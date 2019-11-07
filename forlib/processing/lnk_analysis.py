@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 import struct
 from bitstring import BitArray
-import binascii
 
 
 class LnkAnalysis:
@@ -95,13 +94,19 @@ class LnkAnalysis:
             6: 'DRIVE_RAMDISK'
         }
 
+        drive_type_list = []
         for count, items in enumerate(drive):
             if int(items) == 1:
-                print('Drive Type: ' + format(drive_type[drive]))
+                print('Drive Type: ' + format(drive_type[count]))
+                drive_type_list.append(format(drive_type[count]))
             else:
                 continue
+                
+        return drive_type_list
 
-    ## has link target id list has link info -- linkinfo flags
+    ################ Shell_Link_Header #############################
+
+    # show link flag
     def __link_flags(self):
         self.file.seek(20)
         flags = struct.unpack('<i', self.file.read(4))
@@ -112,7 +117,9 @@ class LnkAnalysis:
         self.file.seek(24)
         attributes = struct.unpack('<i', self.file.read(4))
         flag_atributes = BitArray(hex(attributes[0]))
-        self.__lnk_attrib(flag_atributes.bin)
+        flag_atributes = self.__lnk_attrib(flag_atributes.bin)
+
+        return flag_atributes
 
     def creation_time(self):
         self.file.seek(28)
@@ -121,12 +128,16 @@ class LnkAnalysis:
         c_time = convert_time(c_time)
         print('Creation Time: ' + str(c_time) + 'UTC+9:00')
 
+        return c_time
+
     def access_time(self):
         self.file.seek(36)
         a_time = self.file.read(8)
         a_time = struct.unpack_from('<q', a_time)[0]
         a_time = convert_time(a_time)
         print('Access Time: ' + str(a_time) + 'UTC+9:00')
+
+        return a_time
 
     def write_time(self):
         self.file.seek(44)
@@ -135,30 +146,40 @@ class LnkAnalysis:
         w_time = convert_time(w_time)
         print('Write Time: ' + str(w_time) + 'UTC+9:00')
 
+        return w_time
+
     def file_size(self):
         self.file.seek(52)
         file_size = struct.unpack('<l', self.file.read(4))[0]
-        print('Targrt File Size : ' + str(file_size) + 'bytes')
+        print('Target File Size : ' + str(file_size) + 'bytes')
+
+        return file_size
 
     def iconindex(self):
         self.file.seek(56)
         iconindex = struct.unpack('<l', self.file.read(4))[0]
         print('Iconindex : ' + str(iconindex))
 
+        return iconindex
+
     def show_command(self):
         self.file.seek(60)
         showcomand = struct.unpack('<i', self.file.read(4))[0]
         showcomand = hex(showcomand)
         if showcomand == hex(0x1):
-            print('SW_SHOWNORMAL')
+            showcomand = 'SW_SHOWNORMAL'
         elif showcomand == hex(0x3):
-            print('SW_SHOWMAXIMIZED')
+            showcomand = 'SW_SHOWMAXIMIZED'
         elif showcomand == hex(0x7):
-            print('SW_SHOWMINNOACTIVE')
+            showcomand = 'SW_SHOWMINNOACTIVE'
         else:
-            print('SW_SHOWNORMAL(default)')
+            showcomand = 'SW_SHOWNORMAL(default)'
 
-    ############################################
+        print('Showcomand: ' + str(showcomand))
+
+        return showcomand
+
+    ################ Link_Info #############################
 
     def __linkinfo_off(self):
         self.__link_flags()
@@ -188,28 +209,28 @@ class LnkAnalysis:
         self.info_flag = self.file.read(4)
         if self.info_flag == '\x00\x00\x00\x01':
             self.info_flag = 'A'
-            volume = 'True'
-            locbase_path = 'True'
-            net = None
+            # volume = 'True'
+            # locbase_path = 'True'
+            # net = None
             if info_option == 'True':
                 self.locbase_path_uni = 'True'
             else:
                 self.locbase_path_uni = None
         else:
             self.info_flag = 'B'
-            volume = None
-            locbase_path = None
-            net = 'True'
+            # volume = None
+            # locbase_path = None
+            # net = 'True'
             self.locbase_path_uni = None
 
     def volume(self):
         self.__linkinfo_off()
 
         if self.linkinfo_flag != 'True':
-            print('this file does not have link info')
+            print('link info (X)')
             return 0
         elif self.info_flag != 'A':
-            return print('do not have volumeid')
+            return print('volume id (X)')
 
         vol_off = self.start_off + 12
         self.file.seek(vol_off)
@@ -220,7 +241,7 @@ class LnkAnalysis:
         vol_size = struct.unpack('<i', self.file.read(4))[0]
 
         drive_type = struct.unpack('<i', self.file.read(4))[0]
-        drive_type_list(drive_type)
+        drive_type = self.__drive_type_list(drive_type)
 
         driveserialnumber = struct.unpack('<l', self.file.read(4))[0]
         print('Driveserialnumber: ' + str(driveserialnumber))
@@ -240,28 +261,31 @@ class LnkAnalysis:
         volumelable = volumelable.decode('cp1252')
         print('Volumelable: ' + volumelable)
 
+        return driveserialnumber, volumelable, drive_type
+
     def localbase_path(self):
         self.__linkinfo_off()
 
         if self.linkinfo_flag != 'True':
             print('this file does not have link info')
-            return 0
+            return -1
         elif self.info_flag != 'A':
-            return print('do not have locabasepath, locabasepathunicode')
+            print('locabasepath (X), locabasepathunicode (X)')
+            return -1
         elif self.locbase_path_uni != 'True':
-            print('locbasepathoffsetunicode : 0\n locbasepathunicode : do not know')
+            print('locbasepathoffsetunicode : 0\n locbasepathunicode : unknown')
         else:
             locbase_path_off_uni = self.start_off + 28
-        self.file.seek(locbase_path_off_uni)
-        locbase_path_off_uni = struct.unpack('<l', self.file.read(4))[0]
-        self.locbase_path_uni = locbase_path_off_uni + self.start_off
-        self.file.seek(self.locbase_path_uni)
-        self.locbase_path_uni = self.file.read(100)
-        self.locbase_path_uni = self.locbase_path_uni.decode('utf-8', 'ignore')
-        self.locbase_path_uni = []
-        for i in self.locbase_path_uni.split('\x00\x00'):
-            self.locbase_path_uni.append(i)
-        print('Localbasepathunicode: ' + self.locbase_path_uni[0])
+            self.file.seek(locbase_path_off_uni)
+            locbase_path_off_uni = struct.unpack('<l', self.file.read(4))[0]
+            self.locbase_path_uni = locbase_path_off_uni + self.start_off
+            self.file.seek(self.locbase_path_uni)
+            self.locbase_path_uni = self.file.read(100)
+            self.locbase_path_uni = self.locbase_path_uni.decode('utf-8', 'ignore')
+            self.locbase_path_uni = []
+            for i in self.locbase_path_uni.split('\x00\x00'):
+                self.locbase_path_uni.append(i)
+            print('Localbasepathunicode: ' + self.locbase_path_uni[0])
 
         locbasepath_off = self.start_off + 16
         self.file.seek(locbasepath_off)
@@ -276,7 +300,9 @@ class LnkAnalysis:
             locbasepath.append(i)
         print('Localbasepath: ' + locbasepath[0])
 
-    ############################################
+        return locbasepath, self.locbase_path_uni
+
+    ################ Extra_Data #############################
     def __extradata_size(self, string_off):
         self.file.seek(string_off)
         string_size = self.file.read(2)
@@ -309,7 +335,6 @@ class LnkAnalysis:
         elif 'HasIconLocation' in self.lnk_flag:
             string_off = self.__extradata_size(string_off)
 
-
         self.extra_off = string_off
         block_signature = self.extra_off + 4
         self.file.seek(block_signature)
@@ -319,22 +344,27 @@ class LnkAnalysis:
         else:
             self.extra_data = None
 
+
     def netbios(self):
         self.__extradata()
 
         if self.extra_data != 'True':
-            return print('not have extra data')
+            print('extra data (X)')
+            return -1
         netbios = self.extra_off + 16
         self.file.seek(netbios)
         netbios = str(self.file.read(16))
         netbios = netbios.replace('\x00', '').encode('utf-8', 'ignore').decode('utf-8')
         print('NetBios: ' + str(netbios))
 
+        return netbios
+
     def machine_id(self):
         self.__extradata()
 
         if self.extra_data != 'True':
-            return print('not have extra data')
+            print('extra data (X)')
+            return -1
         droid = self.extra_off + 32
         self.file.seek(droid)
         droid = str(self.file.read(32))
@@ -344,14 +374,11 @@ class LnkAnalysis:
         droidbirth = droidbirth.replace('\x00', '').encode('utf-8', 'ignore').decode('utf-8')
         print('DroidBirth' + str(droidbirth))
 
+        return droid, droidbirth
+
 
 def convert_time(time):
     time = '%016x' % time
     time = int(time, 16) / 10.
     time = datetime(1601, 1, 1) + timedelta(microseconds=time) + timedelta(hours=9)
     return time        
-
-##def favorite():
-##    timestamp
-##    volume
-##    netbios
