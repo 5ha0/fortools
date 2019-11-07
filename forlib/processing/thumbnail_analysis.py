@@ -9,14 +9,14 @@ class Thumbnail_analysis:
         self.os = None
         self.analysis = None
 
-    def check_os(self, os):
+    def check_os(self, os):     # os check
         if os == "win":
             self.analysis = Thumbnail_analysis_windows()
 
         if self.analysis == None:
             return False
 
-class Thumbnail_analysis_windows:
+class Thumbnail_analysis_windows:   # windows version check
     def __init__(self, file):
         self.window_version = { "Windows_7": 0x15,
                                "Windows_8": 0x1A,
@@ -25,7 +25,7 @@ class Thumbnail_analysis_windows:
                                "Windows_8_1": 0x1F,
                                "Windows_10": 0x20}
 
-    def get_data(self, path):
+    def get_data(self, path):   # thumbnail data check
         info_list=[]
         file = open(path, "rb")
 
@@ -37,7 +37,7 @@ class Thumbnail_analysis_windows:
                       "available_cache_entry": None,    # Windows Vista, 7, 8, 8v2, 8v3, 8_1, 10
                       "number_of_cache_entries": None}  # Windows Vista, 7, 8, 8v2
 
-        entry = {"signature": None,
+        entry = {"signature": None,         # entry items
                  "cache_entry_size": None,
                  "entry_hash": None,
                  "filename_length": None,
@@ -53,12 +53,7 @@ class Thumbnail_analysis_windows:
         db_header.update({"version": int(check.convert_endian(file.read(4), 4, True, 'd'), 10)})
         db_header.update({"type": int(check.convert_endian(file.read(4), 4, True, 'd'), 10)})
 
-        if None in db_header.values():
-            return None
-        elif db_header.get("signature") != "CMMM":
-            return None
-
-        try:
+        try:    # windows version check
             version = db_header.get("version")
             if version == self.window_version.get("Windows_7") or \
                 version == self.window_version.get("Windows_8"):
@@ -96,7 +91,7 @@ class Thumbnail_analysis_windows:
 
         num = 0
 
-        while True:
+        while True:     # entry data insert
 
             try:
                 file.seek(start_offset)
@@ -139,13 +134,13 @@ class Thumbnail_analysis_windows:
             except Exception as e:
                 break
 
-            if entry.get("signature") != "CMMM":
-                start_offset = check.find_signature(path, start_offset, 32768, b'CMMM')
-                if start_offset != -1:
-                    continue
-                else:
-                    break
-            #if(struct.unpack(str, entry.get("entry_hash"))) == 0:
+            # if entry.get("signature") != "CMMM":
+            #     start_offset = check.find_signature(path, start_offset, 32768, b'CMMM')
+            #     if start_offset != -1:
+            #         continue
+            #     else:
+            #         break
+
             if int(entry.get("entry_hash"), 16) == 0:
                 start_offset = file.tell()
                 continue
