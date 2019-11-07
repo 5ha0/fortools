@@ -29,6 +29,7 @@ class Chrome:
         for cookie in cookies_open:
             no += 1
             mkdict = dict()
+            mkdict["index"] = no
             mkdict["type"] = "cookies"
             mkdict["browser"] = "chrome"
             mkdict["name"]=cookie[2]
@@ -41,10 +42,10 @@ class Chrome:
             mkdict["is_secure"]=cookie[6]
             mkdict["is_httponly"]=cookie[7]
 
-            mkdictno = dict()
-            mkdictno["no" + str(no)] = mkdict
-            cookies.append(mkdictno)
-            print(mkdictno)
+            # mkdictno = dict()
+            # mkdictno["no" + str(no)] = mkdict
+            cookies.append(mkdict)
+            print(mkdict)
         return cookies
 
     #get history
@@ -56,6 +57,7 @@ class Chrome:
         for visit in visits_open:
             no += 1
             mkdict = dict()
+            mkdict["index"] = no
             mkdict["type"] = "history"
             mkdict["browser"] = "chrome"
             mkdict["title"]=visit[4]
@@ -77,10 +79,10 @@ class Chrome:
             mkdict["visit_count"]=visit[5]
             mkdict["visit_type"]=visit[2]
 
-            mkdictno = dict()
-            mkdictno["no" + str(no)] = mkdict
-            history.append(mkdictno)
-            print(mkdictno)
+            # mkdictno = dict()
+            # mkdictno["no" + str(no)] = mkdict
+            history.append(mkdict)
+            print(mkdict)
         return history
 
     #get downloads
@@ -92,6 +94,7 @@ class Chrome:
         for download in downloads_open:
             no += 1
             mkdict = dict()
+            mkdict["index"] = no
             mkdict["type"] = "downloads"
             mkdict["browser"] = "chrome"
             mkdict["file_name"] = download[3].split("\\")[-1]
@@ -105,10 +108,10 @@ class Chrome:
             mkdict["opened"] = download[12]
             mkdict["state"] = download[7]
 
-            mkdictno = dict()
-            mkdictno["no" + str(no)] = mkdict
-            downloads.append(mkdictno)
-            print(mkdictno)
+            # mkdictno = dict()
+            # mkdictno["no" + str(no)] = mkdict
+            downloads.append(mkdict)
+            print(mkdict)
         return downloads
 
 class Firefox:
@@ -140,6 +143,7 @@ class Firefox:
         for cookie in cookies_open:
             no += 1
             mkdict = dict()
+            mkdict["index"] = no
             mkdict["type"] = "cookies"
             mkdict["browser"] = "firefox"
             mkdict["name"] = cookie[3]
@@ -152,10 +156,10 @@ class Firefox:
             mkdict["is_secure"] = cookie[10]
             mkdict["is_httponly"] = cookie[11]
 
-            mkdictno = dict()
-            mkdictno["no" + str(no)] = mkdict
-            cookies.append(mkdictno)
-            print(mkdictno)
+            # mkdictno = dict()
+            # mkdictno["no" + str(no)] = mkdict
+            cookies.append(mkdict)
+            print(mkdict)
         return cookies
 
     #get history
@@ -167,6 +171,7 @@ class Firefox:
         for visit in visits_open:
             no += 1
             mkdict = dict()
+            mkdict["index"] = no
             mkdict["type"] = "history"
             mkdict["browser"] = "firefox"
             mkdict["title"] = visit[0]
@@ -185,10 +190,10 @@ class Firefox:
             mkdict["visit_count"] = visit[4]
             mkdict["visit_type"] = visit[5]
 
-            mkdictno = dict()
-            mkdictno["no" + str(no)] = mkdict
-            history.append(mkdictno)
-            print(mkdictno)
+            # mkdictno = dict()
+            # mkdictno["no" + str(no)] = mkdict
+            history.append(mkdict)
+            print(mkdict)
         return history
 
     #get downloads
@@ -200,6 +205,7 @@ class Firefox:
         for moz_place in place_id_open:
             no += 1
             mkdict = dict()
+            mkdict["index"] = no
             mkdict["type"] = "downloads"
             mkdict["browser"] = "firefox"
             downloads_cursor = self.conn.cursor()
@@ -224,10 +230,10 @@ class Firefox:
             mkdict["opened"] = ""
             mkdict["state"] = ""
 
-            mkdictno = dict()
-            mkdictno["no" + str(no)] = mkdict
-            downloads.append(mkdictno)
-            print(mkdictno)
+            # mkdictno = dict()
+            # mkdictno["no" + str(no)] = mkdict
+            downloads.append(mkdict)
+            print(mkdict)
         return downloads
 
 class Ie_Edge:
@@ -283,6 +289,7 @@ class Ie_Edge:
             for cache in cache_container.records:
                 no += 1
                 mkdict = dict()
+                mkdict["index"] = no
                 mkdict["type"] = "cookies"
                 mkdict["browser"] = "IE10+ Edge"
 
@@ -303,10 +310,10 @@ class Ie_Edge:
                     mkdict["server_info"] = ""
 
 
-                mkdictno = dict()
-                mkdictno["no" + str(no)] = mkdict
-                cache_list.append(mkdictno)
-                print(mkdictno)
+                # mkdictno = dict()
+                # mkdictno["no" + str(no)] = mkdict
+                cache_list.append(mkdict)
+                print(mkdict)
         return cache_list
 
     # get cookies
@@ -328,6 +335,7 @@ class Ie_Edge:
             for cookie in cookies_container.records:
                 no += 1
                 mkdict = dict()
+                mkdict["index"] = no
                 mkdict["type"] = "cookies"
                 mkdict["browser"] = "IE10+ Edge"
                 mkdict["name"] = cookie.get_value_data_as_stirng(18)
@@ -340,10 +348,10 @@ class Ie_Edge:
                 mkdict["is_secure"] = ""
                 mkdict["is_httponly"] = ""
 
-                mkdictno = dict()
-                mkdictno["no" + str(no)] = mkdict
-                cookies.append(mkdictno)
-                print(mkdictno)
+                # mkdictno = dict()
+                # mkdictno["no" + str(no)] = mkdict
+                cookies.append(mkdict)
+                print(mkdict)
         return cookies
 
     #get history
@@ -367,6 +375,7 @@ class Ie_Edge:
             for visit in history_container.records:
                 no += 1
                 mkdict = dict()
+                mkdict["index"]=no
                 mkdict["type"] = "history"
                 mkdict["browser"] = "IE10+ Edge"
                 #get title from response header
@@ -386,10 +395,10 @@ class Ie_Edge:
                 mkdict["visit_count"] = visit.get_value_data_as_integer(8)
                 mkdict["visit_type"] = ""
 
-                mkdictno = dict()
-                mkdictno["no" + str(no)] = mkdict
-                history.append(mkdictno)
-                print(mkdictno)
+                # mkdictno = dict()
+                # mkdictno["no" + str(no)] = mkdict
+                history.append(mkdict)
+                print(mkdict)
         return history
 
     #get downloads
@@ -414,6 +423,7 @@ class Ie_Edge:
            for download in downloads_container.records:
                no+=1
                mkdict = dict()
+               mkdict["index"] = no
                mkdict["type"] = "download"
                mkdict["browser"] = "IE10+ Edge"
 
@@ -449,10 +459,10 @@ class Ie_Edge:
                mkdict["opened"] = ""
                mkdict["state"] = ""
 
-               mkdictno = dict()
-               mkdictno["no" + str(no)] = mkdict
-               downloads.append(mkdictno)
-               print(mkdictno)
+               # mkdictno = dict()
+               # mkdictno["no" + str(no)] = mkdict
+               downloads.append(mkdict)
+               print(mkdict)
        return downloads
 
 

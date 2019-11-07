@@ -1,6 +1,7 @@
 import docx
 from datetime import datetime
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
+from docx.shared import Cm
 # class MdExport:
 
 
@@ -11,6 +12,8 @@ class DocxExport:
         heading.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
         date_info = document.add_paragraph(str(datetime.now()))
         date_info.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
+        contents_info = document.add_paragraph()
+        contents_info.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
 
         self.document = document
 
@@ -32,7 +35,10 @@ class DocxExport:
                 row_cells[j].text = str(result[j])
 
     def insert_img(self, path):
-        self.document.add_picture(path)
+        self.document.add_picture(path, width=Cm(15), height=Cm(15))
+
+    def add_text(self, text):
+        self.document.add_paragraph(str(text))
 
     def save(self, name):
         self.document.save(name + '.docx')

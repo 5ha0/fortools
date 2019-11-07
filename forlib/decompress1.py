@@ -100,4 +100,4 @@ def decompress(data):
         if ntFinalUncompressedSize.value != decompressed_size:
             print ('Decompressed with a different size than original!')
 
-        return bytearray(ntDecompressed)
+        return bytes(ntDecompressed)

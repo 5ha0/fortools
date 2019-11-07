@@ -1,6 +1,6 @@
 import errno
 import os
-from matplotlib import pyplot as plt
+#from matplotlib import pyplot as plt
 
 
 class PieChart:

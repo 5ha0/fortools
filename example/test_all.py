@@ -72,8 +72,8 @@ file.showlist()
 
 #------------------------ ZipFile -------------------------------#
 path = r'C:\Users\sjms1\Desktop\Educate\cos.jar'
-file = Files.ZIP.file_open(path)
-file.get_info()
+#file = Files.ZIP.file_open(path)
+#file.get_info()
 
 #Browser
 # google_cookie_path="C:\Users\JH\AppData\Local\Google\Chrome\User Data\Default\Cookies"

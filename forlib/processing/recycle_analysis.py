@@ -1,4 +1,4 @@
-from struct import unpack
+import struct
 import binascii
 from datetime import datetime
 from datetime import timedelta
