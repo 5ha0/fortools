@@ -26,6 +26,7 @@ class Thumbnail_analysis_windows:
                                "Windows_10": 0x20}
 
     def get_data(self, path):
+        info_list=[]
         file = open(path, "rb")
 
         db_header = {"signature": None,
@@ -126,7 +127,7 @@ class Thumbnail_analysis_windows:
                     entry.update({"width": int(check.convert_endian(file.read(4), 4, True, 'd'), 10)})
                     entry.update({"height": int(check.convert_endian(file.read(4), 4, True, 'd'), 10)})
                     file.seek(4, 1)
-                    data_checksum = file.read(8)
+                    #data_checksum = file.read(8)
                     entry.update({"data_checksum": check.convert_endian(file.read(8), 8, True, 'x')})
                     header_checksum = file.read(8)
                     entry.update({"header_checksum": check.convert_endian(header_checksum, 8, True, 'x')})
@@ -155,10 +156,10 @@ class Thumbnail_analysis_windows:
                 file_name = check.convert_endian(file.read(entry.get("name_length")), entry.get("name_length"), False, 'unicode')
                 file.seek(entry.get("padding_size"), 1)
 
-                # if entry.get("data_size") == 0:
-                #     continue
-                # else:
-                data = file.read(entry.get("data_size"))
+                if entry.get("data_size") == 0:
+                    continue
+                else:
+                    data = file.read(entry.get("data_size"))
 
                 if check.check_signature(data, "bmp") == True:
                     file_name += ".bmp"
@@ -198,8 +199,10 @@ class Thumbnail_analysis_windows:
             cache_file.update({"system": "%s" % system_version})
             cache_file.update({"location": "%s" % (path)})
             print({num:cache_file})
+            info_list.append(cache_file)
 
         file.close()
+        return info_list
 
 
 
