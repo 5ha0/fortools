@@ -20,7 +20,7 @@ class IconcacheAnalysis:
             return version
         else:
             print('not supported version')
-            return none
+            return -1
 
     def section_one(self):
         self.file.seek(0)
