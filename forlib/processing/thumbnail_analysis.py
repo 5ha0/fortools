@@ -155,10 +155,10 @@ class Thumbnail_analysis_windows:
                 file_name = check.convert_endian(file.read(entry.get("name_length")), entry.get("name_length"), False, 'unicode')
                 file.seek(entry.get("padding_size"), 1)
 
-                if entry.get("data_size") == 0:
-                    continue
-                else:
-                    data = file.read(entry.get("data_size"))
+                # if entry.get("data_size") == 0:
+                #     continue
+                # else:
+                data = file.read(entry.get("data_size"))
 
                 if check.check_signature(data, "bmp") == True:
                     file_name += ".bmp"
