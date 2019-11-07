@@ -97,13 +97,14 @@ class Mem:
             calc_hash.get_hash(path)
             return mem_analysis.MemAnalysis(path)
 
+
 class EvtxLog:
     def file_open(path):
-        extension = sig_check(path)
+        extension = sig.sig_check(path)
         if extension == 'MS Windows Vista Event Log':
-            calc_hash.get_hash(path)
+            hash_v = calc_hash.get_hash(path)
             file = evtx_open(path)
-            return log_analysis.EvtxAnalysis(file)
+            return log_analysis.EvtxAnalysis(file, path, hash_v)
         print("check your file format. This is not EVTX file.")
         return -1
 
