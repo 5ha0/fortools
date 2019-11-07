@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 import struct
 from bitstring import BitArray
-
+import json
 
 class LnkAnalysis:
 
@@ -48,7 +48,7 @@ class LnkAnalysis:
 
         for count, items in enumerate(flags_to_parse):
             if int(items) == 1:
-                print('Link Flag : ' + format(flags[count]))
+                #print('Link Flag : ' + format(flags[count]))
                 self.lnk_flag.append(format(flags[count]))
             else:
                 continue
@@ -101,7 +101,7 @@ class LnkAnalysis:
                 drive_type_list.append(format(drive_type[count]))
             else:
                 continue
-                
+
         return drive_type_list
 
     ################ Shell_Link_Header #############################
@@ -261,7 +261,7 @@ class LnkAnalysis:
         volumelable = volumelable.decode('cp1252')
         print('Volumelable: ' + volumelable)
 
-        return driveserialnumber, volumelable, drive_type
+        return (drive_type, driveserialnumber, volumelable)
 
     def localbase_path(self):
         self.__linkinfo_off()
@@ -300,7 +300,7 @@ class LnkAnalysis:
             locbasepath.append(i)
         print('Localbasepath: ' + locbasepath[0])
 
-        return locbasepath, self.locbase_path_uni
+        return (self.locbase_path_uni, locbasepath)
 
     ################ Extra_Data #############################
     def __extradata_size(self, string_off):
@@ -374,7 +374,33 @@ class LnkAnalysis:
         droidbirth = droidbirth.replace('\x00', '').encode('utf-8', 'ignore').decode('utf-8')
         print('DroidBirth' + str(droidbirth))
 
-        return droid, droidbirth
+        return (droid, droidbirth)
+
+    def show_all_info(self):
+        info_lsit=[]
+        info = dict()
+        info["file attributes"] = str(self.file_attribute())
+        info["creation time"] = str(self.creation_time())
+        info["access time"] = str(self.access_time())
+        info["write time"] = str(self.write_time())
+        info["file size"] = str(self.file_size())
+        info["icon idex"] = str(self.iconindex())
+        info["show comand"] = str(self.show_command())
+        volume = str(self.volume())
+        info["drive type"] = volume[0]
+        info["drive serial number"] = volume[1]
+        info["volume lable"] = volume[2]
+        localbase = str(self.localbase_path())
+        info["localbasepathunicode"] = localbase[0]
+        info["localbasepath"] = localbase[1]
+        info["netbios"] = str(self.netbios())
+        machine = str(self.machine_id())
+        info["droid"] = machine[0]
+        info["droid birth"] = machine[1]
+
+        print(info)
+        info_lsit.append(info)
+        return info_lsit
 
 
 def convert_time(time):
