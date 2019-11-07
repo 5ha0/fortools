@@ -1,8 +1,7 @@
-import binascii
-import ctypes
 from datetime import datetime,timedelta
 import os
 import struct
+import json
 
 
 class PrefetchAnalysis:
