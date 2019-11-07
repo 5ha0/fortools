@@ -59,10 +59,10 @@ def file_open(path):
             return JumpList.file_open(path)
         else: # if file.listdir(streams=True, storages=False)[-1][0] == 'PowerPoint Document':
             return Files.MSOld.file_open(file)
-    elif extension == 'thumb':
-        return binary_open(path)
-    elif extension == 'iconcache':
-        return binary_open(path)
+    elif extension == 'Thumb_Icon':
+        return Thumbnail_Iconcache.file_open(path)
+    elif extension == 'Icon':
+        return Iconcache.file_open(path)
     elif extension == 'Zip archive data':
         return Files.ZIP.file_open(path)
     elif extension == 'Hangul (Korean) Word Processor File 5.x':
@@ -198,7 +198,7 @@ class Recycle:
 class Iconcache:
     def file_open(path):
         extension = sig_check(path)
-        if extension == 'data':
+        if extension == 'Icon':
             calc_hash.get_hash(path)
             file = iconcache_open(path)
             return iconcache_analysis.IconcacheAnalysis(file)
@@ -248,13 +248,13 @@ class JumpList:
             return jump_analysis.JumplistAnalysis(file)
 
         
-class Thumbnail:
+class Thumbnail_Iconcache:
     def file_open(path):
-        # extension = sig_check(path)
-        # if extension == 'Cache':
-        calc_hash.get_hash(path)
-        file = cache_open(path)
-        return thumbnail_analysis.Thumbnail_analysis_windows(file)
+        extension = sig_check(path)
+        if extension == 'Thumb_Icon':
+            calc_hash.get_hash(path)
+            file = cache_open(path)
+            return thumbnail_analysis.Thumbnail_analysis_windows(file)
 
     
 class Browser:
