@@ -78,11 +78,10 @@ def file_open(path):
         return Thumbnail.file_open(path)
     elif extension == 'MS Windows shortcut':
         return Lnk.file_open(path)
-    elif extension == 'data':
-        if extension == 'recycle_i':
-            return Recycle.file_open(path)
-        if extension == 'prefetch':
-            return Prefetch.file_open(path)
+    elif extension == 'recycle_i:
+        return Recycle.file_open(path)
+    elif extension == 'prefetch':
+        return Prefetch.file_open(path)
     
     # elif extension == 'Extensible storage engine DataBase':
     # elif extension == 'SQLite 3.x database' :    
