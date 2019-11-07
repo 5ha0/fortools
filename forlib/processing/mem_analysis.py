@@ -8,220 +8,177 @@ class MemAnalysis:
 
     def __regx(self, result):
         ret_list = list()
-        progress_pattern = '[Progress].*Scanner\\n'
-        progress_regex = re.compile(progress_pattern)
+        progress_pattern = re.compile("[Progress].*Scanner\\n")
 
         for line in iter(result.stdout.readline, ""):
-            if progress_regex.findall(line) or line == '\n':
+            if progress_pattern.findall(line) or line == '\n':
                 pass
             else:
                 ret_list.append(line)
         return ret_list
 
-    def __process(self, reg_list):
-        plist_list = list()
-        for i in range(1, len(reg_list)):
-            value = reg_list[i].split('\t')
-            plist_obj = {
-                "PID": value[0],
-                "PPID": value[1],
-                "ImageFileName": value[2],
-                "Offset(V)": value[3],
-                "Threads": value[4],
-                "Handles": value[5],
-                "SessionId": value[6],
-                "Wow64": value[7],
-                "CreateTime": value[8],
-                "ExitTime": value[9][:-1]
-            }
-            plist_list.append(plist_obj)
-
-        return plist_list
-
-    def __scan(self, reg_list):
+    def __processing(self, reg_list, keyList):
         ret_list = list()
         for i in range(1, len(reg_list)):
-            value = reg_list[i].split('\t')
-            plist_obj = {
-                "Offset" : value[0],
-                "Name" : value[1][:-1]
-            }
-            ret_list.append(plist_obj)
+            tmp     = reg_list[i].replace('\n', '')
+            tSplit  = tmp.split('\t')
+            ret_obj = dict()
+
+            for splitIndex, splitValue in enumerate(tSplit):
+                ret_obj[keyList[splitIndex]] = splitValue
+
+            ret_list.append(ret_obj)
         return ret_list
 
     def cmdline(self):
-        ret_list = list()
-
-        ret = subprocess.Popen("python %s -f %s windows.cmdline" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret     = subprocess.Popen("python3 %s -f %s windows.cmdline" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
+        keyList = ["PID", "Process", "Args"]
         # 실행 결과값을 가져와 특정 문장을 제외 후 결과만을 가져오기 위함
         reg_list = self.__regx(ret)
+        # 가져온 실행 결과 값을 파싱
+        ret_list = self.__processing(reg_list, keyList)
 
-        # 가져온 결과를 파싱
-        for i in range(1, len(reg_list)):
-            value = reg_list[i].split('\t')
-            plist_obj = {
-                "PID" : value[0],
-                "Process" : value[1],
-                "Args" : value[2][:-1]
-            }
-            ret_list.append(plist_obj)
         return ret_list
 
     def dlldump(self):
-        ret_list = list()
-
-        ret = subprocess.Popen("python %s -f %s windows.dlldump" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret      = subprocess.Popen("python3 %s -f %s windows.dlldump" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
+        keyList  = ["PID", "Process", "Result"]
 
         reg_list = self.__regx(ret)
+        ret_list = self.__processing(reg_list, keyList)
 
-        for i in range(1, len(reg_list)):
-            value = reg_list[i].split('\t')
-            plist_obj = {
-                "PID" : value[0],
-                "Process" : value[1],
-                "Result" : value[2][:-1]
-            }
-            ret_list.append(plist_obj)
         return ret_list
 
     def dlllist(self):
-        ret_list = list()
-
-        ret = subprocess.Popen("python %s -f %s windows.dlllist" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret      = subprocess.Popen("python3 %s -f %s windows.dlllist" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
+        keyList  = ["PID", "Process", "Base", "Size", "Name", "Path"]
 
         reg_list = self.__regx(ret)
+        ret_list = self.__processing(reg_list, keyList)
 
-        for i in range(1, len(reg_list)):
-            value = reg_list[i].split('\t')
-            plist_obj = {
-                "PID" : value[0],
-                "Process" : value[1],
-                "Base" : value[2],
-                "Size": value[3],
-                "Name": value[4],
-                "Path": value[5][:-1]
-            }
-            ret_list.append(plist_obj)
         return ret_list
 
     def driverirp(self):
-        ret_list = list()
-
-        ret = subprocess.Popen("python %s -f %s windows.driverirp" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret      = subprocess.Popen("python3 %s -f %s windows.driverirp" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
+        keyList  = ["Offset", "Driver Name", "IRP", "Address", "Module", "Symbol"]
 
         reg_list = self.__regx(ret)
+        ret_list = self.__processing(reg_list, keyList)
 
-        for i in range(1, len(reg_list)):
-            value = reg_list[i].split('\t')
-            plist_obj = {
-                "Offset" : value[0],
-                "Driver Name" : value[1],
-                "IRP" : value[2],
-                "Address": value[3],
-                "Module": value[4],
-                "Symbol": value[5][:-1]
-            }
-            ret_list.append(plist_obj)
         return ret_list
 
     def driverscan(self):
-        ret_list = list()
-
-        ret = subprocess.Popen("python %s -f %s windows.driverscan" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret      = subprocess.Popen("python3 %s -f %s windows.driverscan" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
+        keyList  = ["Offset", "Start", "Size", "Service Key", "Driver Name", "Name"]
 
         reg_list = self.__regx(ret)
+        ret_list = self.__processing(reg_list, keyList)
 
-        for i in range(1, len(reg_list)):
-            value = reg_list[i].split('\t')
-            plist_obj = {
-                "Offset" : value[0],
-                "Start" : value[1],
-                "Size" : value[2],
-                "Service Key": value[3],
-                "Driver Name": value[4],
-                "Name": value[5][:-1]
-            }
-            ret_list.append(plist_obj)
         return ret_list
 
     def filescan(self):
         ret_list = list()
 
-        ret = subprocess.Popen("python %s -f %s windows.filescan" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret = subprocess.Popen("python3 %s -f %s windows.filescan" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
+        keyList  = ["Offset", "Name"]
 
         reg_list = self.__regx(ret)
-        ret_list = self.__scan(reg_list)
+        ret_list = self.__processing(reg_list, keyList)
+
         return ret_list
 
     def handles(self):
         ret_list = list()
 
-        ret = subprocess.Popen("python %s -f %s windows.handles" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret = subprocess.Popen("python3 %s -f %s windows.handles" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
+        keyList = ["PID", "Process", "Offset", "HandleValue", "Type", "GrantendAccess", "Name"]
 
         reg_list = self.__regx(ret)
+        ret_list = self.__processing(reg_list, keyList)
 
-        for i in range(1, len(reg_list)):
-            value = reg_list[i].split('\t')
-            plist_obj = {
-                "PID" : value[0],
-                "Process" : value[1],
-                "Offset" : value[2],
-                "HandleValue": value[3],
-                "Type": value[4],
-                "GrantedAccess": value[5],
-                "Name" : value[6][:-1]
-            }
-            ret_list.append(plist_obj)
         return ret_list
 
     def info(self):
-        ret_list = list()
-
-        ret = subprocess.Popen("python %s -f %s windows.info" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret      = subprocess.Popen("python3 %s -f %s windows.info" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
 
-        reg_list = self.__regx(ret)
+        keyList  = ["Variable", "Value"]
 
-        for i in range(1, len(reg_list)):
-            value = reg_list[i].split('\t')
-            plist_obj = {
-                "PID" : value[0],
-                "Process" : value[1],
-                "Offset" : value[2],
-                "HandleValue": value[3],
-                "Type": value[4],
-                "GrantedAccess": value[5],
-                "Name" : value[6][:-1]
-            }
-            ret_list.append(plist_obj)
+        reg_list = self.__regx(ret)
+        ret_list = self.__processing(reg_list, keyList)
+
         return ret_list
 
     def mutantscan(self):
-        ret = subprocess.Popen("python %s -f %s windows.mutantscan" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret      = subprocess.Popen("python3 %s -f %s windows.mutantscan" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
+        keyList  = ["Offset", "Name"]
+
         reg_list = self.__regx(ret)
-        ret_list = self.__scan(reg_list)
+        ret_list = self.__processing(reg_list, keyList)
+
         return ret_list
 
     def malfind(self):
-        ret_list = list()
+        hexcode_pattern = re.compile("([0-9a-f]{2}( )?){8}")
+        hexray_pattern  = re.compile("0x[0-9a-f]{0,16}:\t[a-z]{1,}.*\n")
+        ret_list        = list()
+        #3108\trundll32.exe\t0x70000\t0x70fff\tVadS\tPAGE_EXECUTE_READWRITE\t1\t1\t\n
+        #1e ~ ~ ~ ~ ~ ~ ~ ...P..K.\n 0xffffff ~~~
+        keyList  = ["PID", "Process", "Start", "End", "Tag", "Protection", "CommitCharge", "PrivateMemory", "HexDump", "Disasm"]
+        ret      = subprocess.Popen("python3 %s -f %s windows.malfind" % (self.vol_path, self.file), shell=True,
+                               stdin=None, stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
+        reg_list = self.__regx(ret)
 
-        ret = subprocess.Popen("python %s -f %s windows.malfind" % (self.vol_path, self.file), shell=True, stdin=None,
-                               stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
+        tmpList  = []
+        tmpHex   = ""
+        tmpDis   = ""
 
-        for line in iter(ret.stdout.readline, ""):
-            print(line.rstrip())
+        for rl in reg_list:
+            if hexcode_pattern.findall(rl) != []:
+                tmpHex += rl
+            elif hexray_pattern.findall(rl) != []:
+                tmpDis += rl
+            else:
+                if tmpHex != "" and tmpDis != "":
+                    tmpList.append(tmpHex)
+                    tmpList.append(tmpDis)
+                    tmpList.append(rl)
+                    tmpHex = ""
+                    tmpDis = ""
+                else:
+                    tmpList.append(rl)
 
-        # reg_list = self.__regx(ret)
+        for tmpIndex, tmp in enumerate(tmpList[2:]):
+            if tmpIndex % 3 == 0:
+                tDict   = {}
+                tmp     = tmp.replace('\n', '')
+                tSplit  = tmp.split('\t')
 
-        # for i in range(1, len(reg_list)):
+                for splitIndex, split in enumerate(tSplit):
+                    tDict[keyList[splitIndex]] = split
+
+            elif tmpIndex % 3 == 1:
+                tDict[keyList[-2]] = tmp
+
+            elif tmpIndex % 3 == 2:
+                tDict[keyList[-1]] = tmp
+                ret_list.append(tDict)
+        '''
+        for js in jsonList:
+            print(js)
+        '''
+        return ret_list
+
+        # for i in range(1, len(reg_list)  ):
+        #     print(reg_list[i])
         #     value = reg_list[i].split('\t')
         #     print(value)
         #     plist_obj = {
@@ -240,107 +197,79 @@ class MemAnalysis:
         # return ret_list
 
     def pslist(self):
-        ret = subprocess.Popen("python %s -f %s windows.pslist" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret      = subprocess.Popen("python3 %s -f %s windows.pslist" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
+        keyList  = ["PID", "PPID", "ImageFileName", "Offset(V)", "Threads", "Handles", "SessionId", "Wow64", "CreateTime", "ExitTime"]
+
         reg_list = self.__regx(ret)
-        ret_list = self.__process(reg_list)
+        ret_list = self.__processing(reg_list, keyList)
+
         return ret_list
 
     def psscan(self):
-        ret = subprocess.Popen("python %s -f %s windows.psscan" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret      = subprocess.Popen("python3 %s -f %s windows.psscan" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
+        keyList  = ["PID", "PPID", "ImageFileName", "Offset(V)", "Threads", "Handles", "SessionId", "Wow64", "CreateTime", "ExitTime"]
+
         reg_list = self.__regx(ret)
-        ret_list = self.__process(reg_list)
+        ret_list = self.__processing(reg_list, keyList)
+
         return ret_list
 
     def pstree(self):
-        ret = subprocess.Popen("python %s -f %s windows.pstree" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret      = subprocess.Popen("python3 %s -f %s windows.pstree" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
+        keyList  = ["PID", "PPID", "ImageFileName", "Offset(V)", "Threads", "Handles", "SessionId", "Wow64", "CreateTime", "ExitTime"]
+
         reg_list = self.__regx(ret)
-        ret_list = self.__process(reg_list)
+        ret_list = self.__processing(reg_list, keyList)
+
         return ret_list
 
     def reg_certificates(self):
-        ret_list = list()
-
-        ret = subprocess.Popen("python %s -f %s windows.registry.certificates" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret      = subprocess.Popen("python3 %s -f %s windows.registry.certificates" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
 
+        keyList  = ["Certificate Path", "Certificate Section", "Certificate ID", "Certificate Name"]
         reg_list = self.__regx(ret)
+        ret_list = self.__processing(reg_list, keyList)
 
-        for i in range(1, len(reg_list)):
-            value = reg_list[i].split('\t')
-            plist_obj = {
-                "Certificate Path" : value[0],
-                "Certificate Section" : value[1],
-                "Certificate ID" : value[2],
-                "Certificate Name" : value[3][:-1]
-            }
-            ret_list.append(plist_obj)
         return ret_list
 
     def reg_hivelist(self):
-        ret_list = list()
-
-        ret = subprocess.Popen("python %s -f %s windows.registry.hivelist" % (self.vol_path, self.file),
+        ret      = subprocess.Popen("python3 %s -f %s windows.registry.hivelist" % (self.vol_path, self.file),
                                shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
+        keyList  = ["Offset", "FileFullPath"]
 
         reg_list = self.__regx(ret)
+        ret_list = self.__processing(reg_list, keyList)
 
-        for i in range(1, len(reg_list)):
-            value = reg_list[i].split('\t')
-            plist_obj = {
-                "Offset": value[0],
-                "FileFullPath": value[1][:-1]
-            }
-            ret_list.append(plist_obj)
         return ret_list
 
     def reg_hivescan(self):
-        ret_list = list()
-
-        ret = subprocess.Popen("python %s -f %s windows.registry.hivescan" % (self.vol_path, self.file),
+        ret      = subprocess.Popen("python3 %s -f %s windows.registry.hivescan" % (self.vol_path, self.file),
                                shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
-
+        keyList  = ["Offset"]
         reg_list = self.__regx(ret)
+        ret_list = self.__processing(reg_list, keyList)
 
-        for i in range(1, len(reg_list)):
-            value = reg_list[i].split('\t')
-            plist_obj = {
-                "Offset": value[0][:-1]
-            }
-            ret_list.append(plist_obj)
         return ret_list
 
     def reg_printkey(self):
-        ret_list = list()
-
-        ret = subprocess.Popen("python %s -f %s windows.registry.printkey" % (self.vol_path, self.file),
+        ret      = subprocess.Popen("python3 %s -f %s windows.registry.printkey" % (self.vol_path, self.file),
                                shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
+        keyList  = ["Last Write Time", "Hive Offset", "Type", "Key", "Name", "Data", "Volatile"]
 
         reg_list = self.__regx(ret)
+        ret_list = self.__processing(reg_list, keyList)
 
-        for i in range(1, len(reg_list)):
-            value = reg_list[i].split('\t')
-            plist_obj = {
-                "Last Write Time": value[0],
-                "Hive Offset" : value[1],
-                "Type" : value[2],
-                "Key" : value[3],
-                "Name" : value[4],
-                "Data" : value[5],
-                "Volatile" : value[6][:-1]
-            }
-            ret_list.append(plist_obj)
         return ret_list
 
     def reg_userassist(self):
-        ret_list = list()
-
-        ret = subprocess.Popen("python %s -f %s windows.registry.userassist" % (self.vol_path, self.file),
+        ret = subprocess.Popen("python3 %s -f %s windows.registry.userassist" % (self.vol_path, self.file),
                                shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
 
@@ -348,24 +277,11 @@ class MemAnalysis:
             print(line.rstrip())
 
     def vadinfo(self):
-        ret_list = list()
-        ret = subprocess.Popen("python %s -f %s windows.vadinfo" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret      = subprocess.Popen("python3 %s -f %s windows.vadinfo" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
+        keyList  = ["PID", "Process", "Offset", "Start VPN", "End VPN", "Tag", "Protection", "CommitCharge", "PrivateMemory", "Parent", "File"]
+
         reg_list = self.__regx(ret)
-        for i in range(1, len(reg_list)):
-            value = reg_list[i].split('\t')
-            plist_obj = {
-                "PID" : value[0],
-                "Process" : value[1],
-                "Offset" : value[2],
-                "Start VPN": value[3],
-                "End VPN": value[4],
-                "Tag": value[5],
-                "Protection" : value[6],
-                "CommitCharge" : value[7],
-                "PrivateMemory" : value[8],
-                "Parent" : value[9],
-                "File" : value[10][:-1]
-            }
-            ret_list.append(plist_obj)
+        ret_list = self.__processing(reg_list, keyList)
+
         return ret_list
