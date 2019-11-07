@@ -56,12 +56,13 @@ result = file.handles()
 #
 # # Lists process memory ranges
 # result = file.vadinfo()
+#
+# Lists process memory ranges that potentially contain injected code
+# result = file.malfind()
 
 for i in range(len(result)):
     print(result[i])
 
-# print malfind
-# result = file.malfind()
 
 
 
