@@ -27,16 +27,14 @@ from forlib import calc_hash as calc_hash
 
 def sig_check(path):
     extension = magic.from_file(path).split(',')[0]
+    if extension[:11] == 'cannot open' or extension == 'data':
+        extension = sig.sig_check(path)
+        print('extension: ' + extension)
     return extension
 
 
 def file_open(path):
     extension = sig_check(path)
-    if extension[:11] == 'cannot open' or extension == 'data':
-        extension = sig.sig_check(path)
-        print('extension: ' + extension)
-    else:
-        print('extension: ' + extension)
     if extension == 'MS Windows Vista Event Log':
         return EvtxLog.file_open(path)
     elif extension == 'JPEG image data':
@@ -92,7 +90,7 @@ def file_open(path):
     
 class Mem:
     def mem_open(path):
-        extension = sig.sig_check(path)
+        extension = sig_check(path)
         if extension == 'data' or extension == 'block special':
             calc_hash.get_hash(path)
             return mem_analysis.MemAnalysis(path)
@@ -100,7 +98,7 @@ class Mem:
 
 class EvtxLog:
     def file_open(path):
-        extension = sig.sig_check(path)
+        extension = sig_check(path)
         if extension == 'MS Windows Vista Event Log':
             hash_v = calc_hash.get_hash(path)
             file = evtx_open(path)
@@ -181,7 +179,7 @@ class Files:
         
 class Lnk:
     def file_open(path):
-        extension = sig.sig_check(path)
+        extension = sig_check(path)
         if extension == 'MS Windows shortcut':
             calc_hash.get_hash(path)
             file = lnk_open(path)
@@ -190,7 +188,7 @@ class Lnk:
 
 class Recycle:
     def file_open(path):
-        extension = sig.sig_check(path)
+        extension = sig_check(path)
         if extension == 'data':
             calc_hash.get_hash(path)
             file = recycle_open(path)
@@ -199,7 +197,7 @@ class Recycle:
     
 class Iconcache:
     def file_open(path):
-        extension = sig.sig_check(path)
+        extension = sig_check(path)
         if extension == 'data':
             calc_hash.get_hash(path)
             file = iconcache_open(path)
@@ -208,7 +206,7 @@ class Iconcache:
 
 class Prefetch:
     def file_open(path):
-        extension = sig.sig_check(path)
+        extension = sig_check(path)
         if extension == 'prefetch':
             calc_hash.get_hash(path)
             dirname = os.path.dirname(path)
@@ -222,7 +220,7 @@ class Prefetch:
         
 class RegistryHive:
     def file_open(path):
-        extension = sig.sig_check(path)
+        extension = sig_check(path)
         if extension == 'MS Windows registry file':
             file = reg_open(path)
             if Registry.HiveType.NTUSER == file.hive_type():
@@ -243,7 +241,7 @@ class RegistryHive:
 
 class JumpList:
     def file_open(path):
-        extension = sig.sig_check(path)
+        extension = sig_check(path)
         if extension == 'Composite Document File V2 Document':
             calc_hash.get_hash(path)
             file = ole_open(path)
