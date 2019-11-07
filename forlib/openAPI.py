@@ -93,7 +93,7 @@ def file_open(path):
     
 class Mem:
     def mem_open(path):
-        extension = sig_check(path)
+        extension = sig.sig_check(path)
         if extension == 'data' or extension == 'block special':
             calc_hash.get_hash(path)
             return mem_analysis.MemAnalysis(path)
@@ -182,7 +182,7 @@ class Files:
         
 class Lnk:
     def file_open(path):
-        extension = sig_check(path)
+        extension = sig.sig_check(path)
         if extension == 'MS Windows shortcut':
             calc_hash.get_hash(path)
             file = lnk_open(path)
@@ -191,7 +191,7 @@ class Lnk:
 
 class Recycle:
     def file_open(path):
-        extension = sig_check(path)
+        extension = sig.sig_check(path)
         if extension == 'data':
             calc_hash.get_hash(path)
             file = recycle_open(path)
@@ -200,7 +200,7 @@ class Recycle:
     
 class Iconcache:
     def file_open(path):
-        extension = sig_check(path)
+        extension = sig.sig_check(path)
         if extension == 'data':
             calc_hash.get_hash(path)
             file = iconcache_open(path)
@@ -209,16 +209,19 @@ class Iconcache:
 
 class Prefetch:
     def file_open(path):
-        extension = sig_check(path)
-        if extension == 'data':
+        result = sig.sig_check(path)
+        extension = result[0]
+        path_new = result[1]
+        print(extension)
+        if extension == 'prefetch':
             calc_hash.get_hash(path)
-            file = prefetch_open(path)
+            file = prefetch_open(path_new)
             return prefetch_analysis.PrefetchAnalysis(file)
         
         
 class RegistryHive:
     def file_open(path):
-        extension = sig_check(path)
+        extension = sig.sig_check(path)
         if extension == 'data':
             file = reg_open(path)
             if Registry.HiveType.NTUSER == file.hive_type():
@@ -239,7 +242,7 @@ class RegistryHive:
 
 class JumpList:
     def file_open(path):
-        extension = sig_check(path)
+        extension = sig.sig_check(path)
         if extension == 'Composite Document File V2 Document':
             calc_hash.get_hash(path)
             file = ole_open(path)
