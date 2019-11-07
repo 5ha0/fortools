@@ -82,8 +82,6 @@ class MemAnalysis:
         return ret_list
 
     def filescan(self):
-        ret_list = list()
-
         ret = subprocess.Popen("python3 %s -f %s windows.filescan" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
         keyList  = ["Offset", "Name"]
