@@ -7,7 +7,7 @@ import PyPDF2
 import struct
 import codecs
 import struct
-
+import os
 from PIL import Image
 from Registry import Registry
 from os import listdir
@@ -362,7 +362,6 @@ def iconcache_open(path):
 
 def prefetch_open(path):
     prefetch_file = open(path, 'rb')
-    
     version = struct.unpack_from('I', prefetch_file.read(4))[0]
     if version != 23 and version != 30:
         print('error: not supported version')
