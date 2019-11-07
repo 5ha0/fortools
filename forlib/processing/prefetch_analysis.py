@@ -8,6 +8,7 @@ class PrefetchAnalysis:
 
     def __init__(self,file):
         self.file = file
+        self.path = path
  
     def file_name(self):
         self.file.seek(16)
@@ -26,13 +27,13 @@ class PrefetchAnalysis:
         print("File Last Run Time: " + str(last_run_time) +' UTC+9:00')
         return last_run_time
 
-    def create_time(self, path):
-        time = datetime.fromtimestamp(os.path.getctime(path))
+    def create_time(self):
+        time = datetime.fromtimestamp(os.path.getctime(self.path))
         print ('File Create Time: '+str(time) +' UTC+9:00')
         return time
     
-    def write_time(self, path):
-        time = datetime.fromtimestamp(os.path.getmtime(path))
+    def write_time(self):
+        time = datetime.fromtimestamp(os.path.getmtime(self.path))
         print ('File Write Time: '+ str(time) +' UTC+9:00')
         return time
     
@@ -72,7 +73,7 @@ class PrefetchAnalysis:
             print(json.dumps(pf_obj))
         return resource
     
-<<<<<<< HEAD
+
 class Favorite:
     
     def __init__(self, file):
