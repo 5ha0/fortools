@@ -89,9 +89,11 @@ class Favorite:
         w_time = datetime.fromtimestamp(os.path.getmtime(path))
         
         print("File Last Run Time: " + str(last_run_time) +' UTC+9:00')
-        print ('File Create Time: '+str(c_time) +' UTC+9:00')
-        print ('File Write Time: '+ str(w_time) +' UTC+9:00')
-        
+        print('File Create Time: '+str(c_time) +' UTC+9:00')
+        print('File Write Time: '+ str(w_time) +' UTC+9:00')
+        # PrefetchAnalysis.last_run_time()
+        # PrefetchAnalysis.create_time()
+        # PrefetchAnalysis.write_time()
         return l_time, c_time, w_time
     
     def file_list_whit_num_launch(self):

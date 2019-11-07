@@ -4,8 +4,8 @@ import json
 class IconcacheAnalysis:
     def __init__(self, file):
         self.file = file
-        self.size
-        self.signature
+        self.size = None
+        self.signature = None
         
     def file_version(self):
         self.file.seek(12)
