@@ -1,6 +1,6 @@
 from fortools import *
 
-file = Iconcache.file_open('C:\\Users\\graci\\AppData\\Local\\IconCache.db')
+file = Iconcache.file_open('path')
 
 # show information from IconCache.db
 version = file.file_version()
