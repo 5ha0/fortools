@@ -1,28 +1,26 @@
 import json
 import sqlite3
-import win32crypt #pip install pywin32
-import pyesedb
 import binascii
-import base64
-
 from datetime import *
 
-#time수정필요->int2datetime
+
 class Chrome:
     def __init__(self, file):
         self.file = file
         self.conn = sqlite3.connect(self.file)
 
-    def __int2date(self,time):
-        #1601년 1월 1일부터
-        from_date=datetime(1601,1,1)
-        passing_time=timedelta(microseconds=time)
-        get_date=from_date+passing_time
+    # change int to date
+    def __int2date(self, date_time):
+        # 1601년 1월 1일부터
+        from_date = datetime(1601,1,1)
+        passing_time = timedelta(microseconds=date_time)
+        get_date = from_date+passing_time
         return get_date.strftime("%Y-%m-%d %H:%M:%S")
 
     def cache(self):
         pass
 
+    # get cookies
     def cookies(self):
         cookies_cursor = self.conn.cursor()
         cookies = []
@@ -31,6 +29,7 @@ class Chrome:
         for cookie in cookies_open:
             no += 1
             mkdict = dict()
+            mkdict["index"] = no
             mkdict["type"] = "cookies"
             mkdict["browser"] = "chrome"
             mkdict["name"]=cookie[2]
@@ -43,11 +42,13 @@ class Chrome:
             mkdict["is_secure"]=cookie[6]
             mkdict["is_httponly"]=cookie[7]
 
-            mkdictno = dict()
-            mkdictno["no" + str(no)] = mkdict
-            cookies.append(mkdictno)
-        print(json.dumps(cookies,indent=4))
+            # mkdictno = dict()
+            # mkdictno["no" + str(no)] = mkdict
+            cookies.append(mkdict)
+            print(mkdict)
+        return cookies
 
+    #get history
     def history(self):
         history=[]
         history_cursor=self.conn.cursor()
@@ -56,10 +57,12 @@ class Chrome:
         for visit in visits_open:
             no += 1
             mkdict = dict()
+            mkdict["index"] = no
             mkdict["type"] = "history"
             mkdict["browser"] = "chrome"
             mkdict["title"]=visit[4]
             mkdict["url"]=visit[3]
+            #if there is data, get from_visit data
             if visit[0]==0:
                 mkdict["from_visit"]=visit[0]
             else:
@@ -67,6 +70,7 @@ class Chrome:
                 get_url_cursor=self.conn.cursor()
                 url_id=from_visit_cursor.execute("SELECT visits.url FROM visits WHERE visits.id="+str(visit[0])).fetchone()[0]
                 mkdict["from_visit"]=get_url_cursor.execute("SELECT urls.url FROM urls WHERE urls.id="+ str(url_id)).fetchone()[0]
+
             keyword_cursor = self.conn.cursor()
             mkdict["keyword_search"]=keyword_cursor.execute("SELECT keyword_search_terms.term FROM keyword_search_terms WHERE keyword_search_terms.url_id= "+ str(visit[6])).fetchall()
             if mkdict["keyword_search"]== []:
@@ -75,11 +79,13 @@ class Chrome:
             mkdict["visit_count"]=visit[5]
             mkdict["visit_type"]=visit[2]
 
-            mkdictno = dict()
-            mkdictno["no" + str(no)] = mkdict
-            history.append(mkdictno)
-        print(json.dumps(history,indent=4))
+            # mkdictno = dict()
+            # mkdictno["no" + str(no)] = mkdict
+            history.append(mkdict)
+            print(mkdict)
+        return history
 
+    #get downloads
     def downloads(self):
         downloads = []
         downloads_cursor = self.conn.cursor()
@@ -88,6 +94,7 @@ class Chrome:
         for download in downloads_open:
             no += 1
             mkdict = dict()
+            mkdict["index"] = no
             mkdict["type"] = "downloads"
             mkdict["browser"] = "chrome"
             mkdict["file_name"] = download[3].split("\\")[-1]
@@ -101,30 +108,33 @@ class Chrome:
             mkdict["opened"] = download[12]
             mkdict["state"] = download[7]
 
-            mkdictno = dict()
-            mkdictno["no" + str(no)] = mkdict
-            downloads.append(mkdictno)
-        print(json.dumps(downloads, indent=4))
-
+            # mkdictno = dict()
+            # mkdictno["no" + str(no)] = mkdict
+            downloads.append(mkdict)
+            print(mkdict)
+        return downloads
 
 class Firefox:
     def __init__(self, file):
         self.file = file
         self.conn = sqlite3.connect(self.file)
 
-    def __int2date1(self,time):
+    # change int to date
+    def __int2date1(self,date_time):
         #1970년 1월 1일부터
-        get_date=datetime.fromtimestamp(time / 1000000)
+        get_date=datetime.fromtimestamp(date_time / 1000000)
         return get_date.strftime("%Y-%m-%d %H:%M:%S")
 
-    def __int2date2(self,time):
+    # change int to date
+    def __int2date2(self,date_time):
         #1970년 1월 1일부터
-        get_date=datetime.fromtimestamp(time / 1000)
+        get_date=datetime.fromtimestamp(date_time / 1000)
         return get_date.strftime("%Y-%m-%d %H:%M:%S")
 
     def cache(self):
         pass
 
+    #get cookies
     def cookies(self):
         cookies_cursor = self.conn.cursor()
         cookies = []
@@ -133,6 +143,7 @@ class Firefox:
         for cookie in cookies_open:
             no += 1
             mkdict = dict()
+            mkdict["index"] = no
             mkdict["type"] = "cookies"
             mkdict["browser"] = "firefox"
             mkdict["name"] = cookie[3]
@@ -144,11 +155,14 @@ class Firefox:
             mkdict["path"] = cookie[6]
             mkdict["is_secure"] = cookie[10]
             mkdict["is_httponly"] = cookie[11]
-            mkdictno = dict()
-            mkdictno["no" + str(no)] = mkdict
-            cookies.append(mkdictno)
-        print(json.dumps(cookies, indent=4))
 
+            # mkdictno = dict()
+            # mkdictno["no" + str(no)] = mkdict
+            cookies.append(mkdict)
+            print(mkdict)
+        return cookies
+
+    #get history
     def history(self):
         history = []
         visits_cursor = self.conn.cursor()
@@ -157,6 +171,7 @@ class Firefox:
         for visit in visits_open:
             no += 1
             mkdict = dict()
+            mkdict["index"] = no
             mkdict["type"] = "history"
             mkdict["browser"] = "firefox"
             mkdict["title"] = visit[0]
@@ -175,11 +190,13 @@ class Firefox:
             mkdict["visit_count"] = visit[4]
             mkdict["visit_type"] = visit[5]
 
-            mkdictno = dict()
-            mkdictno["no" + str(no)] = mkdict
-            history.append(mkdictno)
-        print(json.dumps(history, indent=4))
+            # mkdictno = dict()
+            # mkdictno["no" + str(no)] = mkdict
+            history.append(mkdict)
+            print(mkdict)
+        return history
 
+    #get downloads
     def downloads(self):
         downloads = []
         moz_places_cursor=self.conn.cursor()
@@ -188,6 +205,7 @@ class Firefox:
         for moz_place in place_id_open:
             no += 1
             mkdict = dict()
+            mkdict["index"] = no
             mkdict["type"] = "downloads"
             mkdict["browser"] = "firefox"
             downloads_cursor = self.conn.cursor()
@@ -212,27 +230,26 @@ class Firefox:
             mkdict["opened"] = ""
             mkdict["state"] = ""
 
-            mkdictno = dict()
-            mkdictno["no" + str(no)] = mkdict
-            downloads.append(mkdictno)
-        print(json.dumps(downloads, indent=4))
-
+            # mkdictno = dict()
+            # mkdictno["no" + str(no)] = mkdict
+            downloads.append(mkdict)
+            print(mkdict)
+        return downloads
 
 class Ie_Edge:
     def __init__(self, file):
         self.file = file
 
+    # get containerid, directory
     def __get_ContainerID(self,group):
         ContainerID = dict()
         Containers = self.file.get_table_by_name("Containers")
         for record in Containers.records:
             if record.get_value_data_as_string(8) == group:
-                #containerid랑directory
                 ContainerID["Container_" + str(record.get_value_data_as_integer(0))] = record.get_value_data_as_string(10)
-        print("a",ContainerID)
         return ContainerID
 
-    #column이름이랑 형식
+    #column name and type
     def __get_schema(self, table):
         col_infos=[]
         get_container = self.file.get_table_by_name(table)
@@ -243,64 +260,82 @@ class Ie_Edge:
             col_info.append(column.name)
             col_info.append(column.get_type())
             col_infos.append(col_info)
-        print(table)
-        print(col_infos)
         return col_infos
 
-    def __int2date(self, time):
+    def __int2date(self, date_time):
         # 1601년 1월 1일부터
         from_date = datetime(1601, 1, 1)
-        passing_time = timedelta(microseconds=(time/10))
+        passing_time = timedelta(microseconds=(date_time*0.1))
         get_date = from_date + passing_time
         return get_date.strftime("%Y-%m-%d %H:%M:%S")
 
-
+    #get cache
     def cache(self):
-        cache=[]
+        cache_list=[]
+        cache_noContainer = []  # 없는 container 저장하는 list
+        cache_emptyContainer = []  # 빈 container 저장하는 list
         cache_container_id= self.__get_ContainerID("Content")
-        no = 1
+        no = 0
         for containerid in cache_container_id.keys():
             col_name = self.__get_schema(containerid)
             cache_container = self.file.get_table_by_name(containerid)
-            if col_name == None: continue #없는경우
+            if col_name==None:
+                cache_noContainer.append(containerid)
+                continue
+            if cache_container.number_of_records == 0:
+                cache_emptyContainer.append(containerid)
+                continue
 
-            mkdict = dict()
-            mkdict["group"] = "cache"
-            mkdict["browser"] = "IE10+ Edge"
-            mkdict["containerid"]=containerid
-            if (cache_container.number_of_records == 0):
-                mkdict["containerEmpty"] = 0
-            else:
-                mkdict["containerEmpty"] = 0
-            for row in cache_container.records:
-                for i in range(0, len(col_name)):
-                    if row.get_value_data(i)==None:
-                        mkdict[col_name[i][0]]=None
-                    else:  mkdict[col_name[i][0]] = str(row.get_value_data(i))
-            mkdictno = dict()
-            mkdictno["no" + str(no)] = mkdict
-            cache.append(mkdictno)
-            no += 1
-        print(json.dumps(cache,indent=4))
+            for cache in cache_container.records:
+                no += 1
+                mkdict = dict()
+                mkdict["index"] = no
+                mkdict["type"] = "cookies"
+                mkdict["browser"] = "IE10+ Edge"
 
+                mkdict["file_name"] = cache.get_value_data_as_string(18)
+                mkdict["url"]=cache.get_value_data_as_string(17)
+                mkdict["access_time"]=self.__int2date(cache.get_value_data_as_integer(13))
+                mkdict["creation_time"]=self.__int2date(cache.get_value_data_as_integer(10))
+                mkdict["file_size"]=cache.get_value_data_as_integer(5)
+                mkdict["file_path"]=cache.get_value_data_as_integer(4)
+                if cache.get_value_data_as_integer(11)==0:
+                    mkdict["expiry_time"] = 0
+                else:
+                    mkdict["expiry_time"]=self.__int2date(cache.get_value_data_as_integer(11))
+                mkdict["last_modified_time"]=self.__int2date(cache.get_value_data_as_integer(13))
+                if cache.get_value_data(21) is not None:
+                    mkdict["server_info"]=cache.get_value_data(21).decode().split(" ")[1]
+                else:
+                    mkdict["server_info"] = ""
+
+
+                # mkdictno = dict()
+                # mkdictno["no" + str(no)] = mkdict
+                cache_list.append(mkdict)
+                print(mkdict)
+        return cache_list
+
+    # get cookies
     def cookies(self):
         cookies=[]
-        cookies_noContainer=[]#없는 container 저장하는 list
-        cookies_emptyContainer=[]#빈 container 저장하는 list
+        cookies_no_container = [] # 없는 container 저장하는 list
+        cookies_empty_container = [] # 빈 container 저장하는 list
         cookies_container_id = self.__get_ContainerID("Cookies")
         no=0
         for containerid in cookies_container_id.keys():
             col_name=self.__get_schema(containerid)
             cookies_container = self.file.get_table_by_name(containerid)
-            if col_name==None:
-                cookies_noContainer.append(containerid)
+            if col_name is None:
+                cookies_no_container.append(containerid)
                 continue
-            if (cookies_container.number_of_records == 0):
-                cookies_emptyContainer.append(containerid)
+            if cookies_container.number_of_records == 0:
+                cookies_empty_container.append(containerid)
                 continue
             for cookie in cookies_container.records:
                 no += 1
                 mkdict = dict()
+                mkdict["index"] = no
                 mkdict["type"] = "cookies"
                 mkdict["browser"] = "IE10+ Edge"
                 mkdict["name"] = cookie.get_value_data_as_stirng(18)
@@ -313,37 +348,46 @@ class Ie_Edge:
                 mkdict["is_secure"] = ""
                 mkdict["is_httponly"] = ""
 
-                mkdictno = dict()
-                mkdictno["no" + str(no)] = mkdict
-                cookies.append(mkdictno)
+                # mkdictno = dict()
+                # mkdictno["no" + str(no)] = mkdict
+                cookies.append(mkdict)
+                print(mkdict)
+        return cookies
 
-        print(cookies_noContainer)
-        print(cookies_emptyContainer)
-        print(cookies)
-
+    #get history
     def history(self):
         history=[]
-        history_noContainer=[]
-        history_emptyContainer=[]
+        history_no_container=[] #없는 container 저장하는 list
+        history_empty_container=[] #빈 container 저장하는 list
         history_container_id= self.__get_ContainerID("History")
         no = 0
         for containerid in history_container_id.keys():
             col_name = self.__get_schema(containerid)
             history_container = self.file.get_table_by_name(containerid)
 
-            if col_name == None:
-                history_noContainer.append(containerid)
+            if col_name is None:
+                history_no_container.append(containerid)
                 continue
-            if (history_container.number_of_records == 0):
-                history_emptyContainer.append(containerid)
+            if history_container.number_of_records == 0:
+                history_empty_container.append(containerid)
                 continue
 
             for visit in history_container.records:
                 no += 1
                 mkdict = dict()
+                mkdict["index"]=no
                 mkdict["type"] = "history"
                 mkdict["browser"] = "IE10+ Edge"
-                mkdict["title"] = str(visit.get_value_data(21))
+                #get title from response header
+                try:
+                    binary_data=visit.get_value_data(21)
+                    size_a=bytes.decode(binascii.hexlify(binary_data[58:62][::-1]))
+                    size= int(size_a,16)*2
+                    title = bytes.decode(binascii.hexlify(binary_data[62:62 + size]))
+                    mkdict["title"] = bytes.fromhex(title).decode("utf-16") #인코딩 문제
+                except:
+                    mkdict["title"] = ""
+
                 mkdict["url"] = visit.get_value_data_as_string(17)
                 mkdict["from_visit"] = ""
                 mkdict["keyword_search"] = ""
@@ -351,56 +395,80 @@ class Ie_Edge:
                 mkdict["visit_count"] = visit.get_value_data_as_integer(8)
                 mkdict["visit_type"] = ""
 
-                mkdictno = dict()
-                mkdictno["no" + str(no)] = mkdict
-                history.append(mkdictno)
-        print(json.dumps(history, indent=4))
-        print(history_noContainer)
-        print(history_emptyContainer)
+                # mkdictno = dict()
+                # mkdictno["no" + str(no)] = mkdict
+                history.append(mkdict)
+                print(mkdict)
+        return history
 
+    #get downloads
     def downloads(self):
        downloads = []
-       downloads_noContainer = []
-       downloads_emptyContainer = []
+       downloads_no_container = []#없는 container 저장하는 list
+       downloads_empty_container = []#빈 container 저장하는 list
        downloads_container_id= self.__get_ContainerID("iedownload")
        no = 0
        for containerid in downloads_container_id.keys():
            col_name = self.__get_schema(containerid)
            downloads_container = self.file.get_table_by_name(containerid)
-           if col_name == None:
-               downloads_noContainer.append(containerid)
+
+           if col_name is None:
+               downloads_no_container.append(containerid)
                continue
-           if (downloads_container.number_of_records == 0):
-               downloads_emptyContainer.append(containerid)
+
+           if downloads_container.number_of_records == 0:
+               downloads_empty_container.append(containerid)
                continue
 
            for download in downloads_container.records:
                no+=1
                mkdict = dict()
+               mkdict["index"] = no
                mkdict["type"] = "download"
                mkdict["browser"] = "IE10+ Edge"
 
-               mkdict["file_name"] = str(download.get_value_data(21))
-               mkdict["download_path"] = str(download.get_value_data(21))
+               # get binary data
+               binary_data = download.get_value_data(21)
+
+               #get file size
+               try:
+                   size_a = bytes.decode(binascii.hexlify(binary_data[0x48:0x4F][::-1]))
+                   size=int(size_a,16)
+               except:
+                   size=""
+
+               #get filename/filepath/fileurl
+               path=""
+               name=""
+               url=""
+               try:
+                   data=bytes.decode(binascii.hexlify(binary_data[0x148:]))
+                   path=bytes.fromhex(data).decode("utf-16").split("\x00")[-2]
+                   name=path.split("\\")[-1]
+                   url=bytes.fromhex(data).decode("utf-16").split("\x00")[-3]
+               except:
+                   pass
+
+               mkdict["file name"] = name
+               mkdict["download_path"] = path
                mkdict["download_start_time"] = self.__int2date(download.get_value_data_as_integer(13))
                mkdict["download_end_time"] = ""
-               mkdict["file_size"] = str(download.get_value_data(21))
-               mkdict["url"] = str(download.get_value_data(21))
+               mkdict["file_size"] =size
+               mkdict["url"] = url
                mkdict["guid"] = download.get_value_data_as_string(17)
                mkdict["opened"] = ""
                mkdict["state"] = ""
 
-               mkdictno = dict()
-               mkdictno["no" + str(no)] = mkdict
-               downloads.append(mkdictno)
-       print(json.dumps(downloads, indent=4))
-       print(downloads_noContainer)
-       print(downloads_emptyContainer)
+               # mkdictno = dict()
+               # mkdictno["no" + str(no)] = mkdict
+               downloads.append(mkdict)
+               print(mkdict)
+       return downloads
 
 
 
 class Favorite:
-    def common(self):
+    def date_search(self):
         pass
 
     def keyword_search(self):
