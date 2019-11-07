@@ -1,5 +1,5 @@
 import magic
-#import pyevtx
+import pyevtx
 import olefile
 import zipfile
 import sqlite3
