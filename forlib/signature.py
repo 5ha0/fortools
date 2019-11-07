@@ -75,7 +75,7 @@ def sig_check(path):
             if sig['file_extension'] == 'MAM':
                 path = prefetch(path, f)
                 extension = sig_check(path)
-                return [extension, path]
+                return extension
             
             return sig['file_extension']
 
