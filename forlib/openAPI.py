@@ -223,7 +223,7 @@ class Prefetch:
 class RegistryHive:
     def file_open(path):
         extension = sig.sig_check(path)
-        if extension == 'data':
+        if extension == 'MS Windows registry file':
             file = reg_open(path)
             if Registry.HiveType.NTUSER == file.hive_type():
                 return reg_analysis.NTAnalysis(file)
