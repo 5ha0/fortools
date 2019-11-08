@@ -1,6 +1,6 @@
 from fortools import *
 
-file = Iconcache.file_open('path')
+file = Iconcache.file_open(r'C:\Users\sjms1\AppData\Local\iconcache.db')
 
 # show information from IconCache.db
 version = file.file_version()
