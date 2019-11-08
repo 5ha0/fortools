@@ -14,10 +14,14 @@ class RecycleAnalysis:
         fileheader = binascii.hexlify(fileheader).decode('ascii')
         print('File Header: ' + fileheader)
 
+        return fileheader
+
     def size(self):
         self.file.seek(8)
         file_size = struct.unpack('<i', self.file.read(4))[0] + struct.unpack('<i', self.file.read(4))[0]
         print('Original File Size: '+str(file_size))
+
+        return file_size
 
     def time(self):
         self.file.seek(16)
@@ -27,12 +31,16 @@ class RecycleAnalysis:
         filedatetime = datetime(1601, 1, 1) + timedelta(microseconds=filedatetime)+timedelta(hours=9)
         print('File Deleted Time: ' + str(filedatetime) + '+ UTC+9:00')
 
+        return filedatetime
+
 
     def path(self):
         self.file.seek(24)
         path = str(self.file.read(), 'cp1252')
-        path = path.replace('\x00', '').encode('', 'ignore').decode('cp949', 'ignore')
+        path = path.replace('\x00', '').encode('utf-8', 'ignore').decode('cp949', 'ignore')
         print('Original File Path: ' + path)
+
+        return path
 
     def show_all_info(self):
         info_list = []
@@ -44,4 +52,5 @@ class RecycleAnalysis:
 
         print(info)
         info_list.append(info)
+        
         return info_list
