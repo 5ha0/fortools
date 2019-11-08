@@ -1,7 +1,9 @@
 from PIL.ExifTags import TAGS
-import datetime
 import os
+from datetime import *
 from datetime import date, time, timedelta
+#from datetime import datetime
+from os.path import getmtime, getctime, getatime
 from os import listdir
 from os import path
 import time
@@ -157,7 +159,7 @@ class ZIPAnalysis:
         for info in self.file.infolist():
             print("[%d]FileName: " % num + os.path.basename(info.filename))
             print("\tComment: " + str(info.comment))
-            print("\tModified: " + str(datetime.datetime(*info.date_time)))
+            print("\tModified: " + str(datetime(*info.date_time)))
             print("\tSystem: " + str(info.create_system) + "(0 = Windows, 3 = Unix)")
             print("\tZIP version: " + str(info.create_version))
             print("\tCompressed: " + str(info.compress_size) + " bytes")
@@ -182,14 +184,15 @@ def file_list(in_path):
 
     for i in range(file_length):
         filename.append(files[i])
-        mt = time.ctime(path.getmtime(in_path + '\\' + files[i]))
-        ct = time.ctime(path.getctime(in_path + '\\' + files[i]))
-
+        mt = datetime.fromtimestamp(getmtime(in_path)).strftime('%Y-%m-%d %H:%M:%S')
+        ct = datetime.fromtimestamp(getctime(in_path)).strftime('%Y-%m-%d %H:%M:%S')
+        at = datetime.fromtimestamp(getatime(in_path)).strftime('%Y-%m-%d %H:%M:%S')
         file_obj = {
             "no" + str(i+1) : {
                 "Name" : files[i],
                 "Modified TIme" : mt,
-                "Created Time" : ct
+                "Created Time" : ct,
+                "Access Time" : at
             }
         }
         print(json.dumps(file_obj))
