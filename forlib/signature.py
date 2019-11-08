@@ -51,7 +51,6 @@ signatures = [{
     'hex': ['0x53', '0x43', '0x43', '0x41'],
     'len': 4,
     'offset': 4},
-        'offset': 4},
     {
     'file_extension': 'recycle_i',
     'hex': ['0x1', '0x0', '0x0', '0x0', '0x0', '0x0', '0x0', '0x0'],
