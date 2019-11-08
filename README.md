@@ -13,3 +13,6 @@ There are few free integrated Python libraries that can be used from a forensics
 
 # How to Use
 For instructions, check the example folder.
+
+# Contact
+If you have any questions , feel free to send us an e-mail(fortools.official@gmail.com).
