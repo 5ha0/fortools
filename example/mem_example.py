@@ -1,7 +1,7 @@
 from fortools import Mem
 
-file = Mem.mem_open("..\\dataset\\CPO_PC.vmem")
-file.vol_path = "..\\forlib\\processing\\volatility\\vol.py"
+file = Mem.mem_open("C:\\Users\\sjms1\\Downloads\\CPO_PC.vmem")
+file.vol_path = "C:\\Users\\sjms1\\Desktop\\fortools\\volatility3\\vol.py"
 
 # # Lists process command line arguments
 # result = file.cmdline()
@@ -21,8 +21,8 @@ file.vol_path = "..\\forlib\\processing\\volatility\\vol.py"
 # # Scans for file objects present in a particular windows memory image
 # result = file.filescan()
 #
-# Lists process open handles
-result = file.handles()
+# # Lists process open handles
+# result = file.handles()
 #
 # # Show OS & kernel details of the memory sample being analyzed
 # result = file.info()
@@ -57,10 +57,12 @@ result = file.handles()
 # # Lists process memory ranges
 # result = file.vadinfo()
 #
-# Lists process memory ranges that potentially contain injected code
-# result = file.malfind()
+#Lists process memory ranges that potentially contain injected code
+result = file.malfind()
+
 ## Runs all relevant plugins that provide time related information and orders the results by time
 #result = file.timeliner()
+
 for i in range(len(result)):
     print(result[i])
 

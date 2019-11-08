@@ -131,7 +131,7 @@ class MemAnalysis:
         #3108\trundll32.exe\t0x70000\t0x70fff\tVadS\tPAGE_EXECUTE_READWRITE\t1\t1\t\n
         #1e ~ ~ ~ ~ ~ ~ ~ ...P..K.\n 0xffffff ~~~
         keyList  = ["PID", "Process", "Start", "End", "Tag", "Protection", "CommitCharge", "PrivateMemory", "HexDump", "Disasm"]
-        ret      = subprocess.Popen("python3 %s -f %s windows.malfind" % (self.vol_path, self.file), shell=True,
+        ret      = subprocess.Popen("python %s -f %s windows.malfind" % (self.vol_path, self.file), shell=True,
                                stdin=None, stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
         reg_list = self.__regx(ret)
 

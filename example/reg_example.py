@@ -19,10 +19,10 @@ from fortools import RegistryHive
 #     print(user_info[i])
 #
 ## NTUSER.DAT Analysis
-reg_file3 = RegistryHive.file_open("C:\\Users\\liber\\Desktop\\reg\\liber.NTUSER.DAT")
+reg_file3 = RegistryHive.file_open("C:\\Users\\sjms1\\Desktop\\fortools\\dataset\\Users\\forensic\\NTUSER.DAT")
 
 #ms office information
-ms_office = reg_file3.get_ms_office()
+ms_office = reg_file3.get_recent_docs()
 
 for i in range(len(ms_office)):
     print(ms_office[i])
