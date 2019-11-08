@@ -100,7 +100,7 @@ class Thumbnail_analysis_windows:   # windows version check
                 if version == self.window_version.get("Windows_7"):
                     entry.update({"signature": check.convert_endian(file.read(4), 4, False, 's')})
                     entry.update({"entry_size": int(check.convert_endian(file.read(4), 4, True, 'd'), 10)})
-                    entry.update({"entry_hash": check.convert_endian(file.read(8), 8, True, 's')})
+                    entry.update({"entry_hash": check.convert_endian(file.read(8), 8, True, 'x')})
                     entry.update({"name_length": int(check.convert_endian(file.read(4), 4, True, 'd'), 10)})
                     entry.update({"padding_size": int(check.convert_endian(file.read(4), 4, True, 'd'), 10)})
                     entry.update({"data_size": int(check.convert_endian(file.read(4), 4, True, 'd'), 10)})
@@ -141,9 +141,9 @@ class Thumbnail_analysis_windows:   # windows version check
             #     else:
             #         break
 
-            if int(entry.get("entry_hash"), 16) == 0:
-                start_offset = file.tell()
-                continue
+            # if int(entry.get("entry_hash"), 16) == 0:
+            #    start_offset = file.tell()
+            #    continue
 
             start_offset += entry.get("entry_size")
 
