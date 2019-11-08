@@ -189,7 +189,7 @@ class Lnk:
 class Recycle:
     def file_open(path):
         extension = sig_check(path)
-        if extension == 'data':
+        if extension == 'recycle_i':
             calc_hash.get_hash(path)
             file = recycle_open(path)
             return recycle_analysis.RecycleAnalysis(file)
