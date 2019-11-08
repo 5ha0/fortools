@@ -32,7 +32,10 @@ for i in range(len(ms_office)):
 #
 # for i in range(len(user_assist)):
 #     print(user_assist[i])
-
+# recent docs print
+# re_docs = reg_file3.get_recent_docs()
+# for i in range(len(re_docs)):
+#     print(re_docs[i])
 #SOFTWARE File Analysis
 # reg_file4 = RegistryHive.file_open("C:\\Users\\liber\\Desktop\\reg\\SOFTWARE")
 #

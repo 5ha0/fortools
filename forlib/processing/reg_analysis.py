@@ -40,7 +40,7 @@ class NTAnalysis:
             reg_obj  = {
                     "time" : str(recent.timestamp()),
                     "name" : v.name(),
-                    "data" : v.value().decode('utf-16')}
+                    "data" : v.value().decode('utf-16').split('\x00')[0]}
             ret_list.append(reg_obj)
         return ret_list
     
@@ -102,10 +102,23 @@ class NTAnalysis:
         if a[0] == '16.0':
             path2 = path+"\\%s\\Excel\\User MRU"%(a[0])
             LiveId = self.reg.open(path2)
+            outlook = list()
             b = list()
             for items in LiveId.subkeys():
                 b.append(items.name())
             
+            try:
+                recent0 = self.reg.open(path+"\\%s\\Outlook\\Search" %a[0])
+                for v in recent0.values():
+                    ret_obj = {
+                        "MS key Last Written time" : str(recent0.timestamp()),
+                        "name" : v.name()
+                    }
+                    outlook.append(ret_obj)
+
+            except:
+                outlook = []
+                            
             try:
                 recent1 = self.reg.open(path + "\\%s\\Excel\\User MRU\\%s\\File MRU" %(a[0], b[0]))
                 xls = self.__print_ms(recent1)
@@ -124,7 +137,7 @@ class NTAnalysis:
             except:
                 word = []
 
-            return xls+ppt+word
+            return outlook+xls+ppt+word
             #ret_ms.append(self.print_ms(recent1))
            
     def get_userassist(self):
