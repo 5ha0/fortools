@@ -12,7 +12,7 @@ Browser.Chrome.file_open(cookies_path).cookies()
 print("history")
 Browser.Chrome.file_open(history_path).history()
 print("downloads")
-result =Browser.Chrome.file_open(download_path).downloads()
+Browser.Chrome.file_open(download_path).downloads()
 
 cookies_path="C://Users//JH//AppData//Roaming//Mozilla//Firefox//Profiles//{random}//cookies.sqlite"
 history_path="C://Users//JH//AppData//Roaming//Mozilla//Firefox//Profiles//{random}//places.sqlite"
@@ -26,13 +26,13 @@ Browser.Firefox.file_open(download_path).downloads()
 
 path="" #path where extract WebCacheV01.dat
 print("cookies")
-result=Browser.Ie_Edge.file_open(path).cookies()
+Browser.Ie_Edge.file_open(path).cookies()
 print("history")
 Browser.Ie_Edge.file_open(path).history()
 print("downloads")
-result=Browser.Ie_Edge.file_open(path).downloads()
+Browser.Ie_Edge.file_open(path).downloads()
 print("cache")
-result=Browser.Ie_Edge.file_open(path).cache()
+Browser.Ie_Edge.file_open(path).cache()
 
 
 print("---{}s seconds---".format(time.time()-start_time))
