@@ -377,7 +377,7 @@ class LnkAnalysis:
         return (droid, droidbirth)
 
     def show_all_info(self):
-        info_lsit=[]
+        info_list=[]
         info = dict()
         info["file attributes"] = str(self.file_attribute())
         info["creation time"] = str(self.creation_time())
@@ -399,8 +399,8 @@ class LnkAnalysis:
         info["droid birth"] = machine[1]
 
         print(info)
-        info_lsit.append(info)
-        return info_lsit
+        info_list.append(info)
+        return info_list
 
 
 def convert_time(time):
