@@ -188,12 +188,11 @@ def file_list(in_path):
         ct = datetime.fromtimestamp(getctime(in_path)).strftime('%Y-%m-%d %H:%M:%S')
         at = datetime.fromtimestamp(getatime(in_path)).strftime('%Y-%m-%d %H:%M:%S')
         file_obj = {
-            "no" + str(i+1) : {
-                "Name" : files[i],
-                "Modified TIme" : mt,
-                "Created Time" : ct,
-                "Access Time" : at
-            }
+            "Modified Time": mt,
+            "Created Time": ct,
+            "Access Time": at
         }
-        print(json.dumps(file_obj))
+
+        print('[' + str(i + 1) + '] FileNanme: ' + files[i] + " " + json.dumps(file_obj))
+
     print("Total: " + str(file_length))

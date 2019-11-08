@@ -69,16 +69,16 @@ def file_open(path):
         return Files.ZIP.file_open(path)
     elif extension == 'Hangul (Korean) Word Processor File 5.x':
         return Files.HWP.file_open(path)
-    elif extension == 'systemp':
-        file = systemp_open(path)
-        return file
+    # elif extension == 'systemp':
+    #     file = systemp_open(path)
+    #     return file
     elif extension == 'PDF document':
         return Files.PDF.file_open(path)
     elif extension == 'Cache':
-        return Thumbnail.file_open(path)
+        return Thumbnail_Iconcache.file_open(path)
     elif extension == 'MS Windows shortcut':
         return Lnk.file_open(path)
-    elif extension == 'recycle_i:
+    elif extension == 'recycle_i':
         return Recycle.file_open(path)
     elif extension == 'prefetch':
         return Prefetch.file_open(path)
