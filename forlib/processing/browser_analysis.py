@@ -2,6 +2,7 @@ import json
 import sqlite3
 import binascii
 from datetime import *
+import re
 
 
 class Chrome:
@@ -241,11 +242,15 @@ class Ie_Edge:
         self.file = file
 
     # get containerid, directory
-    def __get_ContainerID(self,group):
+    def __get_ContainerID(self, name):
         ContainerID = dict()
         Containers = self.file.get_table_by_name("Containers")
         for record in Containers.records:
-            if record.get_value_data_as_string(8) == group:
+            if name=="Hist":
+                regex=re.compile('^MSHist|History')
+                if regex.search(record.get_value_data_as_string(8)) is not None:
+                    ContainerID["Container_" + str(record.get_value_data_as_integer(0))] = record.get_value_data_as_string(10)
+            elif record.get_value_data_as_string(8) == name:
                 ContainerID["Container_" + str(record.get_value_data_as_integer(0))] = record.get_value_data_as_string(10)
         return ContainerID
 
@@ -359,7 +364,8 @@ class Ie_Edge:
         history=[]
         history_no_container=[] #없는 container 저장하는 list
         history_empty_container=[] #빈 container 저장하는 list
-        history_container_id= self.__get_ContainerID("History")
+
+        history_container_id= self.__get_ContainerID("Hist")
         no = 0
         for containerid in history_container_id.keys():
             col_name = self.__get_schema(containerid)
@@ -371,6 +377,10 @@ class Ie_Edge:
             if history_container.number_of_records == 0:
                 history_empty_container.append(containerid)
                 continue
+            #get only Histroy.IE5, MSHist###
+            # directory = re.compile('^MSHist|History.IE5')
+            # if directory.search(history_container_id.get(containerid).split("\\")[-2]) is None:
+            #     continue
 
             for visit in history_container.records:
                 no += 1
@@ -384,7 +394,7 @@ class Ie_Edge:
                     size_a=bytes.decode(binascii.hexlify(binary_data[58:62][::-1]))
                     size= int(size_a,16)*2
                     title = bytes.decode(binascii.hexlify(binary_data[62:62 + size]))
-                    mkdict["title"] = bytes.fromhex(title).decode("utf-16") #인코딩 문제
+                    mkdict["title"] = bytes.fromhex(title).decode("utf-16").rstrip("\x00")
                 except:
                     mkdict["title"] = ""
 
@@ -433,7 +443,7 @@ class Ie_Edge:
                #get file size
                try:
                    size_a = bytes.decode(binascii.hexlify(binary_data[0x48:0x4F][::-1]))
-                   size=int(size_a,16)
+                   size=int(size_a, 16)
                except:
                    size=""
 
@@ -466,13 +476,35 @@ class Ie_Edge:
        return downloads
 
 
-
-class Favorite:
-    def date_search(self):
-        pass
-
-    def keyword_search(self):
-        pass
-
-    def timeline(self):
-        pass
+# class Favorite:
+#
+#     def date_search_period(browser,date1,date2): #date1~date2사이값
+#         result = []
+#         if browser.lower() == "chrome":
+#             downloads=Chrome.downloads()
+#             history=Chrome.history()
+#             for i in range(0, len(downloads)):
+#                 time = downloads[i].get("download_start_time")
+#                 if datetime.datetime.strptime(date1, "%Y%m%d") <= datetime.datetime.strptime(time,"%Y-%m-%d %H:%M:%S") <= datetime.datetime.strptime(date2, "%Y%m%d")+datetime.timedelta(days=1):
+#                     print(downloads[i])
+#                     result.append(downloads[i])
+#             for j in range(0, len(history)):
+#                 time=history[j].get("visit_time")
+#                 if datetime.datetime.strptime(date1, "%Y%m%d") <= datetime.datetime.strptime(time,"%Y-%m-%d %H:%M:%S") <= datetime.datetime.strptime(date2, "%Y%m%d")+datetime.timedelta(days=1):
+#                     print(history[j])
+#                     result.append(history[j])
+#
+#     def date_search_day(browser,date):
+#         downloads=[]
+#         history=[]
+#         cache=[]
+#         cookies=[]
+#         result=[]
+#
+#
+#     def keyword_search(self):
+#         pass
+#
+#     def timeline(self):
+#         pass
+#
