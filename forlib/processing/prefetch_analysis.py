@@ -55,6 +55,7 @@ class PrefetchAnalysis:
         return num_launch
 
     def file_list(self):
+        json_list = []
         self.file.seek(100)
         file_list_offset = struct.unpack_from('<I', self.file.read(4))[0]
         file_list_size = struct.unpack_from('<I', self.file.read(4))[0]
@@ -71,8 +72,9 @@ class PrefetchAnalysis:
                 "Ref_file": resource[i]
             }
             print(json.dumps(pf_obj))
+            json_list.append(pf_obj)
 
-        return resource
+        return json_list
 
     def show_all_info(self):
         info_list = []

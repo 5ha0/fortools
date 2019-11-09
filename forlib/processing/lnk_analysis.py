@@ -1,12 +1,13 @@
 from datetime import datetime, timedelta
 import struct
 from bitstring import BitArray
-import json
+import os
 
 class LnkAnalysis:
 
-    def __init__(self, file):
+    def __init__(self, file, path):
         self.file = file
+        self.path = path
         self.lnk_flag = []
         self.locbase_path_uni = None
         self.start_off = None
@@ -48,7 +49,6 @@ class LnkAnalysis:
 
         for count, items in enumerate(flags_to_parse):
             if int(items) == 1:
-                #print('Link Flag : ' + format(flags[count]))
                 self.lnk_flag.append(format(flags[count]))
             else:
                 continue
@@ -121,12 +121,13 @@ class LnkAnalysis:
 
         return flag_atributes
 
+    # Target File time
     def creation_time(self):
         self.file.seek(28)
         c_time = self.file.read(8)
         c_time = struct.unpack('<q', c_time)
         c_time = convert_time(c_time)
-        print('Creation Time: ' + str(c_time) + 'UTC+9:00')
+        print('Target File Creation Time: ' + str(c_time) + 'UTC+9:00')
 
         return c_time
 
@@ -135,7 +136,7 @@ class LnkAnalysis:
         a_time = self.file.read(8)
         a_time = struct.unpack_from('<q', a_time)[0]
         a_time = convert_time(a_time)
-        print('Access Time: ' + str(a_time) + 'UTC+9:00')
+        print('Target File Access Time: ' + str(a_time) + 'UTC+9:00')
 
         return a_time
 
@@ -144,7 +145,27 @@ class LnkAnalysis:
         w_time = self.file.read(8)
         w_time = struct.unpack('<q', w_time)[0]
         w_time = convert_time(w_time)
-        print('Write Time: ' + str(w_time) + 'UTC+9:00')
+        print('Target File Write Time: ' + str(w_time) + 'UTC+9:00')
+
+        return w_time
+
+    # Link file Time
+
+    def lnk_creation_time(self):
+        c_time = datetime.fromtimestamp(os.path.getctime(self.path))
+        print('Link File Creation Time: ' + str(c_time) + ' UTC+9:00')
+
+        return c_time
+
+    def lnk_access_time(self):
+        a_time = datetime.fromtimestamp(os.path.getatime(self.path))
+        print('Link File Last Access Time: ' + str(a_time) + ' UTC+9:00')
+
+        return a_time
+
+    def lnk_write_time(self):
+        w_time = datetime.fromtimestamp(os.path.getmtime(self.path))
+        print('Link File Write Time: ' + str(w_time) + ' UTC+9:00')
 
         return w_time
 
@@ -228,9 +249,10 @@ class LnkAnalysis:
 
         if self.linkinfo_flag != 'True':
             print('link info (X)')
-            return 0
+            return [0, 0, 0]
         elif self.info_flag != 'A':
-            return print('volume id (X)')
+            print('volume id (X)')
+            return [0, 0, 0]
 
         vol_off = self.start_off + 12
         self.file.seek(vol_off)
@@ -261,17 +283,17 @@ class LnkAnalysis:
         volumelable = volumelable.decode('cp1252')
         print('Volumelable: ' + volumelable)
 
-        return (drive_type, driveserialnumber, volumelable)
+        return [drive_type, driveserialnumber, volumelable]
 
     def localbase_path(self):
         self.__linkinfo_off()
 
         if self.linkinfo_flag != 'True':
             print('this file does not have link info')
-            return -1
+            return [0, 0]
         elif self.info_flag != 'A':
             print('locabasepath (X), locabasepathunicode (X)')
-            return -1
+            return [0, 0]
         elif self.locbase_path_uni != 'True':
             print('locbasepathoffsetunicode : 0\n locbasepathunicode : unknown')
         else:
@@ -300,7 +322,7 @@ class LnkAnalysis:
             locbasepath.append(i)
         print('Localbasepath: ' + locbasepath[0])
 
-        return (self.locbase_path_uni, locbasepath)
+        return [self.locbase_path_uni, locbasepath]
 
     ################ Extra_Data #############################
     def __extradata_size(self, string_off):
@@ -350,7 +372,7 @@ class LnkAnalysis:
 
         if self.extra_data != 'True':
             print('extra data (X)')
-            return -1
+            return 0
         netbios = self.extra_off + 16
         self.file.seek(netbios)
         netbios = str(self.file.read(16))
@@ -364,7 +386,7 @@ class LnkAnalysis:
 
         if self.extra_data != 'True':
             print('extra data (X)')
-            return -1
+            return [0, 0]
         droid = self.extra_off + 32
         self.file.seek(droid)
         droid = str(self.file.read(32))
@@ -374,18 +396,21 @@ class LnkAnalysis:
         droidbirth = droidbirth.replace('\x00', '').encode('utf-8', 'ignore').decode('utf-8')
         print('DroidBirth' + str(droidbirth))
 
-        return (droid, droidbirth)
+        return [droid, droidbirth]
 
     def show_all_info(self):
-        info_list=[]
+        info_list = []
         info = dict()
         info["file attributes"] = str(self.file_attribute())
-        info["creation time"] = str(self.creation_time())
-        info["access time"] = str(self.access_time())
-        info["write time"] = str(self.write_time())
+        info["target file creation time"] = str(self.creation_time())
+        info["target file access time"] = str(self.access_time())
+        info["target file write time"] = str(self.write_time())
+        info["link file creation time"] = str(self.lnk_creation_time())
+        info["link file access time"] = str(self.lnk_access_time())
+        info["link file write time"] = str(self.lnk_write_time())
         info["file size"] = str(self.file_size())
-        info["icon idex"] = str(self.iconindex())
-        info["show comand"] = str(self.show_command())
+        info["icon index"] = str(self.iconindex())
+        info["show command"] = str(self.show_command())
         volume = str(self.volume())
         info["drive type"] = volume[0]
         info["drive serial number"] = volume[1]
