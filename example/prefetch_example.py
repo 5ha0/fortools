@@ -1,6 +1,6 @@
 from fortools import *
 
-file = Prefetch.file_open(r'C:\Windows\Prefetch\IEXPLORE.EXE-A033F7A2.pf')
+file = Prefetch.file_open(r'path')
 # Or you ca use this
 # path = 'path'
 # file = file_open(path)
@@ -15,3 +15,4 @@ file_list = file.file_list()
 
 # show information from show_all_info()
 file_list = file.file_list()
+
