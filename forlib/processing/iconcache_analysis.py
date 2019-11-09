@@ -1,8 +1,6 @@
-# This file only analysis Iconcache.db
-# If you want to analysis Iconcache_##.db, go to Thumbnail_analysis.py
 import struct
 import json
-
+import binascii
 class IconcacheAnalysis:
     def __init__(self, file):
         self.file = file
@@ -26,6 +24,8 @@ class IconcacheAnalysis:
             return -1
 
     def section_one(self):
+        json_list = []
+
         # file size
         self.file.seek(0)
         self.size = struct.unpack_from('<I', self.file.read(4))[0]
@@ -33,119 +33,113 @@ class IconcacheAnalysis:
         # section one path information num
         self.file.seek(self.size)
         self.path_num = struct.unpack_from('<i', self.file.read(4))[0]
-        print(self.path_num)
+        icon_obj = {"section one path num: ": self.path_num}
+        print(json.dumps(icon_obj))
+        json_list.append(icon_obj)
 
+        # path information
         for i in range(0, self.path_num):
 
             self.signature = self.file.read(2)
-            print(str(i+1) + ' : ' + 'sig' + ' : ' + str(self.signature))
-            # self.size = self.size + 2
-            # sss = self.signature
 
             path_length = self.file.read(2)
-            print(path_length)
             b = (b'\x00\x00')
             path_length = path_length + b
             path_length = struct.unpack('<i', path_length)[0]
-            print('len1: '+str(path_length))
-
             sig_chek_list = [b'"\x00', b'\x02\x00', b'\x42\x00']
             if self.signature in sig_chek_list:
                 path_length = path_length
             else:
                 path_length = path_length * 2
-            print('len2: '+str(path_length))
 
-            print('path information :')
             filepaths = self.file.read(path_length)
             filepaths = filepaths.decode('utf16', 'ignore')
             filepaths = filepaths.replace('\x00', '')
-            print(str(filepaths) + '\n')
 
-            print('icon location: ')
             icon_location = self.file.read(4)
-            print(str(icon_location)+ '\n')
-            # icon_location = icon_location.decode('utf16', 'ignore')
-            # icon_location = icon_location.replace('\x00', '')
-            # print(str(icon_location) + '\n')
+            icon_location = str(binascii.hexlify(icon_location))
 
-        return filepaths
+            icon_obj = {
+                "Num": i + 1,
+                "Path": filepaths,
+                "Icon image location": icon_location
+                }
+            print(json.dumps(icon_obj))
+            json_list.append(icon_obj)
+
+        return json_list
 
 
     def section_two(self):
 
-        print('####################################################################################')
         print('section 2')
-        # section one path information num
-        # self.file.seek(self.size)
+        json_list = []
 
-        # section one path information num
-        self.file.seek(self.size)
+        # section two path information num
         self.path_num = struct.unpack_from('<i', self.file.read(4))[0]
-        print(self.path_num)
+        icon_obj = {"section two path num: ": self.path_num}
+        print(json.dumps(icon_obj))
+        json_list.append(icon_obj)
 
         for i in range(0, self.path_num):
-            print('count: ' + str(i + 1))
 
             path_length = self.file.read(2)
             b = (b'\x00\x00')
             path_length = path_length + b
             path_length = struct.unpack('<i', path_length)[0]
             path_length = path_length * 2
-            print('len1: ' + str(path_length))
 
-            print('path information :')
             filepaths = self.file.read(path_length)
             filepaths = filepaths.decode('utf16', 'ignore')
             filepaths = filepaths.replace('\x00', '')
-            print(str(filepaths) + '\n')
 
-            print('icon location: ')
             icon_location = self.file.read(12)
-            print(str(icon_location)+ '\n')
-            # icon_location = icon_location.decode('utf16', 'ignore')
-            # icon_location = icon_location.replace('\x00', '')
-            # print(str(icon_location) + '\n')
+            icon_location = str(binascii.hexlify(icon_location))
 
-        return filepaths
+            icon_obj = {
+                "Num": i+1,
+                "Path": filepaths,
+                "Icon image location": icon_location,
+            }
+            print(json.dumps(icon_obj))
+            json_list.append(icon_obj)
+
+        return json_list
 
     def section_three(self):
-        print('####################################################################################')
-        print('section 3')
-        # section one path information num
-        # self.file.seek(self.size)
 
-        # section one path information num
-        self.file.seek(self.size)
+        print('section 3')
+        json_list = []
+
+        # section three path information num
         self.path_num = struct.unpack_from('<i', self.file.read(4))[0]
-        print(self.path_num)
+        icon_obj = {"section three path num: ": self.path_num}
+        print(json.dumps(icon_obj))
+        json_list.append(icon_obj)
 
         for i in range(0, self.path_num):
-            print('count: ' + str(i + 1))
-
             path_length = self.file.read(2)
-            print(path_length)
             b = (b'\x00\x00')
             path_length = path_length + b
             path_length = struct.unpack('<i', path_length)[0]
             path_length = path_length * 2
-            print('len1: ' + str(path_length))
 
-            print('path information :')
             filepaths = self.file.read(path_length)
             filepaths = filepaths.decode('utf16', 'ignore')
             filepaths = filepaths.replace('\x00', '')
-            print(str(filepaths) + '\n')
 
-            print('icon location: ')
             icon_location = self.file.read(12)
-            print(str(icon_location)+ '\n')
-            # icon_location = icon_location.decode('utf16', 'ignore')
-            # icon_location = icon_location.replace('\x00', '')
-            # print(str(icon_location) + '\n')
+            icon_location = str(binascii.hexlify(icon_location))
 
-        return filepaths
+            icon_obj = {
+                "Num": i + 1,
+                "Path": filepaths,
+                "Icon image location": icon_location,
+            }
+            print(json.dumps(icon_obj))
+            json_list.append(icon_obj)
 
+        return json_list
 
     def show_all_info(self):
         info_list = []
