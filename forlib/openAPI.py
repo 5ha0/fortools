@@ -21,9 +21,11 @@ from forlib.processing import recycle_analysis
 from forlib.processing import iconcache_analysis
 from forlib.processing import prefetch_analysis
 from forlib.processing import mem_analysis
+from forlib.processing import browser_analysis
 from forlib import decompress1
 from forlib import signature as sig
 from forlib import calc_hash as calc_hash
+
 
 def sig_check(path):
     extension = magic.from_file(path).split(',')[0]
@@ -57,7 +59,7 @@ def file_open(path):
         file = ole_open(path)
         if file.listdir(streams=True, storages=False)[-1][0] == 'DestList':
             return JumpList.file_open(path)
-        else: # if file.listdir(streams=True, storages=False)[-1][0] == 'PowerPoint Document':
+        else:  # if file.listdir(streams=True, storages=False)[-1][0] == 'PowerPoint Document':
             return Files.MSOld.file_open(file)
     elif extension == 'Thumb_Icon':
         return Thumbnail_Iconcache.file_open(path)
@@ -67,27 +69,28 @@ def file_open(path):
         return Files.ZIP.file_open(path)
     elif extension == 'Hangul (Korean) Word Processor File 5.x':
         return Files.HWP.file_open(path)
-    elif extension == 'systemp':
-        file = systemp_open(path)
-        return file
+    # elif extension == 'systemp':
+    #     file = systemp_open(path)
+    #     return file
     elif extension == 'PDF document':
         return Files.PDF.file_open(path)
     elif extension == 'Cache':
-        return Thumbnail.file_open(path)
+        return Thumbnail_Iconcache.file_open(path)
     elif extension == 'MS Windows shortcut':
         return Lnk.file_open(path)
-    #elif extension == 'recycle_i:
-     #   return Recycle.file_open(path)
+    elif extension == 'recycle_i':
+        return Recycle.file_open(path)
     elif extension == 'prefetch':
         return Prefetch.file_open(path)
-    
+
     # elif extension == 'Extensible storage engine DataBase':
-    # elif extension == 'SQLite 3.x database' :    
-    
+    # elif extension == 'SQLite 3.x database' :
+
     # elif extension == 'PE32+ executable (console) x86-64':
     #     file =
     # PNG image data
-    
+
+
 class Mem:
     def mem_open(path):
         extension = sig_check(path)
@@ -176,25 +179,25 @@ class Files:
             file = zip_open(path)
             return files_analysis.ZIPAnalysis(file)
 
-        
+
 class Lnk:
     def file_open(path):
         extension = sig_check(path)
         if extension == 'MS Windows shortcut':
             calc_hash.get_hash(path)
             file = lnk_open(path)
-            return lnk_analysis.LnkAnalysis(file)
+            return lnk_analysis.LnkAnalysis(file, path)
 
 
 class Recycle:
     def file_open(path):
         extension = sig_check(path)
-        if extension == 'data':
+        if extension == 'recycle_i':
             calc_hash.get_hash(path)
             file = recycle_open(path)
             return recycle_analysis.RecycleAnalysis(file)
-     
-    
+
+
 class Iconcache:
     def file_open(path):
         extension = sig_check(path)
@@ -202,7 +205,7 @@ class Iconcache:
             calc_hash.get_hash(path)
             file = iconcache_open(path)
             return iconcache_analysis.IconcacheAnalysis(file)
-        
+
 
 class Prefetch:
     def file_open(path):
@@ -216,8 +219,8 @@ class Prefetch:
             exetension = base[-1]
             file = prefetch_open(dirname + '\\' + basename + '-1' + exetension)
             return prefetch_analysis.PrefetchAnalysis(file, path)
-        
-        
+
+
 class RegistryHive:
     def file_open(path):
         extension = sig_check(path)
@@ -247,7 +250,7 @@ class JumpList:
             file = ole_open(path)
             return jump_analysis.JumplistAnalysis(file)
 
-        
+
 class Thumbnail_Iconcache:
     def file_open(path):
         extension = sig_check(path)
@@ -256,11 +259,11 @@ class Thumbnail_Iconcache:
             file = cache_open(path)
             return thumbnail_analysis.Thumbnail_analysis_windows(file)
 
-    
+
 class Browser:
     class Chrome:
         def file_open(path):
-            chrome_file= browser_analysis.Chrome(path)
+            chrome_file = browser_analysis.Chrome(path)
             return chrome_file
 
     class Firefox:
@@ -271,7 +274,7 @@ class Browser:
     class Ie_Edge:
         def file_open(path):
             ie_edge_file = browser_analysis.Ie_Edge(ie_edge_open(path))
-            return ie_edge_file    
+            return ie_edge_file
 
 
 def evtx_open(path):
@@ -318,8 +321,8 @@ def firefox_open(path):
         return path
     else:
         return open_firefox_file
-    
-    
+
+
 def ie_edge_open(path):
     return pyesedb.open(path, 'rb')
 
@@ -348,7 +351,7 @@ def recycle_open(path):
     recycle_file = open(path, 'rb')
     return recycle_file
 
-    
+
 def iconcache_open(path):
     iconcache_file = open(path, 'rb')
     return iconcache_file
