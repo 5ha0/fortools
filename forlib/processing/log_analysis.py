@@ -54,18 +54,17 @@ class EventAnalysis:
         for i in range(0, len(self.evtx_json)):
             for j in range(0, len(filter_list), 3):
                 if filter_list[j+2] == 0:  # normal
-                    if self.evtx_json[i][filter_list[j]] == filter_list[j+1]:
+                    check = False
+                    for k in filter_list[j + 1]:
+                        if self.evtx_json[i][filter_list[j]] == k:
+                            check = True
+                            break
+                        else:
+                            pass
+                    if check is True:
                         pass
                     else:
                         break
-                    '''
-                    for k in filter_list[j + 1]:
-                        if self.evtx_json[i][filter_list[j]] == k:
-                            # if self.evtx_json[i][filter_list[j]] == filter_list[j+1]:
-                            pass
-                        else:
-                            break
-                            '''
                 elif filter_list[j+2] == 1:  # re
                     result_re = re.search(filter_list[j + 1], str(self.evtx_json[i][filter_list[j]]))
                     if result_re is not None:
