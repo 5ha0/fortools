@@ -4,6 +4,7 @@ import olefile
 import zipfile
 import sqlite3
 import PyPDF2
+import pyesedb
 import struct
 import codecs
 import struct
