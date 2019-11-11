@@ -3,6 +3,10 @@ import json
 import datetime
 import re
 import forlib.calc_hash as calc_hash
+from forlib.processing.filter import filter as filter_method
+from forlib.processing.filter import date_filter as date_filter
+from forlib.processing.filter import time_filter as time_filter
+from forlib.processing.filter import day_filter as day_filter
 
 
 # analysis part for event file
@@ -51,29 +55,7 @@ class EventAnalysis:
         return self.hash_value
 
     def filter(self, filter_list):
-        for i in range(0, len(self.evtx_json)):
-            for j in range(0, len(filter_list), 3):
-                if filter_list[j+2] == 0:  # normal
-                    check = False
-                    for k in filter_list[j + 1]:
-                        if self.evtx_json[i][filter_list[j]] == k:
-                            check = True
-                            break
-                        else:
-                            pass
-                    if check is True:
-                        pass
-                    else:
-                        break
-                elif filter_list[j+2] == 1:  # re
-                    result_re = re.search(filter_list[j + 1], str(self.evtx_json[i][filter_list[j]]))
-                    if result_re is not None:
-                        pass
-                    else:
-                        break
-                if j == len(filter_list) - 3:
-                    self._result.append(self.evtx_json[i])
-                    print(self.evtx_json[i])
+        self._result = filter_method(filter_list, self.evtx_json)
         return self._result
 
     def date_cnt(self):
@@ -113,13 +95,13 @@ class EventAnalysis:
         return self._result
 
     def date(self, date1, date2):
-        for i in range(0, len(self.evtx_json)):
-            c_date = self.evtx_json[i]['create Time'].split('.')[0]
-            if datetime.datetime.strptime(date1, "%Y-%m-%d") <= datetime.datetime.strptime(c_date, "%Y-%m-%d %H:%M:%S")\
-                    <= datetime.datetime.strptime(date2, "%Y-%m-%d")+datetime.timedelta(1):
-                print(self.evtx_json[i])
-                self._result.append(self.evtx_json[i])
-        return self._result
+        date_filter("create Time", [date1, date2], self.evtx_json)
+
+    def time(self, time1, time2):
+        time_filter("create Time", [time1, time2], self.evtx_json)
+
+    def day(self, day1, day2):
+        day_filter("create Time", [day1, day2], self.evtx_json)
 
     def xml_with_num(self, num):
         print(self.evtx_file.records[num].get_xml_string())
@@ -131,7 +113,8 @@ class Favorite:
     def __init__(self, json):
         self._result = []
         self.evtx_json = json
-        self.AccountType = AccountType(self.evtx_json)
+        self.Account = Account(self.evtx_json)
+        self.System = System(self.evtx_json)
 
     # detect remote logon record
     def remote(self):
@@ -198,8 +181,24 @@ class Favorite:
         return self._result
 
 
+class System:
+    def __init__(self, evtx_json):
+        self.evtx_json = evtx_json
+        self._result = []
+
+    # window start
+    def system_on(self):
+        EventAnalysis.eventid(self, 4608)
+        return self._result
+
+    # window shut down
+    def system_off(self):
+        EventAnalysis.eventid(self, 4609)
+        return self._result
+
+
 # filtering based on logon type
-class AccountType:
+class Account:
     def __init__(self, evtx_json):
         self.evtx_json = evtx_json
         self._result = []
@@ -207,6 +206,10 @@ class AccountType:
     # detect valid logon record
     def logon(self):
         EventAnalysis.eventid(self, 4624)
+        return self._result
+
+    def logoff(self):
+        EventAnalysis.eventid(self, 4647)
         return self._result
 
     # detect failed user account login
