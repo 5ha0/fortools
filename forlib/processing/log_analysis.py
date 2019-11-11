@@ -5,8 +5,8 @@ import re
 import forlib.calc_hash as calc_hash
 
 
-# analysis part for evtx file
-class EvtxAnalysis:
+# analysis part for event file
+class EventAnalysis:
     time_cnt = []
 
     def __init__(self, file, path, hash_v):
@@ -49,6 +49,33 @@ class EvtxAnalysis:
 
     def get_hash(self):
         return self.hash_value
+
+    def filter(self, filter_list):
+        for i in range(0, len(self.evtx_json)):
+            for j in range(0, len(filter_list), 3):
+                if filter_list[j+2] == 0:  # normal
+                    if self.evtx_json[i][filter_list[j]] == filter_list[j+1]:
+                        pass
+                    else:
+                        break
+                    '''
+                    for k in filter_list[j + 1]:
+                        if self.evtx_json[i][filter_list[j]] == k:
+                            # if self.evtx_json[i][filter_list[j]] == filter_list[j+1]:
+                            pass
+                        else:
+                            break
+                            '''
+                elif filter_list[j+2] == 1:  # re
+                    result_re = re.search(filter_list[j + 1], str(self.evtx_json[i][filter_list[j]]))
+                    if result_re is not None:
+                        pass
+                    else:
+                        break
+                if j == len(filter_list) - 3:
+                    self._result.append(self.evtx_json[i])
+                    print(self.evtx_json[i])
+        return self._result
 
     def date_cnt(self):
         return self.time_cnt
@@ -109,66 +136,66 @@ class Favorite:
 
     # detect remote logon record
     def remote(self):
-        EvtxAnalysis.eventid(self, 540)
-        EvtxAnalysis.eventid(self, 4776)
+        EventAnalysis.eventid(self, 540)
+        EventAnalysis.eventid(self, 4776)
         return self._result
 
     # app error(1000), app hang(1002)
     def app_crashes(self):
-        EvtxAnalysis.eventid(self, 1000)
-        EvtxAnalysis.eventid(self, 1002)
+        EventAnalysis.eventid(self, 1000)
+        EventAnalysis.eventid(self, 1002)
         return self._result
 
     # windows error reporting(1001)
     def error_report(self):
-        EvtxAnalysis.eventid(self,1001)
+        EventAnalysis.eventid(self,1001)
         return self._result
 
     def service_fails(self):
-        EvtxAnalysis.eventid(self, 7022)
-        EvtxAnalysis.eventid(self, 7023)
-        EvtxAnalysis.eventid(self, 7024)
-        EvtxAnalysis.eventid(self, 7026)
-        EvtxAnalysis.eventid(self, 7031)
-        EvtxAnalysis.eventid(self, 7032)
-        EvtxAnalysis.eventid(self, 7034)
+        EventAnalysis.eventid(self, 7022)
+        EventAnalysis.eventid(self, 7023)
+        EventAnalysis.eventid(self, 7024)
+        EventAnalysis.eventid(self, 7026)
+        EventAnalysis.eventid(self, 7031)
+        EventAnalysis.eventid(self, 7032)
+        EventAnalysis.eventid(self, 7034)
         return self._result
 
     # rule add(2004), rule change(2005), rule deleted(2006, 2033), fail to load group policy(2009)
     def firewall(self):
-        EvtxAnalysis.eventid(self, 2004)
-        EvtxAnalysis.eventid(self, 2005)
-        EvtxAnalysis.eventid(self, 2006)
-        EvtxAnalysis.eventid(self, 2009)
-        EvtxAnalysis.eventid(self, 2033)
+        EventAnalysis.eventid(self, 2004)
+        EventAnalysis.eventid(self, 2005)
+        EventAnalysis.eventid(self, 2006)
+        EventAnalysis.eventid(self, 2009)
+        EventAnalysis.eventid(self, 2033)
         return self._result
 
     # new device(43), new mass storage installation(400, 410)
     def usb(self):
-        EvtxAnalysis.eventid(self, 43)
-        EvtxAnalysis.eventid(self, 400)
-        EvtxAnalysis.eventid(self, 410)
+        EventAnalysis.eventid(self, 43)
+        EventAnalysis.eventid(self, 400)
+        EventAnalysis.eventid(self, 410)
         return self._result
 
     # starting a wireless connection(8000, 8011), successfully connected(8001), disconnect(8003), failed(8002)
     def wireless(self):
-        EvtxAnalysis.eventid(self, 8000)
-        EvtxAnalysis.eventid(self, 8001)
-        EvtxAnalysis.eventid(self, 8002)
-        EvtxAnalysis.eventid(self, 8003)
-        EvtxAnalysis.eventid(self, 8011)
-        EvtxAnalysis.eventid(self, 10000)
-        EvtxAnalysis.eventid(self, 10001)
-        EvtxAnalysis.eventid(self, 11000)
-        EvtxAnalysis.eventid(self, 11001)
-        EvtxAnalysis.eventid(self, 11002)
-        EvtxAnalysis.eventid(self, 11004)
-        EvtxAnalysis.eventid(self, 11005)
-        EvtxAnalysis.eventid(self, 11006)
-        EvtxAnalysis.eventid(self, 11010)
-        EvtxAnalysis.eventid(self, 12011)
-        EvtxAnalysis.eventid(self, 12012)
-        EvtxAnalysis.eventid(self, 12013)
+        EventAnalysis.eventid(self, 8000)
+        EventAnalysis.eventid(self, 8001)
+        EventAnalysis.eventid(self, 8002)
+        EventAnalysis.eventid(self, 8003)
+        EventAnalysis.eventid(self, 8011)
+        EventAnalysis.eventid(self, 10000)
+        EventAnalysis.eventid(self, 10001)
+        EventAnalysis.eventid(self, 11000)
+        EventAnalysis.eventid(self, 11001)
+        EventAnalysis.eventid(self, 11002)
+        EventAnalysis.eventid(self, 11004)
+        EventAnalysis.eventid(self, 11005)
+        EventAnalysis.eventid(self, 11006)
+        EventAnalysis.eventid(self, 11010)
+        EventAnalysis.eventid(self, 12011)
+        EventAnalysis.eventid(self, 12012)
+        EventAnalysis.eventid(self, 12013)
         return self._result
 
 
@@ -180,30 +207,30 @@ class AccountType:
 
     # detect valid logon record
     def logon(self):
-        EvtxAnalysis.eventid(self, 4624)
+        EventAnalysis.eventid(self, 4624)
         return self._result
 
     # detect failed user account login
     def login_failed(self):
-        EvtxAnalysis.eventid(self, 4625)
+        EventAnalysis.eventid(self, 4625)
         return self._result
 
     def change_pwd(self):
-        EvtxAnalysis.eventid(self, 4723)
+        EventAnalysis.eventid(self, 4723)
         return self._result
 
     def delete_account(self):
-        EvtxAnalysis.eventid(self, 4726)
+        EventAnalysis.eventid(self, 4726)
         return self._result
 
     def verify_account(self):
-        EvtxAnalysis.eventid(self, 4720)
+        EventAnalysis.eventid(self, 4720)
         return self._result
 
     def add_privileged_group(self):
-        EvtxAnalysis.eventid(self, 4728)
-        EvtxAnalysis.eventid(self, 4732)
-        EvtxAnalysis.eventid(self, 4756)
+        EventAnalysis.eventid(self, 4728)
+        EventAnalysis.eventid(self, 4732)
+        EventAnalysis.eventid(self, 4756)
         return self._result
 
 
