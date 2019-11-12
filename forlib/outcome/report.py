@@ -18,32 +18,24 @@ class DocxExport:
         self.document = document
 
     def make_table(self, data):
+        if len(data) == 0:
+            print("There is no data")
+            return -1
         table = self.document.add_table(rows=1, cols=len(data[0].keys()))
         table.style = 'Table Grid'
         table.rows[0].style = "borderColor:red;background-color:gray"
 
-        try:
-            col_list = list(data[0].keys())
-        except ValueError as e:
-            print("That was no valid character."+e)
+        col_list = list(data[0].keys())
 
         hdr_cells = table.rows[0].cells
         for i in range(0, len(data[0].keys())):
-            try:
-                hdr_cells[i].text = str(col_list[i])
-            except ValueError as e:
-                print("That was no valid character." + str(e))
-                hdr_cells[i].text = 'none'
+            hdr_cells[i].text = str(col_list[i])
 
         for i in range(0, len(data)):
-                row_cells = table.add_row().cells
-                result = list(data[i].values())
-                for j in range(0, len(data[0].keys())):
-                    try:
-                        row_cells[j].text = str(result[j])
-                    except ValueError as e:
-                        print("That was no valid character." + str(e))
-                        row_cells[j].text = 'none'
+            row_cells = table.add_row().cells
+            result = list(data[i].values())
+            for j in range(0, len(data[0].keys())):
+                row_cells[j].text = str(result[j])
 
     def insert_img(self, path):
         self.document.add_picture(path, width=Cm(15), height=Cm(15))
