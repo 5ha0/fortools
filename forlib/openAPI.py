@@ -1,5 +1,6 @@
 import magic
 import pyevtx
+import pyewf, pytsk3
 import olefile
 import zipfile
 import sqlite3
@@ -78,7 +79,16 @@ def file_open(path):
     # elif extension == 'PE32+ executable (console) x86-64':
     #     file =
     # PNG image data
-
+class Disk:
+    def disk_open(path):
+        if pyewf.check_file_signature(path) == True:
+            filename = pyewf.glob(path)
+            ewf_handle = pyewf.handle()
+            ewf_handle.open(filename)
+            return disk_analysis.E01Analysis(ewf_handle)
+        else:
+            img_info = pytsk3.Img_Info(image)
+            return disk_analysis.DDAnalysis(img_info)
 
 class Mem:
     def mem_open(path):
