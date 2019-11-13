@@ -8,7 +8,18 @@ from os import listdir
 from os import path
 import time
 import json
+import sys
 from zipfile import ZipFile
+from forlib import signature as sig
+import magic
+
+
+def sig_check(path):
+    extension = magic.from_file(path).split(',')[0]
+    if extension[:11] == 'cannot open' or extension == 'data':
+        extension = sig.sig_check(path)
+        #print("extension: " + str(extension))
+    return extension
 
 # jpeg data: time, latitude, longitude
 class JPEGAnalysis:
@@ -157,7 +168,8 @@ class ZIPAnalysis:
     def get_info(self):
         num = 1
         for info in self.file.infolist():
-            print("[%d]FileName: " % num + os.path.basename(info.filename))
+            file_name = os.path.basename(info.filename)
+            print("[%d]FileName: " % num + file_name)
             print("\tComment: " + str(info.comment))
             print("\tModified: " + str(datetime(*info.date_time)))
             print("\tSystem: " + str(info.create_system) + "(0 = Windows, 3 = Unix)")
@@ -173,26 +185,58 @@ class ZIPAnalysis:
             print("\tRaw time: " + str(info._raw_time))
             num += 1
 
+    def last_modtime(self):
+        num = 1
+        for info in self.file.infolist():
+            file_name = os.path.basename(info.filename)
+            #print(str(num) + "\tFilename: " + file_name + '\t '+ "Modified Time: " + str(datetime(*info.date_time)))
+            print(file_name)
+            num += 1
+
+
+
+
 # Print files in folder
 def file_list(in_path):
     files = [f for f in listdir(in_path)]
     file_length = len(files)
-    filename=[]
+    filename = []
+    folder_list = []
 
     for i in range(file_length):
         filename.append(0)
 
     for i in range(file_length):
         filename.append(files[i])
+        abs_path = in_path + '\\' + str(files[i])
+        folder_check = os.path.isdir(abs_path)
+        if folder_check is True:
+            folder_list.append(abs_path)
+        elif folder_check is False:
+            sig_type = sig_check(abs_path)
+
+        #print('-' * 20 + abs_path + '-' * 20)
         mt = datetime.fromtimestamp(getmtime(in_path)).strftime('%Y-%m-%d %H:%M:%S')
         ct = datetime.fromtimestamp(getctime(in_path)).strftime('%Y-%m-%d %H:%M:%S')
         at = datetime.fromtimestamp(getatime(in_path)).strftime('%Y-%m-%d %H:%M:%S')
+
         file_obj = {
             "Modified Time": mt,
             "Created Time": ct,
-            "Access Time": at
+            "Access Time": at,
+            "Folder": folder_check,
+           # "Type": sig_type
         }
+        print('[' + str(i + 1) + '] FileNanme: ' + str(files[i]) + ' ' + json.dumps(file_obj))
+        #print('[' + str(i + 1) + '] FileNanme: ' + abs_path + " " + json.dumps(file_obj))
+    if file_length != 0:
+        print("Total: " + str(file_length))
+        print("Folder path : " + os.path.abspath(os.path.join(abs_path, os.pardir)) + "\n")
 
-        print('[' + str(i + 1) + '] FileNanme: ' + files[i] + " " + json.dumps(file_obj))
 
-    print("Total: " + str(file_length))
+    for i in range(0, len(folder_list)):
+        file_list(folder_list[i])
+
+
+
+
