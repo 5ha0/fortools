@@ -1,9 +1,18 @@
 from fortools import *
 
-path = r'C:\Users\sjms1\AppData\Local\Microsoft\Windows\Explorer\thumbcache_1280.db'
+#path = r'C:\Users\sjms1\AppData\Local\Microsoft\Windows\Explorer\thumbcache_96.db'
 #path = r'C:\Users\sjms1\Desktop\thumbcache_256.db'
+path = r'D:\fortools_test_file\thumbcache_256.db'
+
 thumbnail = Thumbnail_Iconcache.file_open(path)
 data = thumbnail.get_data(path)
+
+
+
+
+# filter_info = custom_filter(['file_name', r'^.+[.]bmp$', 1], data)
+# for i in filter_info:
+#    print(i)
 
 # docu = DocxExport()
 # print("Hi")
