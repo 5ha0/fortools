@@ -1,6 +1,7 @@
 import os
 import sys
 import struct
+import math
 from forlib.processing.internal import check
 
 
@@ -168,7 +169,8 @@ class Thumbnail_analysis_windows:   # windows version check
 
             num += 1
 
-            cache_file = {"file_name": None,
+            cache_file = {"num": None,
+                          "file_name": None,
                           "entry_hash": None,
                           "size": None,
                           "dimension": None,
@@ -177,9 +179,12 @@ class Thumbnail_analysis_windows:   # windows version check
                           "system": None,
                           "location": None}
             system_version = None
+            file_size = math.floor(entry.get("data_size") / 1024)
+            cache_file.update({"num": num})
             cache_file.update({"file_name": file_name})
             cache_file.update({"entry_hash": entry.get("entry_hash")})
-            cache_file.update({"size": entry.get("data_size")})
+            cache_file.update({"size": "%sKB" % file_size})
+            #cache_file.update({"size": entry.get("data_size")})
             cache_file.update({"dimension": "%sx%s" % (entry.get("width"), entry.get("height"))})
             cache_file.update({"header_checksum": entry.get("header_checksum")})
             cache_file.update({"data_checksum": entry.get("data_checksum")})
@@ -193,7 +198,7 @@ class Thumbnail_analysis_windows:   # windows version check
 
             cache_file.update({"system": "%s" % system_version})
             cache_file.update({"location": "%s" % (path)})
-            print({num:cache_file})
+            print(cache_file)
             info_list.append(cache_file)
 
         file.close()
