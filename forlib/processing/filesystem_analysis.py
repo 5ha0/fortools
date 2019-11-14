@@ -8,13 +8,15 @@ class MFTAnalysis:
     def __init__(self, file, path):
         self.file = file
         self.__mft_size = int(os.path.getsize(path))//1024
-        self.__parse_info()
+        self.__result = self.__parse_info()
+
+    def get_info(self):
+        return self.__result
 
     def __parse_info(self):
-        i = 0
-        cnt = 0
+        result = []
         for size in range(0, self.__mft_size):
-            self.file.seek(1024*i)
+            self.file.seek(1024*size)
             info_list = dict()
             self.file.read(8)
             info_list["LSN"] = struct.unpack("<Q", self.file.read(8))[0]
@@ -99,14 +101,20 @@ class MFTAnalysis:
                     info_list["Name"] = self.file.read(name_length*2).decode('utf-16')
                 except UnicodeDecodeError:
                     info_list["Name"] = "Unable To Decode Filename"
-            print(info_list)
-            i = i+1
+            result.append(info_list)
+        return result
 
 
 class UsnJrnl:
     def __init__(self, file):
         self.__file = file
         self.__result = self.__parse()
+
+    def get_info(self):
+        return self.__result
+
+    def event_filter(self, name):
+        return filesys_filter(['Event Info', name], self.__result)
 
     def __parse(self):
         result = []
@@ -148,7 +156,6 @@ class UsnJrnl:
             except UnicodeDecodeError:
                 print(name)
                 info_list["Filename"] = name.decode()
-            print(info_list)
             result.append(info_list)
         return result
 
@@ -200,7 +207,7 @@ class UsnJrnl:
             {'contents': 'Renamed_Old', 'byte-index': 1, 'location': 2, 'hex': 1},
             {'contents': 'Renamed_New', 'byte-index': 1, 'location': 2, 'hex': 2},
             {'contents': 'Change Index Status', 'byte-index': 1, 'location': 2, 'hex': 4},
-            {'contents': 'Attribute Chang', 'byte-index': 1, 'location': 2, 'hex': 8},
+            {'contents': 'Attribute Change', 'byte-index': 1, 'location': 2, 'hex': 8},
             {'contents': 'HardLink Evente', 'byte-index': 2, 'location': 3, 'hex': 1},
             {'contents': 'Compressive State Change', 'byte-index': 2, 'location': 3, 'hex': 2},
             {'contents': 'Encryption State Change', 'byte-index': 2, 'location': 3, 'hex': 4},
@@ -213,3 +220,13 @@ class UsnJrnl:
         if len(result) == 0:
             result.append('Others')
         return result
+
+
+def filesys_filter(filter_list, json_list):
+    __result = []
+
+    for i in range(0, len(json_list)):
+        for j in range(0, len(json_list[i][filter_list[0]])):
+            if json_list[i][filter_list[0]][j] == filter_list[1]:
+                __result.append(json_list[i])
+    return __result

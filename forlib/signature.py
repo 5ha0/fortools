@@ -75,7 +75,19 @@ signatures = [{
         'file_extension': 'Icon', 
         'hex': ['0x57', '0x69', '0x6e', '0x34'],
         'len': 4,
-        'offset': 4}
+        'offset': 4},
+    {
+        'file_extension': 'LogFile',
+        'hex': ['0x52', '0x53', '0x54', '0x52'],
+        'len': 4,
+        'offset': 0
+    },
+    {
+        'file_extension': 'MFT',
+        'hex': ['0x46', '0x49', '0x4C', '0x45'],
+        'len': 4,
+        'offset': 0
+    }
 ]
 
 
@@ -93,6 +105,7 @@ def sig_check(path):
                 return extension
             
             return sig['file_extension']
+    return 'non_sig'
 
 
 def prefetch(path, f):
