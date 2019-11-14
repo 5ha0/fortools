@@ -313,6 +313,18 @@ class Browser:
                 ie_edge_file = browser_analysis.Ie_Edge.Download(ie_edge_open(path))
                 return ie_edge_file
 
+            
+class FileSystemLog:
+    def file_open(path):
+        extension = sig_check(path)
+        if extension == 'MFT':
+            return filesystem_analysis.MFTAnalysis(filesystem_log_open(path), path)
+        else:
+            return filesystem_analysis.UsnJrnl(filesystem_log_open(path))
+        # elif extension == 'LogFile':
+        #     return filesystem_analysis.UsnJrnl(filesystem_log_open(path))            
+            
+            
 def evtx_open(path):
     evtx_file = pyevtx.file()
     evtx_file.open(path)
@@ -399,3 +411,7 @@ def prefetch_open(path):
     if version != 23 and version != 30:
         print('error: not supported version')
     return prefetch_file
+
+
+def filesystem_log_open(path):
+    return binary_open(path)
