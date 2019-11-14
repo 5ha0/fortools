@@ -2,7 +2,7 @@ import re
 import datetime
 
 
-def filter(filter_list, json_list):
+def custom_filter(filter_list, json_list):
     __result = []
 
     for i in range(0, len(json_list)):
