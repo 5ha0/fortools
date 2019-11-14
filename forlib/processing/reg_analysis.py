@@ -1,8 +1,8 @@
 from Registry import Registry
-from forlib.processing.filter import custom_filter
 import json
 import codecs
 from datetime import datetime, timedelta
+from forlib.calc_hash import get_hash
 import time
 import binascii
 
@@ -31,9 +31,22 @@ class NTAnalysis:
     def find_key(self, keyword):
         self.__rec(self.reg.root(), self.__get_path, keyword)
 
+    def __bin_to_int(self, info):
+        bin_to_little_endian = bytes.decode(binascii.hexlify(info[0:][::-1]))
+        int_info = int(bin_to_little_endian, 16)
+        return int_info
+
+    def __cal_time(self, info_time):
+        int_time = self.__bin_to_int(info_time)
+        int_time = int_time*0.1
+        if int_time == 0:
+            date = 'Never'
+        else:
+            date = datetime(1601, 1, 1) + timedelta(microseconds=int_time)
+        return str(date)
+
     def get_recent_docs(self):
         recent = self.reg.open("SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs")
-        ret_list = list()
         
         for i, v in enumerate(recent.values()):
             if i == 0:
@@ -48,7 +61,6 @@ class NTAnalysis:
     
     def get_recent_MRU(self):
         recent = self.reg.open("Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU")
-        ret_list = list()
         for i, v in enumerate(recent.values()):
             reg_obj  = {
                     "time" : str(recent.timestamp()),
@@ -181,18 +193,20 @@ class NTAnalysis:
         # CE : 실행파일 목록
         # F4 : 바로가기 목록
         path = "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\UserAssist"
+        user_list = list()
         user = self.reg.open(path)
-        ret_list = list()
         for items in user.subkeys():
             keys = self.reg.open(path+"\\%s" %(items.name()))
             for userassist_keys in keys.subkeys():
                 for userassist_values in userassist_keys.values():
                     file_name = codecs.decode(userassist_values.name(), 'rot_13')
                     reg_obj = {
-                        "GUID" : str(items.name()),
+                        "TimeStamp" : self.__cal_time(userassist_values.value()[60:68]),
+                        "Run Count" : self.__bin_to_int(userassist_values.value()[4:8]),
                         "file" : '%s' % file_name
                     }
-                    self.ret_list.append(reg_obj)
+                    user_list.append(reg_obj)
+        self.ret_list = sorted(user_list, key=lambda e: (e['TimeStamp']))
         return self.ret_list
 
 
@@ -228,6 +242,32 @@ class SYSAnalysis:
     def find_key(self, keyword):
         self.__rec(self.reg.root(), self.__get_path, keyword)
 
+    def get_computer_info(self):
+        path = "ControlSet00%s\\services\\Tcpip\\Parameters" % self.__control_set_check(self.reg)
+        computer_path = self.reg.open(path)
+        network_dict = dict()
+        for v in computer_path.values():
+            if v.name() == "ICSDomain":
+                network_dict['ICSDomain'] = v.value()
+            if v.name() == "DataBasePath":
+                network_dict['DataBasePath'] = v.value()
+            if v.name() == "Hostname":
+                network_dict['Hostname'] = v.value()
+            if v.name() == "DhcpNameServer":
+                network_dict['DhcpNameServer'] = v.value()
+            if v.name() == "DhcpDomain":
+                network_dict['DhcpDomain'] = v.value()
+        
+        net_obj = {
+                "ICSDomain" : network_dict['ICSDomain'],
+                "DataBasePath" : network_dict['DataBasePath'],
+                "Hostname" : network_dict['Hostname'],
+                "DhcpNameServer" : network_dict['DhcpNameServer'],
+                "DhcpDomain" : network_dict['DhcpDomain']
+            }
+        self.ret_list.append(net_obj)
+        return self.ret_list
+
     def get_USB(self):
         recent = self.reg.open("ControlSet00%s\\Enum\\USB" %self.__control_set_check(self.reg))
         for i, v in enumerate(recent.values()):
@@ -237,12 +277,32 @@ class SYSAnalysis:
             ret_list.append(reg_obj)
         return ret_list
 
+    def get_timezone(self):
+        path = "ControlSet00%s\\Control\\TimeZoneInformation" % self.__control_set_check(self.reg)
+        time_file = self.reg.open(path)
+        time_dict = dict()
+
+        for v in time_file.values():
+            if v.name() == "Bias":
+                time_dict['Bias'] = v.value()
+            if v.name() == "TimeZoneKeyName":
+                time_dict['TimeZoneKeyName'] = v.value()
+            if v.name() == "ActiveTimeBias":
+                time_dict['ActiveTimeBias'] = v.value()
+
+        time_obj = {
+            "Bias" : time_dict["Bias"],
+            "TimeZoneKeyName" : time_dict["TimeZoneKeyName"],
+            "ActiveTimeBias" : time_dict['ActiveTimeBias']
+        }
+        self.ret_list.append(time_obj)
+        return self.ret_list
+
     def get_network_info(self):
         path = "ControlSet00%s\\services\\Tcpip\\Parameters\\Interfaces" % self.__control_set_check(self.reg)
         print(path)
         net_key = self.reg.open(path)
         guid_list = list()
-        ret_list = list()
         network_dict = dict()
 
         for v in net_key.subkeys():
@@ -294,7 +354,7 @@ class SWAnalysis:
         for v in key.values():
             if v.name() == "Current":
                 return v.value()
-
+       
     def get_info(self):
         ret_list = []
         os_info = self.reg.open("Microsoft\\Windows NT\\CurrentVersion")
@@ -329,7 +389,6 @@ class SWAnalysis:
         key = self.reg.open("Microsoft\\Windows NT\\CurrentVersion\\NetworkCards")
         card_num = list()
         network_info = dict()
-        ret_list = list()
         for v in key.subkeys():
             card_num.append(v.name())
 
@@ -347,7 +406,6 @@ class SWAnalysis:
             }
             self.ret_list.append(net_obj)
         return self.ret_list
-                
 
 class SAMAnalysis:
     def __init__(self, file):
@@ -367,6 +425,20 @@ class SAMAnalysis:
         else:
             date = datetime(1601, 1, 1) + timedelta(microseconds=int_time)
         return str(date)
+
+    def last_login(self):
+        last_list = self.user_info()
+        login_list = list()
+        for i in range(len(last_list)):
+            if last_list[i]['Last Login'] == "Never":
+                pass
+            else:
+                login_list.append(last_list[i])
+                
+        sort_list = sorted(login_list, key=lambda e: (e['Last Login']))
+        last = len(sort_list)
+        self.ret_list.append(sort_list[last-1])
+        return self.ret_list
 
     def user_name(self):
         user_path = "SAM\\Domains\\Account\\Users\\Names"
@@ -411,6 +483,6 @@ class SAMAnalysis:
                     ret_list2.append(user_obj)
         for i in range(len(ret_list1)):
             ret_list1[i].update(ret_list2[i])
-
+        self.ret_list = ret_list1
         return ret_list1
-                
+   
