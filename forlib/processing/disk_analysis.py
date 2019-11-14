@@ -44,7 +44,8 @@ class E01Analysis:
                 "Type": partition.desc.decode(),
                 "Num": partition.addr,
                 "Start Sector": partition.start,
-                "Sector Count": partition.len
+                "Total Sector": partition.len,
+                "Size" : str((partition.len*512)/1024**2)+"MB"
             } 
             self.ret_list.append(e01_obj)
         return self.ret_list
