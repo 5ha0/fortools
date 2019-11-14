@@ -3,7 +3,7 @@ import json
 import datetime
 import re
 import forlib.calc_hash as calc_hash
-from forlib.processing.filter import filter as filter_method
+from forlib.processing.filter import custom_filter as filter_method
 from forlib.processing.filter import date_filter as date_filter
 from forlib.processing.filter import time_filter as time_filter
 from forlib.processing.filter import day_filter as day_filter
