@@ -1,5 +1,6 @@
 import magic
 import pyevtx
+import pyewf, pytsk3
 import olefile
 import zipfile
 import sqlite3
@@ -43,19 +44,7 @@ def file_open(path):
     elif extension == 'JPEG image data':
         return Files.JPEG.file_oepn(path)
     elif extension == 'MS Windows registry file':
-        file = reg_open(path)
-        if Registry.HiveType.NTUSER == file.hive_type():
-            return reg_analysis.NTAnalysis(file)
-        elif Registry.HiveType.SAM == file.hive_type():
-            return reg_analysis.SAMAnalysis(file)
-        elif Registry.HiveType.SOFTWARE == file.hive_type():
-            return reg_analysis.SWAnalysis(file)
-        elif Registry.HiveType.SYSTEM == file.hive_type():
-            return reg_analysis.SYSAnalysis(file)
-        elif Registry.HiveType.SYSTEM == file.hive_type():
-            print("[-] To be continue")
-        else:
-            print("[-] This is not HiveFile")
+        return RegistryHive.file_open(path)
     elif extension == 'Composite Document File V2 Document':
         file = ole_open(path)
         if file.listdir(streams=True, storages=False)[-1][0] == 'DestList':
@@ -90,7 +79,16 @@ def file_open(path):
     # elif extension == 'PE32+ executable (console) x86-64':
     #     file =
     # PNG image data
-
+class Disk:
+    def disk_open(path):
+        if pyewf.check_file_signature(path) == True:
+            filename = pyewf.glob(path)
+            ewf_handle = pyewf.handle()
+            ewf_handle.open(filename)
+            return disk_analysis.E01Analysis(ewf_handle)
+        else:
+            img_info = pytsk3.Img_Info(image)
+            return disk_analysis.DDAnalysis(img_info)
 
 class Mem:
     def mem_open(path):
@@ -263,21 +261,70 @@ class Thumbnail_Iconcache:
 
 class Browser:
     class Chrome:
-        def file_open(path):
-            chrome_file = browser_analysis.Chrome(path)
-            return chrome_file
+        class History:
+            def file_open(path):
+                chrome_file = browser_analysis.Chrome.History(path)
+                return chrome_file
+
+        class Download:
+            def file_open(path):
+                chrome_file = browser_analysis.Chrome.Download(path)
+                return chrome_file
+
+        class Cookie:
+            def file_open(path):
+                chrome_file = browser_analysis.Chrome.Cookie(path)
+                return chrome_file
 
     class Firefox:
-        def file_open(path):
-            firefox_file = browser_analysis.Firefox(path)
-            return firefox_file
+        class History:
+            def file_open(path):
+                firefox_file = browser_analysis.Firefox.History(path)
+                return firefox_file
+
+        class Download:
+            def file_open(path):
+                firefox_file = browser_analysis.Firefox.Download(path)
+                return firefox_file
+
+        class Cookie:
+            def file_open(path):
+                firefox_file = browser_analysis.Firefox.Cookie(path)
+                return firefox_file
 
     class Ie_Edge:
-        def file_open(path):
-            ie_edge_file = browser_analysis.Ie_Edge(ie_edge_open(path))
-            return ie_edge_file
+        class Cache:
+            def file_open(path):
+                ie_edge_file = browser_analysis.Ie_Edge.Cache(ie_edge_open(path))
+                return ie_edge_file
 
+        class Cookie:
+            def file_open(path):
+                ie_edge_file = browser_analysis.Ie_Edge.Cookie(ie_edge_open(path))
+                return ie_edge_file
 
+        class History:
+            def file_open(path):
+                ie_edge_file = browser_analysis.Ie_Edge.History(ie_edge_open(path))
+                return ie_edge_file
+
+        class Download:
+            def file_open(path):
+                ie_edge_file = browser_analysis.Ie_Edge.Download(ie_edge_open(path))
+                return ie_edge_file
+
+            
+class FileSystemLog:
+    def file_open(path):
+        extension = sig_check(path)
+        if extension == 'MFT':
+            return filesystem_analysis.MFTAnalysis(filesystem_log_open(path), path)
+        else:
+            return filesystem_analysis.UsnJrnl(filesystem_log_open(path))
+        # elif extension == 'LogFile':
+        #     return filesystem_analysis.UsnJrnl(filesystem_log_open(path))            
+            
+            
 def evtx_open(path):
     evtx_file = pyevtx.file()
     evtx_file.open(path)
@@ -364,6 +411,7 @@ def prefetch_open(path):
     if version != 23 and version != 30:
         print('error: not supported version')
     return prefetch_file
+
 
 def filesystem_log_open(path):
     return binary_open(path)
