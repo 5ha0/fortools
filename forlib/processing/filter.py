@@ -2,7 +2,7 @@ import re
 import datetime
 
 
-def filter(filter_list, json_list):
+def custom_filter(filter_list, json_list):
     __result = []
 
     for i in range(0, len(json_list)):
@@ -27,7 +27,6 @@ def filter(filter_list, json_list):
                     break
             if j == len(filter_list) - 3:
                 __result.append(json_list[i])
-                # print(json_list[i])
     return __result
 
 
@@ -37,7 +36,6 @@ def date_filter(key, filter_list, json_list):
         c_date = json_list[i][key].split('.')[0]
         if datetime.datetime.strptime(filter_list[0], "%Y-%m-%d") <= datetime.datetime.strptime(c_date, "%Y-%m-%d %H:%M:%S") \
                 <= datetime.datetime.strptime(filter_list[1], "%Y-%m-%d") + datetime.timedelta(1):
-            # print(json_list[i])
             __result.append(json_list[i])
     return __result
 
@@ -48,7 +46,6 @@ def time_filter(key, filter_list, json_list):
         c_date = json_list[i][key].split('.')[0].split(' ')[1]
         if datetime.datetime.strptime(filter_list[0], "%H:%M:%S") <= datetime.datetime.strptime(c_date, "%H:%M:%S") \
                 <= datetime.datetime.strptime(filter_list[1], "%H:%M:%S"):
-            # print(json_list[i])
             __result.append(json_list[i])
     return __result
 
@@ -60,7 +57,6 @@ def day_filter(key, filter_list, json_list):
         if datetime.datetime.strptime(filter_list[0], "%Y-%m-%d %H:%M:%S") <= \
                 datetime.datetime.strptime(c_date, "%Y-%m-%d %H:%M:%S") \
                 <= datetime.datetime.strptime(filter_list[1], "%Y-%m-%d %H:%M:%S"):
-            # print(json_list[i])
             __result.append(json_list[i])
     return __result
 
