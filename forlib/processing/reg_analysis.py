@@ -484,5 +484,5 @@ class SAMAnalysis:
         for i in range(len(ret_list1)):
             ret_list1[i].update(ret_list2[i])
         self.ret_list = ret_list1
-        return ret_list1
+        return self.ret_list
    
