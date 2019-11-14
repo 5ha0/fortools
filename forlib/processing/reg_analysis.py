@@ -1,5 +1,5 @@
 from Registry import Registry
-from forlib.processing.filter import filter
+from forlib.processing.filter import custom_filter
 import json
 import codecs
 from datetime import datetime, timedelta
