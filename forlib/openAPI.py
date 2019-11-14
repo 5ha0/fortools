@@ -4,7 +4,7 @@ import olefile
 import zipfile
 import sqlite3
 import PyPDF2
-import pyesedb
+#import pyesedb
 import struct
 import codecs
 import struct
@@ -364,3 +364,6 @@ def prefetch_open(path):
     if version != 23 and version != 30:
         print('error: not supported version')
     return prefetch_file
+
+def filesystem_log_open(path):
+    return binary_open(path)
