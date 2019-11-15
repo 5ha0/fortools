@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: libesedb-python
+Version: 20181229
+Summary: Python bindings module for libesedb
+Home-page: https://github.com/libyal/libesedb/
+Author: Joachim Metz
+Author-email: joachim.metz@gmail.com
+License: GNU Lesser General Public License v3 or later (LGPLv3+)
+Description: Python bindings module for libesedb
+Platform: UNKNOWN
