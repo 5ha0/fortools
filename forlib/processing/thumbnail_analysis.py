@@ -198,11 +198,15 @@ class Thumbnail_analysis_windows:   # windows version check
 
             cache_file.update({"system": "%s" % system_version})
             cache_file.update({"location": "%s" % (path)})
-            print(cache_file)
             info_list.append(cache_file)
 
         file.close()
         return info_list
+
+    def thumb_print(self, info_list):
+        total_size = len(info_list)
+        for i in range(0,total_size):
+            print(info_list[i])
 
 
 
