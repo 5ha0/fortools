@@ -9,10 +9,87 @@ class E01Analysis:
         self.img_info = EWFImgInfo(self.file)
         self.vol = pytsk3.Volume_Info(self.img_info)
 
+    def get_path(self, path):
+        fs = self.open_fs()
+        f = fs.open_dir(path)
+        ret_list = list()
+        for i in f:
+            file_type = str(i.info.name.type)
+            if file_type == "TSK_FS_NAME_TYPE_REG":
+                file_type = "file"
+            elif file_type == "TSK_FS_NAME_TYPE_DIR":
+                file_type = "directory"
+            else:
+                file_type = str(i.info.name.type)
+            f_path_obj = {
+                "file_name": i.info.name.name.decode(),
+                "file_type": file_type
+            }
+            ret_list.append(f_path_obj)
+        return ret_list
+
+    def __UsnJrnl_extract(self, filename):
+        fs = self.open_fs()
+        f = fs.open(filename)
+        found = False
+
+        for attr in f:
+            if attr.info.name == b'$J':
+                print("[+] Success Extract : $J")
+                found = True
+                break
+        if not found:
+            print("[-] $J is not found")
+
+        with open('$J', 'wb') as o:
+            offset = 0
+            size = attr.info.size
+            buf = f.read_random(offset, f.info.meta.size, attr.info.type, attr.info.id)
+            o.write(buf)
+
+    def __mft_log_extract(self, filename, output_name):
+        fs = self.open_fs()
+        f = fs.open(filename)
+        # for attr in f:
+        #     print(attr.info.type)
+        with open(output_name, 'wb') as file_w:
+            buf = f.read_random(0, f.info.meta.size)
+            file_w.write(buf)
+        print("[+] Success Extract : " + output_name)
+
+    def file_extract(self, filepath, output_name):
+        fs = self.open_fs()
+        f = fs.open(filepath)
+        for attr in f:
+            print(attr.info.type)
+        with open(output_name, 'wb') as file_w:
+            buf = f.read_random(0, f.info.meta.size)
+            file_w.write(buf)
+        print("[+] Success Extract : " + output_name)
+
+    def fslog_extract(self):
+        mft_list = self.__mft_log_extract('/$MFT', '$MFT')
+        log_list = self.__mft_log_extract('/$LogFile', '$LogFile')
+        UsnJrnl = self.__UsnJrnl_extract('/$Extend/$UsnJrnl')
+
+    def open_fs(self):
+        if self.vol is not None:
+            for part in self.vol:
+                if part.len > 204800 and "Unallocated" not in part.desc.decode() \
+                        and "Extended" not in part.desc.decode() \
+                        and "Primary Table" not in part.desc.decode():
+                    try:
+                        fs = pytsk3.FS_Info(self.img_info, offset=part.start*self.vol.info.block_size)
+                        return fs
+                    except:
+                        print("[-] Unable to open FS")
+        else:
+            pass
+
     def e01_metadata(self):
         head_obj = dict()
         hash_obj = dict()
-    
+
         e01_list = list()
 
         headers = self.file.get_header_values()
@@ -33,11 +110,11 @@ class E01Analysis:
         head_obj.update(e01_obj)
         head_obj.update(hash_obj)
         e01_list.append(head_obj)
-        
+
         self.ret_list = e01_list
 
         return self.ret_list
-    
+
     def volume_metadata(self):
         for partition in self.vol:
             e01_obj = {
@@ -46,7 +123,7 @@ class E01Analysis:
                 "Start Sector": partition.start,
                 "Total Sector": partition.len,
                 "Size" : str((partition.len*512)/1024**2)+"MB"
-            } 
+            }
             self.ret_list.append(e01_obj)
         return self.ret_list
 
@@ -183,5 +260,4 @@ class DDAnalysis:
 
 
     
-
 
