@@ -240,7 +240,7 @@ def file_list(in_path):
             file_list(folder_list[i])
 
     except:
-        print("Path is not found. Check your input")
+        print("[Error] Path is not found. Check your input")
 
 
 
