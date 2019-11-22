@@ -1,11 +1,11 @@
 from forlib import decompress1
 import os
 
-signatures = [{
-    'file_extension': 'Zip archive data',
-    'hex': ['0x50', '0x4b', '0x3', '0x4'],
-    'len': 4,
-    'offset': 0},
+signatures = [#{
+    # 'file_extension': 'Zip archive data',
+    # 'hex': ['0x50', '0x4b', '0x3', '0x4'],
+    # 'len': 4,
+    # 'offset': 0},
     {
     'file_extension': 'JPEG image data',
     'hex': ['0xff', '0xd8', '0xff', '0xe0'],
@@ -87,7 +87,77 @@ signatures = [{
         'hex': ['0x46', '0x49', '0x4C', '0x45'],
         'len': 4,
         'offset': 0
-    }
+    },
+    {
+        'file_extension': 'Bitmap image',
+        'hex': ['0x42', '0x4D'],
+        'len': 2,
+        'offset': 0},
+    {
+        'file_extension': 'bzip2 archive',
+        'hex': ['0x42', '0x5A', '0x68'],
+        'len': 3,
+        'offset': 0},
+    {
+        'file_extension': 'EnCase case file',
+        'hex': ['0x5F', '0x43', '0x41', '0x53', '0x45', '0x5F'],
+        'len': 6,
+        'offset': 0},
+    {
+        'file_extension': 'Windows executable file',
+        'hex': ['0xE8'],
+        'len': 1,
+        'offset': 0},
+    {
+        'file_extension': 'Windows executable file',
+        'hex': ['0xE9'],
+        'len': 1,
+        'offset': 0},
+    {
+        'file_extension': 'Windows executable file',
+        'hex': ['0xEB'],
+        'len': 1,
+        'offset': 0},
+    {
+        'file_extension': 'EXE file',
+        'hex': ['0x4D', '0x5A'],
+        'len': 2,
+        'offset': 0},
+    {
+        'file_extension': 'MSWorks DB file',
+        'hex': ['0xD0', '0xCF', '0x11', '0xE0', '0xA1', '0xB1', '0x1A', '0xE1'],
+        'len': 8,
+        'offset': 0},
+    {
+        'file_extension': 'DLL file',
+        'hex': ['0x4D', '0x5A'],
+        'len': 2,
+        'offset': 0},
+    {
+        'file_extension': 'Windows dump file',
+        'hex': ['0x4D', '0x44', '0x4D', '0x50', '0x93', '0xA7'],
+        'len': 6,
+        'offset': 0},
+    {
+        'file_extension': 'docx file',
+        'hex': ['0x50', '0x4B', '0x03', '0x04'],
+        'len': 4,
+        'offset': 0},
+    {
+        'file_extension': 'Windows memory dump',
+        'hex': ['0x50', '0x41', '0x47', '0x45', '0x44', '0x55'],
+        'len': 6,
+        'offset': 0},
+    {
+        'file_extension': 'doc file',
+        'hex': ['0xDB', '0xA5', '0x2D', '0x00'],
+        'len': 4,
+        'offset': 0},
+    {
+        'file_extension': 'docx file',
+        'hex': ['0x50', '0x4B', '0x03', '0x04', '0x14', '0x00', '0x06', '0x00'],
+        'len': 8,
+        'offset': 0}
 ]
 
 
@@ -103,7 +173,7 @@ def sig_check(path):
                 path = prefetch(path, f)
                 extension = sig_check(path)
                 return extension
-            
+
             return sig['file_extension']
     return 'non_sig'
 
