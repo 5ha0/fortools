@@ -1,6 +1,6 @@
 from fortools import *
 
-file = Iconcache.file_open(r'C:\Users\graci\Desktop\cfreds_11\IconCache.db')
+file = Iconcache.file_open(r'path')
 # Or you ca use this
 # path = 'path'
 # file = file_open(path)
