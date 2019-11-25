@@ -26,7 +26,7 @@ class MdExport:
     def emphasis(self, contents):
         self.file.write('\n\n**'+str(contents)+'**\n\n')
 
-    def make_table(self, data):
+    def add_table(self, data):
         self.file.write('\n\n')
         if len(data) == 0:
             print("There is no data")
