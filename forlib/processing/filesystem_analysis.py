@@ -2,16 +2,26 @@ from forlib.processing.convert_time import convert_time
 import struct
 import time
 import os
+import forlib.calc_hash as calc_hash
 
 
 class MFTAnalysis:
-    def __init__(self, file, path):
+    def __init__(self, file, path, hash_v):
+        self.path = path
         self.file = file
         self.__mft_size = int(os.path.getsize(path))//1024
+        self.__hash_value = [hash_v]
         self.__result = self.__parse_info()
+        self.__cal_hash()
 
     def get_info(self):
         return self.__result
+
+    def get_hash(self):
+        return self.__hash_value
+
+    def __cal_hash(self):
+        self.__hash_value.append(calc_hash.get_hash(self.path))
 
     def __parse_info(self):
         result = []
@@ -106,15 +116,24 @@ class MFTAnalysis:
 
 
 class UsnJrnl:
-    def __init__(self, file):
+    def __init__(self, file, path, hash_v):
+        self.__path = path
         self.__file = file
+        self.__hash_value = [hash_v]
         self.__result = self.__parse()
+        self.__cal_hash()
 
     def get_info(self):
         return self.__result
 
     def event_filter(self, name):
         return filesys_filter(['Event Info', name], self.__result)
+
+    def get_hash(self):
+        return self.__hash_value
+
+    def __cal_hash(self):
+        self.__hash_value.append(calc_hash.get_hash(self.__path))
 
     def __parse(self):
         result = []
@@ -154,8 +173,7 @@ class UsnJrnl:
                 name = self.__file.read(name_size)
                 info_list["Filename"] = name.decode('utf-16')
             except UnicodeDecodeError:
-                print(name)
-                info_list["Filename"] = name.decode()
+                info_list["Filename"] = 'cannot decode'
             result.append(info_list)
         return result
 

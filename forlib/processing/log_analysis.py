@@ -18,8 +18,8 @@ class EventAnalysis:
         self.evtx_file = file
         self.evtx_json = self.__make_json()
         self.Favorite = Favorite(self.evtx_json)
-        self.hash_value = [hash_v]
-        self.path = path
+        self.__hash_value = [hash_v]
+        self.__path = path
         self.__cal_hash()
 
     def show_all_record(self):
@@ -50,10 +50,10 @@ class EventAnalysis:
         return json_list
 
     def __cal_hash(self):
-        self.hash_value.append(calc_hash.get_hash(self.path))
+        self.__hash_value.append(calc_hash.get_hash(self.__path))
 
     def get_hash(self):
-        return self.hash_value
+        return self.__hash_value
 
     def filtering(self, filter_list):
         self._result = filter_method(filter_list, self.evtx_json)
@@ -252,7 +252,7 @@ class LinuxLogAnalysis:
 
     class SysLog:
         def __init__(self, file):
-            self.file = file
+            self.__file = file
             self.__parse()
 
         def __parse(self):
@@ -262,8 +262,8 @@ class LinuxLogAnalysis:
 class ApacheLog:
     class Error:
         def __init__(self, file):
-            self.file = file
-            self.__json = err_parse(self.file)
+            self.__file = file
+            self.__json = err_parse(self.__file)
 
         def show_info(self):
             for i in range(0, len(self.__json)):
