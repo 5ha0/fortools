@@ -14,5 +14,4 @@ def get_hash(path, blocksize=65536):
     hash_value = dict()
     hash_value["sha1"] = hasher_sha1.hexdigest()
     hash_value["md5"] = hasher_md5.hexdigest()
-    print(hash_value)
     return hash_value
