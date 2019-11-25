@@ -1,18 +1,26 @@
 import struct
 import json
 import binascii
+import os
+from datetime import datetime
+from forlib.processing.filter import *
+
 class IconcacheAnalysis:
     def __init__(self, file):
         self.file = file
         self.size = None
         self.signature = None
         self.path_num = None
-        
-    def file_version(self):
+        self.time = 1
+        self.info_list = self.all_info()
+        self.drive_exe_list = None
+        self.hard_disk_delete = ["Disk Wipe", 'Drive Wipe', 'DBAN', 'CBL Data Shredder', 'MHDD', 'PCDiskEraser', 'KillDisk', 'Format Command With Write Zero Option', 'Macrorit Data Wiper', 'Eraser', 'WipeDisk', 'MiniTool Partition Wizard', 'KillDisk', 'CCleaner', 'PCDiskEraser', 'Super File Shredder']
+
+    def __file_version(self):
         self.file.seek(12)
         build_num = self.file.read(4)
         if build_num == b'\xB1\x1D\x01\x06':
-            print('File Version is win 10')
+            print('File Version is win 7')
             version = 'win10'
             return version
         elif build_num == b'\x5A\x29\x00\x00':
@@ -23,7 +31,7 @@ class IconcacheAnalysis:
             print('not supported version')
             return -1
 
-    def section_one(self):
+    def __section_one(self):
         json_list = []
 
         # file size
@@ -62,7 +70,7 @@ class IconcacheAnalysis:
             icon_obj = {
                 "Num": i + 1,
                 "Path": filepaths,
-                "Icon image location": icon_location
+                "Icon image location": icon_location,
                 }
             print(json.dumps(icon_obj))
             json_list.append(icon_obj)
@@ -70,7 +78,7 @@ class IconcacheAnalysis:
         return json_list
 
 
-    def section_two(self):
+    def __section_two(self):
 
         print('section 2')
         json_list = []
@@ -106,7 +114,7 @@ class IconcacheAnalysis:
 
         return json_list
 
-    def section_three(self):
+    def __section_three(self):
 
         print('section 3')
         json_list = []
@@ -141,14 +149,87 @@ class IconcacheAnalysis:
 
         return json_list
 
-    def show_all_info(self):
-        info_list = []
+    def all_info(self):
+        self.info_list = []
         info = dict()
-        info["file version"] = str(self.file_version())
-        info["path information_section one"] = str(self.section_one())
-        info["path information_section two"] = str(self.section_two())
-        info["path information_section three"] = str(self.section_three())
+        info["file version"] = str(self.__file_version())
+        info["path information_section one"] = str(self.__section_one())
+        info["path information_section two"] = str(self.__section_two())
+        info["path information_section three"] = str(self.__section_three())
 
         print(info)
-        info_list.append(info)
-        return info_list
+        self.info_list.append(info)
+        return self.info_list
+
+    # Use when you only want to see files with certain extensions.
+    def extension_filter(self, extension):
+        extension = extension
+        result = []
+
+        for i in range(0, 3):
+            if i == 0:
+                section = self.__section_one()
+            elif i == 1:
+                section = self.__section_two()
+            else:
+                section = self.__section_three()
+            for j in range(1, len(section)):
+                json_info = section[j]
+                path = json_info.get("Path")
+                if extension in path:
+                    result.append(section[j])
+        if result:
+            print(result)
+            return result
+        print('There is no file with this extension..')
+        return result
+
+    # if you want to know execution for drive delete program, use this
+    def drive_delete_exe(self):
+        hard_disk_delete = ["Disk Wipe", 'Drive Wipe', 'DBAN', 'CBL Data Shredder', 'MHDD', 'PCDiskEraser', 'KillDisk',
+                            'Format Command With Write Zero Option', 'Macrorit Data Wiper', 'Eraser', 'WipeDisk',
+                            'MiniTool Partition Wizard', 'KillDisk', 'CCleaner', 'PCDiskEraser', 'Super File Shredder']
+        path = []
+        execution = []
+
+        for i in range(0, 3):
+            if i == 0:
+                section = self.__section_one()
+            elif i == 1:
+                section = self.__section_two()
+            else:
+                section = self.__section_three()
+            for j in range(1, len(section)):
+                json_info = section[j]
+                path.append(json_info.get("Path"))
+
+        for i in range(0, len(path)):
+            if path[i] in hard_disk_delete:
+                execution.append(path[i])
+
+        if execution:
+            print('This file was executed for hard disk deletion program.' + str(execution))
+            return execution
+        print('This file was not executed for hard disk deletion program.')
+        return execution
+
+
+    # if you want to look time stamp for filepath, use this
+    def show_time(self, filepath):
+        time_list = []
+        time = dict()
+
+        c_time = datetime.fromtimestamp(os.path.getctime(filepath))
+        c_time = str(c_time)
+        a_time = datetime.fromtimestamp(os.path.getatime(filepath))
+        a_time = str(a_time)
+        w_time = datetime.fromtimestamp(os.path.getmtime(filepath))
+        w_time = str(w_time)
+
+        time["creation time"] = c_time
+        time["access time"] = a_time
+        time["write time"] = w_time
+
+        print(time)
+        time_list.append(time)
+        return time_list

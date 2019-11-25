@@ -194,7 +194,7 @@ class Recycle:
         if extension == 'recycle_i':
             calc_hash.get_hash(path)
             file = recycle_open(path)
-            return recycle_analysis.RecycleAnalysis(file)
+            return recycle_analysis.RecycleAnalysis(file, path)
 
 
 class Iconcache:
@@ -211,12 +211,7 @@ class Prefetch:
         extension = sig_check(path)
         if extension == 'prefetch':
             calc_hash.get_hash(path)
-            dirname = os.path.dirname(path)
-            basename = os.path.basename(path)
-            base = os.path.splitext(basename)
-            basename = base[0]
-            exetension = base[-1]
-            file = prefetch_open(dirname + '\\' + basename + '-1' + exetension)
+            file = prefetch_open(path)
             return prefetch_analysis.PrefetchAnalysis(file, path)
 
 
@@ -252,12 +247,14 @@ class JumpList:
 
 class Thumbnail_Iconcache:
     def file_open(path):
-        extension = sig_check(path)
-        if extension == 'Thumb_Icon':
-            calc_hash.get_hash(path)
-            file = cache_open(path)
-            return thumbnail_analysis.Thumbnail_analysis_windows(file)
-
+        try:
+            extension = sig_check(path)
+            if extension == 'Thumb_Icon':
+                calc_hash.get_hash(path)
+                file = cache_open(path)
+                return thumbnail_analysis.Thumbnail_analysis_windows(file)
+        except:
+            print("File is not found")
 
 class Browser:
     class Chrome:
