@@ -4,6 +4,7 @@ import olefile
 import zipfile
 import sqlite3
 import pyesedb
+import pyewf, pytsk3
 import PyPDF2
 import codecs
 import struct
@@ -11,6 +12,7 @@ import os
 from PIL import Image
 from Registry import Registry
 from os import listdir
+from forlib.processing import disk_analysis
 from forlib.processing import log_analysis
 from forlib.processing import jump_analysis
 from forlib.processing import files_analysis
@@ -91,6 +93,16 @@ def file_open(path):
     elif extension == 'prefetch':
         return Prefetch.file_open(path)
 
+class Disk:
+    def disk_open(path):
+        if pyewf.check_file_signature(path) == True:
+            filename = pyewf.glob(path)
+            ewf_handle = pyewf.handle()
+            ewf_handle.open(filename)
+            return disk_analysis.E01Analysis(ewf_handle)
+        else:
+            img_info = pytsk3.Img_Info(image)
+            return disk_analysis.DDAnalysis(img_info)
 
 class Mem:
     def mem_open(path):
