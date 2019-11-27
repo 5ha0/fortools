@@ -259,6 +259,10 @@ class JumpList:
             hash_v = calc_hash.get_hash(path)
             file = ole_open(path)
             return jump_analysis.JumplistAnalysis(file, path, hash_v)
+        else:
+            print("check your file format. This is not Jumplist file.")
+            return -1
+        
 
 
 class Thumbnail:
