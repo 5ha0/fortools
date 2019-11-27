@@ -34,7 +34,6 @@ def sig_check(path):
     extension = magic.from_file(path).split(',')[0]
     if extension[:11] == 'cannot open' or extension == 'data':
         extension = sig.sig_check(path)
-        extension = 'File System $J'
         print('extension: ' + extension)
     return extension
 
@@ -290,7 +289,7 @@ class Browser:
 
 class FileSystemLog:
     def file_open(path):
-        hash_v = calc_hash(path)
+        hash_v = calc_hash.get_hash(path)
         extension = sig_check(path)
         if extension == 'MFT':
             return filesystem_analysis.MFTAnalysis(filesystem_log_open(path), path, hash_v)
