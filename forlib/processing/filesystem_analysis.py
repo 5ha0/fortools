@@ -36,7 +36,7 @@ class MFTAnalysis:
             used_size = struct.unpack("<H", self.file.read(2))[0]
             self.file.read(14)
             next_id = self.file.read(2)
-            self.file.seek(1024*i+next_attr_id)
+            self.file.seek(1024*size+next_attr_id)
             self.file.read(8)
             resident_flag = self.file.read(1)
             resident_flag = struct.unpack("<B", resident_flag)[0]
