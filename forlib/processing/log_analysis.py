@@ -92,13 +92,13 @@ class EventAnalysis:
         return self._result
 
     def date(self, date1, date2):
-        date_filter("create Time", [date1, date2], self.evtx_json)
+        return date_filter("create Time", [date1, date2], self.evtx_json)
 
     def time(self, time1, time2):
-        time_filter("create Time", [time1, time2], self.evtx_json)
+        return time_filter("create Time", [time1, time2], self.evtx_json)
 
     def day(self, day1, day2):
-        day_filter("create Time", [day1, day2], self.evtx_json)
+        return day_filter("create Time", [day1, day2], self.evtx_json)
 
     def xml_with_num(self, num):
         print(self.evtx_file.records[num].get_xml_string())
