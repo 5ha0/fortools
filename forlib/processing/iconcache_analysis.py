@@ -12,24 +12,26 @@ class IconcacheAnalysis:
         self.signature = None
         self.path_num = None
         self.time = 1
-        self.info_list = self.all_info()
+        self.info_list = self.show_all_info()
         self.drive_exe_list = None
         self.hard_disk_delete = ["Disk Wipe", 'Drive Wipe', 'DBAN', 'CBL Data Shredder', 'MHDD', 'PCDiskEraser', 'KillDisk', 'Format Command With Write Zero Option', 'Macrorit Data Wiper', 'Eraser', 'WipeDisk', 'MiniTool Partition Wizard', 'KillDisk', 'CCleaner', 'PCDiskEraser', 'Super File Shredder']
 
     def __file_version(self):
+        json_list = []
         self.file.seek(12)
         build_num = self.file.read(4)
         if build_num == b'\xB1\x1D\x01\x06':
-            print('File Version is win 7')
-            version = 'win10'
-            return version
+            icon_obj = {"File Version": 'win 7'}
+            json.dumps(icon_obj)
+            json_list.append(icon_obj)
         elif build_num == b'\x5A\x29\x00\x00':
-            print('File Version is win 10')
-            version = 'win10'
-            return version
+            icon_obj = {"File Version": 'win 10'}
+            json.dumps(icon_obj)
+            json_list.append(icon_obj)
         else:
-            print('not supported version')
-            return -1
+            return print('not supported version')
+
+        return json_list
 
     def __section_one(self):
         json_list = []
@@ -42,7 +44,7 @@ class IconcacheAnalysis:
         self.file.seek(self.size)
         self.path_num = struct.unpack_from('<i', self.file.read(4))[0]
         icon_obj = {"section one path num: ": self.path_num}
-        print(json.dumps(icon_obj))
+        json.dumps(icon_obj)
         json_list.append(icon_obj)
 
         # path information
@@ -67,26 +69,25 @@ class IconcacheAnalysis:
             icon_location = self.file.read(4)
             icon_location = str(binascii.hexlify(icon_location))
 
+            # num indicates the order in which the paths are located
             icon_obj = {
                 "Num": i + 1,
                 "Path": filepaths,
                 "Icon image location": icon_location,
                 }
-            print(json.dumps(icon_obj))
+            json.dumps(icon_obj)
             json_list.append(icon_obj)
 
         return json_list
 
 
     def __section_two(self):
-
-        print('section 2')
         json_list = []
 
         # section two path information num
         self.path_num = struct.unpack_from('<i', self.file.read(4))[0]
         icon_obj = {"section two path num: ": self.path_num}
-        print(json.dumps(icon_obj))
+        json.dumps(icon_obj)
         json_list.append(icon_obj)
 
         for i in range(0, self.path_num):
@@ -104,25 +105,24 @@ class IconcacheAnalysis:
             icon_location = self.file.read(12)
             icon_location = str(binascii.hexlify(icon_location))
 
+            # num indicates the order in which the paths are located
             icon_obj = {
                 "Num": i+1,
                 "Path": filepaths,
                 "Icon image location": icon_location,
             }
-            print(json.dumps(icon_obj))
+            json.dumps(icon_obj)
             json_list.append(icon_obj)
 
         return json_list
 
     def __section_three(self):
-
-        print('section 3')
         json_list = []
 
         # section three path information num
         self.path_num = struct.unpack_from('<i', self.file.read(4))[0]
         icon_obj = {"section three path num: ": self.path_num}
-        print(json.dumps(icon_obj))
+        json.dumps(icon_obj)
         json_list.append(icon_obj)
 
         for i in range(0, self.path_num):
@@ -139,17 +139,18 @@ class IconcacheAnalysis:
             icon_location = self.file.read(12)
             icon_location = str(binascii.hexlify(icon_location))
 
+            # num indicates the order in which the paths are located
             icon_obj = {
                 "Num": i + 1,
                 "Path": filepaths,
                 "Icon image location": icon_location,
             }
-            print(json.dumps(icon_obj))
+            json.dumps(icon_obj)
             json_list.append(icon_obj)
 
         return json_list
 
-    def all_info(self):
+    def show_all_info(self):
         self.info_list = []
         info = dict()
         info["file version"] = str(self.__file_version())
@@ -159,6 +160,19 @@ class IconcacheAnalysis:
 
         print(info)
         self.info_list.append(info)
+
+        return self.info_list
+
+    def get_all_info(self):
+        self.info_list = []
+        info = dict()
+        info["file version"] = str(self.__file_version())
+        info["path information_section one"] = str(self.__section_one())
+        info["path information_section two"] = str(self.__section_two())
+        info["path information_section three"] = str(self.__section_three())
+
+        self.info_list.append(info)
+
         return self.info_list
 
     # Use when you only want to see files with certain extensions.
@@ -212,24 +226,3 @@ class IconcacheAnalysis:
             return execution
         print('This file was not executed for hard disk deletion program.')
         return execution
-
-
-    # if you want to look time stamp for filepath, use this
-    def show_time(self, filepath):
-        time_list = []
-        time = dict()
-
-        c_time = datetime.fromtimestamp(os.path.getctime(filepath))
-        c_time = str(c_time)
-        a_time = datetime.fromtimestamp(os.path.getatime(filepath))
-        a_time = str(a_time)
-        w_time = datetime.fromtimestamp(os.path.getmtime(filepath))
-        w_time = str(w_time)
-
-        time["creation time"] = c_time
-        time["access time"] = a_time
-        time["write time"] = w_time
-
-        print(time)
-        time_list.append(time)
-        return time_list
