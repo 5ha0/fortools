@@ -1,20 +1,35 @@
 from fortools import *
 
-file = Iconcache.file_open(r'path')
-# Or you ca use this
+file = Iconcache.file_open(r'path)
+# Or you can use this
 # path = 'path'
 # file = file_open(path)
 
-# show information about IconCache.db
-information = file.all_info()
+# #Uncomment the comment you want to use.# #
 
-# Allows you to check whether the drive delete program is used.
-file.drive_delete_exe()
+# #1. It shows all the parsing provided by this library at once
+# information = file.show_all_info()
+# #How to make a report
+# docx = DocxExport()
+# docx.make_table(information)
+# docx.save('report_name')
 
-# Allows you to find a specific extension file.
-extension = '.extension'
-file.extension_filter(extension)
+# #2. It handles all parsing provided by this library at once.
+# information = file.get_all_info()
+# # if you show 2, use print()
+# print(information)
+# #How to make a report
+# docx = DocxExport()
+# docx.make_table(information)
+# docx.save('report_name')
 
-# if you want to look time stamp for filepath, use this
-filepath = r'enter the file path you want to check the time of'
-file.show_time(filepath)
+# #3.Allows you to check whether the drive delete program is used
+# file.drive_delete_exe()
+
+# #4.Allows you to find a specific extension file from all sections
+# extension = '.extension'
+# information = file.extension_filter(extension)
+# #How to make a report
+# docx = DocxExport()
+# docx.make_table(information)
+# docx.save('report_name')
