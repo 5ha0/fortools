@@ -243,6 +243,15 @@ class JumpList:
             calc_hash.get_hash(path)
             file = ole_open(path)
             return jump_analysis.JumplistAnalysis(file)
+class EvtxLog:
+    def file_open(path):
+        extension = sig_check(path)
+        if extension == 'MS Windows Vista Event Log':
+            hash_v = calc_hash.get_hash(path)
+            file = evtx_open(path)
+            return log_analysis.EvtxAnalysis(file, path, hash_v)
+        print("check your file format. This is not EVTX file.")
+        return -1
 
 
 class Thumbnail_Iconcache:
@@ -250,9 +259,9 @@ class Thumbnail_Iconcache:
         try:
             extension = sig_check(path)
             if extension == 'Thumb_Icon':
-                calc_hash.get_hash(path)
+                hash_v = calc_hash.get_hash(path)
                 file = cache_open(path)
-                return thumbnail_analysis.Thumbnail_analysis_windows(file)
+                return thumbnail_analysis.Thumbnail_analysis_windows(file, path, hash_v)
         except:
             print("File is not found")
 
