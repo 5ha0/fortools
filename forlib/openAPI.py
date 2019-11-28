@@ -273,7 +273,6 @@ class Thumbnail_Iconcache:
                 hash_v = calc_hash.get_hash(path)
                 file = cache_open(path)
                 return thumbnail_analysis.Thumbnail_analysis_windows(file, path, hash_v)
-
         except:
             print("File is not found")
 
