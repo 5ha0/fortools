@@ -3,7 +3,7 @@ import os
 
 signatures = [{
      'file_extension': 'Zip archive data',
-     'hex': ['0x50', '0x4b', '0x3', '0x4'],
+     'hex': ['0x50', '0x4b', '0x03', '0x04'],
      'len': 4,
      'offset': 0},
     {
