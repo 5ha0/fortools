@@ -42,7 +42,7 @@ def file_open(path):
     if extension == 'MS Windows Vista Event Log':
         return EventLog.file_open(path)
     elif extension == 'JPEG image data':
-        return Files.JPEG.file_oepn(path)
+        return Files.JPEG.file_open(path)
     elif extension == 'MS Windows registry file':
         file = reg_open(path)
         if Registry.HiveType.NTUSER == file.hive_type():
