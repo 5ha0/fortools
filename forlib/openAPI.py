@@ -90,6 +90,8 @@ def file_open(path):
         return Recycle.file_open(path)
     elif extension == 'prefetch':
         return Prefetch.file_open(path)
+    else:
+        print('Non sig. Plz check file extension.')
 
 class Disk:
     def disk_open(path):
