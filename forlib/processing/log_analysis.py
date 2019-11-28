@@ -199,6 +199,11 @@ class System:
     def system_off(self):
         EventAnalysis.eventid(self, 4609)
         return self._result
+    
+    # window dirty shut down
+    def dirty_shutdown(self):
+        EventAnalysis.eventid(self, 6008)
+        return self._result
 
 
 # filtering based on logon type
