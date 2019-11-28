@@ -205,7 +205,7 @@ class Thumbnail_analysis_windows:   # windows version check
                 info_list.append(cache_file)
 
             file.close()
-            print("Getting data Success!\n")
+            print("Getting data Success!")
             return info_list
 
         except:
@@ -221,18 +221,21 @@ class Thumbnail_analysis_windows:   # windows version check
     #     print("Check your input ""height"" arguments")
 
     def dimension(self, width, height):
+
+        for i in range(0, len(self.thumb_list)):
+            if self.thumb_list[i]['dimension'].split('x')[0] != str(width) or self.thumb_list[i]['dimension'].split('x')[1] != str(height):
+                print("Dimension " + str(width) + "x" + str(height) + " file is not found")
+                break
+
         for i in range(0, len(self.thumb_list)):
             if self.thumb_list[i]['dimension'].split('x')[0] == str(width) and self.thumb_list[i]['dimension'].split('x')[1] == str(height):
                 self._result.append(self.thumb_list[i])
                 print(self.thumb_list[i])
-            else:
-                print("Dimension " + str(width) + "x" + str(height) + " file is not found")
-                break
         return self._result
 
-    # def dimension(self, width, height):
-    #     total_size = len(info_list)
-    #     for i in range(0, total_size)
+
+
+
 
 
 
