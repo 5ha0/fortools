@@ -5,9 +5,10 @@ path = r'C:\Users\sjms1\AppData\Local\Microsoft\Windows\Explorer\thumbcache_32.d
 #path = r'D:\fortools_test_file\thumbcache_256.db'
 
 thumbnail = Thumbnail_Iconcache.file_open(path)
-data = thumbnail.get_data(path)
-for i in thumbnail.dimension(20, 20):
-    print(i)
+
+#data = thumbnail.get_data(path)
+for i in thumbnail.dimension(1):
+     print(i)
 #thumbnail.thumb_print(data)
 
 
