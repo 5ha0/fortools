@@ -1,6 +1,7 @@
 import pytsk3
 import pyewf
 import json
+import date
 
 class E01Analysis:
     def __init__(self, file):
@@ -96,7 +97,11 @@ class E01Analysis:
         hashes  = self.file.get_hash_values()
 
         for head in headers:
-            head_obj[head] = headers[head]
+            if head == "acquiry_date" or head == "system_date":
+                timestamp = datetime.datetime.strptime(headers[head], "%a %b %d %H:%M:%S %Y")
+                head_obj[head] = str(timestamp)
+            else:
+                head_obj[head] = headers[head]
 
         for h in hashes:
             hash_obj[h] = hashes[h]
@@ -191,7 +196,11 @@ class DDAnalysis:
         hashes  = self.file.get_hash_values()
 
         for head in headers:
-            head_obj[head] = headers[head]
+            if head == "acquiry_date" or head == "system_date":
+                timestamp = datetime.datetime.strptime(headers[head], "%a %b %d %H:%M:%S %Y")
+                head_obj[head] = str(timestamp)
+            else:
+                head_obj[head] = headers[head]
 
         for h in hashes:
             hash_obj[h] = hashes[h]
