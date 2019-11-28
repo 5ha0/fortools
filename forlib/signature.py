@@ -1,11 +1,11 @@
 from forlib import decompress1
 import os
 
-signatures = [#{
-    # 'file_extension': 'Zip archive data',
-    # 'hex': ['0x50', '0x4b', '0x3', '0x4'],
-    # 'len': 4,
-    # 'offset': 0},
+signatures = [{
+     'file_extension': 'Zip archive data',
+     'hex': ['0x50', '0x4b', '0x3', '0x4'],
+     'len': 4,
+     'offset': 0},
     {
     'file_extension': 'JPEG image data',
     'hex': ['0xff', '0xd8', '0xff', '0xe0'],

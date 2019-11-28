@@ -224,22 +224,38 @@ class ZIPAnalysis:
     def get_info(self):
         num = 1
         for info in self.file.infolist():
+            file_obj = dict()
+            json_list = []
             file_name = os.path.basename(info.filename)
-            print("[%d]FileName: " % num + file_name)
-            print("\tComment: " + str(info.comment))
-            print("\tModified: " + str(datetime(*info.date_time)))
-            print("\tSystem: " + str(info.create_system) + "(0 = Windows, 3 = Unix)")
-            print("\tZIP version: " + str(info.create_version))
-            print("\tCompressed: " + str(info.compress_size) + " bytes")
-            print("\tUncompressed: " + str(info.file_size) + " bytes")
-            print("\tCRC: " + str(info.CRC))
-            print("\tVolume: " + str(info.volume))
-            print("\tInternal attr: " + str(info.internal_attr))
-            print("\tExternal attr: " + str(info.external_attr))
-            print("\tHeader offset: " + hex(info.header_offset))
-            print("\tFlag bits: " + str(info.flag_bits))
-            print("\tRaw time: " + str(info._raw_time))
+            file_obj['num'] = num
+            file_obj['FileName'] = file_name
+            file_obj['Comment'] = str(info.comment)
+            file_obj['Modified'] = str(datetime(*info.date_time))
+            file_obj['System'] = str(info.create_system) + "(0 = Windows, 3 = Unix)"
+            file_obj['version'] = str(info.create_version)
+            file_obj['Compressed'] = str(info.compress_size) + " bytes"
+            file_obj['Uncompressed'] = str(info.file_size) + " bytes"
+            file_obj['CRC'] = str(info.CRC)
+
+            # file_name = os.path.basename(info.filename)
+            # print("[%d]FileName: " % num + file_name)
+            # print("\tComment: " + str(info.comment))
+            # print("\tModified: " + str(datetime(*info.date_time)))
+            # print("\tSystem: " + str(info.create_system) + "(0 = Windows, 3 = Unix)")
+            # print("\tZIP version: " + str(info.create_version))
+            # print("\tCompressed: " + str(info.compress_size) + " bytes")
+            # print("\tUncompressed: " + str(info.file_size) + " bytes")
+            # print("\tCRC: " + str(info.CRC))
+            # print("\tVolume: " + str(info.volume))
+            # print("\tInternal attr: " + str(info.internal_attr))
+            # print("\tExternal attr: " + str(info.external_attr))
+            # print("\tHeader offset: " + hex(info.header_offset))
+            # print("\tFlag bits: " + str(info.flag_bits))
+            # print("\tRaw time: " + str(info._raw_time))
+            json_list.append(file_obj)
             num += 1
+            print(json_list)
+        return json_list
 
     def last_modtime(self):
         num = 1

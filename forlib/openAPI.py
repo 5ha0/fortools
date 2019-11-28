@@ -203,7 +203,7 @@ class Files:
     class ZIP:
         def file_open(path):
             extension = sig_check(path)
-            print('extension: ' + extension)
+            print('extension: ' + str(extension))
             if extension == 'Zip archive data':
                 calc_hash.get_hash(path)
                 file = zip_open(path)
