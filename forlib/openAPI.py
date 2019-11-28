@@ -34,7 +34,6 @@ def sig_check(path):
     extension = magic.from_file(path).split(',')[0]
     if extension[:11] == 'cannot open' or extension == 'data':
         extension = sig.sig_check(path)
-        print('extension: ' + extension)
     return extension
 
 
@@ -114,6 +113,7 @@ class Mem:
 class EventLog:
     def file_open(path):
         extension = sig_check(path)
+        print('extension: ' + extension)
         if extension == 'MS Windows Vista Event Log':
             hash_v = calc_hash.get_hash(path)
             file = event_open(path)
@@ -167,32 +167,53 @@ class Files:
 
     class HWP:
         def file_open(path):
-            hash_v = calc_hash.get_hash(path)
-            file = file_open(path)
-            return files_analysis.HWPAnalysis(file, path, hash_v)
+            extension = sig_check(path)
+            print('extension: ' + extension)
+            if extension == 'Hangul (Korean) Word Processor File 5.x':
+                hash_v = calc_hash.get_hash(path)
+                file = file_open(path)
+                return files_analysis.HWPAnalysis(file, path, hash_v)
+            print("check your file format. This is not HWP file.")
+            return -1
 
     class JPEG:
         def file_open(path):
-            hash_v = calc_hash.get_hash(path)
-            file = file_open(path)
-            return files_analysis.JPEGAnalysis(file, path, hash_v)
+            extension = sig_check(path)
+            print('extension: ' + extension)
+            if extension == 'JPEG image data':
+                hash_v = calc_hash.get_hash(path)
+                file = jpeg_open(path)
+                return files_analysis.JPEGAnalysis(file, path, hash_v)
+            print("check your file format. This is not JPEG file.")
+            return -1
 
     class PDF:
         def file_open(path):
-            hash_v = calc_hash.get_hash(path)
-            file = file_open(path)
-            return files_analysis.PDFAnalysis(file, path, hash_v)
+            extension = sig_check(path)
+            print('extension: ' + extension)
+            if extension == 'PDF document':
+                hash_v = calc_hash.get_hash(path)
+                file = file_open(path)
+                return files_analysis.PDFAnalysis(file, path, hash_v)
+            print("check your file format. This is not PDF file.")
+            return -1
 
     class ZIP:
         def file_open(path):
-            calc_hash.get_hash(path)
-            file = zip_open(path)
-            return files_analysis.ZIPAnalysis(file)
+            extension = sig_check(path)
+            print('extension: ' + extension)
+            if extension == 'Zip archive data':
+                calc_hash.get_hash(path)
+                file = zip_open(path)
+                return files_analysis.ZIPAnalysis(file)
+            print("check your file format. This is not ZIP file.")
+            return -1
 
 
 class Lnk:
     def file_open(path):
         extension = sig_check(path)
+        print('extension: ' + extension)
         if extension == 'MS Windows shortcut':
             calc_hash.get_hash(path)
             file = lnk_open(path)
@@ -255,6 +276,7 @@ class RegistryHive:
 class JumpList:
     def file_open(path):
         extension = sig_check(path)
+        print('extension: ' + extension)
         if extension == 'Composite Document File V2 Document':
             hash_v = calc_hash.get_hash(path)
             file = ole_open(path)
