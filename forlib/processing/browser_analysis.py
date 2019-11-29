@@ -4,21 +4,26 @@ import binascii
 from datetime import *
 import re
 from forlib.processing.filter import *
+import forlib.calc_hash as calc_hash
 
 
 class Chrome:
     class History:
-        def __init__(self, file):
+        def __init__(self, file, hash_v):
             self.file = file
             self.conn = sqlite3.connect(self.file)
             self.history_list = []
             self.__parse()
             self.__sort()
+            self.__hash_value = [hash_v]
+            self.__path = file
+            self.__cal_hash()
 
         def __parse(self):
             history_cursor = self.conn.cursor()
             visits_open = history_cursor.execute(
                 "SELECT visits.from_visit, visits.visit_time, visits.transition, urls.url, urls.title, urls.visit_count, urls.id FROM urls, visits WHERE urls.id = visits.url")
+
             no = 0
             for visit in visits_open:
                 no += 1
@@ -26,6 +31,7 @@ class Chrome:
                 mkdict["index"] = no
                 mkdict["type"] = "history"
                 mkdict["browser"] = "chrome"
+                mkdict["timezone"] = "UTC"
                 mkdict["title"] = visit[4]
                 mkdict["url"] = visit[3]
                 # if there is data, get from_visit data
@@ -40,9 +46,17 @@ class Chrome:
                     get_url_cursor.execute("SELECT urls.url FROM urls WHERE urls.id=" + str(url_id)).fetchone()[0]
 
                 keyword_cursor = self.conn.cursor()
-                mkdict["keyword_search"] = keyword_cursor.execute(
+                get_keyword = keyword_cursor.execute(
                     "SELECT keyword_search_terms.term FROM keyword_search_terms WHERE keyword_search_terms.url_id= " + str(
                         visit[6])).fetchall()
+
+                keyword_list=[]
+                for i in get_keyword:
+                    for j in range(0, len(get_keyword)):
+                        keyword_list.append(i[j])
+
+                mkdict["keyword_search"]=keyword_list
+
                 if mkdict["keyword_search"] == []:
                     mkdict["keyword_search"] = ""
                 mkdict["visit_time"] = int2date1(visit[1])
@@ -73,25 +87,57 @@ class Chrome:
             for i in json_list:
                 for j in i["keyword_search"]: #j: keyword서치튜플
                     for k in range (0,len(j)):
+                        print(j[k])
                         if keyword in j[k]:
+                            print(i)
                             result.append(i)
                             break
                     if i in result: #중복방지
                         break
             return result
 
+        def __cal_hash(self):
+            self.__hash_value.append(calc_hash.get_hash(self.__path))
+
+        def get_hash(self):
+            return self.__hash_value
+
 
     class Download:
-        def __init__(self, file):
+        def __init__(self, file, hash_v):
             self.file = file
             self.conn = sqlite3.connect(self.file)
             self.download_list = []
             self.__parse()
             self.__sort()
+            self.__hash_value = [hash_v]
+            self.__path = file
+            self.__cal_hash()
 
         def __parse(self):
             downloads_cursor = self.conn.cursor()
             downloads_open = downloads_cursor.execute("SELECT downloads.* FROM downloads")
+            downloads_cursor_row = self.conn.cursor()
+            downloads_get_row = sqlite_get_schema("downloads", downloads_cursor_row)
+
+            for row in downloads_get_row:
+                if row[1]=="current_path":
+                    current_path=row[0]
+                elif row[1]=="start_time":
+                    start_time=row[0]
+                elif row[1]=="received_bytes":
+                    received_bytes=row[0]
+                elif row[1]=="end_time":
+                    end_time=row[0]
+                elif row[1]=="id":
+                    download_id=row[0]
+                elif row[1]=="guid":
+                    guid=row[0]
+                elif row[1] == "opened":
+                    opened=row[0]
+                elif row[1]=="state":
+                    state=row[0]
+
             no = 0
             for download in downloads_open:
                 no += 1
@@ -99,23 +145,24 @@ class Chrome:
                 mkdict["index"] = no
                 mkdict["type"] = "downloads"
                 mkdict["browser"] = "chrome"
-                mkdict["file_name"] = download[3].split("\\")[-1]
-                mkdict["download_path"] = download[2]
-                mkdict["download_start_time"] = int2date1(download[4])
-                mkdict["download_end_time"] = int2date1(download[11])
-                mkdict["file_size"] = download[6]
+                mkdict["timezone"]="UTC"
+                mkdict["file_name"] = download[current_path].split("\\")[-1]
+                mkdict["download_path"] = download[current_path]
+                mkdict["download_start_time"] = int2date1(download[start_time])
+                mkdict["download_end_time"] = int2date1(download[end_time])
+                mkdict["file_size"] = download[received_bytes]
                 downloads_url_chains_cursor = self.conn.cursor()
                 mkdict["url"] = downloads_url_chains_cursor.execute(
                     "SELECT downloads_url_chains.chain_index,downloads_url_chains.url FROM downloads_url_chains WHERE downloads_url_chains.id=" + str(
-                        download[0])).fetchall()
-                mkdict["guid"] = download[1]
-                mkdict["opened"] = download[12]
-                mkdict["state"] = download[7]
-
-                # mkdictno = dict()
-                # mkdictno["no" + str(no)] = mkdict
+                        download[download_id])).fetchall()
+                downloads_url_chains_cursor.close()
+                try:
+                    mkdict["guid"] = download[guid]
+                except:
+                    mkdict["guid"] = ""
+                mkdict["opened"] = download[opened]
+                mkdict["state"] = download[state]
                 self.download_list.append(mkdict)
-                # print(mkdict)
 
         def get_info(self):
             return self.download_list
@@ -128,19 +175,52 @@ class Chrome:
             data_list=time_sort(key, data_list)
             return data_list
 
+        def __cal_hash(self):
+            self.__hash_value.append(calc_hash.get_hash(self.__path))
+
+        def get_hash(self):
+            return self.__hash_value
+
 
     class Cookie:
-        def __init__(self, file):
+        def __init__(self, file, hash_v):
             self.file = file
             self.conn = sqlite3.connect(self.file)
             self.cookie_list = []
             self.__parse()
             self.__sort()
+            self.__hash_value = [hash_v]
+            self.__path = file
+            self.__cal_hash()
 
         def __parse(self):
             self.cookie_list = []
             cookies_cursor = self.conn.cursor()
             cookies_open = cookies_cursor.execute("SELECT * FROM cookies")
+
+            cookies_cursor_row = self.conn.cursor()
+            cookies_get_row = sqlite_get_schema("cookies", cookies_cursor_row)
+
+            for row in cookies_get_row:
+                if row[1] == "name":
+                    name = row[0]
+                elif row[1] == "value":
+                    value = row[0]
+                elif row[1] == "creation_utc":
+                    creation_utc = row[0]
+                elif row[1] == "last_access_utc":
+                    last_access_utc = row[0]
+                elif row[1] == "expires_utc":
+                    expires_utc = row[0]
+                elif row[1] == "host_key":
+                    host_key = row[0]
+                elif row[1] == "path":
+                    cookie_path = row[0]
+                elif row[1] == "secure" or row[1] == "is_secure":
+                    secure = row[0]
+                elif row[1] == "httponly" or row[1] == "is_httponly":
+                    httponly = row[0]
+
             no = 0
             for cookie in cookies_open:
                 no += 1
@@ -148,18 +228,17 @@ class Chrome:
                 mkdict["index"] = no
                 mkdict["type"] = "cookies"
                 mkdict["browser"] = "chrome"
-                mkdict["name"] = cookie[2]
-                mkdict["value"] = cookie[3]
-                mkdict["creation_time"] = int2date1(cookie[0])
-                mkdict["last_accessed_time"] = int2date1(cookie[8])
-                mkdict["expiry_time"] = int2date1(cookie[5])
-                mkdict["host"] = cookie[1]
-                mkdict["path"] = cookie[4]
-                mkdict["is_secure"] = cookie[6]
-                mkdict["is_httponly"] = cookie[7]
+                mkdict["timezone"]="UTC"
+                mkdict["name"] = cookie[name]
+                mkdict["value"] = cookie[value]
+                mkdict["creation_time"] = int2date1(cookie[creation_utc])
+                mkdict["last_accessed_time"] = int2date1(cookie[last_access_utc])
+                mkdict["expiry_time"] = int2date1(cookie[expires_utc])
+                mkdict["host"] = cookie[host_key]
+                mkdict["path"] = cookie[cookie_path]
+                mkdict["is_secure"] = cookie[secure]
+                mkdict["is_httponly"] = cookie[httponly]
 
-                # mkdictno = dict()
-                # mkdictno["no" + str(no)] = mkdict
                 self.cookie_list.append(mkdict)
 
         def get_info(self):
@@ -170,18 +249,27 @@ class Chrome:
 
         def time_sort(self, key):
             date_list=self.cookie_list
-            data_list=sort_date = time_sort(key, date_list)
+            sort_date = time_sort(key, date_list)
             return sort_date
+
+        def __cal_hash(self):
+            self.__hash_value.append(calc_hash.get_hash(self.__path))
+
+        def get_hash(self):
+            return self.__hash_value
 
 
 class Firefox:
     class History:
-        def __init__(self, file):
+        def __init__(self, file, hash_v):
             self.file = file
             self.conn = sqlite3.connect(self.file)
             self.history_list=[]
             self.__parse()
             self.__sort()
+            self.__hash_value = [hash_v]
+            self.__path = file
+            self.__cal_hash()
 
         def __parse(self):
             visits_cursor = self.conn.cursor()
@@ -194,6 +282,7 @@ class Firefox:
                 mkdict["index"] = no
                 mkdict["type"] = "history"
                 mkdict["browser"] = "firefox"
+                mkdict["timezone"] = "UTC"
                 mkdict["title"] = visit[0]
                 if mkdict["title"] is None:
                     mkdict["title"]=""
@@ -239,14 +328,22 @@ class Firefox:
                     result.append(i)
             return result
 
+        def __cal_hash(self):
+            self.__hash_value.append(calc_hash.get_hash(self.__path))
+
+        def get_hash(self):
+            return self.__hash_value
 
     class Cookie:
-        def __init__(self, file):
+        def __init__(self, file, hash_v):
             self.file = file
             self.conn = sqlite3.connect(self.file)
             self.cookie_list=[]
             self.__parse()
             self.__sort()
+            self.__hash_value = [hash_v]
+            self.__path = file
+            self.__cal_hash()
 
         def __parse(self):
             cookies_cursor = self.conn.cursor()
@@ -258,6 +355,7 @@ class Firefox:
                 mkdict["index"] = no
                 mkdict["type"] = "cookies"
                 mkdict["browser"] = "firefox"
+                mkdict["timezone"] = "UTC"
                 mkdict["name"] = cookie[3]
                 mkdict["value"] = cookie[4]
                 mkdict["creation_time"] = int2date2(cookie[9])
@@ -280,13 +378,22 @@ class Firefox:
             data_list=time_sort(key, data_list)
             return data_list
 
+        def __cal_hash(self):
+            self.__hash_value.append(calc_hash.get_hash(self.__path))
+
+        def get_hash(self):
+            return self.__hash_value
+
     class Download:
-        def __init__(self, file):
+        def __init__(self, file, hash_v):
             self.file = file
             self.conn = sqlite3.connect(self.file)
             self.download_list = []
             self.__parse()
             self.__sort()
+            self.__hash_value = [hash_v]
+            self.__path = file
+            self.__cal_hash()
 
         def __parse(self):
             moz_places_cursor = self.conn.cursor()
@@ -299,6 +406,7 @@ class Firefox:
                 mkdict["index"] = no
                 mkdict["type"] = "downloads"
                 mkdict["browser"] = "firefox"
+                mkdict["timezone"] = "UTC"
                 downloads_cursor = self.conn.cursor()
                 downloads_open = downloads_cursor.execute(
                     "SELECT moz_annos.anno_attribute_id, moz_annos.content,moz_annos.dateAdded FROM moz_annos WHERE moz_annos.place_id=" + str(
@@ -338,14 +446,23 @@ class Firefox:
             data_list=time_sort(key, data_list)
             return data_list
 
+        def __cal_hash(self):
+            self.__hash_value.append(calc_hash.get_hash(self.__path))
+
+        def get_hash(self):
+            return self.__hash_value
+
 
 class Ie_Edge:
     class Cache:
-        def __init__(self, file):
+        def __init__(self, file, path,hash_v):
             self.file = file
             self.cache_list = []
             self.__parse()
             self.__sort()
+            self.__hash_value = [hash_v]
+            self.__path = path
+            self.__cal_hash()
 
         def __parse(self):
             cache_noContainer = []  # 없는 container 저장하는 list
@@ -353,7 +470,7 @@ class Ie_Edge:
             cache_container_id = get_ContainerID(self.file, "Content")
             no = 0
             for containerid in cache_container_id.keys():
-                col_name = get_schema(self.file, containerid)
+                col_name = esedb_get_schema(self.file, containerid)
                 cache_container = self.file.get_table_by_name(containerid)
                 if col_name == None:
                     cache_noContainer.append(containerid)
@@ -368,23 +485,26 @@ class Ie_Edge:
                     mkdict["index"] = no
                     mkdict["type"] = "cache"
                     mkdict["browser"] = "IE10+ Edge"
-
+                    mkdict["timezone"] = "UTC"
                     mkdict["file_name"] = cache.get_value_data_as_string(18)
                     mkdict["url"] = cache.get_value_data_as_string(17)
                     mkdict["access_time"] = int2date4(cache.get_value_data_as_integer(13))
                     mkdict["creation_time"] = int2date4(cache.get_value_data_as_integer(10))
                     mkdict["file_size"] = cache.get_value_data_as_integer(5)
                     mkdict["file_path"] = cache.get_value_data_as_integer(4)
+
+
                     if cache.get_value_data_as_integer(11) == 0:
                         mkdict["expiry_time"] = 0
                     else:
                         mkdict["expiry_time"] = int2date4(cache.get_value_data_as_integer(11))
+
+
                     mkdict["last_modified_time"] = int2date4(cache.get_value_data_as_integer(13))
                     if cache.get_value_data(21) is not None:
                         mkdict["server_info"] = cache.get_value_data(21).decode().split(" ")[1]
                     else:
                         mkdict["server_info"] = ""
-
                     self.cache_list.append(mkdict)
 
         def get_info(self):
@@ -398,12 +518,21 @@ class Ie_Edge:
             data_list=time_sort(key, data_list)
             return data_list
 
+        def __cal_hash(self):
+            self.__hash_value.append(calc_hash.get_hash(self.__path))
+
+        def get_hash(self):
+            return self.__hash_value
+
     class Cookie:
-        def __init__(self, file):
+        def __init__(self, file, path,hash_v):
             self.file = file
             self.cookie_list=[]
             self.__parse()
             self.__sort()
+            self.__hash_value = [hash_v]
+            self.__path = path
+            self.__cal_hash()
 
         def __parse(self):
             cookies_no_container = []  # 없는 container 저장하는 list
@@ -411,7 +540,7 @@ class Ie_Edge:
             cookies_container_id = get_ContainerID(self.file, "Cookies")
             no = 0
             for containerid in cookies_container_id.keys():
-                col_name = get_schema(self.file, containerid)
+                col_name = esedb_get_schema(self.file, containerid)
                 cookies_container = self.file.get_table_by_name(containerid)
                 if col_name is None:
                     cookies_no_container.append(containerid)
@@ -425,7 +554,8 @@ class Ie_Edge:
                     mkdict["index"] = no
                     mkdict["type"] = "cookies"
                     mkdict["browser"] = "IE10+ Edge"
-                    mkdict["name"] = cookie.get_value_data_as_stirng(18)
+                    mkdict["timezone"] = "UTC"
+                    mkdict["name"] = cookie.get_value_data_as_string(18)
                     mkdict["value"] = ""
                     mkdict["creation_time"] = int2date4(cookie.get_value_data_as_integer(10))
                     mkdict["last_accessed_time"] = int2date4(cookie.get_value_data_as_integer(13))
@@ -434,7 +564,6 @@ class Ie_Edge:
                     mkdict["path"] = ""
                     mkdict["is_secure"] = ""
                     mkdict["is_httponly"] = ""
-
                     self.cookie_list.append(mkdict)
 
         def get_info(self):
@@ -448,12 +577,21 @@ class Ie_Edge:
             data_list=time_sort(key, data_list)
             return data_list
 
+        def __cal_hash(self):
+            self.__hash_value.append(calc_hash.get_hash(self.__path))
+
+        def get_hash(self):
+            return self.__hash_value
+
     class Download:
-        def __init__(self, file):
+        def __init__(self, file, path,hash_v):
             self.file = file
             self.download_list=[]
             self.__parse()
             self.__sort()
+            self.__hash_value = [hash_v]
+            self.__path = path
+            self.__cal_hash()
 
         def __parse(self):
             downloads_no_container = []  # 없는 container 저장하는 list
@@ -461,7 +599,7 @@ class Ie_Edge:
             downloads_container_id = get_ContainerID(self.file, "iedownload")
             no = 0
             for containerid in downloads_container_id.keys():
-                col_name = get_schema(self.file, containerid)
+                col_name = esedb_get_schema(self.file, containerid)
                 downloads_container = self.file.get_table_by_name(containerid)
 
                 if col_name is None:
@@ -473,14 +611,16 @@ class Ie_Edge:
                     continue
 
                 for download in downloads_container.records:
+
                     no += 1
                     mkdict = dict()
                     mkdict["index"] = no
                     mkdict["type"] = "download"
                     mkdict["browser"] = "IE10+ Edge"
-
+                    mkdict["timezone"] = "UTC"
                     # get binary data
                     binary_data = download.get_value_data(21)
+
 
                     # get file size
                     try:
@@ -497,6 +637,10 @@ class Ie_Edge:
                         data = bytes.decode(binascii.hexlify(binary_data[0x148:]))
                         path = bytes.fromhex(data).decode("utf-16").split("\x00")[-2]
                         name = path.split("\\")[-1]
+                    except:
+                        pass
+                    try:
+                        data = bytes.decode(binascii.hexlify(binary_data[0x148:]))
                         url = bytes.fromhex(data).decode("utf-16").split("\x00")[-3]
                     except:
                         pass
@@ -511,8 +655,6 @@ class Ie_Edge:
                     mkdict["opened"] = ""
                     mkdict["state"] = ""
 
-                    # mkdictno = dict()
-                    # mkdictno["no" + str(no)] = mkdict
                     self.download_list.append(mkdict)
 
         def get_info(self):
@@ -526,12 +668,21 @@ class Ie_Edge:
             data_list=time_sort(key, data_list)
             return data_list
 
+        def __cal_hash(self):
+            self.__hash_value.append(calc_hash.get_hash(self.__path))
+
+        def get_hash(self):
+            return self.__hash_value
+
     class History:
-        def __init__(self, file):
+        def __init__(self, file, path,hash_v):
             self.file = file
             self.history_list=[]
             self.__parse()
             self.__sort()
+            self.__hash_value = [hash_v]
+            self.__path = path
+            self.__cal_hash()
 
         def __parse(self):
             history_no_container = []  # 없는 container 저장하는 list
@@ -540,7 +691,7 @@ class Ie_Edge:
             history_container_id = get_ContainerID(self.file, "Hist")
             no = 0
             for containerid in history_container_id.keys():
-                col_name = get_schema(self.file,containerid)
+                col_name = esedb_get_schema(self.file,containerid)
                 history_container = self.file.get_table_by_name(containerid)
 
                 if col_name is None:
@@ -549,23 +700,23 @@ class Ie_Edge:
                 if history_container.number_of_records == 0:
                     history_empty_container.append(containerid)
                     continue
+
                 # get only Histroy.IE5, MSHist###
                 directory = re.compile('^MSHist|History.IE5')
                 if directory.search(history_container_id.get(containerid).split("\\")[-2]) is None:
                     continue
-
                 for visit in history_container.records:
                     no += 1
                     mkdict = dict()
                     mkdict["index"] = no
                     mkdict["type"] = "history"
                     mkdict["browser"] = "IE10+ Edge"
+                    mkdict["timezone"] = "UTC"
                     # get title from response header
                     try:
                         binary_data = visit.get_value_data(21)
                         size_a = bytes.decode(binascii.hexlify(binary_data[58:62][::-1]))
                         size = int(size_a, 16) * 2
-
                         if size > len(binary_data):
                             raise Exception
                         title = bytes.decode(binascii.hexlify(binary_data[62:62 + size]))
@@ -580,8 +731,6 @@ class Ie_Edge:
                     mkdict["visit_count"] = visit.get_value_data_as_integer(8)
                     mkdict["visit_type"] = ""
 
-                    # mkdictno = dict()
-                    # mkdictno["no" + str(no)] = mkdict
                     self.history_list.append(mkdict)
 
         def get_info(self):
@@ -606,8 +755,14 @@ class Ie_Edge:
             for i in json_list:
                 if keyword in i["title"]:
                     result.append(i)
-            print(result)
             return result
+
+        def __cal_hash(self):
+            self.__hash_value.append(calc_hash.get_hash(self.__path))
+
+        def get_hash(self):
+            return self.__hash_value
+
 
 # chrome change int to date
 def int2date1(date_time):
@@ -619,23 +774,28 @@ def int2date1(date_time):
 
 # firefox change int to date
 def int2date2(date_time):
-    #1970년 1월 1일부터
+    # 1970년 1월 1일부터
     get_date=datetime.datetime.fromtimestamp(date_time / 1000000)
     return get_date.strftime("%Y-%m-%d %H:%M:%S")
 
 # firefox change int to date
 def int2date3(date_time):
-    #1970년 1월 1일부터
+    # 1970년 1월 1일부터
     get_date=datetime.datetime.fromtimestamp(date_time / 1000)
     return get_date.strftime("%Y-%m-%d %H:%M:%S")
 
 # IE_Edge change in to date
 def int2date4(date_time):
     # 1601년 1월 1일부터
-    from_date = datetime.datetime(1601, 1, 1)
-    passing_time = timedelta(microseconds=(date_time*0.1))
-    get_date = from_date + passing_time
-    return get_date.strftime("%Y-%m-%d %H:%M:%S")
+    try:
+        from_date = datetime.datetime(1601, 1, 1)
+        # print(from_date)
+        passing_time = timedelta(microseconds=(date_time*0.1))
+        # print(passing_time)
+        get_date = from_date + passing_time
+        return get_date.strftime("%Y-%m-%d %H:%M:%S")
+    except:
+        return 0
 
 # get containerid, directory of IE_Edge
 def get_ContainerID(file, name):
@@ -650,8 +810,19 @@ def get_ContainerID(file, name):
                 ContainerID["Container_" + str(record.get_value_data_as_integer(0))] = record.get_value_data_as_string(10)
     return ContainerID
 
-#column name and type of IE_Edge
-def get_schema(file, table):
+# get schema of sqlite db
+def sqlite_get_schema(table, cursor):
+    col_infos = []
+    query = 'PRAGMA table_info(' + table + ')'
+    n = 0
+    for info in cursor.execute(query):
+        col_infos.append((n, info[1], info[2]))
+        n += 1
+    cursor.close()
+    return col_infos
+
+# column name and type of IE_Edge
+def esedb_get_schema(file, table):
     col_infos=[]
     get_container = file.get_table_by_name(table)
     if get_container == None: #container가 없을 때
@@ -661,4 +832,5 @@ def get_schema(file, table):
         col_info.append(column.name)
         col_info.append(column.get_type())
         col_infos.append(col_info)
+
     return col_infos
