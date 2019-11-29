@@ -362,21 +362,11 @@ def normal_file_oepn(path):
 
 
 def chrome_open(path):
-    open_chrome_file = open(path, "rb")
-    file_format = open_chrome_file.read(15).decode()
-    if file_format == "SQLite format 3":
-        return path
-    else:
-        return open_chrome_file
+    return path
 
 
 def firefox_open(path):
-    open_firefox_file = open(path, "rb")
-    file_format = open_firefox_file.read(15).decode()
-    if file_format == "SQLite format 3":
-        return path
-    else:
-        return open_firefox_file
+    return path
 
 
 def ie_edge_open(path):
