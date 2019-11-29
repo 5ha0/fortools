@@ -220,12 +220,13 @@ class MSOldAnalysis:
 class ZIPAnalysis:
     def __init__(self, file):
         self.file = file
+        self.__info = self.__parse()
 
-    def get_info(self):
+    def __parse(self):
+        json_list = []
         num = 1
         for info in self.file.infolist():
             file_obj = dict()
-            json_list = []
             file_name = os.path.basename(info.filename)
             file_obj['num'] = num
             file_obj['FileName'] = file_name
@@ -242,11 +243,16 @@ class ZIPAnalysis:
             file_obj['Header offset'] = str(info.header_offset)
             file_obj['Flag bits'] = str(info.flag_bits)
             file_obj['Raw time'] = str(info._raw_time)
-
             json_list.append(file_obj)
             num += 1
-            print(json_list)
         return json_list
+
+    def get_info(self):
+        return self.__info
+
+    def show_info(self):
+        for i in self.__info:
+            print(i)
 
     def last_modtime(self):
         num = 1
