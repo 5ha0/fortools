@@ -2,10 +2,10 @@ from PIL.ExifTags import TAGS
 import os
 from datetime import *
 from datetime import date, time, timedelta
-#from datetime import datetime
+from datetime import datetime
+import forlib.calc_hash as calc_hash
 from os.path import getmtime, getctime, getatime
-from os import listdir
-from os import path
+from os import listdir, path
 import time
 import json
 import sys
@@ -18,18 +18,21 @@ def sig_check(path):
     extension = magic.from_file(path).split(',')[0]
     if extension[:11] == 'cannot open' or extension == 'data':
         extension = sig.sig_check(path)
-        #print("extension: " + str(extension))
     return extension
+
 
 # jpeg data: time, latitude, longitude
 class JPEGAnalysis:
-    def __init__(self, file):
-        self.file = file
-        self.jpeg_json = self.__make_json()
+    def __init__(self, file, path, hash_v):
+        self.__file = file
+        self.__jpeg_json = self.__make_json()
+        self.__hash_value = [hash_v]
+        self.__path = path
+        self.__cal_hash()
 
     def __make_json(self):
         files_obj = dict()
-        info = self.file._getexif()
+        info = self.__file._getexif()
         exif = {}
         for tag, value in info.items():
             decoded = TAGS.get(tag, tag)
@@ -69,18 +72,30 @@ class JPEGAnalysis:
         files_obj["Longitude"] = Lon
         return files_obj
 
-    def show_all_info(self):
-        print(self.jpeg_json)
+    def __cal_hash(self):
+        self.__hash_value.append(calc_hash.get_hash(self.__path))
+
+    def get_hash(self):
+        return self.__hash_value
+
+    def show_info(self):
+        print(self.__jpeg_json)
+
+    def get_info(self):
+        return self.__jpeg_json
 
 
 # pdf analysis: author, creator, create Time, modification Time, pdf Version
 class PDFAnalysis:
-    def __init__(self, file):
-        self.file = file
-        self.file_json = self.__make_json()
+    def __init__(self, file, path, hash_v):
+        self.__file = file
+        self.__pdf_json = self.__make_json()
+        self.__hash_value = [hash_v]
+        self.__path = path
+        self.__cal_hash()
 
     def __make_json(self):
-        info = self.file.getDocumentInfo()
+        info = self.__file.getDocumentInfo()
         info_obj = dict()
         info_obj["author"] = info['/Author']
         info_obj["creator"] = info['/Creator']
@@ -91,32 +106,56 @@ class PDFAnalysis:
         info_obj["pdf version"] = info['/PDFVersion']
         return info_obj
 
-    def pdf_info(self):
-        return self.file_json
+    def __cal_hash(self):
+        self.__hash_value.append(calc_hash.get_hash(self.__path))
+
+    def get_hash(self):
+        return self.__hash_value
+
+    def get_info(self):
+        return self.__pdf_json
+
+    def show_info(self):
+        print(self.__pdf_json)
 
 
 class HWPAnalysis:
-    def __init__(self, file):
-        self.file = file
-        self.list = self.return_list
+    def __init__(self, file, path, hash_v):
+        self.__file = file
+        self.list = self.__return_list
+        self.__hwp_info = self.__make_json()
+        self.__hash_value = [hash_v]
+        self.__path = path
+        self.__cal_hash()
 
-    def return_list(self):
-        name = self.file.listdir(streams=True, storages=False)
+    def __return_list(self):
+        name = self.__file.listdir(streams=True, storages=False)
         return name
 
-    def get_info(self):
-        meta = self.file.getproperties('\x05HwpSummaryInformation', convert_time=True, no_conversion=[10])
+    def __make_json(self):
+        meta = self.__file.getproperties('\x05HwpSummaryInformation', convert_time=True, no_conversion=[10])
         file_obj = dict()
         file_obj["Author"] = meta[4]
         file_obj["Date"] = meta[20]
         file_obj["Last Save"] = meta[8]
         file_obj["Create Time"] = meta[12]
         file_obj["Last Save Time"] = meta[13]
-        print(file_obj)
         return file_obj
 
+    def __cal_hash(self):
+        self.__hash_value.append(calc_hash.get_hash(self.__path))
+
+    def get_hash(self):
+        return self.__hash_value
+
+    def show_info(self):
+        print(self.__hwp_info)
+
+    def get_info(self):
+        return self.__hwp_info
+
     def get_prev(self):
-        prev = self.file.openstream('PrvText').read().decode('utf-16')
+        prev = self.__file.openstream('PrvText').read().decode('utf-16')
         print(prev)
         return prev
 
@@ -124,14 +163,19 @@ class HWPAnalysis:
         for i in range(0, len(self.list)):
             if name == self.list[i]:
                 return i
-        print(self.file.openstream(self.list[i].read()))
+            print(self.__file.openstream(self.list[i].read()))
+
 
 class MSOldAnalysis:
-    def __init__(self, file):
-        self.file = file
+    def __init__(self, file, path, hash_v):
+        self.__file = file
+        self.__ms_json = self.__make_json()
+        self.__hash_value = [hash_v]
+        self.__path = path
+        self.__cal_hash()
 
-    def get_info(self):
-        meta = self.file.get_metadata()
+    def __make_json(self):
+        meta = self.__file.get_metadata()
         file_obj = dict()
         try:
             file_obj["title"] = meta.title.decode('cp949')
@@ -157,8 +201,20 @@ class MSOldAnalysis:
             file_obj["creating_application"] = meta.creating_application.decode()
         except:
             file_obj["creating_application"] = 'no info'
-        print(file_obj)
         return file_obj
+
+    def __cal_hash(self):
+        self.__hash_value.append(calc_hash.get_hash(self.__path))
+
+    def get_hash(self):
+        return self.__hash_value
+
+    def show_info(self):
+        print(self.__ms_json)
+
+    def get_info(self):
+        return self.__ms_json
+
 
 # zip analysis: filename, comment, MAC time, zip version, Compressed size, Uncompressed size, crc, Raw time
 class ZIPAnalysis:
@@ -192,8 +248,6 @@ class ZIPAnalysis:
             #print(str(num) + "\tFilename: " + file_name + '\t '+ "Modified Time: " + str(datetime(*info.date_time)))
             print(file_name)
             num += 1
-
-
 
 
 # Print files in folder

@@ -3,6 +3,7 @@ import struct
 from bitstring import BitArray
 import os
 
+
 class LnkAnalysis:
 
     def __init__(self, file, path):
@@ -15,7 +16,7 @@ class LnkAnalysis:
         self.info_flag = None
         self.extra_off = None
         self.extra_data = None
-        self.linkinfo_flag = None
+        self.linkinfo_flag = self.__link_flags()
 
     def __link_flag(self, flags_to_parse):
         flags = {0: "HasLinkTargetIDList",
@@ -52,6 +53,7 @@ class LnkAnalysis:
                 self.lnk_flag.append(format(flags[count]))
             else:
                 continue
+        print(self.lnk_flag)
 
         return self.lnk_flag
 
@@ -203,10 +205,13 @@ class LnkAnalysis:
     ################ Link_Info #############################
 
     def __linkinfo_off(self):
-        self.__link_flags()
 
         if 'HasLinkInfo' not in self.lnk_flag:
             self.linkinfo_flag = None
+            #Input the value to use on the __extradata() below
+            self.start_off = 76
+            self.info_size = 0
+            return 0
         else:
             self.linkinfo_flag = 'True'
 
@@ -307,7 +312,7 @@ class LnkAnalysis:
             self.locbase_path_uni = []
             for i in self.locbase_path_uni.split('\x00\x00'):
                 self.locbase_path_uni.append(i)
-            print('Localbasepathunicode: ' + self.locbase_path_uni[0])
+            print('Localbasepath Unicode: ' + self.locbase_path_uni[0])
 
         locbasepath_off = self.start_off + 16
         self.file.seek(locbasepath_off)
@@ -331,14 +336,18 @@ class LnkAnalysis:
         b = (b'\x00\x00')
         string_size = string_size + b
         string_size = struct.unpack('<i', string_size)[0]
-        string_off = string_size + string_off + 2
+
         # if you want to read string, use this
-        # relative_path = str(file.read(string_size))
-        # relative_path = relative_path.replace('\x00','').encode('utf-8', 'ignore').decode('utf-8')
+        # relative_path = self.file.read(string_size)
+        # relative_path = relative_path.decode('utf8', 'ignore')
+        # relative_path = relative_path.replace('\x00', '')
+
+        string_off = string_size + string_off + 2
         return string_off
 
-    def __extradata(self):
+    def __string_data(self):
         self.__linkinfo_off()
+        print(self.info_size)
 
         string_off = self.start_off + self.info_size
 
@@ -366,12 +375,11 @@ class LnkAnalysis:
         else:
             self.extra_data = None
 
-
     def netbios(self):
-        self.__extradata()
+        self.__string_data()
 
         if self.extra_data != 'True':
-            print('extra data (X)')
+            print('netbios data (X)')
             return 0
         netbios = self.extra_off + 16
         self.file.seek(netbios)
@@ -382,10 +390,10 @@ class LnkAnalysis:
         return netbios
 
     def machine_id(self):
-        self.__extradata()
+        self.__string_data()
 
         if self.extra_data != 'True':
-            print('extra data (X)')
+            print('machine id (X)')
             return [0, 0]
         droid = self.extra_off + 32
         self.file.seek(droid)
@@ -397,6 +405,8 @@ class LnkAnalysis:
         print('DroidBirth' + str(droidbirth))
 
         return [droid, droidbirth]
+
+################################################################################
 
     def show_all_info(self):
         info_list = []
@@ -416,7 +426,7 @@ class LnkAnalysis:
         info["drive serial number"] = volume[1]
         info["volume lable"] = volume[2]
         localbase = str(self.localbase_path())
-        info["localbasepathunicode"] = localbase[0]
+        info["localbasepath unicode"] = localbase[0]
         info["localbasepath"] = localbase[1]
         info["netbios"] = str(self.netbios())
         machine = str(self.machine_id())

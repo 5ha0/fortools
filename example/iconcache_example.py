@@ -1,7 +1,12 @@
 from fortools import *
 
+<<<<<<< HEAD
 file = Iconcache.file_open(r'path)
 # Or you can use this
+=======
+file = Iconcache.file_open(r'path')
+# Or you ca use this
+>>>>>>> 6498271532e0ea2446fd62debe74b07860689e3e
 # path = 'path'
 # file = file_open(path)
 

@@ -1,16 +1,23 @@
 import pytsk3
 import pyewf
 import json
+import datetime
 
 class E01Analysis:
     def __init__(self, file):
         self.file = file
         self.ret_list = list()
+        self.partition_list = list()
         self.img_info = EWFImgInfo(self.file)
         self.vol = pytsk3.Volume_Info(self.img_info)
 
-    def get_path(self, path):
-        fs = self.open_fs()
+    def get_path(self, path, length):
+        for partition in self.vol:
+            self.partition_list.append(partition.start)
+
+        print("please input argument partition start sector : ", self.partition_list)
+
+        fs = self.open_fs(length)
         f = fs.open_dir(path)
         ret_list = list()
         for i in f:
@@ -57,8 +64,8 @@ class E01Analysis:
             file_w.write(buf)
         print("[+] Success Extract : " + output_name)
 
-    def file_extract(self, filepath, output_name):
-        fs = self.open_fs()
+    def file_extract(self, length, filepath, output_name):
+        fs = self.open_fs(length)
         f = fs.open(filepath)
         for attr in f:
             print(attr.info.type)
@@ -72,10 +79,10 @@ class E01Analysis:
         log_list = self.__mft_log_extract('/$LogFile', '$LogFile')
         UsnJrnl = self.__UsnJrnl_extract('/$Extend/$UsnJrnl')
 
-    def open_fs(self):
+    def open_fs(self, length):
         if self.vol is not None:
             for part in self.vol:
-                if part.len > 204800 and "Unallocated" not in part.desc.decode() \
+                if part.len > length and "Unallocated" not in part.desc.decode() \
                         and "Extended" not in part.desc.decode() \
                         and "Primary Table" not in part.desc.decode():
                     try:
@@ -96,7 +103,11 @@ class E01Analysis:
         hashes  = self.file.get_hash_values()
 
         for head in headers:
-            head_obj[head] = headers[head]
+            if head == "acquiry_date" or head == "system_date":
+                timestamp = datetime.datetime.strptime(headers[head], "%a %b %d %H:%M:%S %Y")
+                head_obj[head] = str(timestamp)
+            else:
+                head_obj[head] = headers[head]
 
         for h in hashes:
             hash_obj[h] = hashes[h]
@@ -191,7 +202,11 @@ class DDAnalysis:
         hashes  = self.file.get_hash_values()
 
         for head in headers:
-            head_obj[head] = headers[head]
+            if head == "acquiry_date" or head == "system_date":
+                timestamp = datetime.datetime.strptime(headers[head], "%a %b %d %H:%M:%S %Y")
+                head_obj[head] = str(timestamp)
+            else:
+                head_obj[head] = headers[head]
 
         for h in hashes:
             hash_obj[h] = hashes[h]
