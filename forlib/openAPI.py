@@ -304,19 +304,57 @@ class Thumbnail_Iconcache:
 
 class Browser:
     class Chrome:
-        def file_open(path):
-            chrome_file = browser_analysis.Chrome(path)
-            return chrome_file
+        class History:
+            def file_open(path):
+                chrome_file = browser_analysis.Chrome.History(path)
+                return chrome_file
+
+        class Download:
+            def file_open(path):
+                chrome_file = browser_analysis.Chrome.Download(path)
+                return chrome_file
+
+        class Cookie:
+            def file_open(path):
+                chrome_file = browser_analysis.Chrome.Cookie(path)
+                return chrome_file
 
     class Firefox:
-        def file_open(path):
-            firefox_file = browser_analysis.Firefox(path)
-            return firefox_file
+        class History:
+            def file_open(path):
+                firefox_file = browser_analysis.Firefox.History(path)
+                return firefox_file
+
+        class Download:
+            def file_open(path):
+                firefox_file = browser_analysis.Firefox.Download(path)
+                return firefox_file
+
+        class Cookie:
+            def file_open(path):
+                firefox_file = browser_analysis.Firefox.Cookie(path)
+                return firefox_file
 
     class Ie_Edge:
-        def file_open(path):
-            ie_edge_file = browser_analysis.Ie_Edge(ie_edge_open(path))
-            return ie_edge_file
+        class Cache:
+            def file_open(path):
+                ie_edge_file = browser_analysis.Ie_Edge.Cache(ie_edge_open(path))
+                return ie_edge_file
+
+        class Cookie:
+            def file_open(path):
+                ie_edge_file = browser_analysis.Ie_Edge.Cookie(ie_edge_open(path))
+                return ie_edge_file
+
+        class History:
+            def file_open(path):
+                ie_edge_file = browser_analysis.Ie_Edge.History(ie_edge_open(path))
+                return ie_edge_file
+
+        class Download:
+            def file_open(path):
+                ie_edge_file = browser_analysis.Ie_Edge.Download(ie_edge_open(path))
+                return ie_edge_file
 
 
 class FileSystemLog:
