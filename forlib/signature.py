@@ -168,7 +168,7 @@ def sig_check(path):
         for i in range(0, sig['len']):
             if sig['hex'][i] != hex(header[sig['offset']+i]):
                 break
-            elif i == sig['len']:
+            elif i == sig['len']-1:
                 if sig['file_extension'] == 'MAM':
                     path = prefetch(path, f)
                     extension = sig_check(path)
