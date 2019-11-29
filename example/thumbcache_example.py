@@ -3,9 +3,9 @@ from fortools import *
 path = r'C:\Users\sjms1\AppData\Local\Microsoft\Windows\Explorer\thumbcache_32.db'
 
 thumbnail = Thumbnail_Iconcache.file_open(path)
-thumbnail.thumb_print()
-#data = thumbnail.get_data(path)
-#thumbnail.dimension(32, 18)
+#thumbnail.thumb_print()
+data = thumbnail.get_data(path)
+thumbnail.dimension(32, 18)
 
 
 
