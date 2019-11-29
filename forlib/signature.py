@@ -3,7 +3,7 @@ import os
 
 signatures = [{
      'file_extension': 'Zip archive data',
-     'hex': ['0x50', '0x4b', '0x03', '0x04'],
+     'hex': ['0x50', '0x4b', '0x3', '0x4'],
      'len': 4,
      'offset': 0},
     {
@@ -140,7 +140,7 @@ signatures = [{
         'offset': 0},
     {
         'file_extension': 'docx file',
-        'hex': ['0x50', '0x4B', '0x03', '0x04'],
+        'hex': ['0x50', '0x4B', '0x3', '0x4'],
         'len': 4,
         'offset': 0},
     {
@@ -150,12 +150,12 @@ signatures = [{
         'offset': 0},
     {
         'file_extension': 'doc file',
-        'hex': ['0xDB', '0xA5', '0x2D', '0x00'],
+        'hex': ['0xDB', '0xA5', '0x2D', '0x0'],
         'len': 4,
         'offset': 0},
     {
         'file_extension': 'docx file',
-        'hex': ['0x50', '0x4B', '0x03', '0x04', '0x14', '0x00', '0x06', '0x00'],
+        'hex': ['0x50', '0x4B', '0x3', '0x4', '0x14', '0x0', '0x6', '0x0'],
         'len': 8,
         'offset': 0}
 ]
