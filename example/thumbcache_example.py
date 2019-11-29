@@ -1,15 +1,12 @@
 from fortools import *
 
 path = r'C:\Users\sjms1\AppData\Local\Microsoft\Windows\Explorer\thumbcache_32.db'
-#path = r'C:\Users\sjms1\Desktop\thumbcache_256.db'
-#path = r'D:\fortools_test_file\thumbcache_256.db'
 
 thumbnail = Thumbnail_Iconcache.file_open(path)
+#thumbnail.thumb_print()
+data = thumbnail.get_data(path)
+thumbnail.dimension(32, 18)
 
-#data = thumbnail.get_data(path)
-for i in thumbnail.dimension(1):
-     print(i)
-#thumbnail.thumb_print(data)
 
 
 

@@ -34,7 +34,6 @@ def sig_check(path):
     extension = magic.from_file(path).split(',')[0]
     if extension[:11] == 'cannot open' or extension == 'data':
         extension = sig.sig_check(path)
-        print('extension: ' + extension)
     return extension
 
 
@@ -43,7 +42,7 @@ def file_open(path):
     if extension == 'MS Windows Vista Event Log':
         return EventLog.file_open(path)
     elif extension == 'JPEG image data':
-        return Files.JPEG.file_oepn(path)
+        return Files.JPEG.file_open(path)
     elif extension == 'MS Windows registry file':
         file = reg_open(path)
         if Registry.HiveType.NTUSER == file.hive_type():
@@ -91,6 +90,8 @@ def file_open(path):
         return Recycle.file_open(path)
     elif extension == 'prefetch':
         return Prefetch.file_open(path)
+    else:
+        print('Non sig. Plz check file extension.')
 
 class Disk:
     def disk_open(path):
@@ -114,6 +115,7 @@ class Mem:
 class EventLog:
     def file_open(path):
         extension = sig_check(path)
+        print('extension: ' + extension)
         if extension == 'MS Windows Vista Event Log':
             hash_v = calc_hash.get_hash(path)
             file = event_open(path)
@@ -167,32 +169,53 @@ class Files:
 
     class HWP:
         def file_open(path):
-            hash_v = calc_hash.get_hash(path)
-            file = file_open(path)
-            return files_analysis.HWPAnalysis(file, path, hash_v)
+            extension = sig_check(path)
+            print('extension: ' + extension)
+            if extension == 'Hangul (Korean) Word Processor File 5.x':
+                hash_v = calc_hash.get_hash(path)
+                file = file_open(path)
+                return files_analysis.HWPAnalysis(file, path, hash_v)
+            print("check your file format. This is not HWP file.")
+            return -1
 
     class JPEG:
         def file_open(path):
-            hash_v = calc_hash.get_hash(path)
-            file = file_open(path)
-            return files_analysis.JPEGAnalysis(file, path, hash_v)
+            extension = sig_check(path)
+            print('extension: ' + extension)
+            if extension == 'JPEG image data':
+                hash_v = calc_hash.get_hash(path)
+                file = jpeg_open(path)
+                return files_analysis.JPEGAnalysis(file, path, hash_v)
+            print("check your file format. This is not JPEG file.")
+            return -1
 
     class PDF:
         def file_open(path):
-            hash_v = calc_hash.get_hash(path)
-            file = file_open(path)
-            return files_analysis.PDFAnalysis(file, path, hash_v)
+            extension = sig_check(path)
+            print('extension: ' + extension)
+            if extension == 'PDF document':
+                hash_v = calc_hash.get_hash(path)
+                file = file_open(path)
+                return files_analysis.PDFAnalysis(file, path, hash_v)
+            print("check your file format. This is not PDF file.")
+            return -1
 
     class ZIP:
         def file_open(path):
-            calc_hash.get_hash(path)
-            file = zip_open(path)
-            return files_analysis.ZIPAnalysis(file)
+            extension = sig_check(path)
+            print('extension: ' + str(extension))
+            if extension == 'Zip archive data':
+                calc_hash.get_hash(path)
+                file = zip_open(path)
+                return files_analysis.ZIPAnalysis(file)
+            print("check your file format. This is not ZIP file.")
+            return -1
 
 
 class Lnk:
     def file_open(path):
         extension = sig_check(path)
+        print('extension: ' + extension)
         if extension == 'MS Windows shortcut':
             calc_hash.get_hash(path)
             file = lnk_open(path)
@@ -255,6 +278,7 @@ class RegistryHive:
 class JumpList:
     def file_open(path):
         extension = sig_check(path)
+        print('extension: ' + extension)
         if extension == 'Composite Document File V2 Document':
             hash_v = calc_hash.get_hash(path)
             file = ole_open(path)
@@ -280,19 +304,57 @@ class Thumbnail_Iconcache:
 
 class Browser:
     class Chrome:
-        def file_open(path):
-            chrome_file = browser_analysis.Chrome(path)
-            return chrome_file
+        class History:
+            def file_open(path):
+                chrome_file = browser_analysis.Chrome.History(path)
+                return chrome_file
+
+        class Download:
+            def file_open(path):
+                chrome_file = browser_analysis.Chrome.Download(path)
+                return chrome_file
+
+        class Cookie:
+            def file_open(path):
+                chrome_file = browser_analysis.Chrome.Cookie(path)
+                return chrome_file
 
     class Firefox:
-        def file_open(path):
-            firefox_file = browser_analysis.Firefox(path)
-            return firefox_file
+        class History:
+            def file_open(path):
+                firefox_file = browser_analysis.Firefox.History(path)
+                return firefox_file
+
+        class Download:
+            def file_open(path):
+                firefox_file = browser_analysis.Firefox.Download(path)
+                return firefox_file
+
+        class Cookie:
+            def file_open(path):
+                firefox_file = browser_analysis.Firefox.Cookie(path)
+                return firefox_file
 
     class Ie_Edge:
-        def file_open(path):
-            ie_edge_file = browser_analysis.Ie_Edge(ie_edge_open(path))
-            return ie_edge_file
+        class Cache:
+            def file_open(path):
+                ie_edge_file = browser_analysis.Ie_Edge.Cache(ie_edge_open(path))
+                return ie_edge_file
+
+        class Cookie:
+            def file_open(path):
+                ie_edge_file = browser_analysis.Ie_Edge.Cookie(ie_edge_open(path))
+                return ie_edge_file
+
+        class History:
+            def file_open(path):
+                ie_edge_file = browser_analysis.Ie_Edge.History(ie_edge_open(path))
+                return ie_edge_file
+
+        class Download:
+            def file_open(path):
+                ie_edge_file = browser_analysis.Ie_Edge.Download(ie_edge_open(path))
+                return ie_edge_file
 
 
 class FileSystemLog:
@@ -325,10 +387,6 @@ def jpeg_open(path):
     return Image.open(path)
 
 
-def systemp_open(path):
-    return [f for f in listdir(path)]
-
-
 def binary_open(path):
     return open(path, 'rb')
 
@@ -338,21 +396,11 @@ def normal_file_oepn(path):
 
 
 def chrome_open(path):
-    open_chrome_file = open(path, "rb")
-    file_format = open_chrome_file.read(15).decode()
-    if file_format == "SQLite format 3":
-        return path
-    else:
-        return open_chrome_file
+    return path
 
 
 def firefox_open(path):
-    open_firefox_file = open(path, "rb")
-    file_format = open_firefox_file.read(15).decode()
-    if file_format == "SQLite format 3":
-        return path
-    else:
-        return open_firefox_file
+    return path
 
 
 def ie_edge_open(path):

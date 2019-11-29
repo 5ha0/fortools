@@ -1,11 +1,11 @@
 from forlib import decompress1
 import os
 
-signatures = [#{
-    # 'file_extension': 'Zip archive data',
-    # 'hex': ['0x50', '0x4b', '0x3', '0x4'],
-    # 'len': 4,
-    # 'offset': 0},
+signatures = [{
+     'file_extension': 'Zip archive data',
+     'hex': ['0x50', '0x4b', '0x03', '0x04'],
+     'len': 4,
+     'offset': 0},
     {
     'file_extension': 'JPEG image data',
     'hex': ['0xff', '0xd8', '0xff', '0xe0'],
@@ -168,14 +168,14 @@ def sig_check(path):
         for i in range(0, sig['len']):
             if sig['hex'][i] != hex(header[sig['offset']+i]):
                 break
-                
-            if sig['file_extension'] == 'MAM':
-                path = prefetch(path, f)
-                extension = sig_check(path)
-                return extension
+            elif i == sig['len']-1:
+                if sig['file_extension'] == 'MAM':
+                    path = prefetch(path, f)
+                    extension = sig_check(path)
+                    return extension
 
-            return sig['file_extension']
-    return 'non_sig'
+                return sig['file_extension']
+    return -1
 
 
 def prefetch(path, f):

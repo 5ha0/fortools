@@ -212,16 +212,11 @@ class Thumbnail_analysis_windows:   # windows version check
             return None
 
 
-    def thumb_print(self, info_list):
-        total_size = len(info_list)
-        for i in range(0, total_size):
-            print(info_list[i])
-
-    # def dimension(self, width):
-    #     print("Check your input ""height"" arguments")
+    def thumb_print(self):
+        for i in self.thumb_list:
+            print(i)
 
     def dimension(self, width, height):
-
         for i in range(0, len(self.thumb_list)):
             if self.thumb_list[i]['dimension'].split('x')[0] != str(width) or self.thumb_list[i]['dimension'].split('x')[1] != str(height):
                 print("Dimension " + str(width) + "x" + str(height) + " file is not found")
