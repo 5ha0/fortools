@@ -40,7 +40,7 @@ class EventAnalysis:
                 time_cnt[date] = time_cnt[date] + 1
             else:
                 time_cnt[date] = 1
-            log_obj["TimeZone"] = 'UTC'
+            log_obj["TimeZone"] = 'UTC+0'
             log_obj["level"] = self.evtx_file.records[i].get_event_level()
             log_obj["source"] = self.evtx_file.records[i].get_source_name()
             log_obj["computer Info"] = self.evtx_file.records[i].get_computer_name()
