@@ -2,17 +2,19 @@ from datetime import datetime, timedelta
 import os
 import struct
 import json
+import forlib.calc_hash as calc_hash
 
 
 class PrefetchAnalysis:
 
-    def __init__(self, file, path):
+    def __init__(self, file, path, hash_v):
         self.file = file
         self.path = path
+        self.__hash_value = [hash_v]
         self.file.seek(0)
         self.file_version = struct.unpack_from('<I', self.file.read(4))[0]
 
-    def convert_time(self, time):
+    def __convert_time(self, time):
         time = '%016x' % time
         time = int(time, 16) / 10.
         time = datetime(1601, 1, 1) + timedelta(microseconds=time) + timedelta(hours=9)
@@ -24,7 +26,7 @@ class PrefetchAnalysis:
         executable_file_name = self.file.read(58)
         executable_file_name = executable_file_name.decode('utf16', 'ignore')
         executable_file_name = executable_file_name.replace('\x00', '')
-        pf_obj = {"Executable File Name: ": str(executable_file_name)}
+        pf_obj = {"Executable File Name": str(executable_file_name)}
         json.dumps(pf_obj)
         json_list.append(pf_obj)
 
@@ -64,7 +66,7 @@ class PrefetchAnalysis:
         volume_device_path_length = struct.unpack_from('<I', self.file.read(4))[0]
         volume_device_path_length = volume_device_path_length * 2
         volume_creation_time = struct.unpack_from("<Q", self.file.read(8))[0]
-        volume_creation_time = self.convert_time(volume_creation_time)
+        volume_creation_time = self.__convert_time(volume_creation_time)
         volume_serial_num = struct.unpack_from('<I', self.file.read(4))[0]
 
         self.file.seek(volume_device_path_off)
@@ -72,7 +74,7 @@ class PrefetchAnalysis:
         volume_device_path = volume_device_path.decode('utf16', 'ignore')
         volume_device_path = volume_device_path.replace('\x00', '')
 
-        pf_obj = {"Num Metadata Records: ": str(num_metadata_record),
+        pf_obj = {"Num Metadata Records": str(num_metadata_record),
                   "Volume Device Path": str(volume_device_path),
                   "Volume Creation Time": str(volume_creation_time),
                   "TimeZone": 'UTC +9',
@@ -93,8 +95,8 @@ class PrefetchAnalysis:
 
         for i in range(0, end):
             last_launch_time = struct.unpack_from("<Q", self.file.read(8))[0]
-            last_launch_time = self.convert_time(last_launch_time)
-            pf_obj = {"File Last Launch Time: ": str(last_launch_time),
+            last_launch_time = self.__convert_time(last_launch_time)
+            pf_obj = {"File Last Launch Time": str(last_launch_time),
                       "TimeZone": 'UTC +9'}
             json.dumps(pf_obj)
             json_list.append(pf_obj)
@@ -104,7 +106,7 @@ class PrefetchAnalysis:
     def create_time(self):
         json_list = []
         c_time = datetime.fromtimestamp(os.path.getctime(self.path))
-        pf_obj = {"File Create Time: ": str(c_time),
+        pf_obj = {"File Create Time": str(c_time),
                   "TimeZone": 'UTC +9'}
         json.dumps(pf_obj)
         json_list.append(pf_obj)
@@ -114,7 +116,7 @@ class PrefetchAnalysis:
     def write_time(self):
         json_list = []
         w_time = datetime.fromtimestamp(os.path.getmtime(self.path))
-        pf_obj = {"File Write Time: ": str(w_time),
+        pf_obj = {"File Write Time": str(w_time),
                   "TimeZone": 'UTC +9'}
         json.dumps(pf_obj)
         json_list.append(pf_obj)
@@ -129,39 +131,79 @@ class PrefetchAnalysis:
             self.file.seek(208)
 
         num_launch = struct.unpack_from('<I', self.file.read(4))[0]
-        pf_obj = {"File Run Count: ": str(num_launch)}
+        pf_obj = {"File Run Count": str(num_launch)}
         json.dumps(pf_obj)
         json_list.append(pf_obj)
 
         return json_list
 
-    def get_all_info(self):
-        info_list = []
-        info = dict()
-        info["executable file name"] = str(self.file_name())
-        info["last launch time"] = str(self.last_launch_time())
-        info["create time"] = str(self.create_time())
-        info["write time"] = str(self.write_time())
-        info["num launch"] = str(self.num_launch())
-        info["file list"] = str(self.file_list())
-        info["metadata info"] = str(self.metadata_info())
-
-        info_list.append(info)
-
-        return info_list
+    # calculate hash value after parsing
+    def cal_hash(self):
+        self.__hash_value.append(calc_hash.get_hash(self.path))
 
     def show_all_info(self):
         info_list = []
         info = dict()
-        info["executable file name"] = str(self.file_name())
-        info["last launch time"] = str(self.last_launch_time())
-        info["create time"] = str(self.create_time())
-        info["write time"] = str(self.write_time())
-        info["num launch"] = str(self.num_launch())
-        info["file list"] = str(self.file_list())
-        info["metadata info"] = str(self.metadata_info())
+        info["Executable File Name"] = self.file_name()[0]['Executable File Name']
+        file_list = self.file_list()
+        for i in range(0, len(file_list)):
+            info["Ref_file" + str(i)] = file_list[i]["Ref_file"]
+        info["Volume Device Path"] = self.metadata_info()[0]["Num Metadata Records"]
+        info["Volume Creation Time"] = self.metadata_info()[0]["Volume Creation Time"]
+        info["TimeZone"] = self.metadata_info()[0]["TimeZone"]
+        info["Volume Serial Num"] = self.metadata_info()[0]["Volume Serial Num"]
+        if self.file_version == 23:
+            info["File Last Launch Time"] = self.last_launch_time()[0]["File Last Launch Time"]
+            info["TimeZone"] = self.last_launch_time()[0]["TimeZone"]
+        else:
+            for i in range(0, 8):
+                info["File Last Launch Time"+str(i)] = self.last_launch_time()[i]["File Last Launch Time"]
+                info["TimeZone"+str(i)] = self.last_launch_time()[i]["TimeZone"]
+        info["File Create Time"] = self.create_time()[0]["File Create Time"]
+        info["TimeZone"] = self.last_launch_time()[0]["TimeZone"]
+        info["File Write Time"] = self.write_time()[0]["File Write Time"]
+        info["TimeZone"] = self.last_launch_time()[0]["TimeZone"]
+        info["File Run Count"] = self.num_launch()[0]["File Run Count"]
+        self.cal_hash()
+        info['before_sha1'] = self.__hash_value[0]['sha1']
+        info['before_md5'] = self.__hash_value[0]['md5']
+        info['after_sha1'] = self.__hash_value[1]['sha1']
+        info['after_md5'] = self.__hash_value[1]['md5']
 
         print(info)
+        info_list.append(info)
+
+        return info_list
+
+    def get_all_info(self):
+        info_list = []
+        info = dict()
+        info["Executable File Name"] = self.file_name()[0]['Executable File Name']
+        file_list = self.file_list()
+        for i in range(0, len(file_list)):
+            info["Ref_file" + str(i)] = file_list[i]["Ref_file"]
+        info["Volume Device Path"] = self.metadata_info()[0]["Num Metadata Records"]
+        info["Volume Creation Time"] = self.metadata_info()[0]["Volume Creation Time"]
+        info["TimeZone"] = self.metadata_info()[0]["TimeZone"]
+        info["Volume Serial Num"] = self.metadata_info()[0]["Volume Serial Num"]
+        if self.file_version == 23:
+            info["File Last Launch Time"] = self.last_launch_time()[0]["File Last Launch Time"]
+            info["TimeZone"] = self.last_launch_time()[0]["TimeZone"]
+        else:
+            for i in range(0, 8):
+                info["File Last Launch Time" + str(i)] = self.last_launch_time()[i]["File Last Launch Time"]
+                info["TimeZone" + str(i)] = self.last_launch_time()[i]["TimeZone"]
+        info["File Create Time"] = self.create_time()[0]["File Create Time"]
+        info["TimeZone"] = self.last_launch_time()[0]["TimeZone"]
+        info["File Write Time"] = self.write_time()[0]["File Write Time"]
+        info["TimeZone"] = self.last_launch_time()[0]["TimeZone"]
+        info["File Run Count"] = self.num_launch()[0]["File Run Count"]
+        self.cal_hash()
+        info['before_sha1'] = self.__hash_value[0]['sha1']
+        info['before_md5'] = self.__hash_value[0]['md5']
+        info['after_sha1'] = self.__hash_value[1]['sha1']
+        info['after_md5'] = self.__hash_value[1]['md5']
+
         info_list.append(info)
 
         return info_list

@@ -5,11 +5,14 @@ import os
 from datetime import datetime
 from datetime import timedelta
 import json
+import forlib.calc_hash as calc_hash
+
 
 class RecycleAnalysis:
-    def __init__(self, file, path):
+    def __init__(self, file, path, hash_v):
         self.file = file
         self.path = path
+        self.__hash_value = [hash_v]
 
     def __i_name(self):
         json_list = []
@@ -48,7 +51,8 @@ class RecycleAnalysis:
         filedatetime = '%016x' %filedatetime
         filedatetime = int(filedatetime,16)/10.
         filedatetime = datetime(1601, 1, 1) + timedelta(microseconds=filedatetime)+timedelta(hours=9)
-        rc_obj = {"File Deleted Time": str(filedatetime)}
+        rc_obj = {"File Deleted Time": str(filedatetime),
+                  "Time Zone": 'UTC +9'}
         json.dumps(rc_obj)
         json_list.append(rc_obj)
 
@@ -65,31 +69,47 @@ class RecycleAnalysis:
 
         return json_list
 
+    # calculate hash value after parsing
+    def __cal_hash(self):
+        self.__hash_value.append(calc_hash.get_hash(self.path))
+
     def show_all_info(self):
         info_list = []
-        info = dict()
-        info["$I Name"] = str(self.__i_name())
-        info["File Header"] = str(self.__header())
-        info["Original File Size"] = str(self.__size())
-        info["File Deleted Time"] = str(self.__time())
-        info["Time Zone"] = 'UTC +09:00'
-        info["Original File Path"] = str(self.__original_path())
+        temp = dict()
 
-        info_list.append(info)
-        print(info)
+        temp['$I Name'] = self.__i_name()[0]['$I Name']
+        temp['File Header'] = self.__header()[0]['File Header']
+        temp['Original File Size'] = self.__size()[0]['Original File Size']
+        temp['File Deleted Time'] = self.__time()[0]['File Deleted Time']
+        temp['Time Zone'] = self.__time()[0]['Time Zone']
+        temp['Original File Path'] = self.__original_path()[0]['Original File Path']
+        self.__cal_hash()
+        temp['before_sha1'] = self.__hash_value[0]['sha1']
+        temp['before_md5'] = self.__hash_value[0]['md5']
+        temp['after_sha1'] = self.__hash_value[1]['sha1']
+        temp['after_md5'] = self.__hash_value[1]['md5']
+
+        print(temp)
+        info_list.append(temp)
 
         return info_list
 
     def get_all_info(self):
         info_list = []
-        info = dict()
-        info["$I Name"] = str(self.__i_name())
-        info["File Header"] = str(self.__header())
-        info["Original File Size"] = str(self.__size())
-        info["File Deleted Time"] = str(self.__time())
-        info["Time Zone"] = 'UTC +09:00'
-        info["Original File Path"] = str(self.__original_path())
+        temp = dict()
 
-        info_list.append(info)
+        temp['$I Name'] = self.__i_name()[0]['$I Name']
+        temp['File Header'] = self.__header()[0]['File Header']
+        temp['Original File Size'] = self.__size()[0]['Original File Size']
+        temp['File Deleted Time'] = self.__time()[0]['File Deleted Time']
+        temp['Time Zone'] = self.__time()[0]['Time Zone']
+        temp['Original File Path'] = self.__original_path()[0]['Original File Path']
+        self.__cal_hash()
+        temp['before_sha1'] = self.__hash_value[0]['sha1']
+        temp['before_md5'] = self.__hash_value[0]['md5']
+        temp['after_sha1'] = self.__hash_value[1]['sha1']
+        temp['after_md5'] = self.__hash_value[1]['md5']
+
+        info_list.append(temp)
 
         return info_list

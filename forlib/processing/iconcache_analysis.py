@@ -1,18 +1,23 @@
 import struct
 import json
 import binascii
-import os
-from datetime import datetime
-from forlib.processing.filter import *
+import forlib.calc_hash as calc_hash
+
 
 class IconcacheAnalysis:
-    def __init__(self, file):
+    def __init__(self, file, path, hash_v):
         self.file = file
+        self.path = path
         self.size = None
         self.signature = None
         self.path_num = None
-        self.time = 1
-        self.info_list = self.show_all_info()
+        #Section 1 Use to see if it is used
+        self.check_one = False
+        #Save the last position of section 1
+        self.tell_one = None
+        self.check_two = False
+        self.tell_two = None
+        self.__hash_value = [hash_v]
         self.drive_exe_list = None
         self.hard_disk_delete = ["Disk Wipe", 'Drive Wipe', 'DBAN', 'CBL Data Shredder', 'MHDD', 'PCDiskEraser', 'KillDisk', 'Format Command With Write Zero Option', 'Macrorit Data Wiper', 'Eraser', 'WipeDisk', 'MiniTool Partition Wizard', 'KillDisk', 'CCleaner', 'PCDiskEraser', 'Super File Shredder']
 
@@ -29,7 +34,8 @@ class IconcacheAnalysis:
             json.dumps(icon_obj)
             json_list.append(icon_obj)
         else:
-            return print('not supported version')
+            print('not supported version')
+            return -1
 
         return json_list
 
@@ -43,7 +49,7 @@ class IconcacheAnalysis:
         # section one path information num
         self.file.seek(self.size)
         self.path_num = struct.unpack_from('<i', self.file.read(4))[0]
-        icon_obj = {"section one path num: ": self.path_num}
+        icon_obj = {"section one path num": self.path_num}
         json.dumps(icon_obj)
         json_list.append(icon_obj)
 
@@ -78,15 +84,23 @@ class IconcacheAnalysis:
             json.dumps(icon_obj)
             json_list.append(icon_obj)
 
+        self.check_one = True
+        self.tell_one = self.file.tell()
+
         return json_list
 
 
     def __section_two(self):
         json_list = []
 
+        if self.check_one == False:
+            print('Section 1 must be turned first.')
+            return -1
+
         # section two path information num
+        self.file.seek(self.tell_one)
         self.path_num = struct.unpack_from('<i', self.file.read(4))[0]
-        icon_obj = {"section two path num: ": self.path_num}
+        icon_obj = {"section two path num": self.path_num}
         json.dumps(icon_obj)
         json_list.append(icon_obj)
 
@@ -114,14 +128,22 @@ class IconcacheAnalysis:
             json.dumps(icon_obj)
             json_list.append(icon_obj)
 
+        self.check_two = True
+        self.tell_two = self.file.tell()
+
         return json_list
 
     def __section_three(self):
         json_list = []
 
+        if self.check_two == False:
+            print('Section 2 must be turned first.')
+            return -1
+
         # section three path information num
+        self.file.seek(self.tell_two)
         self.path_num = struct.unpack_from('<i', self.file.read(4))[0]
-        icon_obj = {"section three path num: ": self.path_num}
+        icon_obj = {"section three path num": self.path_num}
         json.dumps(icon_obj)
         json_list.append(icon_obj)
 
@@ -150,30 +172,72 @@ class IconcacheAnalysis:
 
         return json_list
 
+        # calculate hash value after parsing
+    def __cal_hash(self):
+        self.__hash_value.append(calc_hash.get_hash(self.path))
+
     def show_all_info(self):
-        self.info_list = []
         info = dict()
-        info["file version"] = str(self.__file_version())
-        info["path information_section one"] = str(self.__section_one())
-        info["path information_section two"] = str(self.__section_two())
-        info["path information_section three"] = str(self.__section_three())
+        info_list = []
+
+        info["file version"] = self.__file_version()[0]["File Version"]
+        section_one = self.__section_one()
+        info["section one path num"] = section_one[0]["section one path num"]
+        for i in range(1, len(section_one)):
+            info["Path" + str(i)] = section_one[i]['Path']
+            info["Icon image location"+str(i)] = section_one[i]['Icon image location']
+        info["path information_section two"] = self.__section_two()
+        section_two = self.__section_two()
+        info["section two path num"] = section_two[0]["section two path num"]
+        for i in range(1, len(section_two)):
+            info["Path" + str(i)] = section_two[i]['Path']
+            info["Icon image location" + str(i)] = section_two[i]['Icon image location']
+        section_three = self.__section_three()
+        info["section three path num"] = section_three[0]["section three path num"]
+        for i in range(1, len(section_three)):
+            info["Path" + str(i)] = section_three[i]['Path']
+            info["Icon image location" + str(i)] = section_three[i]['Icon image location']
+        self.__cal_hash()
+        info['before_sha1'] = self.__hash_value[0]['sha1']
+        info['before_md5'] = self.__hash_value[0]['md5']
+        info['after_sha1'] = self.__hash_value[1]['sha1']
+        info['after_md5'] = self.__hash_value[1]['md5']
 
         print(info)
-        self.info_list.append(info)
+        info_list.append(info)
 
-        return self.info_list
+        return info_list
 
     def get_all_info(self):
-        self.info_list = []
         info = dict()
-        info["file version"] = str(self.__file_version())
-        info["path information_section one"] = str(self.__section_one())
-        info["path information_section two"] = str(self.__section_two())
-        info["path information_section three"] = str(self.__section_three())
+        info_list = []
 
-        self.info_list.append(info)
+        info["file version"] = self.__file_version()[0]["File Version"]
+        section_one = self.__section_one()
+        info["section one path num"] = section_one[0]["section one path num"]
+        for i in range(1, len(section_one)):
+            info["Path" + str(i)] = section_one[i]['Path']
+            info["Icon image location" + str(i)] = section_one[i]['Icon image location']
+        info["path information_section two"] = self.__section_two()
+        section_two = self.__section_two()
+        info["section two path num"] = section_two[0]["section two path num"]
+        for i in range(1, len(section_two)):
+            info["Path" + str(i)] = section_two[i]['Path']
+            info["Icon image location" + str(i)] = section_two[i]['Icon image location']
+        section_three = self.__section_three()
+        info["section three path num"] = section_three[0]["section three path num"]
+        for i in range(1, len(section_three)):
+            info["Path" + str(i)] = section_three[i]['Path']
+            info["Icon image location" + str(i)] = section_three[i]['Icon image location']
+        self.__cal_hash()
+        info['before_sha1'] = self.__hash_value[0]['sha1']
+        info['before_md5'] = self.__hash_value[0]['md5']
+        info['after_sha1'] = self.__hash_value[1]['sha1']
+        info['after_md5'] = self.__hash_value[1]['md5']
 
-        return self.info_list
+        info_list.append(info)
+
+        return info_list
 
     # Use when you only want to see files with certain extensions.
     def extension_filter(self, extension):
