@@ -26,7 +26,8 @@ class NTAnalysis:
                                 "find_keyword" : find_val,
                                 "key" : key.path()
                             }
-                            print(json.dumps(reg_key_obj))
+                            self.ret_list.append(reg_key_obj)
+        return self.ret_list
 
     def find_key(self, keyword):
         self.__rec(self.reg.root(), self.__get_path, keyword)
@@ -236,8 +237,8 @@ class SYSAnalysis:
                                 "find_keyword" : find_val,
                                 "key" : key.path()
                             }
-                            ret_list.append(reg_obj)
-        return ret_list
+                            self.ret_list.append(reg_key_obj)
+        return self.ret_list
 
     def find_key(self, keyword):
         self.__rec(self.reg.root(), self.__get_path, keyword)
@@ -354,7 +355,27 @@ class SWAnalysis:
         for v in key.values():
             if v.name() == "Current":
                 return v.value()
-       
+            
+    def __rec(self, key, get_path, find_val):
+#        get_path(key, find_val)
+        for subkey in key.subkeys():
+            self.__rec(subkey, get_path, find_val)
+        path = get_path(key,find_val)
+
+    def __get_path(self, key, find_val):
+        for value in [v.value() for v in key.values()
+                        if v.value_type() == Registry.RegSZ
+                        or v.value_type() == Registry.RegExpandSZ]:
+                        if find_val in value:
+                            reg_key_obj = {
+                                "find_keyword" : find_val,
+                                "key" : key.path()
+                            }
+                            self.ret_list.append(reg_key_obj)
+        return self.ret_list
+
+    def find_key(self, keyword):
+        self.__rec(self.reg.root(), self.__get_path, keyword)    
     def get_info(self):
         ret_list = []
         os_info = self.reg.open("Microsoft\\Windows NT\\CurrentVersion")
@@ -411,7 +432,27 @@ class SAMAnalysis:
     def __init__(self, file):
         self.reg = file
         self.ret_list = list()
+        
+    def __rec(self, key, get_path, find_val):
+#        get_path(key, find_val)
+        for subkey in key.subkeys():
+            self.__rec(subkey, get_path, find_val)
+        path = get_path(key,find_val)
 
+    def __get_path(self, key, find_val):
+        for value in [v.value() for v in key.values()
+                        if v.value_type() == Registry.RegSZ
+                        or v.value_type() == Registry.RegExpandSZ]:
+                        if find_val in value:
+                            reg_key_obj = {
+                                "find_keyword" : find_val,
+                                "key" : key.path()
+                            }
+                            self.ret_list.append(reg_key_obj)
+        return self.ret_list
+
+    def find_key(self, keyword):
+        self.__rec(self.reg.root(), self.__get_path, keyword)
     def __bin_to_int(self, info):
         bin_to_little_endian = bytes.decode(binascii.hexlify(info[0:][::-1]))
         int_info = int(bin_to_little_endian, 16)

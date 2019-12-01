@@ -1,46 +1,54 @@
-from fortools import RegistryHive
+from fortools import *
 
-# # SYSTEM File Analysis
-# reg_file = RegistryHive.file_open("C:\\Users\\liber\\Desktop\\reg\\SYSTEM")
-#
-# # network inforamtion
-# net_info = reg_file.get_network_info()
-#
-# for i in range(len(net_info)):
-#     print(net_info[i])
+reg_file = RegistryHive.file_open(r"..\dataset\cfreds_reg\NTUSER.DAT")
 
-# #SAM File Analysis
-# reg_file2 = RegistryHive.file_open("C:\\Users\\liber\\Desktop\\reg\\SAM")
-#
-# #etwork inforamtion
-# user_info = reg_file2.user_info()
-#
-# for i in range(len(user_info)):
-#     print(user_info[i])
-#
-## NTUSER.DAT Analysis
-reg_file3 = RegistryHive.file_open("C:\\Users\\sjms1\\Desktop\\fortools\\dataset\\Users\\forensic\\NTUSER.DAT")
+# ##################### NTUSER.DAT ###########################
+# # 1. Find the key information you want
+# info = reg_file.find_key("Microsoft")
+# 2. Bring up a list of recently run documents.
+info = reg_file.get_recent_docs()
+# # 3. Check the MRU cache information.
+# info = reg_file.get_recent_MRU()
+# # 4. Check the MS document and outlook information you ran.
+# info = reg_file.get_ms_office()
+# # 5. Get information such as the number of times and time of recently executed files.
+# info = reg_file.get_userassist()
 
-#ms office information
-ms_office = reg_file3.get_recent_docs()
+# reg_file = RegistryHive.file_open(r"..\dataset\cfreds_reg\SYSTEM")
 
-for i in range(len(ms_office)):
-    print(ms_office[i])
+# ##################### SYSTEM ###########################
+# # 1. Find the key information you want
+# info = reg_file.find_key("Microsoft")
+# # 2. Get computer basic information.
+# info = reg_file.get_computer_info()
+# # 3. Get the USB trace and show it.
+# info = reg_file.get_USB()
+# # 4. Get the set time zone value.
+# info = reg_file.get_timezone()
+# # 5. Recall network basic information.
+# info = reg_file.get_network_info()
 
-#user assist information
-# user_assist = reg_file3.get_userassist()
-#
-# for i in range(len(user_assist)):
-#     print(user_assist[i])
-# recent docs print
-# re_docs = reg_file3.get_recent_docs()
-# for i in range(len(re_docs)):
-#     print(re_docs[i])
-#SOFTWARE File Analysis
-# reg_file4 = RegistryHive.file_open("C:\\Users\\liber\\Desktop\\reg\\SOFTWARE")
-#
-# #os information
-# os_info = reg_file4.get_info()
-#
-# for i in range(len(os_info)):
-#     print(os_info[i])
+# reg_file = RegistryHive.file_open(r"..\dataset\cfreds_reg\SOFTWARE")
+
+# ##################### SOFTWARE ###########################
+# # 1. Find the key information you want
+# info = reg_file.find_key("Microsoft")
+# # 2. Get basic information of computer OS.
+# info = reg_file.get_info()
+# # 3. Get network card information.
+# info = reg_file.get_network_info()
+
+# reg_file = RegistryHive.file_open(r"..\dataset\cfreds_reg\SAM")
+
+# ##################### SAM ###########################
+# # 1. Find the key information you want
+# info = reg_file.find_key("Microsoft")
+# # 2. Get the information of the last logged in user.
+# info = reg_file.last_login()
+# # 3. Get user basic information.
+# info = reg_file.user_info()
+# # 4. Get user details.
+# info = reg_file.user_info()
+
+for i in range(len(info)):
+    print(info[i])
