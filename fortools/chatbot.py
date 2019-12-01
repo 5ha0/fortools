@@ -6,7 +6,8 @@ class Chatbot():
         print('input your artifact path')
         path = input()
 
-        print('what is your atrifact? 1.event log 2.JumpList 3.FileSystem Log 4.registry ')
+        print('what is your atrifact? 1.event log 2.JumpList 3.FileSystem Log 4.Registry 5.Thumbnail\n'
+              '6.Zip 7.Files 9.Recycle 100.IconCache 100.Lnk ')
         answer = int(input())
 
         if answer == 1:
@@ -122,6 +123,7 @@ class Chatbot():
                 elif analysis == 3:
                     file.write('print("netbios: "+ str(jumplist.netbios()))\n')
                 elif analysis == 4:
+                    print('You can get info of jumplist.\n[creation time, access time, ]')
                     file.write('jump_info = jumplist.get_info()\nfor i in jump_info:\n\tprint(i)\n')
                 elif analysis == 5:
                     file.write('jump_hash = jumplist.get_hash()\nfor i in jump_hash:\n\tprint(i)\n')
@@ -137,4 +139,133 @@ class Chatbot():
                     file.write('file_syslog_info = jfilesys_log.get_info()\nfor i in file_syslog_info:\n\tprint(i)\n')
                 elif analysis == 5:
                     file.write('file_syslog_hash = filesys_log.get_hash()\nfor i in file_syslog_hash:\n\tprint(i)\n')
+        elif answer == 4:
+            file.write("registry = Registry.file_open('" + path + "')\n")
+            print('choose your analysis. \n1.Get Recent Docs\n2.Get Recent Folder\n3.Get recent Read file or Save file'
+                  '\n4.Get Recent open file\n5.Get information of MS Office file\n6.Get information of HWP files\n'
+                  '7.Get files saved by wordpad\n8.Get files saved by paint\n9.Get files excuted by adobe pdf'
+                  '\n10.Get file time info\n11.Get os info\n12.Get user key\n13.Get \n14.Get info about usb'
+                  '\n15.Get list of executed files\n16.Getlist of program being serviced in Window'
+                  '\n17.Get info about searching record\n18.')
+            while True:
+                print('\ninput num: ')
+                analysis = int(input())
+                if analysis == -1:
+                    break
+                elif analysis == 1:
+                    file.write('recent_docs = registry.get_recent_docs()\nfor i in recent_docs:\n\tprint(i)\n')
+        elif answer == 5:
+            file.write("thumbnail = Thumbnail_Iconcache.file_open('" + path + "')\n")
+            print('choose your analysis. \n1.Get data of thumnail\n2.Show information\n3.Get info filtering by dimension')
+            while True:
+                print('\ninput num: ')
+                analysis = int(input())
+                if analysis == -1:
+                    break
+                elif analysis == 1:
+                    print('You can get info of thumbnail.\n[file name, hash value, size, system version]')
+                    file.write('thumbinfo = thumbnail.get_data()\nfor i in thumbinfo:\n\tprint(i)\n')
+                elif analysis == 2:
+                    print('You can check info but it is not saved in variable.')
+                    file.write('thumbnail.thumb_print()\n')
+                elif analysis == 3:
+                    print('input your dimension(mxn). input m(type int):')
+                    m = input()
+                    print('input n(type int):')
+                    n = input()
+                    file.write('thumbnail.dimension('+m+','+n+')\n')
+        elif answer == 6:
+            file.write("zip_file = Files.Zip.file_open('" + path + "')\n")
+            print(
+                'choose your analysis. \n1.Get info\n2.Show info\n3.Get last modification time')
+            while True:
+                print('\ninput num: ')
+                analysis = int(input())
+                if analysis == -1:
+                    break
+                elif analysis == 1:
+                    file.write('zip_info = zip_file.get_info()\nfor i in zip_info:\n\tprint(i)\n')
+                elif analysis == 2:
+                    file.write('zip_file.show_info()\n')
+                elif analysis == 3:
+                    file.write('last_modtime = zip_file.last_modtime()\nfor i in last_modtime:\n\tprint(i)\n')
+        elif answer == 7:
+            print('Input your file type. [1:JPEG, 2:PDF, 3:HWP, 4:MSOld, 5:Get file list of folder]')
+            type = int(input())
+            if type == 1:
+                file.write('jpeg = Files.JPEG.file_open(\''+path+'\')\njpeg_info = jpeg.get_info\nfor i in jpeg_info:\n\tprint(i)\n')
+            elif type == 2:
+                file.write('pdf = Files.PDF.file_open(\''+path+'\')\npdf_info = pdf.get_info\nfor i in pdf_info:\n\tprint(i)\n')
+            elif type == 3:
+                file.write('hwp = Files.HWP.file_open(\''+path+'\')\nhwp_info = hwp.get_info\nfor i in hwp_info:\n\tprint(i)\n')
+            elif type == 4:
+                file.write('ms = Files.MSOld.file_open(\''+path+'\')\nms_info = ms.get_info\nfor i in ms_info:\n\tprint(i)\n')
+            elif type == 5:
+                file.write("files_analysis.file_list('"+path+"')\n")
+        elif answer == 8:
+            print('Input your Browser type. [1:Chrome, 2:Edge or IE]')
+            type = int(input())
+            print('Input your analysis file type. [1:Cookie, 2:History, 3:Download, 4:Cache]')
+            ana_type = int(input())
+            if type == 1:
+                file.write('browser_info = Browser.Chrome.')
+            elif type == 2:
+                file.write('browser_info = Browser.Ie_Edge.')
+            if ana_type == 1:
+                file.write('Cookies.file_open(\''+path+'\')\n')
+            elif ana_type == 2:
+                file.write('History.file_open(\''+path+'\')\n')
+            elif ana_type == 3:
+                file.write('Download.file_open(\''+path+'\')\n')
+            elif ana_type == 4:
+                file.write('Cache.file_open(\''+path+'\')\n')
+            print('choose your analysis. \n1.Get info\n2.Get path info\n3.Get hash value')
+            while True:
+                print('\ninput num: ')
+                analysis = int(input())
+                if analysis == -1:
+                    break
+                elif analysis == 1:
+                    file.write('browser_info = browser.get_info()\nfor i in browser_info:\n\tprint(i)\n')
+                elif analysis == 2:
+                    file.write('hash_value = browser.get_hash()\nfor i in hash_value:\n\tprint(i)\n')
+                elif analysis == 3:
+                    file.write('hash_value = browser.get_hash()\nfor i in hash_value:\n\tprint(i)\n')
+        elif answer == 9:
+            file.write("recycle = Recycle.file_open('" + path + "')\n")
+            print(
+                'choose your analysis. \n1.Show all info\n2.Get all info')
+            while True:
+                print('\ninput num: ')
+                analysis = int(input())
+                if analysis == -1:
+                    break
+                elif analysis == 1:
+                    file.write('recycle.show_all_info()\n')
+                elif analysis == 2:
+                    file.write('recycle_info = recycle.get_all_info()\nfor i in recycle_info:\n\tprint(i)\n')
+        '''
+        elif answer == 100:
+            file.write("icon_cache = Iconcache.file_open('" + path + "')\n")
+            print('choose your analysis. \n1.Get path count\n2.Get path info')
+            while True:
+                print('\ninput num: ')
+                analysis = int(input())
+                if analysis == -1:
+                    break
+                elif analysis == 1:
+                    file.write('path_cnt = icon_cache.get_path_count()\nfor i in path_cnt:\n\tprint(i)\n')
+                elif analysis == 2:
+                    file.write('path_info = icon_cache.get_path_info()\nfor i in path_info:\n\tprint(i)\n')
+        elif answer == 100:
+            file.write("lnk = Lnk.file_open('" + path + "')\n")
+            print(
+                'choose your analysis. \n1.Get path count\n2.Get path info')
+            while True:
+                print('\ninput num: ')
+                analysis = int(input())
+                if analysis == -1:
+                    break
+                elif analysis == 1:
+                    file.write('\n')'''
         file.close()
