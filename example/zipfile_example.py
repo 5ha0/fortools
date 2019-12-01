@@ -11,10 +11,10 @@ file.show_info()
 
 print('\n\n')
 
-info = file.get_info()
-fil = custom_filter(['FileName', r'\w+.jpg', 1], info)
-for i in fil:
-    print(i)
+# info = file.get_info()
+# fil = custom_filter(['FileName', r'\w+.jpg', 1], info)
+# for i in fil:
+#     print(i)
 
 
 
