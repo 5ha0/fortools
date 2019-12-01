@@ -214,41 +214,41 @@ class Lnk:
         extension = sig_check(path)
         print('extension: ' + extension)
         if extension == 'MS Windows shortcut':
-            calc_hash.get_hash(path)
+            hash_v = calc_hash.get_hash(path)
             file = lnk_open(path)
-            return lnk_analysis.LnkAnalysis(file)
+            return lnk_analysis.LnkAnalysis(file, path, hash_v)
 
 
 class Recycle:
     def file_open(path):
         extension = sig_check(path)
-        if extension == 'data':
-            calc_hash.get_hash(path)
+        if extension == 'recycle_i':
+            hash_v = calc_hash.get_hash(path)
             file = recycle_open(path)
-            return recycle_analysis.RecycleAnalysis(file)
+            return recycle_analysis.RecycleAnalysis(file, path, hash_v)
 
 
 class Iconcache:
     def file_open(path):
         extension = sig_check(path)
-        if extension == 'data':
-            calc_hash.get_hash(path)
+        if extension == 'Icon':
+            hash_v = calc_hash.get_hash(path)
             file = iconcache_open(path)
-            return iconcache_analysis.IconcacheAnalysis(file)
+            return iconcache_analysis.IconcacheAnalysis(file, path, hash_v)
 
 
 class Prefetch:
     def file_open(path):
         extension = sig_check(path)
         if extension == 'prefetch':
-            calc_hash.get_hash(path)
+            hash_v = calc_hash.get_hash(path)
             dirname = os.path.dirname(path)
             basename = os.path.basename(path)
             base = os.path.splitext(basename)
             basename = base[0]
             exetension = base[-1]
             file = prefetch_open(dirname + '\\' + basename + '-1' + exetension)
-            return prefetch_analysis.PrefetchAnalysis(file, path)
+            return prefetch_analysis.PrefetchAnalysis(file, path, hash_v)
 
 
 class RegistryHive:
@@ -458,6 +458,7 @@ def prefetch_open(path):
     if version != 23 and version != 30:
         print('error: not supported version')
         print(version)
+        return -1
     return prefetch_file
 
 
