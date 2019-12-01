@@ -1,17 +1,20 @@
 class Chatbot():
     def __init__(self):
-        file = open(r'.\script.py', 'w')
+        print('input your script name')
+        name = input()
+
+        file = open(r'.\\' + name+'.py' , 'w')
         file.write('from fortools import *\n\n')
 
         print('input your artifact path')
         path = input()
 
-        print('what is your atrifact? 1.event log 2.JumpList 3.FileSystem Log 4.Registry 5.Thumbnail\n'
-              '6.Zip 7.Files 9.Recycle 100.IconCache 100.Lnk ')
+        print('what is your atrifact? \n1.event log 2.JumpList 3.FileSystem Log 4.Registry 5.Thumbnail\n'
+              '6.Zip 7.Files 9.Recycle 10.IconCache 100.Lnk ')
         answer = int(input())
 
         if answer == 1:
-            file.write('event = EventLog.file_open(\''+path+'\')\n')
+            file.write('event = EventLog.file_open(r\''+path+'\')\n')
             print('choose your analysis\n1.Show All Info\n2.Get Hash value of Artifact\n3.'
                   'Get String of event log xml\n4.Event ID Search\n5.Date Search\n6.Time Search\n7.Day Search\n'
                   '8.Level Search\n9. Favorite\n-1:finish')
@@ -109,8 +112,8 @@ class Chatbot():
                 else:
                     print('plz input num. ex)1')
         elif answer == 2:
-            file.write("jumplist = JumpList.file_open('" + path + "')\n")
-            print('choose your analysis. \n1.Get access count\n2.Get recent time\n3.Get netbios\n4.Get all info\n5.Get hash')
+            file.write("jumplist = JumpList.file_open(r'" + path + "')\n")
+            print('choose your analysis. \n1.Get access count\n2.Get recent time\n3.Get netbios\n4.Get all info\n5.Get hash\n-1:finish')
             while True:
                 print('\ninput num: ')
                 analysis = int(input())
@@ -128,8 +131,8 @@ class Chatbot():
                 elif analysis == 5:
                     file.write('jump_hash = jumplist.get_hash()\nfor i in jump_hash:\n\tprint(i)\n')
         elif answer == 3:
-            file.write("filesys_log = FileSystemLog.file_open('" + path + "')\n")
-            print('choose your analysis. \n1.Get all info\n2.Get hash')
+            file.write("filesys_log = FileSystemLog.file_open(r'" + path + "')\n")
+            print('choose your analysis. \n1.Get all info\n2.Get hash\n-1:finish')
             while True:
                 print('\ninput num: ')
                 analysis = int(input())
@@ -140,13 +143,13 @@ class Chatbot():
                 elif analysis == 5:
                     file.write('file_syslog_hash = filesys_log.get_hash()\nfor i in file_syslog_hash:\n\tprint(i)\n')
         elif answer == 4:
-            file.write("registry = Registry.file_open('" + path + "')\n")
-            print('choose your analysis. \n1.Get Recent Docs\n2.Get Recent Folder\n3.Get recent Read file or Save file'
+            file.write("registry = Registry.file_open(r'" + path + "')\n")
+            print('choose your analysis. \n1.Find Key Value from Registry\n2.Get Recent Docs\n2.Get Recent Folder\n3.Get recent Read file or Save file'
                   '\n4.Get Recent open file\n5.Get information of MS Office file\n6.Get information of HWP files\n'
                   '7.Get files saved by wordpad\n8.Get files saved by paint\n9.Get files excuted by adobe pdf'
                   '\n10.Get file time info\n11.Get os info\n12.Get user key\n13.Get \n14.Get info about usb'
                   '\n15.Get list of executed files\n16.Getlist of program being serviced in Window'
-                  '\n17.Get info about searching record\n18.')
+                  '\n17.Get info about searching record\n18.\n-1:finish')
             while True:
                 print('\ninput num: ')
                 analysis = int(input())
@@ -155,7 +158,7 @@ class Chatbot():
                 elif analysis == 1:
                     file.write('recent_docs = registry.get_recent_docs()\nfor i in recent_docs:\n\tprint(i)\n')
         elif answer == 5:
-            file.write("thumbnail = Thumbnail_Iconcache.file_open('" + path + "')\n")
+            file.write("thumbnail = Thumbnail_Iconcache.file_open(r'" + path + "')\n")
             print('choose your analysis. \n1.Get data of thumnail\n2.Show information\n3.Get info filtering by dimension')
             while True:
                 print('\ninput num: ')
@@ -175,9 +178,9 @@ class Chatbot():
                     n = input()
                     file.write('thumbnail.dimension('+m+','+n+')\n')
         elif answer == 6:
-            file.write("zip_file = Files.Zip.file_open('" + path + "')\n")
+            file.write("zip_file = Files.Zip.file_open(r'" + path + "')\n")
             print(
-                'choose your analysis. \n1.Get info\n2.Show info\n3.Get last modification time')
+                'choose your analysis. \n1.Get info\n2.Show info\n3.Get last modification time\n-1:finish')
             while True:
                 print('\ninput num: ')
                 analysis = int(input())
@@ -193,13 +196,13 @@ class Chatbot():
             print('Input your file type. [1:JPEG, 2:PDF, 3:HWP, 4:MSOld, 5:Get file list of folder]')
             type = int(input())
             if type == 1:
-                file.write('jpeg = Files.JPEG.file_open(\''+path+'\')\njpeg_info = jpeg.get_info\nfor i in jpeg_info:\n\tprint(i)\n')
+                file.write('jpeg = Files.JPEG.file_open(r\''+path+'\')\njpeg_info = jpeg.get_info\nfor i in jpeg_info:\n\tprint(i)\n')
             elif type == 2:
-                file.write('pdf = Files.PDF.file_open(\''+path+'\')\npdf_info = pdf.get_info\nfor i in pdf_info:\n\tprint(i)\n')
+                file.write('pdf = Files.PDF.file_open(r\''+path+'\')\npdf_info = pdf.get_info\nfor i in pdf_info:\n\tprint(i)\n')
             elif type == 3:
-                file.write('hwp = Files.HWP.file_open(\''+path+'\')\nhwp_info = hwp.get_info\nfor i in hwp_info:\n\tprint(i)\n')
+                file.write('hwp = Files.HWP.file_open(r\''+path+'\')\nhwp_info = hwp.get_info\nfor i in hwp_info:\n\tprint(i)\n')
             elif type == 4:
-                file.write('ms = Files.MSOld.file_open(\''+path+'\')\nms_info = ms.get_info\nfor i in ms_info:\n\tprint(i)\n')
+                file.write('ms = Files.MSOld.file_open(r\''+path+'\')\nms_info = ms.get_info\nfor i in ms_info:\n\tprint(i)\n')
             elif type == 5:
                 file.write("files_analysis.file_list('"+path+"')\n")
         elif answer == 8:
@@ -212,14 +215,14 @@ class Chatbot():
             elif type == 2:
                 file.write('browser_info = Browser.Ie_Edge.')
             if ana_type == 1:
-                file.write('Cookies.file_open(\''+path+'\')\n')
+                file.write('Cookies.file_open(r\''+path+'\')\n')
             elif ana_type == 2:
-                file.write('History.file_open(\''+path+'\')\n')
+                file.write('History.file_open(r\''+path+'\')\n')
             elif ana_type == 3:
-                file.write('Download.file_open(\''+path+'\')\n')
+                file.write('Download.file_open(r\''+path+'\')\n')
             elif ana_type == 4:
-                file.write('Cache.file_open(\''+path+'\')\n')
-            print('choose your analysis. \n1.Get info\n2.Get path info\n3.Get hash value')
+                file.write('Cache.file_open(r\''+path+'\')\n')
+            print('choose your analysis. \n1.Get info\n2.Get path info\n3.Get hash value\n-1:finish')
             while True:
                 print('\ninput num: ')
                 analysis = int(input())
@@ -232,9 +235,9 @@ class Chatbot():
                 elif analysis == 3:
                     file.write('hash_value = browser.get_hash()\nfor i in hash_value:\n\tprint(i)\n')
         elif answer == 9:
-            file.write("recycle = Recycle.file_open('" + path + "')\n")
+            file.write("recycle = Recycle.file_open(r'" + path + "')\n")
             print(
-                'choose your analysis. \n1.Show all info\n2.Get all info')
+                'choose your analysis. \n1.Show all info\n2.Get all info\n-1:finish')
             while True:
                 print('\ninput num: ')
                 analysis = int(input())
@@ -244,23 +247,23 @@ class Chatbot():
                     file.write('recycle.show_all_info()\n')
                 elif analysis == 2:
                     file.write('recycle_info = recycle.get_all_info()\nfor i in recycle_info:\n\tprint(i)\n')
-        '''
-        elif answer == 100:
-            file.write("icon_cache = Iconcache.file_open('" + path + "')\n")
-            print('choose your analysis. \n1.Get path count\n2.Get path info')
+        elif answer == 10:
+            file.write("icon_cache = Iconcache.file_open(r'" + path + "')\n")
+            print('choose your analysis. \n1.Show all info\n2.Get all\n3.Extension Filtering\n4. info\n-1:finish')
             while True:
                 print('\ninput num: ')
                 analysis = int(input())
                 if analysis == -1:
                     break
                 elif analysis == 1:
-                    file.write('path_cnt = icon_cache.get_path_count()\nfor i in path_cnt:\n\tprint(i)\n')
+                    file.write('icon_cache.show_all_info()\n')
                 elif analysis == 2:
-                    file.write('path_info = icon_cache.get_path_info()\nfor i in path_info:\n\tprint(i)\n')
+                    file.write('icon_cache_info = icon_cache.get_all_info()\nfor i in icon_cache_info:\n\tprint(i)\n')
+                    '''
         elif answer == 100:
-            file.write("lnk = Lnk.file_open('" + path + "')\n")
+            file.write("lnk = Lnk.file_open(r'" + path + "')\n")
             print(
-                'choose your analysis. \n1.Get path count\n2.Get path info')
+                'choose your analysis. \n1.Get path count\n2.Get path info\n-1:finish')
             while True:
                 print('\ninput num: ')
                 analysis = int(input())
