@@ -103,6 +103,11 @@ signatures = [{
         'hex': ['0x5F', '0x43', '0x41', '0x53', '0x45', '0x5F'],
         'len': 6,
         'offset': 0},
+    {
+        'file_extension': 'PDF document',
+        'hex': ['0x25', '0x50', '0x44', '0x46'],
+        'len': 4,
+        'offset': 0},
     # {
     #     'file_extension': 'Windows executable file',
     #     'hex': ['0xE8'],
