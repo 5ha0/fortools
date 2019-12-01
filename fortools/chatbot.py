@@ -10,7 +10,7 @@ class Chatbot():
         path = input()
 
         print('what is your atrifact? \n1.event log 2.JumpList 3.FileSystem Log 4.Registry 5.Thumbnail\n'
-              '6.Zip 7.Files 9.Recycle 10.IconCache 100.Lnk ')
+              '6.Zip 7.Files 8.Browser 9.Recycle 10.IconCache 100.Lnk ')
         answer = int(input())
 
         if answer == 1:
@@ -212,9 +212,9 @@ class Chatbot():
             print('Input your analysis file type. [1:Cookie, 2:History, 3:Download, 4:Cache]')
             ana_type = int(input())
             if type == 1:
-                file.write('browser_info = Browser.Chrome.')
+                file.write('browser = Browser.Chrome.')
             elif type == 2:
-                file.write('browser_info = Browser.Ie_Edge.')
+                file.write('browser = Browser.Ie_Edge.')
             if ana_type == 1:
                 file.write('Cookies.file_open(r\''+path+'\')\n')
             elif ana_type == 2:
