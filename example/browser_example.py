@@ -1,38 +1,56 @@
 from fortools import *
-
 import time
-start_time=time.time()
+start_time = time.time()
 
-#close chrome browser
-cookies_path="C://Users//JH//AppData//Local//Google//Chrome//User Data//Default//Cookies"
-history_path="C://Users//JH//AppData//Local//Google//Chrome//User Data//Default//History"
-download_path="C://Users//JH//AppData//Local//Google//Chrome//User Data//Default//History"
-print("cookies")
-Browser.Chrome.file_open(cookies_path).cookies()
-print("history")
-Browser.Chrome.file_open(history_path).history()
-print("downloads")
-Browser.Chrome.file_open(download_path).downloads()
+chrome_cookies = Browser.Chrome.Cookie.file_open(cookies_path)
+chrome_history = Browser.Chrome.History.file_open(history_path)
+chrome_download = Browser.Chrome.Download.file_open(download_path)
+chrome_cache=Browser.Chrome.Cache.file_open(cache_path)
 
-cookies_path="C://Users//JH//AppData//Roaming//Mozilla//Firefox//Profiles//{random}//cookies.sqlite"
-history_path="C://Users//JH//AppData//Roaming//Mozilla//Firefox//Profiles//{random}//places.sqlite"
-download_path="C://Users//JH//AppData//Roaming//Mozilla//Firefox//Profiles//{random}//places.sqlite"
-print("cookies")
-Browser.Firefox.file_open(cookies_path).cookies()
 print("history")
-Browser.Firefox.file_open(history_path).history()
-print("downloads")
-Browser.Firefox.file_open(download_path).downloads()
-
-path="" #path where extract WebCacheV01.dat
+for i in chrome_history.get_info():
+   print(i)
 print("cookies")
-Browser.Ie_Edge.file_open(path).cookies()
-print("history")
-Browser.Ie_Edge.file_open(path).history()
-print("downloads")
-Browser.Ie_Edge.file_open(path).downloads()
+for i in chrome_cookies.get_info():
+    print(i)
+print("download")
+for i in chrome_download.get_info():
+    print(i)
 print("cache")
-Browser.Ie_Edge.file_open(path).cache()
+for i in chrome_cache.get_info():
+    print(i)
+
+
+#get hash
+print(chrome_cookies.get_hash())
+print(chrome_history.get_hash())
+print(chrome_download.get_hash())
+
+# path= path of WebCacheV01.dat
+
+IE_Edge_cookies = Browser.Ie_Edge.Cookie.file_open(path)
+IE_Edge_history = Browser.Ie_Edge.History.file_open(path)
+IE_Edge_download=Browser.Ie_Edge.Download.file_open(path)
+IE_Edge_cache=Browser.Ie_Edge.Cache.file_open(path)
+
+print("history")
+for i in IE_Edge_history.get_info():
+    print(i)
+print("cookie")
+for i in IE_Edge_cookies.get_info():
+    print(i)
+print("download")
+for i in IE_Edge_download.get_info():
+     print(i)
+print("cache")
+for i in IE_Edge_cache.get_info():
+     print(i)
+
+#get hash
+print(IE_Edge_cookies.get_hash())
+print(IE_Edge_history.get_hash())
+print(IE_Edge_download.get_hash())
+print(IE_Edge_cache.get_hash())
 
 
 print("---{}s seconds---".format(time.time()-start_time))
