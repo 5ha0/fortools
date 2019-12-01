@@ -5,8 +5,8 @@ reg_file = RegistryHive.file_open(r"..\dataset\cfreds_reg\NTUSER.DAT")
 # ##################### NTUSER.DAT ###########################
 # # 1. Find the key information you want
 # info = reg_file.find_key("Microsoft")
-# # 2. Bring up a list of recently run documents.
-# info = reg_file.get_recent_docs()
+# 2. Bring up a list of recently run documents.
+info = reg_file.get_recent_docs()
 # # 3. Check the MRU cache information.
 # info = reg_file.get_recent_MRU()
 # # 4. Check the MS document and outlook information you ran.
@@ -14,7 +14,7 @@ reg_file = RegistryHive.file_open(r"..\dataset\cfreds_reg\NTUSER.DAT")
 # # 5. Get information such as the number of times and time of recently executed files.
 # info = reg_file.get_userassist()
 
-reg_file = RegistryHive.file_open(r"..\dataset\cfreds_reg\SYSTEM")
+# reg_file = RegistryHive.file_open(r"..\dataset\cfreds_reg\SYSTEM")
 
 # ##################### SYSTEM ###########################
 # # 1. Find the key information you want
@@ -28,7 +28,8 @@ reg_file = RegistryHive.file_open(r"..\dataset\cfreds_reg\SYSTEM")
 # # 5. Recall network basic information.
 # info = reg_file.get_network_info()
 
-reg_file = RegistryHive.file_open(r"..\dataset\cfreds_reg\SOFTWARE")
+# reg_file = RegistryHive.file_open(r"..\dataset\cfreds_reg\SOFTWARE")
+
 # ##################### SOFTWARE ###########################
 # # 1. Find the key information you want
 # info = reg_file.find_key("Microsoft")
@@ -37,7 +38,8 @@ reg_file = RegistryHive.file_open(r"..\dataset\cfreds_reg\SOFTWARE")
 # # 3. Get network card information.
 # info = reg_file.get_network_info()
 
-reg_file = RegistryHive.file_open(r"..\dataset\cfreds_reg\SAM")
+# reg_file = RegistryHive.file_open(r"..\dataset\cfreds_reg\SAM")
+
 # ##################### SAM ###########################
 # # 1. Find the key information you want
 # info = reg_file.find_key("Microsoft")
