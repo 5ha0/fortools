@@ -100,10 +100,11 @@ class PDFAnalysis:
         info_obj["author"] = info['/Author']
         info_obj["creator"] = info['/Creator']
         time_info = info['/CreationDate'].replace("'", ':', 1)
-        info_obj["creation"] = datetime.datetime.strptime(time_info[2:-1], "%Y%m%d%H%M%S%z").isoformat()
+        info_obj["creation"] = datetime.strptime(time_info[2:-1], "%Y%m%d%H%M%S%z").isoformat()
         time_info = info['/ModDate'].replace("'", ':', 1)
-        info_obj["modification"] = datetime.datetime.strptime(time_info[2:-1], "%Y%m%d%H%M%S%z").isoformat()
-        info_obj["pdf version"] = info['/PDFVersion']
+        mod_time = datetime.strptime(time_info[2:-1], "%Y%m%d%H%M%S%z")
+        info_obj["modification"] = mod_time.isoformat()
+        info_obj["TimeZone"] = mod_time.tzinfo
         return info_obj
 
     def __cal_hash(self):
@@ -113,7 +114,7 @@ class PDFAnalysis:
         return self.__hash_value
 
     def get_info(self):
-        return self.__pdf_json
+        return [self.__pdf_json]
 
     def show_info(self):
         print(self.__pdf_json)
@@ -152,7 +153,7 @@ class HWPAnalysis:
         print(self.__hwp_info)
 
     def get_info(self):
-        return self.__hwp_info
+        return [self.__hwp_info]
 
     def get_prev(self):
         prev = self.__file.openstream('PrvText').read().decode('utf-16')
@@ -213,7 +214,7 @@ class MSOldAnalysis:
         print(self.__ms_json)
 
     def get_info(self):
-        return self.__ms_json
+        return [self.__ms_json]
 
 
 # zip analysis: filename, comment, MAC time, zip version, Compressed size, Uncompressed size, crc, Raw time
