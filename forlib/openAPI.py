@@ -161,7 +161,7 @@ class Files:
     class MSOld:
         def file_open(path):
             hash_v = calc_hash.get_hash(path)
-            file = file_open(path)
+            file = ole_open(path)
             return files_analysis.MSOldAnalysis(file, path, hash_v)
 
     class HWP:
@@ -170,7 +170,7 @@ class Files:
             print('extension: ' + extension)
             if extension == 'Hangul (Korean) Word Processor File 5.x':
                 hash_v = calc_hash.get_hash(path)
-                file = file_open(path)
+                file = ole_open(path)
                 return files_analysis.HWPAnalysis(file, path, hash_v)
             print("check your file format. This is not HWP file.")
             return -1
@@ -192,7 +192,7 @@ class Files:
             print('extension: ' + extension)
             if extension == 'PDF document':
                 hash_v = calc_hash.get_hash(path)
-                file = file_open(path)
+                file = pdf_open(path)
                 return files_analysis.PDFAnalysis(file, path, hash_v)
             print("check your file format. This is not PDF file.")
             return -1
@@ -283,7 +283,6 @@ class JumpList:
         else:
             print("check your file format. This is not Jumplist file.")
             return -1
-        
 
 
 class Thumbnail_Iconcache:
@@ -296,7 +295,6 @@ class Thumbnail_Iconcache:
                 return thumbnail_analysis.Thumbnail_analysis_windows(file, path, hash_v)
         except:
             print("File is not found")
-
 
 
 class Browser:
