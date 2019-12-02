@@ -252,7 +252,7 @@ class ZIPAnalysis:
             file_obj['FileName'] = file_name
             file_obj['Comment'] = str(info.comment)
 
-            mod_time = datetime(*info.date_time
+            mod_time = datetime(*info.date_time)
                                 
             mtime = str(mod_time.astimezone()).split('+')[1].split(':')[0].split('0')[1]
             file_obj['Modified'] = str(mod_time) + " UTC+" + str(mtime)
