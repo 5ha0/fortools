@@ -1,9 +1,9 @@
 from fortools import *
 
-file = Prefetch.file_open(r'path')
+# file = Prefetch.file_open(r'path')
 # # Or you can use this
-# path = 'path'
-# file = file_open(path)
+path = r'path'
+file = file_open(path)
 
 '''
 Uncomment the comment you want to use.
@@ -29,8 +29,8 @@ Uncomment the comment you want to use.
 
 ####### 5.If You want to make a report, Use This. #######
 # !caution!Use the script above first
-# #How to make a report
+# # #How to make a report
 # docx = DocxExport()
-# docx.make_table(information)
+# docx.add_table(information)
 # docx.save('report_name')
 
