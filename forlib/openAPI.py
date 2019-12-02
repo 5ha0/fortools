@@ -79,7 +79,7 @@ def file_open(path):
         return Files.HWP.file_open(path)
     elif extension == 'PDF document':
         return Files.PDF.file_open(path)
-    elif extension == 'thumb_cache':
+    elif extension == 'Thumb_Icon':
         return Thumbnail_Iconcache.file_open(path)
     elif extension == 'MS Windows shortcut':
         return Lnk.file_open(path)
