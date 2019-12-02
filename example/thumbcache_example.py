@@ -1,12 +1,19 @@
 from fortools import *
 
+#input file path
 path = r'C:\Users\sjms1\AppData\Local\Microsoft\Windows\Explorer\thumbcache_32.db'
 
-#thumbnail = Thumbnail_Iconcache.file_open(path)
+# thumbcache_xx.db, iconcache_xx.db file open
 thumbnail = file_open(path)
 #thumbnail.thumb_print()
-#data = thumbnail.get_data(path)
-thumbnail.dimension(32, 8)
+
+####### 1. It shows all the parsing provided by this library at once. #######
+# thumbnail.thumb_print()
+
+####### 2. It handles all parsing provided by this library at once. #######
+information = thumbnail.get_info()
+
+# thumbnail.dimension(32, 8)
 
 
 

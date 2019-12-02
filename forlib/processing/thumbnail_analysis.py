@@ -1,9 +1,6 @@
-import os
-import sys
-import struct
 import math
 from forlib.processing.internal import check
-
+import forlib.calc_hash as calc_hash
 
 class Thumbnail_analysis:
     def __init__(self):
@@ -25,12 +22,17 @@ class Thumbnail_analysis_windows:   # windows version check
                                 "Windows_8v3": 0x1E,
                                 "Windows_8_1": 0x1F,
                                 "Windows_10": 0x20}
-        self.hash_value = [hash_v]
-        self.path = path
-        self.thumb_list = self.get_data(self.path)
+        self.__hash_value = [hash_v]
+        self.__path = path
+        self.thumb_list = self._get_data(self.__path)
         self._result = []
+        self.__file = file
+        self.__cal_hash()
 
-    def get_data(self, path):   # thumbnail data check
+    def __cal_hash(self):
+        self.__hash_value.append(calc_hash.get_hash(self.__path))
+
+    def _get_data(self, path):   # thumbnail data check
         try:
             info_list=[]
             file = open(path, "rb")
@@ -205,7 +207,6 @@ class Thumbnail_analysis_windows:   # windows version check
                 info_list.append(cache_file)
 
             file.close()
-            print("Getting data Success!")
             return info_list
 
         except:
@@ -228,6 +229,9 @@ class Thumbnail_analysis_windows:   # windows version check
                 print(self.thumb_list[i])
         return self._result
 
+    def get_info(self):
+        print("Getting Data Success!\n")
+        return self.thumb_list
 
 
 
