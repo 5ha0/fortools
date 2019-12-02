@@ -88,6 +88,28 @@ class DocxExport:
             result = list(data[i].values())
             for j in range(0, len(data[0].keys())):
                 row_cells[j].text = str(result[j])
+        self.document.add_paragraph()
+
+    def table_by_json(self, data):
+        if len(data) == 0:
+            print("There is no data")
+            return -1
+        table = self.document.add_table(rows=1, cols=2)
+        table.style = 'Table Grid'
+        table.rows[0].style = "borderColor:red;background-color:gray"
+
+        hdr_cells = table.rows[0].cells
+        hdr_cells[0].text = 'Key'
+        hdr_cells[1].text = 'Value'
+
+        try:
+            for i in range(0, len(data.keys())):
+                row_cells = table.add_row().cells
+                row_cells[0].text = str(list(data.keys())[i])
+                row_cells[1].text = str(list(data.values())[i])
+        except ValueError:
+            pass
+        self.document.add_paragraph()
 
     def add_img(self, path):
         self.document.add_picture(path, width=Cm(15), height=Cm(15))
