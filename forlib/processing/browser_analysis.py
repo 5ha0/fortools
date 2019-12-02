@@ -1,8 +1,7 @@
-import json
 import sqlite3
 import binascii
-from datetime import *
 import re
+from datetime import *
 from forlib.processing.filter import *
 import forlib.calc_hash as calc_hash
 
@@ -87,9 +86,7 @@ class Chrome:
             for i in json_list:
                 for j in i["keyword_search"]: #j: keyword서치튜플
                     for k in range (0,len(j)):
-                        print(j[k])
-                        if keyword in j[k]:
-                            print(i)
+                        if keyword in j:
                             result.append(i)
                             break
                     if i in result: #중복방지
@@ -181,6 +178,143 @@ class Chrome:
         def get_hash(self):
             return self.__hash_value
 
+    class Cache:
+        def __init__(self, file):
+            self.file = file
+            self.__path = file
+            self.cache_list = []
+            self.__parse()
+
+        def __get_block_info(self,url_record):
+            if url_record == 1:
+                block_size = 0x100
+            elif url_record == 2:
+                block_size = 0x400
+            elif url_record == 3:
+                block_size = 0x1000
+            return block_size
+
+        def __parse(self):
+            no = 0
+            data_0_open = open(self.__path + "\\data_0", 'rb')
+            data_0_open.seek(0x2000)
+            while True:
+                no += 1
+                mkdict = dict()
+
+                mkdict["index"] = no
+                mkdict["type"] = "cache"
+                mkdict["browser"] = "Chrome"
+                mkdict["timezone"] = "UTC"
+                # url record location
+                url_record_info = data_0_open.read(0x24)[0x18:0x18 + 0x04]
+                # no information in block size 0x24
+                if bytes.decode(binascii.hexlify(url_record_info)) == "00000000":
+                    continue
+                # end of file
+                elif bytes.decode(binascii.hexlify(url_record_info)) == "":
+                    break
+                # calculate block index
+                block_index = int(bytes.decode(binascii.hexlify(url_record_info[:0x02][::-1])), 16)
+                # file index/ block size
+                file_index = url_record_info[0x02]
+                block_size = self.__get_block_info(url_record_info[0x02])
+                # get url_record_location
+                url_record_location = block_index * block_size + 0x2000
+                # open block which has url record
+                data_file_open = open(self.__path + "\\data_" + str(file_index), 'rb')
+                data_file_open.seek(url_record_location)
+                url_record = data_file_open.read(0x60)
+                url_size = int(bytes.decode(binascii.hexlify(url_record[0x20:0x20 + 0x04][::-1])), 16)
+                meta_data_size = int(bytes.decode(binascii.hexlify(url_record[0x28:0x28 + 0x04][::-1])), 16)
+                data_size = int(bytes.decode(binascii.hexlify(url_record[0x2C:0x2C + 0x04][::-1])), 16)
+
+                # get url
+                try:
+                    url = data_file_open.read(url_size)
+                    url = url.decode()
+                except:
+                    url_file_index = url_record[0x24 + 0x02]
+                    url_block_size = self.__get_block_info(url_record[0x24 + 0x02])
+                    url_block_index = int(bytes.decode(binascii.hexlify(url_record[0x24:0x24 + 0x02][::-1])), 16)
+
+                    go_to_url_location = url_block_size * url_block_index + 0x2000
+                    url_data_file_open = open(self.__path + "\\data_" + str(url_file_index), 'rb')
+                    url_data_file_open.seek(go_to_url_location)
+                    url = url_data_file_open.read(url_size)
+                    url = url.decode()
+
+                # get metadata(access_time,expiry_time,last_modified_time,server_info)
+                status=""
+                access=""
+                expiry=""
+                last_modify=""
+                week = re.compile('\s?Mon,?|\s?Tue,?|\s?Wed,?|\s?Thu,?|\s?Fri,?|\s?Sat,?|\s?Sun,?')
+                meta_data_file_index = url_record[0x38:0x38 + 0x04][0x02]
+                if meta_data_size != 0:
+                    meta_data_block_index = int(bytes.decode(binascii.hexlify(url_record[0x38:0x38 + 0x02][::-1])), 16)
+                    if meta_data_block_index != 0:
+                        meta_data_block_size = self.__get_block_info(meta_data_file_index)
+                        meta_data_location = meta_data_block_size * meta_data_block_index + 0x2000
+                        meta_data_open = open(self.__path + "\\data_" + str(meta_data_file_index), 'rb')
+                        meta_data_open.seek(meta_data_location)
+                        meta_data = meta_data_open.read(meta_data_size)
+                        meta_data = bytes.decode(binascii.hexlify(meta_data))
+                        status_regex=re.search("7374617475733a+\w{6}", meta_data)
+                        if status_regex:
+                            status=bytes.fromhex(status_regex.group()).decode().split(":")[-1]
+                        date_regex=re.search("(44|64)+6174653a(20)?\w{50}",meta_data)
+                        if date_regex:
+                            if week.search(bytes.fromhex(date_regex.group()).decode()[5:9]):
+                                access=" ".join(bytes.fromhex(date_regex.group()).decode().split(" ")[-4:])
+                                access=str(datetime.datetime.strptime(access,'%d %b %Y %H:%M:%S'))
+                        expires_regex=re.search("657870697265733a+\w{50}",meta_data)
+                        if expires_regex:
+                            if week.search(bytes.fromhex(expires_regex.group()).decode()[8:12]):
+                                expiry = " ".join(bytes.fromhex(expires_regex.group()).decode().split(" ")[-4:])
+                                expiry = str(datetime.datetime.strptime(expiry, '%d %b %Y %H:%M:%S'))
+                        last_modified_regex=re.search("6c6173742d6d6f6469666965643a+\w{50}",meta_data)
+                        if last_modified_regex:
+                            if week.search(bytes.fromhex(last_modified_regex.group()).decode()[14:18]):
+                                last_modify=" ".join(bytes.fromhex(last_modified_regex.group()).decode().split(" ")[-4:])
+                                last_modify = str(datetime.datetime.strptime(last_modify, '%d %b %Y %H:%M:%S'))
+                # get data/file_path and file_name
+                file_path=""
+                file_name=""
+                if url_record[0x3c:0x3c + 0x04][0x03] == 0x80:
+                    try:
+                        get_another_file = "f_" + str(
+                            bytes.decode(binascii.hexlify(url_record[0x3c:0x3c + 0x04][:0x03][::-1])))
+                        file_path=get_another_file
+                        file_name= (url.split("/")[-1]).split("?")[0]
+
+                    except:
+                        file_path=""
+                        file_name=""
+                else:
+                    data_file_index = url_record[0x3c:0x3c + 0x04][0x02]
+                    if data_size != 0:
+                        data_block_size = self.__get_block_info(data_file_index)
+                        data_block_index = int(bytes.decode(binascii.hexlify(url_record[0x3C:0x3C + 0x02][::-1])), 16)
+                        data_location = data_block_size * data_block_index + 0x2000
+                        data_open = open(self.__path + "\\data_" + str(data_file_index), 'rb')
+                        file_path = "data_"+str(data_file_index)+" "+str(data_location)
+                        file_name = (url.split("/")[-1]).split("?")[0]
+                        data_open.seek(data_location)
+
+                mkdict["file_name"]=file_name
+                mkdict["url"] = url
+                mkdict["access_time"]=access
+                mkdict["creation_time"]=""
+                mkdict["file_size"]=data_size
+                mkdict["file_path"]=file_path
+                mkdict["expiry_time"]=expiry
+                mkdict["last_modified_time"]=last_modify
+                mkdict["server_info"]=status
+                self.cache_list.append(mkdict)
+
+        def get_info(self):
+            return self.cache_list
 
     class Cookie:
         def __init__(self, file, hash_v):
@@ -621,7 +755,6 @@ class Ie_Edge:
                     # get binary data
                     binary_data = download.get_value_data(21)
 
-
                     # get file size
                     try:
                         size_a = bytes.decode(binascii.hexlify(binary_data[0x48:0x4F][::-1]))
@@ -719,11 +852,11 @@ class Ie_Edge:
                         size = int(size_a, 16) * 2
                         if size > len(binary_data):
                             raise Exception
+
                         title = bytes.decode(binascii.hexlify(binary_data[62:62 + size]))
                         mkdict["title"] = bytes.fromhex(title).decode("utf-16").rstrip("\x00")
                     except:
                         mkdict["title"] = ""
-
                     mkdict["url"] = visit.get_value_data_as_string(17)
                     mkdict["from_visit"] = ""
                     mkdict["keyword_search"] = ""
@@ -763,7 +896,6 @@ class Ie_Edge:
         def get_hash(self):
             return self.__hash_value
 
-
 # chrome change int to date
 def int2date1(date_time):
     # 1601년 1월 1일부터
@@ -789,9 +921,7 @@ def int2date4(date_time):
     # 1601년 1월 1일부터
     try:
         from_date = datetime.datetime(1601, 1, 1)
-        # print(from_date)
         passing_time = timedelta(microseconds=(date_time*0.1))
-        # print(passing_time)
         get_date = from_date + passing_time
         return get_date.strftime("%Y-%m-%d %H:%M:%S")
     except:
@@ -832,5 +962,4 @@ def esedb_get_schema(file, table):
         col_info.append(column.name)
         col_info.append(column.get_type())
         col_infos.append(col_info)
-
     return col_infos
