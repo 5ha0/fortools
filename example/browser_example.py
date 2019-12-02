@@ -25,7 +25,8 @@ start_time = time.time()
 # for i in chrome_cache.get_info():
 #     print(i)
 
-# path=r"C:\Users\JH\Desktop\cfreds\Microsoft\Windows\WebCache\WebCacheV01.dat"
+
+# path=WebCacheV01.dat path
 
 # IE_Edge_cookies = Browser.Ie_Edge.Cookie.file_open(path)
 # IE_Edge_history = Browser.Ie_Edge.History.file_open(path)
