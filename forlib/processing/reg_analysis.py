@@ -48,9 +48,6 @@ class NTAnalysis:
             date = datetime(1601, 1, 1) + timedelta(microseconds=int_time)
         return str(date)
 
-    def cal_hash(self):
-        return self.ret_list.append(get_hash(self.reg))
-
     def get_recent_docs(self):
         recent = self.reg.open("SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs")
         
@@ -284,9 +281,6 @@ class SYSAnalysis:
     def find_key(self, keyword):
         self.__rec(self.reg.root(), self.__get_path, keyword)
 
-    def cal_hash(self):
-        return self.ret_list.append(get_hash(self.reg))
-
     def get_computer_info(self):
         path = "ControlSet00%s\\services\\Tcpip\\Parameters" % self.__control_set_check(self.reg)
         computer_path = self.reg.open(path)
@@ -484,9 +478,6 @@ class SWAnalysis:
             }
             self.ret_list.append(net_obj)
         return self.ret_list
-
-    def cal_hash(self):
-        return self.ret_list.append(get_hash(self.reg))
 
     def __cal_hash(self):
         after_hash = calc_hash.get_hash(self.__path)
