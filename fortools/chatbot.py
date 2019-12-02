@@ -17,7 +17,7 @@ class Chatbot():
             file.write('event = EventLog.file_open(r\''+path+'\')\n')
             print('choose your analysis\n1.Show All Info\n2.Get Hash value of Artifact\n3.'
                   'Get String of event log xml\n4.Event ID Search\n5.Date Search\n6.Time Search\n7.Day Search\n'
-                  '8.Level Search\n9. Favorite\n-1:finish')
+                  '8.Level Search\n9.Favorite\n10.Get xml strings with idx\n-1:finish')
             while True:
                 print('\ninput num: ')
                 analysis = int(input())
