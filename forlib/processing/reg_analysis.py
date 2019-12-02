@@ -1,9 +1,8 @@
 from Registry import Registry
 import json
 import codecs
-import forlib.calc_hash as calc_hash
 from datetime import datetime, timedelta
-from forlib.calc_hash import get_hash
+import forlib.calc_hash as calc_hash
 import time
 import binascii
 
@@ -13,7 +12,7 @@ class NTAnalysis:
         self.ret_list = list()
         self.__hash_val = [hash_val]
         self.__path = path
-        self.__cal_hash()
+        self.__calc_hash()
 
     def __rec(self, key, get_path, find_val):
 #        get_path(key, find_val)
@@ -30,8 +29,7 @@ class NTAnalysis:
                                 "find_keyword" : find_val,
                                 "key" : key.path()
                             }
-                            self.ret_list.append(reg_key_obj)
-        return self.ret_list
+                            print(json.dumps(reg_key_obj))
 
     def find_key(self, keyword):
         self.__rec(self.reg.root(), self.__get_path, keyword)
@@ -50,6 +48,9 @@ class NTAnalysis:
             date = datetime(1601, 1, 1) + timedelta(microseconds=int_time)
         return str(date)
 
+    def cal_hash(self):
+        return self.ret_list.append(get_hash(self.reg))
+
     def get_recent_docs(self):
         recent = self.reg.open("SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs")
         
@@ -59,6 +60,7 @@ class NTAnalysis:
             #print(v.value().decode('utf-16'))
             reg_obj  = {
                     "time" : str(recent.timestamp()),
+                    "TimeZone" : "UTC",
                     "name" : v.name(),
                     "data" : v.value().decode('utf-16').split('\x00')[0]}
             self.ret_list.append(reg_obj)
@@ -69,6 +71,7 @@ class NTAnalysis:
         for i, v in enumerate(recent.values()):
             reg_obj  = {
                     "time" : str(recent.timestamp()),
+                    "TimeZone" : "UTC",
                     "name" : v.name(),
                     "data" : v.value()}
             self.ret_list.append(reg_obj)
@@ -82,7 +85,8 @@ class NTAnalysis:
         for i, v in enumerate(recent.values()):
             file_name = v.raw_data().decode('utf-16').split("*")[1]
             reg_obj = {
-                    "MS Key Last Written time" : recent.timestamp().strftime('%Y-%m-%d %H:%M:%S (UTC)'),
+                    "MS Key Last Written time" : recent.timestamp().strftime('%Y-%m-%d %H:%M:%S'),
+                    "TimeZone" : "UTC",
                     "path" : file_name[:-1]
                     }
             ret_list.append(reg_obj)
@@ -123,7 +127,8 @@ class NTAnalysis:
                 for i, v in enumerate(recent0.values()):
                     file_name = v.raw_data().decode('utf-16')
                     reg_obj = {
-                            "MS Key Last Written time" : recent0.timestamp().strftime('%Y-%m-%d %H:%M:%S (UTC)'),
+                            "MS Key Last Written time" : recent0.timestamp().strftime('%Y-%m-%d %H:%M:%S'),
+                            "TimeZone" : "UTC",
                             "path" : file_name[:-1]
                         }
                     outlook.append(reg_obj)
@@ -206,28 +211,51 @@ class NTAnalysis:
                 for userassist_values in userassist_keys.values():
                     file_name = codecs.decode(userassist_values.name(), 'rot_13')
                     reg_obj = {
-                        "TimeStamp" : self.__cal_time(userassist_values.value()[60:68]),
+                        "Time" : self.__cal_time(userassist_values.value()[60:68]),
+                        "TimeZone" : "UTC",
                         "Run Count" : self.__bin_to_int(userassist_values.value()[4:8]),
                         "file" : '%s' % file_name
                     }
                     user_list.append(reg_obj)
         self.ret_list = sorted(user_list, key=lambda e: (e['TimeStamp']))
         return self.ret_list
-    
+
     def __cal_hash(self):
         after_hash = calc_hash.get_hash(self.__path)
         self.__hash_val.append(after_hash)
 
     def get_hash(self):
         return self.__hash_val
+    
 
 class SYSAnalysis:
-    def __init__(self, file, path, hash_val):
+    def __init__(self, file):
         self.reg = file
         self.ret_list = list()
         self.__hash_val = [hash_val]
         self.__path = path
-        self.__cal_hash()
+        self.__calc_hash()
+        
+    def __rec(self, key, get_path, find_val):
+#        get_path(key, find_val)
+        for subkey in key.subkeys():
+            self.__rec(subkey, get_path, find_val)
+        path = get_path(key,find_val)
+
+    def __get_path(self, key, find_val):
+        for value in [v.value() for v in key.values()
+                        if v.value_type() == Registry.RegSZ
+                        or v.value_type() == Registry.RegExpandSZ]:
+                        if find_val in value:
+                            reg_key_obj = {
+                                "find_keyword" : find_val,
+                                "key" : key.path()
+                            }
+                            print(json.dumps(reg_key_obj))
+
+    def find_key(self, keyword):
+        self.__rec(self.reg.root(), self.__get_path, keyword)
+
 
     def __control_set_check(self, file):
         key = file.open("Select")
@@ -250,11 +278,14 @@ class SYSAnalysis:
                                 "find_keyword" : find_val,
                                 "key" : key.path()
                             }
-                            self.ret_list.append(reg_key_obj)
-        return self.ret_list
+                            ret_list.append(reg_obj)
+        return ret_list
 
     def find_key(self, keyword):
         self.__rec(self.reg.root(), self.__get_path, keyword)
+
+    def cal_hash(self):
+        return self.ret_list.append(get_hash(self.reg))
 
     def get_computer_info(self):
         path = "ControlSet00%s\\services\\Tcpip\\Parameters" % self.__control_set_check(self.reg)
@@ -357,28 +388,29 @@ class SYSAnalysis:
             }
             self.ret_list.append(net_obj)
         return self.ret_list
-
+    
     def __cal_hash(self):
         after_hash = calc_hash.get_hash(self.__path)
         self.__hash_val.append(after_hash)
 
     def get_hash(self):
-        return self.__hash_val
+        return self.__hash_val     
+    
     
 class SWAnalysis:
-    def __init__(self, file, path, hash_val):
+    def __init__(self, file):
         self.reg = file
         self.ret_list = list()
         self.__hash_val = [hash_val]
         self.__path = path
-        self.__cal_hash()
-
+        self.__calc_hash()
+        
     def __control_set_check(self, file):
         key = file.open("Select")
         for v in key.values():
             if v.name() == "Current":
                 return v.value()
-            
+
     def __rec(self, key, get_path, find_val):
 #        get_path(key, find_val)
         for subkey in key.subkeys():
@@ -394,11 +426,11 @@ class SWAnalysis:
                                 "find_keyword" : find_val,
                                 "key" : key.path()
                             }
-                            self.ret_list.append(reg_key_obj)
-        return self.ret_list
+                            print(json.dumps(reg_key_obj))
 
     def find_key(self, keyword):
-        self.__rec(self.reg.root(), self.__get_path, keyword)    
+        self.__rec(self.reg.root(), self.__get_path, keyword)
+
     def get_info(self):
         ret_list = []
         os_info = self.reg.open("Microsoft\\Windows NT\\CurrentVersion")
@@ -409,7 +441,7 @@ class SWAnalysis:
             if v.name() == "CurrentBuild":
                 os_dict['CurrentBuild'] = v.value()
             if v.name() == "InstallDate":
-                os_dict['InstallDate'] = time.strftime('%Y-%m-%d %H:%M:%S (UTC)', time.gmtime(v.value()))
+                os_dict['InstallDate'] = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(v.value()))
             if v.name() == "RegisteredOwner":
                 os_dict['RegisteredOwner'] = v.value()
             if v.name() == "EditionID":
@@ -421,6 +453,7 @@ class SWAnalysis:
             "CurrentVersion" : os_dict['CurrentVersion'],
             "CurrentBuild" : os_dict['CurrentBuild'],
             "InstallDate" : os_dict['InstallDate'],
+            "TimeZone" : "UTC",
             "RegisteredOwner" : os_dict['RegisteredOwner'],
             "EditionID" : os_dict['EditionID'],
             "ProductName" : os_dict['ProductName']
@@ -450,7 +483,10 @@ class SWAnalysis:
             }
             self.ret_list.append(net_obj)
         return self.ret_list
-    
+
+    def cal_hash(self):
+        return self.ret_list.append(get_hash(self.reg))
+
     def __cal_hash(self):
         after_hash = calc_hash.get_hash(self.__path)
         self.__hash_val.append(after_hash)
@@ -460,12 +496,12 @@ class SWAnalysis:
     
     
 class SAMAnalysis:
-    def __init__(self, file, path, hash_val):
+    def __init__(self, file):
         self.reg = file
         self.ret_list = list()
         self.__hash_val = [hash_val]
         self.__path = path
-        self.__cal_hash()
+        self.__calc_hash()
         
     def __rec(self, key, get_path, find_val):
 #        get_path(key, find_val)
@@ -482,12 +518,11 @@ class SAMAnalysis:
                                 "find_keyword" : find_val,
                                 "key" : key.path()
                             }
-                            self.ret_list.append(reg_key_obj)
-        return self.ret_list
+                            print(json.dumps(reg_key_obj))
 
     def find_key(self, keyword):
         self.__rec(self.reg.root(), self.__get_path, keyword)
-        
+
     def __bin_to_int(self, info):
         bin_to_little_endian = bytes.decode(binascii.hexlify(info[0:][::-1]))
         int_info = int(bin_to_little_endian, 16)
@@ -522,7 +557,8 @@ class SAMAnalysis:
         for items in user.subkeys():
             user_obj = {
                     'UserName' : items.name(), 
-                    'Last Written Time' : items.timestamp().strftime("%Y-%m-%d %H:%M:%S")
+                    'Last Written Time' : items.timestamp().strftime("%Y-%m-%d %H:%M:%S"),
+                    'TimeZone' : "UTC"
                 }
             self.ret_list.append(user_obj)
         return self.ret_list
@@ -541,6 +577,7 @@ class SAMAnalysis:
                         'Last Login' : self.__cal_time(info_data[8:16]),
                         'Last PW Change' : self.__cal_time(info_data[24:32]),
                         'Log Fail Time' : self.__cal_time(info_data[40:48]),
+                        'TimeZone' : "UTC",
                         'RID' : self.__bin_to_int(info_data[48:52]),
                         'Logon Success Count' : self.__bin_to_int(info_data[64:66]),
                         'Logon Fail Count' : self.__bin_to_int(info_data[66:68])
@@ -559,9 +596,9 @@ class SAMAnalysis:
                     ret_list2.append(user_obj)
         for i in range(len(ret_list1)):
             ret_list1[i].update(ret_list2[i])
-        self.ret_list = ret_list1
-        return self.ret_list
-   
+
+        return ret_list1
+        
     def __cal_hash(self):
         after_hash = calc_hash.get_hash(self.__path)
         self.__hash_val.append(after_hash)
