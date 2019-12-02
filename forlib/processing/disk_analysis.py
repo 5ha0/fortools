@@ -36,8 +36,8 @@ class E01Analysis:
                 "file_name": i.info.name.name.decode(),
                 "file_type": file_type
             }
-            ret_list.append(f_path_obj)
-        return ret_list
+            self.ret_list.append(f_path_obj)
+        return self.ret_list
 
     def __UsnJrnl_extract(self, filename):
         fs = self.open_fs(length)
@@ -201,8 +201,8 @@ class DDAnalysis:
                 "file_name": i.info.name.name.decode(),
                 "file_type": file_type
             }
-            ret_list.append(f_path_obj)
-        return ret_list
+            self.ret_list.append(f_path_obj)
+        return self.ret_list
 
     def __UsnJrnl_extract(self, filename):
         fs = self.open_fs(length)
