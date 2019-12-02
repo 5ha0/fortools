@@ -4,15 +4,25 @@ from fortools import *
 path = r'C:\Users\sjms1\Desktop\와장창.zip'
 
 # zip file open
-file = Files.ZIP.file_open(path)
+zip = file_open(path)
+# Or you can use this
+# path = 'path'
+# file = file_open(path)
 
-# zip file info print
-file.show_info()
+####### 1. It shows all the parsing provided by this library at once. #######
+# zip.show_info()
 
-print('\n\n')
+####### 2. It handles all parsing provided by this library at once. #######
+information = zip.get_info()
+# print(information)
 
-# info = file.get_info()
-# fil = custom_filter(['FileName', r'\w+.jpg', 1], info)
+####### 3.If You want to make a report, Use This. #######
+# docx = DocxExport()
+# docx.add_table(information)
+# docx.save('zipfile')
+
+####### 4.If You want to specific search, Use This Filter. #######
+# fil = custom_filter(['FileName', r'\w+.jpg', 1], information)
 # for i in fil:
 #     print(i)
 
