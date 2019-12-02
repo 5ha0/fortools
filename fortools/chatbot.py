@@ -109,6 +109,10 @@ class Chatbot():
                             file.write('usb = event.Favorite.Account.usb()\nfor i in usb:\n\tprint(i)\n')
                         elif category == 7:
                             file.write('wireless = event.Favorite.Account.wireless()\nfor i in wireless:\n\tprint(i)\n')
+                 elif analysis == 10:
+                    print('Put event log idx what you want to see. Input: ')
+                    idx = input()
+                    file.write('xml_info = log_file.xml_with_num('+idx+')\nfor i in xml_info:\n\tprint(i)')
                 else:
                     print('plz input num. ex)1')
         elif answer == 2:
