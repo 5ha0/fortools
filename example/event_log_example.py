@@ -80,7 +80,8 @@ Uncomment the comment you want to use.
 # service_fail = log_file.Favorite.Etc.service_fails()
 # usb = log_file.Favorite.Etc.usb()
 # 
+# # -------------------------------------9. Get xml strings --------------------------------------------------------
 # # get xml information with number of event log, in this function number is index of event log
-# xml_info = log_file.xml_with_num(1)
+# xml_info = log_file.xml_with_num(num)
 # for i in xml_info:
 #     print(i)
