@@ -10,7 +10,7 @@ class Chatbot():
         path = input()
 
         print('what is your atrifact? \n1.event log 2.JumpList 3.FileSystem Log 4.Registry 5.Thumbnail\n'
-              '6.Zip 7.Files 8.Browser 9.Recycle 10.IconCache 11.Lnk ')
+              '6.Zip 7.Files 8.Browser 9.Recycle 10.IconCache 11.Lnk 12.Disk Image')
         answer = int(input())
 
         if answer == 1:
@@ -256,7 +256,7 @@ class Chatbot():
                 file.write('Download.file_open(r\''+path+'\')\n')
             elif ana_type == 4:
                 file.write('Cache.file_open(r\''+path+'\')\n')
-            print('choose your analysis. \n1.Get info\n2.Get path info\n3.Get hash value\n-1:finish')
+            print('choose your analysis. \n1.Get info\n2.Get hash value\n-1:finish')
             while True:
                 print('\ninput num: ')
                 analysis = int(input())
@@ -265,8 +265,6 @@ class Chatbot():
                 elif analysis == 1:
                     file.write('browser_info = browser.get_info()\nfor i in browser_info:\n\tprint(i)\n')
                 elif analysis == 2:
-                    file.write('hash_value = browser.get_hash()\nfor i in hash_value:\n\tprint(i)\n')
-                elif analysis == 3:
                     file.write('hash_value = browser.get_hash()\nfor i in hash_value:\n\tprint(i)\n')
         elif answer == 9:
             file.write("recycle = Recycle.file_open(r'" + path + "')\n")
@@ -310,6 +308,57 @@ class Chatbot():
                     file.write('parse_value = lnk.')
                     print('choose your value: \n1.creation time 2.file attribute 3.access time 4.modification time 5.lnk_access time 6.file size 7.icon_idex 8.show_command 9.volume info\n'
                           '10.localbase path 11.netbios 12.machine id 13.lnk creation time 14. lnk modification time\n input num: ')
+                    category = int(input())
+                    if category == 1:
+                        file.write('creation_time()')
+                    elif category == 2:
+                        file.write('file_atribute()')
+                    elif category == 3:
+                        file.write('access_time()')
+                    elif category == 4:
+                        file.write('write_time()')
+                    elif category == 5:
+                        file.write('lnk_access_tim()')
+                    elif category == 6:
+                        file.write('file_size()')
+                    elif category == 7:
+                        file.write('icon_idex()')
+                    elif category == 8:
+                        file.write('show_command()')
+                    elif category == 9:
+                        print("You can get Drive Serial Num, Volume Label")
+                        file.write('volume()')
+                    elif category == 10:
+                        file.write('localbase_path()')
+                    elif category == 11:
+                        file.write('netbios()')
+                    elif category == 12:
+                        file.write('machine_id()')
+                    elif category == 13:
+                        file.write('lnk_creation_time()')
+                    elif category == 14:
+                        file.write('lnk_write_time()')
+                    file.write('\nfor i in parse_value:\n\tprint(i)\n')
+        elif answer == 12:
+            file.write("disk_image = Disk.disk_open(r'" + path + "')\n")
+            print('1. You should check volume partition information before collecting files.\n2. You must enter the partition start sector you want to analyze.')
+            print('choose your analysis. \n1.File Collect\n2.File Analysis\n-1:finish')
+            file.write("start_sector = disk_image.volume_metadata()\n")
+            while True:
+                print('\ninput num: ')
+                analysis = int(input())
+                if analysis == -1:
+                    break
+                elif analysis == 1:
+                    print('Input your file . If you want to find path -start is .,cpartition start sector')
+                    file.write('\n')
+                elif analysis == 2:
+                    file.write('lnk_info = lnk.get_all_info()\nfor i in lnk_info:\n\tprint(i)\n')
+                elif analysis == 3:
+                    file.write('parse_value = lnk.')
+                    print(
+                        'choose your value: \n1.creation time 2.file attribute 3.access time 4.modification time 5.lnk_access time 6.file size 7.icon_idex 8.show_command 9.volume info\n'
+                        '10.localbase path 11.netbios 12.machine id 13.lnk creation time 14. lnk modification time\n input num: ')
                     category = int(input())
                     if category == 1:
                         file.write('creation_time()')
