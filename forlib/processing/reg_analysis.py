@@ -12,7 +12,7 @@ class NTAnalysis:
         self.ret_list = list()
         self.__hash_val = [hash_val]
         self.__path = path
-        self.__calc_hash()
+        self.__cal_hash()
 
     def __rec(self, key, get_path, find_val):
 #        get_path(key, find_val)
@@ -234,7 +234,7 @@ class SYSAnalysis:
         self.ret_list = list()
         self.__hash_val = [hash_val]
         self.__path = path
-        self.__calc_hash()
+        self.__cal_hash()
         
     def __rec(self, key, get_path, find_val):
 #        get_path(key, find_val)
@@ -318,9 +318,10 @@ class SYSAnalysis:
         for i, v in enumerate(recent.values()):
             reg_obj  = {
                     "time" : str(recent.timestamp()),
+                    "TimeZone" : "UTC",
                     "path" : v.value()}
-            ret_list.append(reg_obj)
-        return ret_list
+            self.ret_list.append(reg_obj)
+        return self.ret_list
 
     def get_timezone(self):
         path = "ControlSet00%s\\Control\\TimeZoneInformation" % self.__control_set_check(self.reg)
@@ -403,7 +404,7 @@ class SWAnalysis:
         self.ret_list = list()
         self.__hash_val = [hash_val]
         self.__path = path
-        self.__calc_hash()
+        self.__cal_hash()
         
     def __control_set_check(self, file):
         key = file.open("Select")
@@ -501,7 +502,7 @@ class SAMAnalysis:
         self.ret_list = list()
         self.__hash_val = [hash_val]
         self.__path = path
-        self.__calc_hash()
+        self.__cal_hash()
         
     def __rec(self, key, get_path, find_val):
 #        get_path(key, find_val)
