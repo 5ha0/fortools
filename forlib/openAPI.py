@@ -92,21 +92,21 @@ def file_open(path):
 
 class Disk:
     def disk_open(path):
+        hash_val = calc_hash.get_hash(path)
         if pyewf.check_file_signature(path) == True:
             filename = pyewf.glob(path)
             ewf_handle = pyewf.handle()
             ewf_handle.open(filename)
-            return disk_analysis.E01Analysis(ewf_handle)
+            return disk_analysis.E01Analysis(ewf_handle, path, hash_val)
         else:
-            img_info = pytsk3.Img_Info(image)
-            return disk_analysis.DDAnalysis(img_info)
+            return disk_analysis.DDAnalysis(path, hash_val)
 
 class Mem:
     def mem_open(path):
         extension = sig_check(path)
-        if extension == 'data' or extension == 'block special':
-            calc_hash.get_hash(path)
-            return mem_analysis.MemAnalysis(path)
+        if extension == 'data' or extension == 'block special':    
+            hash_val = calc_hash.get_hash(path)
+            return mem_analysis.MemAnalysis(path, hash_val)
 
 
 class EventLog:
@@ -256,14 +256,15 @@ class RegistryHive:
         extension = sig_check(path)
         if extension == 'data':
             file = reg_open(path)
+            hash_val = calc_hash.get_hash(path)
             if Registry.HiveType.NTUSER == file.hive_type():
-                return reg_analysis.NTAnalysis(file)
+                return reg_analysis.NTAnalysis(file, path, hash_val)
             elif Registry.HiveType.SAM == file.hive_type():
-                return reg_analysis.SAMAnalysis(file)
+                return reg_analysis.SAMAnalysis(file, path, hash_val)
             elif Registry.HiveType.SOFTWARE == file.hive_type():
-                return reg_analysis.SWAnalysis(file)
+                return reg_analysis.SWAnalysis(file, path, hash_val)
             elif Registry.HiveType.SYSTEM == file.hive_type():
-                return reg_analysis.SYSAnalysis(file)
+                return reg_analysis.SYSAnalysis(file, path, hash_val)
             elif Registry.HiveType.SYSTEM == file.hive_type():
                 print("[-] To be continue")
             else:
