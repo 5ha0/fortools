@@ -242,12 +242,23 @@ class Prefetch:
         extension = sig_check(path)
         if extension == 'prefetch':
             hash_v = calc_hash.get_hash(path)
-            dirname = os.path.dirname(path)
-            basename = os.path.basename(path)
-            base = os.path.splitext(basename)
-            basename = base[0]
-            exetension = base[-1]
-            file = prefetch_open(dirname + '\\' + basename + '-1' + exetension)
+            file = prefetch_open(path)
+            file.seek(0)
+            version = struct.unpack_from('I', file.read(4))[0]
+            if version == 23:
+                file = prefetch_open(path)
+            else:
+                dirname = os.path.dirname(path)
+                basename = os.path.basename(path)
+                base = os.path.splitext(basename)
+                basename = base[0]
+                exetension = base[-1]
+                file = prefetch_open(dirname + '\\' + basename + '-1' + exetension)
+                file.seek(0)
+                version = struct.unpack_from('I', file.read(4))[0]
+                if version != 23 and version != 30:
+                    print('error: not supported version')
+                    return -1
             return prefetch_analysis.PrefetchAnalysis(file, path, hash_v)
 
 
@@ -456,11 +467,6 @@ def iconcache_open(path):
 
 def prefetch_open(path):
     prefetch_file = open(path, 'rb')
-    version = struct.unpack_from('I', prefetch_file.read(4))[0]
-    if version != 23 and version != 30:
-        print('error: not supported version')
-        print(version)
-        return -1
     return prefetch_file
 
 
