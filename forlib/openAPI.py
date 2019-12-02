@@ -432,7 +432,11 @@ def firefox_open(path):
 
 
 def ie_edge_open(path):
-    return pyesedb.open(path, 'rb')
+    if pyesedb.check_file_signature(path):
+        return pyesedb.open(path, 'rb')
+    else:
+        print("please check your file")
+        return -1
 
 
 def ole_open(path):
