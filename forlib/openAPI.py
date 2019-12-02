@@ -79,7 +79,7 @@ def file_open(path):
         return Files.HWP.file_open(path)
     elif extension == 'PDF document':
         return Files.PDF.file_open(path)
-    elif extension == 'thumb_cache':
+    elif extension == 'Thumb_Icon':
         return Thumbnail_Iconcache.file_open(path)
     elif extension == 'MS Windows shortcut':
         return Lnk.file_open(path)
@@ -92,21 +92,21 @@ def file_open(path):
 
 class Disk:
     def disk_open(path):
+        hash_val = calc_hash.get_hash(path)
         if pyewf.check_file_signature(path) == True:
             filename = pyewf.glob(path)
             ewf_handle = pyewf.handle()
             ewf_handle.open(filename)
-            return disk_analysis.E01Analysis(ewf_handle)
+            return disk_analysis.E01Analysis(ewf_handle, path, hash_val)
         else:
-            img_info = pytsk3.Img_Info(image)
-            return disk_analysis.DDAnalysis(img_info)
+            return disk_analysis.DDAnalysis(path, hash_val)
 
 class Mem:
     def mem_open(path):
         extension = sig_check(path)
-        if extension == 'data' or extension == 'block special':
-            calc_hash.get_hash(path)
-            return mem_analysis.MemAnalysis(path)
+        if extension == 'data' or extension == 'block special':    
+            hash_val = calc_hash.get_hash(path)
+            return mem_analysis.MemAnalysis(path, hash_val)
 
 
 class EventLog:
@@ -214,56 +214,57 @@ class Lnk:
         extension = sig_check(path)
         print('extension: ' + extension)
         if extension == 'MS Windows shortcut':
-            calc_hash.get_hash(path)
+            hash_v = calc_hash.get_hash(path)
             file = lnk_open(path)
-            return lnk_analysis.LnkAnalysis(file)
+            return lnk_analysis.LnkAnalysis(file, path, hash_v)
 
 
 class Recycle:
     def file_open(path):
         extension = sig_check(path)
-        if extension == 'data':
-            calc_hash.get_hash(path)
+        if extension == 'recycle_i':
+            hash_v = calc_hash.get_hash(path)
             file = recycle_open(path)
-            return recycle_analysis.RecycleAnalysis(file)
+            return recycle_analysis.RecycleAnalysis(file, path, hash_v)
 
 
 class Iconcache:
     def file_open(path):
         extension = sig_check(path)
-        if extension == 'data':
-            calc_hash.get_hash(path)
+        if extension == 'Icon':
+            hash_v = calc_hash.get_hash(path)
             file = iconcache_open(path)
-            return iconcache_analysis.IconcacheAnalysis(file)
+            return iconcache_analysis.IconcacheAnalysis(file, path, hash_v)
 
 
 class Prefetch:
     def file_open(path):
         extension = sig_check(path)
         if extension == 'prefetch':
-            calc_hash.get_hash(path)
+            hash_v = calc_hash.get_hash(path)
             dirname = os.path.dirname(path)
             basename = os.path.basename(path)
             base = os.path.splitext(basename)
             basename = base[0]
             exetension = base[-1]
             file = prefetch_open(dirname + '\\' + basename + '-1' + exetension)
-            return prefetch_analysis.PrefetchAnalysis(file, path)
+            return prefetch_analysis.PrefetchAnalysis(file, path, hash_v)
 
 
 class RegistryHive:
     def file_open(path):
         extension = sig_check(path)
-        if extension == 'data':
+        if extension == 'MS Windows registry file':
             file = reg_open(path)
+            hash_val = calc_hash.get_hash(path)
             if Registry.HiveType.NTUSER == file.hive_type():
-                return reg_analysis.NTAnalysis(file)
+                return reg_analysis.NTAnalysis(file, path, hash_val)
             elif Registry.HiveType.SAM == file.hive_type():
-                return reg_analysis.SAMAnalysis(file)
+                return reg_analysis.SAMAnalysis(file, path, hash_val)
             elif Registry.HiveType.SOFTWARE == file.hive_type():
-                return reg_analysis.SWAnalysis(file)
+                return reg_analysis.SWAnalysis(file, path, hash_val)
             elif Registry.HiveType.SYSTEM == file.hive_type():
-                return reg_analysis.SYSAnalysis(file)
+                return reg_analysis.SYSAnalysis(file, path, hash_val)
             elif Registry.HiveType.SYSTEM == file.hive_type():
                 print("[-] To be continue")
             else:
@@ -289,6 +290,7 @@ class Thumbnail_Iconcache:
     def file_open(path):
         try:
             extension = sig_check(path)
+            print('extension: ' + extension)
             if extension == 'Thumb_Icon':
                 hash_v = calc_hash.get_hash(path)
                 file = cache_open(path)
@@ -458,6 +460,7 @@ def prefetch_open(path):
     if version != 23 and version != 30:
         print('error: not supported version')
         print(version)
+        return -1
     return prefetch_file
 
 

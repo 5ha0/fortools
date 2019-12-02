@@ -255,13 +255,13 @@ class ZIPAnalysis:
         for i in self.__info:
             print(i)
 
-    def last_modtime(self):
-        num = 1
-        for info in self.file.infolist():
-            file_name = os.path.basename(info.filename)
-            #print(str(num) + "\tFilename: " + file_name + '\t '+ "Modified Time: " + str(datetime(*info.date_time)))
-            print(file_name)
-            num += 1
+    # def last_modtime(self):
+    #     num = 1
+    #     for info in self.file.infolist():
+    #         file_name = os.path.basename(info.filename)
+    #         #print(str(num) + "\tFilename: " + file_name + '\t '+ "Modified Time: " + str(datetime(*info.date_time)))
+    #         print(file_name)
+    #         num += 1
 
 
 # Print files in folder

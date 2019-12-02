@@ -2,13 +2,16 @@ from datetime import datetime, timedelta
 import struct
 from bitstring import BitArray
 import os
+import json
+import forlib.calc_hash as calc_hash
 
 
 class LnkAnalysis:
 
-    def __init__(self, file, path):
+    def __init__(self, file, path, hash_v):
         self.file = file
         self.path = path
+        self.__hash_value = [hash_v]
         self.lnk_flag = []
         self.locbase_path_uni = None
         self.start_off = None
@@ -18,7 +21,7 @@ class LnkAnalysis:
         self.extra_data = None
         self.linkinfo_flag = self.__link_flags()
 
-    def __link_flag(self, flags_to_parse):
+    def __lnk_flag(self, flags_to_parse):
         flags = {0: "HasLinkTargetIDList",
                  1: "HasLinkInfo",
                  2: "HasName",
@@ -53,7 +56,6 @@ class LnkAnalysis:
                 self.lnk_flag.append(format(flags[count]))
             else:
                 continue
-        print(self.lnk_flag)
 
         return self.lnk_flag
 
@@ -78,7 +80,6 @@ class LnkAnalysis:
         lnk_attributes = []
         for count, items in enumerate(attrib_to_parse):
             if int(items) == 1:
-                print('Link Attribute: ' + format(attrib[count]))
                 lnk_attributes.append(format(attrib[count]))
             else:
                 continue
@@ -99,7 +100,6 @@ class LnkAnalysis:
         drive_type_list = []
         for count, items in enumerate(drive):
             if int(items) == 1:
-                print('Drive Type: ' + format(drive_type[count]))
                 drive_type_list.append(format(drive_type[count]))
             else:
                 continue
@@ -113,7 +113,7 @@ class LnkAnalysis:
         self.file.seek(20)
         flags = struct.unpack('<i', self.file.read(4))
         file_flags = BitArray(hex(flags[0]))
-        self.__link_flag(file_flags.bin)
+        self.__lnk_flag(file_flags.bin)
 
     def file_attribute(self):
         self.file.seek(24)
@@ -121,7 +121,13 @@ class LnkAnalysis:
         flag_atributes = BitArray(hex(attributes[0]))
         flag_atributes = self.__lnk_attrib(flag_atributes.bin)
 
-        return flag_atributes
+        lnk_list = []
+        for i in range(0, len(flag_atributes)):
+            lnk_obj = {"File Attributes": flag_atributes[i]}
+            json.dumps(lnk_obj)
+            lnk_list.append(lnk_obj)
+
+        return lnk_list
 
     # Target File time
     def creation_time(self):
@@ -129,61 +135,99 @@ class LnkAnalysis:
         c_time = self.file.read(8)
         c_time = struct.unpack('<q', c_time)
         c_time = convert_time(c_time)
-        print('Target File Creation Time: ' + str(c_time) + 'UTC+9:00')
 
-        return c_time
+        lnk_list = []
+        lnk_obj = {'Target File Creation Time': str(c_time),
+                   'TimeZone': 'UTC +9'}
+        json.dumps(lnk_obj)
+        lnk_list.append(lnk_obj)
+
+        return lnk_list
 
     def access_time(self):
         self.file.seek(36)
         a_time = self.file.read(8)
         a_time = struct.unpack_from('<q', a_time)[0]
         a_time = convert_time(a_time)
-        print('Target File Access Time: ' + str(a_time) + 'UTC+9:00')
 
-        return a_time
+        lnk_list = []
+        lnk_obj = {'Target File Access Time': str(a_time),
+                   "TimeZone": 'UTC +9'}
+        json.dumps(lnk_obj)
+        lnk_list.append(lnk_obj)
+
+        return lnk_list
 
     def write_time(self):
         self.file.seek(44)
         w_time = self.file.read(8)
         w_time = struct.unpack('<q', w_time)[0]
         w_time = convert_time(w_time)
-        print('Target File Write Time: ' + str(w_time) + 'UTC+9:00')
 
-        return w_time
+        lnk_list = []
+        lnk_obj = {'Target File Write Time': str(w_time),
+                   "TimeZone": 'UTC +9'}
+        json.dumps(lnk_obj)
+        lnk_list.append(lnk_obj)
+
+        return lnk_list
 
     # Link file Time
 
     def lnk_creation_time(self):
         c_time = datetime.fromtimestamp(os.path.getctime(self.path))
-        print('Link File Creation Time: ' + str(c_time) + ' UTC+9:00')
 
-        return c_time
+        lnk_list = []
+        lnk_obj = {'Link File Creation Time': str(c_time),
+                   "TimeZone": 'UTC +9'}
+        json.dumps(lnk_obj)
+        lnk_list.append(lnk_obj)
+
+        return lnk_list
 
     def lnk_access_time(self):
         a_time = datetime.fromtimestamp(os.path.getatime(self.path))
-        print('Link File Last Access Time: ' + str(a_time) + ' UTC+9:00')
 
-        return a_time
+        lnk_list = []
+        lnk_obj = {'Link File Last Access Time': str(a_time),
+                   "TimeZone": 'UTC +9'}
+        json.dumps(lnk_obj)
+        lnk_list.append(lnk_obj)
+
+        return lnk_list
 
     def lnk_write_time(self):
         w_time = datetime.fromtimestamp(os.path.getmtime(self.path))
-        print('Link File Write Time: ' + str(w_time) + ' UTC+9:00')
 
-        return w_time
+        lnk_list = []
+        lnk_obj = {'Link File Write Time': str(w_time),
+                   "TimeZone": 'UTC +9'}
+        json.dumps(lnk_obj)
+        lnk_list.append(lnk_obj)
+
+        return lnk_list
 
     def file_size(self):
         self.file.seek(52)
         file_size = struct.unpack('<l', self.file.read(4))[0]
-        print('Target File Size : ' + str(file_size) + 'bytes')
 
-        return file_size
+        lnk_list = []
+        lnk_obj = {'Target File Size': str(file_size) + 'bytes'}
+        json.dumps(lnk_obj)
+        lnk_list.append(lnk_obj)
+
+        return lnk_list
 
     def iconindex(self):
         self.file.seek(56)
         iconindex = struct.unpack('<l', self.file.read(4))[0]
-        print('Iconindex : ' + str(iconindex))
 
-        return iconindex
+        lnk_list = []
+        lnk_obj = {'IconIndex': str(iconindex)}
+        json.dumps(lnk_obj)
+        lnk_list.append(lnk_obj)
+
+        return lnk_list
 
     def show_command(self):
         self.file.seek(60)
@@ -198,13 +242,16 @@ class LnkAnalysis:
         else:
             showcomand = 'SW_SHOWNORMAL(default)'
 
-        print('Showcomand: ' + str(showcomand))
+        lnk_list = []
+        lnk_obj = {'Show Command': str(showcomand)}
+        json.dumps(lnk_obj)
+        lnk_list.append(lnk_obj)
 
-        return showcomand
+        return lnk_list
 
     ################ Link_Info #############################
 
-    def __linkinfo_off(self):
+    def __lnkinfo_off(self):
 
         if 'HasLinkInfo' not in self.lnk_flag:
             self.linkinfo_flag = None
@@ -250,14 +297,30 @@ class LnkAnalysis:
             self.locbase_path_uni = None
 
     def volume(self):
-        self.__linkinfo_off()
+        lnk_list = []
+
+        self.__lnkinfo_off()
 
         if self.linkinfo_flag != 'True':
             print('link info (X)')
-            return [0, 0, 0]
+            lnk_obj = {'Drivetype': 'None'}
+            json.dumps(lnk_obj)
+            lnk_list.append(lnk_obj)
+            lnk_obj1 = {'Driveserialnumber': 'None',
+                        'Volumelable': 'None'}
+            json.dumps(lnk_obj1)
+            lnk_list.append(lnk_obj1)
+            return lnk_list
         elif self.info_flag != 'A':
             print('volume id (X)')
-            return [0, 0, 0]
+            lnk_obj = {'Drivetype': 'None'}
+            json.dumps(lnk_obj)
+            lnk_list.append(lnk_obj)
+            lnk_obj = {'Driveserialnumber': 'None',
+                       'Volumelable': 'None'}
+            json.dumps(lnk_obj)
+            lnk_list.append(lnk_obj)
+            return lnk_list
 
         vol_off = self.start_off + 12
         self.file.seek(vol_off)
@@ -271,7 +334,6 @@ class LnkAnalysis:
         drive_type = self.__drive_type_list(drive_type)
 
         driveserialnumber = struct.unpack('<l', self.file.read(4))[0]
-        print('Driveserialnumber: ' + str(driveserialnumber))
 
         volumelable_off = self.file.read(4)
         if volumelable_off != '0x00000014':
@@ -286,21 +348,47 @@ class LnkAnalysis:
         volumelable_size = vol_size - vol_lable_off
         volumelable = self.file.read(volumelable_size)
         volumelable = volumelable.decode('cp1252')
-        print('Volumelable: ' + volumelable)
 
-        return [drive_type, driveserialnumber, volumelable]
+        for i in range(0, len(drive_type)):
+            lnk_obj = {"Drivetype": drive_type[i]}
+            json.dumps(lnk_obj)
+            lnk_list.append(lnk_obj)
+        lnk_obj = {'Driveserialnumber': str(driveserialnumber),
+                   'Volumelable': volumelable}
+        json.dumps(lnk_obj)
+        lnk_list.append(lnk_obj)
+
+        return lnk_list
+
 
     def localbase_path(self):
-        self.__linkinfo_off()
+        lnk_list = []
+
+        self.__lnkinfo_off()
 
         if self.linkinfo_flag != 'True':
             print('this file does not have link info')
-            return [0, 0]
+            lnk_obj = {'Localbasepath Unicode': 'None',
+                       'Localbasepath': 'None'}
+            json.dumps(lnk_obj)
+            lnk_list.append(lnk_obj)
+
+            return lnk_list
         elif self.info_flag != 'A':
             print('locabasepath (X), locabasepathunicode (X)')
-            return [0, 0]
+            lnk_obj = {'Localbasepath Unicode': 'None',
+                       'Localbasepath': 'None'}
+            json.dumps(lnk_obj)
+            lnk_list.append(lnk_obj)
+
+            return lnk_list
         elif self.locbase_path_uni != 'True':
-            print('locbasepathoffsetunicode : 0\n locbasepathunicode : unknown')
+            lnk_obj = {'Localbasepath Unicode': '0',
+                       'Localbasepath': 'unknown'}
+            json.dumps(lnk_obj)
+            lnk_list.append(lnk_obj)
+
+            return lnk_list
         else:
             locbase_path_off_uni = self.start_off + 28
             self.file.seek(locbase_path_off_uni)
@@ -312,7 +400,6 @@ class LnkAnalysis:
             self.locbase_path_uni = []
             for i in self.locbase_path_uni.split('\x00\x00'):
                 self.locbase_path_uni.append(i)
-            print('Localbasepath Unicode: ' + self.locbase_path_uni[0])
 
         locbasepath_off = self.start_off + 16
         self.file.seek(locbasepath_off)
@@ -325,9 +412,13 @@ class LnkAnalysis:
         locbasepath = []
         for i in locbasepath.split('\x00\x00'):
             locbasepath.append(i)
-        print('Localbasepath: ' + locbasepath[0])
 
-        return [self.locbase_path_uni, locbasepath]
+        lnk_obj = {'Localbasepath Unicode': self.locbase_path_uni[0],
+                   'Localbasepath': locbasepath[0]}
+        json.dumps(lnk_obj)
+        lnk_list.append(lnk_obj)
+
+        return lnk_list
 
     ################ Extra_Data #############################
     def __extradata_size(self, string_off):
@@ -346,8 +437,7 @@ class LnkAnalysis:
         return string_off
 
     def __string_data(self):
-        self.__linkinfo_off()
-        print(self.info_size)
+        self.__lnkinfo_off()
 
         string_off = self.start_off + self.info_size
 
@@ -378,65 +468,162 @@ class LnkAnalysis:
     def netbios(self):
         self.__string_data()
 
+        lnk_list = []
+
         if self.extra_data != 'True':
             print('netbios data (X)')
-            return 0
+            lnk_obj = {'NetBios': 'None'}
+            json.dumps(lnk_obj)
+            lnk_list.append(lnk_obj)
+
+            return lnk_list
         netbios = self.extra_off + 16
         self.file.seek(netbios)
         netbios = str(self.file.read(16))
         netbios = netbios.replace('\x00', '').encode('utf-8', 'ignore').decode('utf-8')
-        print('NetBios: ' + str(netbios))
 
-        return netbios
+        lnk_obj = {'NetBios': str(netbios)}
+        json.dumps(lnk_obj)
+        lnk_list.append(lnk_obj)
+
+        return lnk_list
 
     def machine_id(self):
         self.__string_data()
 
+        lnk_list = []
+
         if self.extra_data != 'True':
             print('machine id (X)')
-            return [0, 0]
+            lnk_obj = {'Droid': 'None',
+                       'DroidBirth': 'None'}
+            json.dumps(lnk_obj)
+            lnk_list.append(lnk_obj)
+
+            return lnk_list
         droid = self.extra_off + 32
         self.file.seek(droid)
         droid = str(self.file.read(32))
         droid = droid.replace('\x00', '').encode('utf-8', 'ignore').decode('utf-8')
-        print('Droid' + str(droid))
+
         droidbirth = str(self.file.read(32))
         droidbirth = droidbirth.replace('\x00', '').encode('utf-8', 'ignore').decode('utf-8')
-        print('DroidBirth' + str(droidbirth))
 
-        return [droid, droidbirth]
+        lnk_obj = {'Droid': str(droid),
+                   'DroidBirth': str(droidbirth)}
+        json.dumps(lnk_obj)
+        lnk_list.append(lnk_obj)
+
+        return lnk_list
 
 ################################################################################
+
+    # calculate hash value after parsing
+    def cal_hash(self):
+        self.__hash_value.append(calc_hash.get_hash(self.path))
+
+#################################################################################
 
     def show_all_info(self):
         info_list = []
         info = dict()
-        info["file attributes"] = str(self.file_attribute())
-        info["target file creation time"] = str(self.creation_time())
-        info["target file access time"] = str(self.access_time())
-        info["target file write time"] = str(self.write_time())
-        info["link file creation time"] = str(self.lnk_creation_time())
-        info["link file access time"] = str(self.lnk_access_time())
-        info["link file write time"] = str(self.lnk_write_time())
-        info["file size"] = str(self.file_size())
-        info["icon index"] = str(self.iconindex())
-        info["show command"] = str(self.show_command())
-        volume = str(self.volume())
-        info["drive type"] = volume[0]
-        info["drive serial number"] = volume[1]
-        info["volume lable"] = volume[2]
-        localbase = str(self.localbase_path())
-        info["localbasepath unicode"] = localbase[0]
-        info["localbasepath"] = localbase[1]
-        info["netbios"] = str(self.netbios())
-        machine = str(self.machine_id())
-        info["droid"] = machine[0]
-        info["droid birth"] = machine[1]
+        file_attribute = self.file_attribute()
+        for i in range(0, len(file_attribute)):
+            info["File Attributes"+ str(i)] = file_attribute[i]['File Attributes']
+        t_creation_time = self.creation_time()
+        info["Target File Creation Time"] = t_creation_time[0]['Target File Creation Time']
+        info['TimeZone'] = t_creation_time[0]['TimeZone']
+        t_access_time = self.access_time()
+        info["Target File Access Time"] = t_access_time[0]['Target File Access Time']
+        info['TimeZone'] = t_access_time[0]['TimeZone']
+        t_write_time = self.write_time()
+        info['Target File Write Time'] = t_write_time[0]['Target File Write Time']
+        info['TimeZone'] = t_write_time[0]['TimeZone']
+        l_creation_time = self.lnk_creation_time()
+        info['Link File Creation Time'] = l_creation_time[0]['Link File Creation Time']
+        info['TimeZone'] = l_creation_time[0]['TimeZone']
+        l_access_time = self.lnk_access_time()
+        info['Link File Last Access Time'] = l_access_time[0]['Link File Last Access Time']
+        info['TimeZone'] = l_access_time[0]['TimeZone']
+        l_write_time = self.lnk_write_time()
+        info['Link File Write Time'] = l_write_time[0]['Link File Write Time']
+        info['TimeZone'] = l_write_time[0]['TimeZone']
+        info['Target File Size'] = self.file_size()[0]['Target File Size']
+        info["IconIndex"] = self.iconindex()[0]['IconIndex']
+        info["Show Command"] = self.show_command()[0]['Show Command']
+        volume = self.volume()
+        count = 0
+        for i in range(0, len(file_attribute)):
+            info["Drivetype" + str(i)] = volume[i]['Drivetype']
+            count += 1
+        info["Driveserialnumber"] = volume[count]['Driveserialnumber']
+        info["Volumelable"] = volume[count]['Volumelable']
+        localbase = self.localbase_path()
+        info['Localbasepath Unicode'] = localbase[0]['Localbasepath Unicode']
+        info['Localbasepath'] = localbase[0]['Localbasepath']
+        info["NetBios"] = self.netbios()[0]['NetBios']
+        machine = self.machine_id()
+        info["Droid"] = machine[0]['Droid']
+        info["DroidBirth"] = machine[0]['DroidBirth']
+        self.cal_hash()
+        info['before_sha1'] = self.__hash_value[0]['sha1']
+        info['before_md5'] = self.__hash_value[0]['md5']
+        info['after_sha1'] = self.__hash_value[1]['sha1']
+        info['after_md5'] = self.__hash_value[1]['md5']
 
         print(info)
         info_list.append(info)
         return info_list
 
+    def get_all_info(self):
+        info_list = []
+        info = dict()
+        file_attribute = self.file_attribute()
+        for i in range(0, len(file_attribute)):
+            info["File Attributes"+ str(i)] = file_attribute[i]['File Attributes']
+        t_creation_time = self.creation_time()
+        info["Target File Creation Time"] = t_creation_time[0]['Target File Creation Time']
+        info['TimeZone'] = t_creation_time[0]['TimeZone']
+        t_access_time = self.access_time()
+        info["Target File Access Time"] = t_access_time[0]['Target File Access Time']
+        info['TimeZone'] = t_access_time[0]['TimeZone']
+        t_write_time = self.write_time()
+        info['Target File Write Time'] = t_write_time[0]['Target File Write Time']
+        info['TimeZone'] = t_write_time[0]['TimeZone']
+        l_creation_time = self.lnk_creation_time()
+        info['Link File Creation Time'] = l_creation_time[0]['Link File Creation Time']
+        info['TimeZone'] = l_creation_time[0]['TimeZone']
+        l_access_time = self.lnk_access_time()
+        info['Link File Last Access Time'] = l_access_time[0]['Link File Last Access Time']
+        info['TimeZone'] = l_access_time[0]['TimeZone']
+        l_write_time = self.lnk_write_time()
+        info['Link File Write Time'] = l_write_time[0]['Link File Write Time']
+        info['TimeZone'] = l_write_time[0]['TimeZone']
+        info['Target File Size'] = self.file_size()[0]['Target File Size']
+        info["IconIndex"] = self.iconindex()[0]['IconIndex']
+        info["Show Command"] = self.show_command()[0]['Show Command']
+        volume = self.volume()
+        count = 0
+        for i in range(0, len(file_attribute)):
+            info["Drivetype" + str(i)] = volume[i]['Drivetype']
+            count += 1
+        info["Driveserialnumber"] = volume[count]['Driveserialnumber']
+        info["Volumelable"] = volume[count]['Volumelable']
+        localbase = self.localbase_path()
+        info['Localbasepath Unicode'] = localbase[0]['Localbasepath Unicode']
+        info['Localbasepath'] = localbase[0]['Localbasepath']
+        info["NetBios"] = self.netbios()[0]['NetBios']
+        machine = self.machine_id()
+        info["Droid"] = machine[0]['Droid']
+        info["DroidBirth"] = machine[0]['DroidBirth']
+        self.cal_hash()
+        info['before_sha1'] = self.__hash_value[0]['sha1']
+        info['before_md5'] = self.__hash_value[0]['md5']
+        info['after_sha1'] = self.__hash_value[1]['sha1']
+        info['after_md5'] = self.__hash_value[1]['md5']
+
+        info_list.append(info)
+        return info_list
 
 def convert_time(time):
     time = '%016x' % time

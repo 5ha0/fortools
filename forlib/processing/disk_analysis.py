@@ -2,14 +2,18 @@ import pytsk3
 import pyewf
 import json
 import datetime
+import forlib.calc_hash as calc_hash
 
 class E01Analysis:
-    def __init__(self, file):
+    def __init__(self, file, path, hash_val):
         self.file = file
         self.ret_list = list()
         self.partition_list = list()
         self.img_info = EWFImgInfo(self.file)
         self.vol = pytsk3.Volume_Info(self.img_info)
+        self.__path = path
+        self.__hash_val = [hash_val]
+        self.__cal_hash()
 
     def get_path(self, path, length):
         for partition in self.vol:
@@ -137,7 +141,13 @@ class E01Analysis:
             }
             self.ret_list.append(e01_obj)
         return self.ret_list
+    
+    def __cal_hash(self):
+        after_hash = calc_hash.get_hash(self.__path)
+        self.__hash_val.append(after_hash)
 
+    def get_hash(self):
+        return self.__hash_val
     # def extract_file(self, output_path, file_extension):
     #     self.__open
 
@@ -161,9 +171,13 @@ class EWFImgInfo(pytsk3.Img_Info):
 
 
 class DDAnalysis:
-    def __init__(self, file):
+    def __init__(self, file, path, hash_val):
         self.file = file
-
+        self.ret_list = list()
+        self.__path = path
+        self.__hash_val = [hash_val]
+        self.__cal_hash()
+        
     def __mft_log_extract(self, filename, output_name):
         fs = pytsk3.FS_Info(self.file)
         f = fs.open(filename)
@@ -251,7 +265,8 @@ class DDAnalysis:
                 "Start Sector": partition.start,
                 "Sector Count": partition.len
             }
-            print(json.dumps(dd_obj))
+            self.ret_list.append(dd_obj)
+        return self.ret_list
 
     def get_path(self, path):
         fs = pytsk3.FS_Info(self.file)
@@ -269,10 +284,15 @@ class DDAnalysis:
                 "file_name" : i.info.name.name.decode(),
                 "file_type" : file_type
             }
-            ret_list.append(f_path_obj)
-        return ret_list
+            self.ret_list.append(f_path_obj)
+        return self.ret_list
 
+    def __cal_hash(self):
+        after_hash = calc_hash.get_hash(self.__path)
+        self.__hash_val.append(after_hash)
 
+    def get_hash(self):
+        return self.__hash_val
 
     
 

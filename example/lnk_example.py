@@ -5,24 +5,27 @@ file = Lnk.file_open(r'path')
 # path = 'path'
 # file = file_open(path)
 
-# show information from shell-link-header
-link_attribute = file.file_attribute()
-print(str(link_attribute))
-c_time = file.creation_time()
-file.lnk_creation_time()
-file.lnk_access_time()
-file.lnk_write_time()
-size = file.file_size()
-iconindex = file.iconindex()
-showcommand = file.show_command()
+'''
+Uncomment the comment you want to use.
+'''
 
-# show information from link-info
-volume_information = file.volume()
-localbasepath_information = file.localbase_path()
+####### 1. It shows all the parsing provided by this library at once. #######
+# information = file.show_all_info()
 
-# show information from extra-data
-netbios = file.netbios()
-machineid_information = file.machine_id()
+####### 2. It handles all parsing provided by this library at once. #######
+# information = file.get_all_info()
+# # if you show 2, use print()
+# print(information)
 
-# show information from show_all_info()
-result = file.show_all_info()
+####### 3. You can parse only one value. #######
+# information = file.lnk_creation_time()
+# parse list [.file_attribute, .creation_time(), .access_time(), .write_time(), .lnk_creation_time(), .lnk_access_time(), .lnk_write_time(), .file_size(), icon_indes(), .show_command(), .volume(), .localbase_path(), .netbios(), .machine_id, .show_all_info(), get_all_info()]
+# print(information)
+
+####### 4.If You want to make a report, Use This. #######
+# !caution!Use the script above first
+# #How to make a report
+# docx = DocxExport()
+# docx.make_table(information)
+# docx.save('report_name')
+
