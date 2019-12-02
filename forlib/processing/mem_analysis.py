@@ -9,7 +9,7 @@ class MemAnalysis:
         self.ret_list = list()
         self.__path = path
         self.__hash_val = [hash_val]
-        self.__calc_hash()
+        self.__cal_hash()
         
     def __regx(self, result):
         ret_list = list()
