@@ -10,7 +10,7 @@ Uncomment the comment you want to use.
 '''
 
 ####### 1. It shows all the parsing provided by this library at once. #######
-information = file.show_all_info()
+# information = file.show_all_info()
 
 ####### 2. It handles all parsing provided by this library at once. #######
 # information = file.get_all_info()

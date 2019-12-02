@@ -1,7 +1,7 @@
 from fortools import *
 
 file = Prefetch.file_open(r'path')
-# # Or you can use this
+# Or you can use this
 # path = 'path'
 # file = file_open(path)
 
