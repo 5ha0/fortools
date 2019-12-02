@@ -51,6 +51,26 @@ start_time = time.time()
 # for i in IE_Edge_cache.get_info():
 #      print(i)
 
+# Firefox_cookies=Browser.Firefox.Cookie.file_open(cookies_path)
+# Firefox_download=Browser.Firefox.Download.file_open(download_path)
+# Firefox_history=Browser.Firefox.History.file_open(history_path)
+
+# print(Firefox_cookies.get_hash())
+# print(Firefox_history.get_hash())
+# print(Firefox_download.get_hash())
+
+# print("history")
+# for i in Firefox_history.get_info():
+#     print(i)
+# print("cookie")
+# for i in Firefox_cookies.get_info():
+#     print(i)
+# print("download")
+# for i in Firefox_download.get_info():
+#      print(i)
+
+
+
 # #keyword_search
 # keyword =chrome_history.keyword_search("keyword")
 # for i in keyword:

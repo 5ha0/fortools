@@ -3,11 +3,10 @@ import re, os
 import forlib.calc_hash as calc_hash
 
 class MemAnalysis:
-    def __init__(self, file, path, hash_val):
+    def __init__(self, file, hash_val):
         self.file = file
         self.vol_path = os.path.dirname(os.path.realpath(__file__)) + "\\volatility3\\vol.py"
         self.ret_list = list()
-        self.__path = path
         self.__hash_val = [hash_val]
         self.__cal_hash()
         
@@ -300,7 +299,7 @@ class MemAnalysis:
         return self.ret_list
 
     def __cal_hash(self):
-        after_hash = calc_hash.get_hash(self.__path)
+        after_hash = calc_hash.get_hash(self.file)
         self.__hash_val.append(after_hash)
 
     def get_hash(self):

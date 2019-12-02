@@ -81,13 +81,19 @@ class DocxExport:
 
         hdr_cells = table.rows[0].cells
         for i in range(0, len(data[0].keys())):
-            hdr_cells[i].text = str(col_list[i])
+            try:
+                hdr_cells[i].text = str(col_list[i])
+            except:
+                hdr_cells[i].text = 'cannot put data'
 
         for i in range(0, len(data)):
             row_cells = table.add_row().cells
             result = list(data[i].values())
             for j in range(0, len(data[0].keys())):
-                row_cells[j].text = str(result[j])
+                try:
+                    row_cells[j].text = str(result[j])
+                except:
+                    row_cells[j].text = 'cannot put data'
         self.document.add_paragraph()
 
     def table_by_json(self, data):
