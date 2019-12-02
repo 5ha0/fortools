@@ -264,14 +264,14 @@ class DDAnalysis:
 
     def volume_metadata(self):
         for partition in self.vol:
-            e01_obj = {
+            dd_obj = {
                 "Type": partition.desc.decode(),
                 "Num": partition.addr,
                 "Start Sector": partition.start,
                 "Total Sector": partition.len,
                 "Size": str((partition.len * 512) / 1024 ** 2) + "MB"
             }
-            self.ret_list.append(e01_obj)
+            self.ret_list.append(dd_obj)
         return self.ret_list
 
     def __cal_hash(self):
