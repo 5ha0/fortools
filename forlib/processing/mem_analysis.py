@@ -1,11 +1,15 @@
 import subprocess
 import re
+import forlib.calc_hash as calc_hash
 
 class MemAnalysis:
-    def __init__(self, file):
+    def __init__(self, file, path, hash_val):
         self.file = file
         self.vol_path = ""
         self.ret_list = list()
+        self.__path = path
+        self.__hash_val = hash_val
+        self.__calc_hash()
         
     def __regx(self, result):
         ret_list = list()
@@ -294,3 +298,10 @@ class MemAnalysis:
         self.ret_list = self.__processing(reg_list, keyList)
 
         return self.ret_list
+
+    def __cal_hash(self):
+        after_hash = calc_hash.get_hash(self.__path)
+        self.__hash_val.append(after_hash)
+
+    def get_hash(self):
+        return self.__hash_val    
