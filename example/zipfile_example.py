@@ -22,9 +22,9 @@ information = zip.get_info()
 # docx.save('zipfile')
 
 ####### 4.If You want to specific search, Use This Filter. #######
-# fil = custom_filter(['FileName', r'\w+.jpg', 1], information)
-# for i in fil:
-#     print(i)
+fil = custom_filter(['FileName', r'\w+.jpg', 1], information)
+for i in fil:
+    print(i)
 
 
 
