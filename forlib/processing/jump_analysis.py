@@ -3,6 +3,7 @@ import struct
 import forlib.calc_hash as calc_hash
 from bitstring import BitArray
 import olefile
+import chardet
 
 
 class JumplistAnalysis:
@@ -122,38 +123,30 @@ class JumplistAnalysis:
                 path_offset = struct.unpack('<L', file_data[94 + lnk_id_list_size[0]:94 + lnk_id_list_size[0] + 4])
                 try:
                     volumeid_offset = struct.unpack("<L",file_data[90+lnk_id_list_size[0]:90+lnk_id_list_size[0]+4])
-                    volumeid_size = struct.unpack("<L", file_data[78 + lnk_id_list_size[0] + volumeid_offset[0]:
-                                                            volumeid_offset[0] + 82 + lnk_id_list_size[0]])
-                    drivetype =  struct.unpack("<L",file_data[82+lnk_id_list_size[0]+volumeid_offset[0]:
-                                                              volumeid_offset[0]+86+lnk_id_list_size[0]])
+                    volumeid_size = struct.unpack("<L", file_data[78 + lnk_id_list_size[0] + volumeid_offset[0]:volumeid_offset[0] + 82 + lnk_id_list_size[0]])
+                    drivetype =  struct.unpack("<L",file_data[82+lnk_id_list_size[0]+volumeid_offset[0]:volumeid_offset[0]+86+lnk_id_list_size[0]])
 
-                    volumelabel_offset = struct.unpack("<L", file_data[90 + lnk_id_list_size[0] + volumeid_offset[0]:
-                                                                volumeid_offset[0] + 94 + lnk_id_list_size[0]])
+                    volumelabel_offset = struct.unpack("<L", file_data[90 + lnk_id_list_size[0] + volumeid_offset[0]:volumeid_offset[0] + 94 + lnk_id_list_size[0]])
                     if volumelabel_offset[0] == 14:
                         offset1 = volumeid_size[0] - (4 + 4 + 4 + 4 + 4)
                     else:
                         offset1 = volumeid_size[0] - (4 + 4 + 4 + 4)
-                    drive_serial_num = struct.unpack("<L", file_data[86 + lnk_id_list_size[0] + volumeid_offset[0]:
-                                                                                     volumeid_offset[0] + 90 +
-                                                                                     lnk_id_list_size[0]])[0]
-                    volumelabel = file_data[
-                                  volumeid_offset[0] + 94 + lnk_id_list_size[0]:volumeid_offset[0] + 94 +
-                                                                                lnk_id_list_size[0] + offset1].decode('ascii').replace('\x00', '')
+                    drive_serial_num = struct.unpack("<L", file_data[86 + lnk_id_list_size[0] + volumeid_offset[0]:volumeid_offset[0] + 90 +lnk_id_list_size[0]])[0]
+                    volumelabel = file_data[ volumeid_offset[0] + 94 + lnk_id_list_size[0]:volumeid_offset[0] + 94 +lnk_id_list_size[0] + offset1]
+                    volumelabel = decode_str(volumelabel)
                     drivetype = self.__drive_type_list(drivetype[0])
                 except struct.error:
                     continue
 
                 if 'HasLinkInfo' in link_flag:
                     size = lnk_info_size[0] - path_offset[0]
-                    data_list["Local Path"] = file_data[
-                            78 + lnk_id_list_size[0] + path_offset[0]:78 + lnk_id_list_size[0] + path_offset[
-                                0] + size].decode('ascii').replace('\x00', '')
+                    local_path = file_data[78 + lnk_id_list_size[0] + path_offset[0]:78 + lnk_id_list_size[0] + path_offset[0] + size]
+                    data_list["Local Path"] = decode_str(local_path)
                 elif 'HasRelativePath' in link_flag:
                     net_offset = struct.unpack("<L", file_data[98 + lnk_id_list_size[0]:102 + lnk_id_list_size[0]])
                     size = net_offset[0] - path_offset[0]
-                    data_list["Local Path"] = file_data[
-                            78 + lnk_id_list_size[0] + path_offset[0]:78 + lnk_id_list_size[0] + path_offset[
-                                0] + size].decode('ascii').replace('\x00', '')
+                    local_path = file_data[78 + lnk_id_list_size[0] + path_offset[0]:78 + lnk_id_list_size[0] + path_offset[0] + size]
+                    data_list["Local Path"] = decode_str(local_path)
                 data_list["drive type"] = drivetype
                 data_list["drive serial number"] = drive_serial_num
                 data_list["Volume Label"] = volumelabel
@@ -173,9 +166,9 @@ class JumplistAnalysis:
         info_list["Total Num of JumpList"] = total_num
         num_action = self.__destlist[24:32]
         info_list["Total Num of Add/Delete/Open action"] = num_action[0]
-        netbiosname = self.__destlist[104:120].decode('ascii')
+        netbiosname = self.__destlist[104:120]
         entryidnumber = struct.unpack("<L", self.__destlist[120:124])
-        info_list["Netbios"] = netbiosname.replace('\x00','')
+        info_list["Netbios"] = decode_str(netbiosname) #netbiosname.replace('\x00','')
         time = struct.unpack("<Q", self.__destlist[132:140])
         info_list["Last Access Time"] = str(convert_time(time[0]))
         cnt = struct.unpack("<L", self.__destlist[148:152])
@@ -183,11 +176,12 @@ class JumplistAnalysis:
         if ver == 7:
             len_stringdata = struct.unpack("<H", self.__destlist[144:146])
             destlist_stringdata = self.__destlist[146:146 + len_stringdata[0]*2]
-            info_list["Data String"] = destlist_stringdata.decode('utf-16')
+
+            info_list["Data String"] =decode_str(destlist_stringdata)# destlist_stringdata.decode('utf-16')
         elif ver == 10:
             len_stringdata = struct.unpack("<H", self.__destlist[160:162])
             destlist_stringdata = self.__destlist[162:162 + 2 * len_stringdata[0]]
-            info_list["Data String"] = destlist_stringdata
+            info_list["Data String"] = destlist_stringdata.decode('utf-16')
         return [info_list]
 
     def get_destlist_data(self, ver):
@@ -204,9 +198,10 @@ class JumplistAnalysis:
             if entryidnumber[0] > 1:
                 info_list = dict()
                 if ver==10:
-                    mac1 = struct.unpack(">L", self.__destlist[offset + 34:offset + 38])
-                    mac2 = struct.unpack(">H", self.__destlist[offset + 38:offset + 40])
-                    info_list["MAC(new)"] = self.__convert_mac(hex(mac1[0]) + hex(mac2[0]))
+                    mac = self.__destlist[offset + 34:offset + 40]
+                    info_list["MAC(new)"] = format(mac[0], '02x') + ':' + format(mac[1], '02x') + ':' + format(mac[2],'02x') + ':' + format(mac[3], '02x') + ':' + format(mac[4], '02x') + ':' + format(mac[5], '02x')
+                    mac = self.__destlist[offset + 66:offset + 72]
+                    info_list["MAC(birth)"] = format(mac[0], '02x') + ':' + format(mac[1], '02x') + ':' + format(mac[2],'02x') + ':' + format(mac[3], '02x') + ':' + format(mac[4], '02x') + ':' + format(mac[5], '02x')
                     netbiosname = self.__destlist[offset+72:offset+88]
                     try:
                         info_list["netbios"] = netbiosname.decode('ascii').replace('\x00','')
@@ -228,9 +223,7 @@ class JumplistAnalysis:
                         mac = self.__destlist[offset + 34:offset + 40]
                         info_list["MAC(new)"] = format(mac[0],'02x')+':'+format(mac[1],'02x')+':'+format(mac[2],'02x')+':'+format(mac[3],'02x')+':'+format(mac[4],'02x')+':'+format(mac[5],'02x')
                         mac = self.__destlist[offset + 66:offset + 72]
-                        info_list["MAC(birth)"] = format(mac[0], '02x') + ':' + format(mac[1], '02x') + ':' + format(
-                            mac[2], '02x') + ':' + format(mac[3], '02x') + ':' + format(mac[4], '02x') + ':' + format(
-                            mac[5], '02x')
+                        info_list["MAC(birth)"] = format(mac[0], '02x') + ':' + format(mac[1], '02x') + ':' + format(mac[2], '02x') + ':' + format(mac[3], '02x') + ':' + format(mac[4], '02x') + ':' + format(mac[5], '02x')
                         netbiosname = self.__destlist[offset + 72:offset + 88]
                         try:
                             info_list["netbios"] = netbiosname.decode('ascii').replace('\x00','')
@@ -272,3 +265,16 @@ class JumplistAnalysis:
     def __convert_hex(self,gethex):
         gethex = gethex[:2] + "0" + gethex[3:]
         return int(gethex, 0)
+
+def decode_str(data):
+    encoding_list = chardet.detect(data)['encoding']
+    if encoding_list == None:
+        encoding_list = 'ascii'
+    try:
+        result = data.decode(encoding_list).replace('\x00', '')
+    except UnicodeDecodeError:
+        try:
+            result = data.decode('cp949').replace('\x00', '')
+        except UnicodeDecodeError:
+            result = 'cannot decode'
+    return result

@@ -26,6 +26,6 @@ Uncomment the comment you want to use.
 # !caution!Use the script above first
 # #How to make a report
 # docx = DocxExport()
-# docx.make_table(information)
+# docx.add_table(information)
 # docx.save('report_name')
 

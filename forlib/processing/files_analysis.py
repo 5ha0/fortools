@@ -1,12 +1,12 @@
 from PIL.ExifTags import TAGS
 import os
 from datetime import *
-from datetime import date, time, timedelta
-from datetime import datetime
+
 import forlib.calc_hash as calc_hash
 from os.path import getmtime, getctime, getatime
+from datetime import timezone, timedelta, datetime, date, time
 from os import listdir, path
-import time
+
 import json
 import sys
 from zipfile import ZipFile
@@ -223,6 +223,8 @@ class ZIPAnalysis:
         self.file = file
         self.__info = self.__parse()
 
+
+
     def __parse(self):
         json_list = []
         num = 1
@@ -232,7 +234,10 @@ class ZIPAnalysis:
             file_obj['num'] = num
             file_obj['FileName'] = file_name
             file_obj['Comment'] = str(info.comment)
-            file_obj['Modified'] = str(datetime(*info.date_time))
+
+            mod_time = datetime(*info.date_time)
+            mtime = str(mod_time.astimezone()).split('+')[1].split(':')[0].split('0')[1]
+            file_obj['Modified'] = str(mod_time) + " UTC+" + str(mtime)
             file_obj['System'] = str(info.create_system) + "(0 = Windows, 3 = Unix)"
             file_obj['version'] = str(info.create_version)
             file_obj['Compressed'] = str(info.compress_size) + " bytes"
@@ -244,6 +249,8 @@ class ZIPAnalysis:
             file_obj['Header offset'] = str(info.header_offset)
             file_obj['Flag bits'] = str(info.flag_bits)
             file_obj['Raw time'] = str(info._raw_time)
+
+
             json_list.append(file_obj)
             num += 1
         return json_list
@@ -255,13 +262,13 @@ class ZIPAnalysis:
         for i in self.__info:
             print(i)
 
-    def last_modtime(self):
-        num = 1
-        for info in self.file.infolist():
-            file_name = os.path.basename(info.filename)
-            #print(str(num) + "\tFilename: " + file_name + '\t '+ "Modified Time: " + str(datetime(*info.date_time)))
-            print(file_name)
-            num += 1
+    # def last_modtime(self):
+    #     num = 1
+    #     for info in self.file.infolist():
+    #         file_name = os.path.basename(info.filename)
+    #         #print(str(num) + "\tFilename: " + file_name + '\t '+ "Modified Time: " + str(datetime(*info.date_time)))
+    #         print(file_name)
+    #         num += 1
 
 
 # Print files in folder
