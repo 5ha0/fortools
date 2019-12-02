@@ -69,7 +69,7 @@ start_time = time.time()
 
 # #make report
 # get_docx = DocxExport()
-# get_docx.add_table(IE_Edge_cookies.get_info())
+# get_docx.add_table((ex)IE_Edge_cookies.get_info())
 # get_docx.save("report_name")
 #
-# print("---{}s seconds---".format(time.time()-start_time))
+print("---{}s seconds---".format(time.time()-start_time))
