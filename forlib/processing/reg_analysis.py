@@ -1,15 +1,19 @@
 from Registry import Registry
 import json
 import codecs
+import forlib.calc_hash as calc_hash
 from datetime import datetime, timedelta
 from forlib.calc_hash import get_hash
 import time
 import binascii
 
 class NTAnalysis:
-    def __init__(self, file):
+    def __init__(self, file, path, hash_val):
         self.reg = file
         self.ret_list = list()
+        self.__hash_val = [hash_val]
+        self.__path = path
+        self.__cal_hash()
 
     def __rec(self, key, get_path, find_val):
 #        get_path(key, find_val)
@@ -209,12 +213,21 @@ class NTAnalysis:
                     user_list.append(reg_obj)
         self.ret_list = sorted(user_list, key=lambda e: (e['TimeStamp']))
         return self.ret_list
+    
+    def __cal_hash(self):
+        after_hash = calc_hash.get_hash(self.__path)
+        self.__hash_val.append(after_hash)
 
+    def get_hash(self):
+        return self.__hash_val
 
 class SYSAnalysis:
-    def __init__(self, file):
+    def __init__(self, file, path, hash_val):
         self.reg = file
         self.ret_list = list()
+        self.__hash_val = [hash_val]
+        self.__path = path
+        self.__cal_hash()
 
     def __control_set_check(self, file):
         key = file.open("Select")
@@ -344,11 +357,21 @@ class SYSAnalysis:
             }
             self.ret_list.append(net_obj)
         return self.ret_list
-            
+
+    def __cal_hash(self):
+        after_hash = calc_hash.get_hash(self.__path)
+        self.__hash_val.append(after_hash)
+
+    def get_hash(self):
+        return self.__hash_val
+    
 class SWAnalysis:
-    def __init__(self, file):
+    def __init__(self, file, path, hash_val):
         self.reg = file
         self.ret_list = list()
+        self.__hash_val = [hash_val]
+        self.__path = path
+        self.__cal_hash()
 
     def __control_set_check(self, file):
         key = file.open("Select")
@@ -427,11 +450,22 @@ class SWAnalysis:
             }
             self.ret_list.append(net_obj)
         return self.ret_list
+    
+    def __cal_hash(self):
+        after_hash = calc_hash.get_hash(self.__path)
+        self.__hash_val.append(after_hash)
 
+    def get_hash(self):
+        return self.__hash_val
+    
+    
 class SAMAnalysis:
-    def __init__(self, file):
+    def __init__(self, file, path, hash_val):
         self.reg = file
         self.ret_list = list()
+        self.__hash_val = [hash_val]
+        self.__path = path
+        self.__cal_hash()
         
     def __rec(self, key, get_path, find_val):
 #        get_path(key, find_val)
@@ -453,6 +487,7 @@ class SAMAnalysis:
 
     def find_key(self, keyword):
         self.__rec(self.reg.root(), self.__get_path, keyword)
+        
     def __bin_to_int(self, info):
         bin_to_little_endian = bytes.decode(binascii.hexlify(info[0:][::-1]))
         int_info = int(bin_to_little_endian, 16)
@@ -527,3 +562,9 @@ class SAMAnalysis:
         self.ret_list = ret_list1
         return self.ret_list
    
+    def __cal_hash(self):
+        after_hash = calc_hash.get_hash(self.__path)
+        self.__hash_val.append(after_hash)
+
+    def get_hash(self):
+        return self.__hash_val
