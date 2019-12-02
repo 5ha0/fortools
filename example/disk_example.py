@@ -17,11 +17,9 @@ rel = file.get_path("./Windows/System32/config", 1126400)
 # file.fslog_extract()
 # 
 # ############ File Analysis ###############
-# # 1. Output basic metadata of the DD.
-# rel = file.dd_metadata()
-# # 2. Output basic metadata of the E01.
+# # 1. Output basic metadata of the E01.
 # rel = file.e01_metadata()
-# # 3. Print volume partition information.
+# # 2. Print volume partition information.
 # rel = file.volume_metadata()
 
 for i in range(len(rel)):
