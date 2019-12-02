@@ -184,19 +184,18 @@ class IconcacheAnalysis:
         section_one = self.__section_one()
         info["section one path num"] = section_one[0]["section one path num"]
         for i in range(1, len(section_one)):
-            info["Path" + str(i)] = section_one[i]['Path']
-            info["Icon image location"+str(i)] = section_one[i]['Icon image location']
-        info["path information_section two"] = self.__section_two()
+            info["Section One Path" + str(i)] = section_one[i]['Path']
+            info["Section One Icon image location"+str(i)] = section_one[i]['Icon image location']
         section_two = self.__section_two()
         info["section two path num"] = section_two[0]["section two path num"]
         for i in range(1, len(section_two)):
-            info["Path" + str(i)] = section_two[i]['Path']
-            info["Icon image location" + str(i)] = section_two[i]['Icon image location']
+            info["Section Two Path" + str(i)] = section_two[i]['Path']
+            info["Section Two Icon image location" + str(i)] = section_two[i]['Icon image location']
         section_three = self.__section_three()
         info["section three path num"] = section_three[0]["section three path num"]
         for i in range(1, len(section_three)):
-            info["Path" + str(i)] = section_three[i]['Path']
-            info["Icon image location" + str(i)] = section_three[i]['Icon image location']
+            info["Section Three Path" + str(i)] = section_three[i]['Path']
+            info["Section Three Icon image location" + str(i)] = section_three[i]['Icon image location']
         self.__cal_hash()
         info['before_sha1'] = self.__hash_value[0]['sha1']
         info['before_md5'] = self.__hash_value[0]['md5']
@@ -214,21 +213,21 @@ class IconcacheAnalysis:
 
         info["file version"] = self.__file_version()[0]["File Version"]
         section_one = self.__section_one()
+        section_one = self.__section_one()
         info["section one path num"] = section_one[0]["section one path num"]
         for i in range(1, len(section_one)):
-            info["Path" + str(i)] = section_one[i]['Path']
-            info["Icon image location" + str(i)] = section_one[i]['Icon image location']
-        info["path information_section two"] = self.__section_two()
+            info["Section One Path" + str(i)] = section_one[i]['Path']
+            info["Section One Icon image location" + str(i)] = section_one[i]['Icon image location']
         section_two = self.__section_two()
         info["section two path num"] = section_two[0]["section two path num"]
         for i in range(1, len(section_two)):
-            info["Path" + str(i)] = section_two[i]['Path']
-            info["Icon image location" + str(i)] = section_two[i]['Icon image location']
+            info["Section Two Path" + str(i)] = section_two[i]['Path']
+            info["Section Two Icon image location" + str(i)] = section_two[i]['Icon image location']
         section_three = self.__section_three()
         info["section three path num"] = section_three[0]["section three path num"]
         for i in range(1, len(section_three)):
-            info["Path" + str(i)] = section_three[i]['Path']
-            info["Icon image location" + str(i)] = section_three[i]['Icon image location']
+            info["Section Three Path" + str(i)] = section_three[i]['Path']
+            info["Section Three Icon image location" + str(i)] = section_three[i]['Icon image location']
         self.__cal_hash()
         info['before_sha1'] = self.__hash_value[0]['sha1']
         info['before_md5'] = self.__hash_value[0]['md5']

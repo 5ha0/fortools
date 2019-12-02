@@ -50,9 +50,9 @@ class RecycleAnalysis:
         filedatetime = struct.unpack_from('<q', self.file.read(8))[0]
         filedatetime = '%016x' %filedatetime
         filedatetime = int(filedatetime,16)/10.
-        filedatetime = datetime(1601, 1, 1) + timedelta(microseconds=filedatetime)+timedelta(hours=9)
+        filedatetime = datetime(1601, 1, 1) + timedelta(microseconds=filedatetime)
         rc_obj = {"File Deleted Time": str(filedatetime),
-                  "Time Zone": 'UTC +9'}
+                  "Time Zone": 'UTC'}
         json.dumps(rc_obj)
         json_list.append(rc_obj)
 
