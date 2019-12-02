@@ -97,15 +97,33 @@ class PDFAnalysis:
     def __make_json(self):
         info = self.__file.getDocumentInfo()
         info_obj = dict()
-        info_obj["author"] = info['/Author']
-        info_obj["creator"] = info['/Creator']
-        time_info = info['/CreationDate'].replace("'", ':', 1)
-        time_info = datetime.strptime(time_info[2:-1], "%Y%m%d%H%M%S%z")
-        info_obj["creation"] = time_info.strftime("%Y-%m-%d %H:%M:%S")
-        time_info = info['/ModDate'].replace("'", ':', 1)
-        mod_time = datetime.strptime(time_info[2:-1], "%Y%m%d%H%M%S%z")
-        info_obj["modification"] = mod_time.strftime("%Y-%m-%d %H:%M:%S")
-        info_obj["TimeZone"] = mod_time.strftime("%Z")
+        try:
+            info_obj["author"] = info['/Author']
+        except KeyError:
+            info_obj["author"] = 'None'
+        try:
+            info_obj["creator"] = info['/Creator']
+        except KeyError:
+            info_obj["creator"] = 'None'
+        try:
+            time_info = info['/CreationDate'].replace("'", ':', 1)
+        except KeyError:
+            time_info = "None"
+        try:
+            time_info = datetime.strptime(time_info[2:-1], "%Y%m%d%H%M%S%z")
+            info_obj["creation"] = time_info.strftime("%Y-%m-%d %H:%M:%S")
+        except KeyError:
+            info_obj["creation"] = 'None'
+        try:
+            time_info = info['/ModDate'].replace("'", ':', 1)
+            mod_time = datetime.strptime(time_info[2:-1], "%Y%m%d%H%M%S%z")
+            info_obj["modification"] = mod_time.strftime("%Y-%m-%d %H:%M:%S")
+        except KeyError:
+            info_obj["modification"] = 'None'
+        try:
+            info_obj["TimeZone"] = mod_time.strftime("%Z")
+        except KeyError:
+            info_obj["TimeZone"] = 'None'
         return info_obj
 
     def __cal_hash(self):
@@ -223,8 +241,6 @@ class ZIPAnalysis:
     def __init__(self, file):
         self.file = file
         self.__info = self.__parse()
-
-
 
     def __parse(self):
         json_list = []
