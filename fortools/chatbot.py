@@ -142,7 +142,7 @@ class Chatbot():
                     file.write('file_syslog_info = jfilesys_log.get_info()\nfor i in file_syslog_info:\n\tprint(i)\n')
                 elif analysis == 5:
                     file.write('file_syslog_hash = filesys_log.get_hash()\nfor i in file_syslog_hash:\n\tprint(i)\n')
-        '''
+
         elif answer == 4:
             file.write("registry = Registry.file_open(r'" + path + "')\n")
             print('choose your analysis. \n1.Find Key Value from Registry\n2.Get Recent Docs\n2.Get Recent Folder\n3.Get recent Read file or Save file'
@@ -157,7 +157,7 @@ class Chatbot():
                 if analysis == -1:
                     break
                 elif analysis == 1:
-                    file.write('recent_docs = registry.get_recent_docs()\nfor i in recent_docs:\n\tprint(i)\n')'''
+                    file.write('recent_docs = registry.get_recent_docs()\nfor i in recent_docs:\n\tprint(i)\n')
         elif answer == 5:
             file.write("thumbnail = Thumbnail_Iconcache.file_open(r'" + path + "')\n")
             print('choose your analysis. \n1.Get data of thumnail\n2.Show information\n3.Get info filtering by dimension')
