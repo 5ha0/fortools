@@ -253,9 +253,10 @@ class ZIPAnalysis:
             file_obj['Comment'] = str(info.comment)
 
             mod_time = datetime(*info.date_time)
-                                
-            mtime = str(mod_time.astimezone()).split('+')[1].split(':')[0].split('0')[1]
-            file_obj['Modified'] = str(mod_time) + " UTC+" + str(mtime)
+
+            mtime = str(mod_time.astimezone()).split('+')[1]
+            file_obj['TimeZone'] = "UTC+"+str(mtime)
+            file_obj['Modified'] = str(mod_time)
             file_obj['System'] = str(info.create_system) + "(0 = Windows, 3 = Unix)"
             file_obj['version'] = str(info.create_version)
             file_obj['Compressed'] = str(info.compress_size) + " bytes"
