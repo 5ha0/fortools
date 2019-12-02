@@ -22,22 +22,26 @@ class E01Analysis:
         print("please input argument partition start sector : ", self.partition_list)
 
         fs = self.open_fs(length)
-        f = fs.open_dir(path)
-        ret_list = list()
-        for i in f:
-            file_type = str(i.info.name.type)
-            if file_type == "TSK_FS_NAME_TYPE_REG":
-                file_type = "file"
-            elif file_type == "TSK_FS_NAME_TYPE_DIR":
-                file_type = "directory"
-            else:
+                
+        try:
+            f = fs.open_dir(path)
+            for i in f:
                 file_type = str(i.info.name.type)
-            f_path_obj = {
-                "file_name": i.info.name.name.decode(),
-                "file_type": file_type
-            }
-            self.ret_list.append(f_path_obj)
-        return self.ret_list
+                if file_type == "TSK_FS_NAME_TYPE_REG":
+                    file_type = "file"
+                elif file_type == "TSK_FS_NAME_TYPE_DIR":
+                    file_type = "directory"
+                else:
+                    file_type = str(i.info.name.type)
+                f_path_obj = {
+                    "file_name": i.info.name.name.decode(),
+                    "file_type": file_type
+                }
+                self.ret_list.append(f_path_obj)
+            return self.ret_list
+
+        except:
+            print("[-] This is Unallocated Area")
 
     def __UsnJrnl_extract(self, filename):
         fs = self.open_fs(length)
