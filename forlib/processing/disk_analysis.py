@@ -4,6 +4,7 @@ import json
 import datetime
 import forlib.calc_hash as calc_hash
 
+
 class E01Analysis:
     def __init__(self, file, path, hash_val):
         self.file = file
@@ -22,7 +23,7 @@ class E01Analysis:
         print("please input argument partition start sector : ", self.partition_list)
 
         fs = self.open_fs(length)
-                
+
         try:
             f = fs.open_dir(path)
             for i in f:
@@ -43,7 +44,7 @@ class E01Analysis:
         except:
             print("[-] This is Unallocated Area")
 
-    def __UsnJrnl_extract(self, filename):
+    def __UsnJrnl_extract(self, filename, length):
         fs = self.open_fs(length)
         f = fs.open(filename)
         found = False
@@ -62,7 +63,7 @@ class E01Analysis:
             buf = f.read_random(offset, f.info.meta.size, attr.info.type, attr.info.id)
             o.write(buf)
 
-    def __mft_log_extract(self, filename, output_name):
+    def __mft_log_extract(self, filename, output_name, length):
         fs = self.open_fs(length)
         f = fs.open(filename)
         # for attr in f:
@@ -82,10 +83,10 @@ class E01Analysis:
             file_w.write(buf)
         print("[+] Success Extract : " + output_name)
 
-    def fslog_extract(self):
-        mft_list = self.__mft_log_extract('/$MFT', '$MFT')
-        log_list = self.__mft_log_extract('/$LogFile', '$LogFile')
-        UsnJrnl = self.__UsnJrnl_extract('/$Extend/$UsnJrnl')
+    def fslog_extract(self, length):
+        mft_list = self.__mft_log_extract('/$MFT', '$MFT', length)
+        log_list = self.__mft_log_extract('/$LogFile', '$LogFile', length)
+        UsnJrnl = self.__UsnJrnl_extract('/$Extend/$UsnJrnl', length)
 
     def open_fs(self, length):
         if self.vol is not None:
@@ -94,7 +95,7 @@ class E01Analysis:
                         and "Extended" not in part.desc.decode() \
                         and "Primary Table" not in part.desc.decode():
                     try:
-                        fs = pytsk3.FS_Info(self.img_info, offset=part.start*self.vol.info.block_size)
+                        fs = pytsk3.FS_Info(self.img_info, offset=part.start * self.vol.info.block_size)
                         return fs
                     except:
                         print("[-] Unable to open FS")
@@ -108,7 +109,7 @@ class E01Analysis:
         e01_list = list()
 
         headers = self.file.get_header_values()
-        hashes  = self.file.get_hash_values()
+        hashes = self.file.get_hash_values()
 
         for head in headers:
             if head == "acquiry_date" or head == "system_date":
@@ -121,9 +122,9 @@ class E01Analysis:
             hash_obj[h] = hashes[h]
 
         e01_obj = {
-            "Bytes per Sector" : self.file.bytes_per_sector,
-            "Number of Sector" : self.file.get_number_of_sectors(),
-            "Total Size" : self.file.get_media_size()
+            "Bytes per Sector": self.file.bytes_per_sector,
+            "Number of Sector": self.file.get_number_of_sectors(),
+            "Total Size": self.file.get_media_size()
         }
 
         head_obj.update(e01_obj)
@@ -141,11 +142,11 @@ class E01Analysis:
                 "Num": partition.addr,
                 "Start Sector": partition.start,
                 "Total Sector": partition.len,
-                "Size" : str((partition.len*512)/1024**2)+"MB"
+                "Size": str((partition.len * 512) / 1024 ** 2) + "MB"
             }
             self.ret_list.append(e01_obj)
         return self.ret_list
-    
+
     def __cal_hash(self):
         after_hash = calc_hash.get_hash(self.__path)
         self.__hash_val.append(after_hash)
@@ -162,14 +163,14 @@ class EWFImgInfo(pytsk3.Img_Info):
     def __init__(self, ewf_handle):
         self._ewf_handle = ewf_handle
         super(EWFImgInfo, self).__init__(url="", type=pytsk3.TSK_IMG_TYPE_EXTERNAL)
-        
+
     def close(self):
         self._ewf_handle.close()
 
     def read(self, offset, size):
         self._ewf_handle.seek(offset)
         return self._ewf_handle.read(size)
-    
+
     def get_size(self):
         return self._ewf_handle.get_media_size()
 
@@ -191,24 +192,27 @@ class DDAnalysis:
         print("please input argument partition start sector : ", self.partition_list)
 
         fs = self.open_fs(length)
-        f = fs.open_dir(path)
-        ret_list = list()
-        for i in f:
-            file_type = str(i.info.name.type)
-            if file_type == "TSK_FS_NAME_TYPE_REG":
-                file_type = "file"
-            elif file_type == "TSK_FS_NAME_TYPE_DIR":
-                file_type = "directory"
-            else:
+        try:
+            f = fs.open_dir(path)
+            for i in f:
                 file_type = str(i.info.name.type)
-            f_path_obj = {
-                "file_name": i.info.name.name.decode(),
-                "file_type": file_type
-            }
-            self.ret_list.append(f_path_obj)
-        return self.ret_list
+                if file_type == "TSK_FS_NAME_TYPE_REG":
+                    file_type = "file"
+                elif file_type == "TSK_FS_NAME_TYPE_DIR":
+                    file_type = "directory"
+                else:
+                    file_type = str(i.info.name.type)
+                f_path_obj = {
+                    "file_name": i.info.name.name.decode(),
+                    "file_type": file_type
+                }
+                self.ret_list.append(f_path_obj)
+            return self.ret_list
 
-    def __UsnJrnl_extract(self, filename):
+        except:
+            print("[-] This is Unallocated Area")
+
+    def __UsnJrnl_extract(self, filename, length):
         fs = self.open_fs(length)
         f = fs.open(filename)
         found = False
@@ -227,7 +231,7 @@ class DDAnalysis:
             buf = f.read_random(offset, f.info.meta.size, attr.info.type, attr.info.id)
             o.write(buf)
 
-    def __mft_log_extract(self, filename, output_name):
+    def __mft_log_extract(self, filename, output_name, length):
         fs = self.open_fs(length)
         f = fs.open(filename)
         # for attr in f:
@@ -247,10 +251,10 @@ class DDAnalysis:
             file_w.write(buf)
         print("[+] Success Extract : " + output_name)
 
-    def fslog_extract(self):
-        mft_list = self.__mft_log_extract('/$MFT', '$MFT')
-        log_list = self.__mft_log_extract('/$LogFile', '$LogFile')
-        UsnJrnl = self.__UsnJrnl_extract('/$Extend/$UsnJrnl')
+    def fslog_extract(self, length):
+        mft_list = self.__mft_log_extract('/$MFT', '$MFT', length)
+        log_list = self.__mft_log_extract('/$LogFile', '$LogFile', length)
+        UsnJrnl = self.__UsnJrnl_extract('/$Extend/$UsnJrnl', length)
 
     def open_fs(self, length):
         if self.vol is not None:
@@ -284,6 +288,3 @@ class DDAnalysis:
 
     def get_hash(self):
         return self.__hash_val
-
-    
-
