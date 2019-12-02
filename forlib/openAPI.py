@@ -290,6 +290,7 @@ class Thumbnail_Iconcache:
     def file_open(path):
         try:
             extension = sig_check(path)
+            print('extension: ' + extension)
             if extension == 'Thumb_Icon':
                 hash_v = calc_hash.get_hash(path)
                 file = cache_open(path)
