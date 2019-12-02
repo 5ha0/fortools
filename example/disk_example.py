@@ -14,7 +14,7 @@ rel = file.get_path("./Windows/System32/config", 1126400)
 # extract_SOFTWARE = file.file_extract(1126400, "./Windows/System32/config/SOFTWARE", "extrct_SOFTWARE")
 # extract_SAM = file.file_extract(1126400, "./Windows/System32/config/SAM", "extract_SAM")
 # # 3. File system log extraction
-# file.fslog_extract()
+# file.fslog_extract(1126400)
 # 
 # ############ File Analysis ###############
 # # 1. Output basic metadata of the E01.
