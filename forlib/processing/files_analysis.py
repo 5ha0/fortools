@@ -100,11 +100,12 @@ class PDFAnalysis:
         info_obj["author"] = info['/Author']
         info_obj["creator"] = info['/Creator']
         time_info = info['/CreationDate'].replace("'", ':', 1)
-        info_obj["creation"] = datetime.strptime(time_info[2:-1], "%Y%m%d%H%M%S%z").isoformat()
+        time_info = datetime.strptime(time_info[2:-1], "%Y%m%d%H%M%S%z")
+        info_obj["creation"] = time_info.strftime("%Y-%m-%d %H:%M:%S")
         time_info = info['/ModDate'].replace("'", ':', 1)
         mod_time = datetime.strptime(time_info[2:-1], "%Y%m%d%H%M%S%z")
-        info_obj["modification"] = mod_time.isoformat()
-        info_obj["TimeZone"] = mod_time.tzinfo
+        info_obj["modification"] = mod_time.strftime("%Y-%m-%d %H:%M:%S")
+        info_obj["TimeZone"] = mod_time.strftime("%Z")
         return info_obj
 
     def __cal_hash(self):
