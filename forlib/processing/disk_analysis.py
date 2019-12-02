@@ -13,7 +13,7 @@ class E01Analysis:
         self.vol = pytsk3.Volume_Info(self.img_info)
         self.__path = path
         self.__hash_val = [hash_val]
-        self.__calc_hash()
+        self.__cal_hash()
 
     def get_path(self, path, length):
         for partition in self.vol:
@@ -176,7 +176,7 @@ class DDAnalysis:
         self.ret_list = list()
         self.__path = path
         self.__hash_val = [hash_val]
-        self.__calc_hash()
+        self.__cal_hash()
         
     def __mft_log_extract(self, filename, output_name):
         fs = pytsk3.FS_Info(self.file)
