@@ -1,11 +1,11 @@
 import subprocess
-import re
+import re, os
 import forlib.calc_hash as calc_hash
 
 class MemAnalysis:
     def __init__(self, file, path, hash_val):
         self.file = file
-        self.vol_path = ""
+        self.vol_path = os.path.dirname(os.path.realpath(__file__)) + "\\volatility3\\vol.py"
         self.ret_list = list()
         self.__path = path
         self.__hash_val = [hash_val]
@@ -36,7 +36,7 @@ class MemAnalysis:
         return ret_list
 
     def cmdline(self):
-        ret     = subprocess.Popen("python3 %s -f %s windows.cmdline" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret     = subprocess.Popen("python %s -f %s windows.cmdline" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
         keyList = ["PID", "Process", "Args"]
         # 실행 결과값을 가져와 특정 문장을 제외 후 결과만을 가져오기 위함
@@ -47,7 +47,7 @@ class MemAnalysis:
         return self.ret_list
 
     def dlldump(self):
-        ret      = subprocess.Popen("python3 %s -f %s windows.dlldump" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret      = subprocess.Popen("python %s -f %s windows.dlldump" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
         keyList  = ["PID", "Process", "Result"]
 
@@ -57,7 +57,7 @@ class MemAnalysis:
         return self.ret_list
 
     def dlllist(self):
-        ret      = subprocess.Popen("python3 %s -f %s windows.dlllist" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret      = subprocess.Popen("python %s -f %s windows.dlllist" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
         keyList  = ["PID", "Process", "Base", "Size", "Name", "Path"]
 
@@ -67,7 +67,7 @@ class MemAnalysis:
         return self.ret_list
 
     def driverirp(self):
-        ret      = subprocess.Popen("python3 %s -f %s windows.driverirp" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret      = subprocess.Popen("python %s -f %s windows.driverirp" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
         keyList  = ["Offset", "Driver Name", "IRP", "Address", "Module", "Symbol"]
 
@@ -77,7 +77,7 @@ class MemAnalysis:
         return self.ret_list
 
     def driverscan(self):
-        ret      = subprocess.Popen("python3 %s -f %s windows.driverscan" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret      = subprocess.Popen("python %s -f %s windows.driverscan" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
         keyList  = ["Offset", "Start", "Size", "Service Key", "Driver Name", "Name"]
 
@@ -87,7 +87,7 @@ class MemAnalysis:
         return self.ret_list
 
     def filescan(self):
-        ret = subprocess.Popen("python3 %s -f %s windows.filescan" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret = subprocess.Popen("python %s -f %s windows.filescan" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
         keyList  = ["Offset", "Name"]
 
@@ -99,7 +99,7 @@ class MemAnalysis:
     def handles(self):
         ret_list = list()
 
-        ret = subprocess.Popen("python3 %s -f %s windows.handles" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret = subprocess.Popen("python %s -f %s windows.handles" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
         keyList = ["PID", "Process", "Offset", "HandleValue", "Type", "GrantendAccess", "Name"]
 
@@ -109,7 +109,7 @@ class MemAnalysis:
         return self.ret_list
 
     def info(self):
-        ret      = subprocess.Popen("python3 %s -f %s windows.info" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret      = subprocess.Popen("python %s -f %s windows.info" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
 
         keyList  = ["Variable", "Value"]
@@ -120,7 +120,7 @@ class MemAnalysis:
         return self.ret_list
 
     def mutantscan(self):
-        ret      = subprocess.Popen("python3 %s -f %s windows.mutantscan" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret      = subprocess.Popen("python %s -f %s windows.mutantscan" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
         keyList  = ["Offset", "Name"]
 
@@ -200,7 +200,7 @@ class MemAnalysis:
         # return ret_list
 
     def pslist(self):
-        ret      = subprocess.Popen("python3 %s -f %s windows.pslist" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret      = subprocess.Popen("python %s -f %s windows.pslist" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
         keyList  = ["PID", "PPID", "ImageFileName", "Offset(V)", "Threads", "Handles", "SessionId", "Wow64", "CreateTime", "ExitTime"]
 
@@ -210,7 +210,7 @@ class MemAnalysis:
         return self.ret_list
 
     def psscan(self):
-        ret      = subprocess.Popen("python3 %s -f %s windows.psscan" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret      = subprocess.Popen("python %s -f %s windows.psscan" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
         keyList  = ["PID", "PPID", "ImageFileName", "Offset(V)", "Threads", "Handles", "SessionId", "Wow64", "CreateTime", "ExitTime"]
 
@@ -220,7 +220,7 @@ class MemAnalysis:
         return self.ret_list
 
     def pstree(self):
-        ret      = subprocess.Popen("python3 %s -f %s windows.pstree" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret      = subprocess.Popen("python %s -f %s windows.pstree" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
         keyList  = ["PID", "PPID", "ImageFileName", "Offset(V)", "Threads", "Handles", "SessionId", "Wow64", "CreateTime", "ExitTime"]
 
@@ -230,7 +230,7 @@ class MemAnalysis:
         return self.ret_list
 
     def reg_certificates(self):
-        ret      = subprocess.Popen("python3 %s -f %s windows.registry.certificates" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret      = subprocess.Popen("python %s -f %s windows.registry.certificates" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
 
         keyList  = ["Certificate Path", "Certificate Section", "Certificate ID", "Certificate Name"]
@@ -240,7 +240,7 @@ class MemAnalysis:
         return self.ret_list
 
     def reg_hivelist(self):
-        ret      = subprocess.Popen("python3 %s -f %s windows.registry.hivelist" % (self.vol_path, self.file),
+        ret      = subprocess.Popen("python %s -f %s windows.registry.hivelist" % (self.vol_path, self.file),
                                shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
         keyList  = ["Offset", "FileFullPath"]
@@ -251,7 +251,7 @@ class MemAnalysis:
         return self.ret_list
 
     def reg_hivescan(self):
-        ret      = subprocess.Popen("python3 %s -f %s windows.registry.hivescan" % (self.vol_path, self.file),
+        ret      = subprocess.Popen("python %s -f %s windows.registry.hivescan" % (self.vol_path, self.file),
                                shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
         keyList  = ["Offset"]
@@ -261,7 +261,7 @@ class MemAnalysis:
         return self.ret_list
 
     def reg_printkey(self):
-        ret      = subprocess.Popen("python3 %s -f %s windows.registry.printkey" % (self.vol_path, self.file),
+        ret      = subprocess.Popen("python %s -f %s windows.registry.printkey" % (self.vol_path, self.file),
                                shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
         keyList  = ["Last Write Time", "Hive Offset", "Type", "Key", "Name", "Data", "Volatile"]
@@ -272,7 +272,7 @@ class MemAnalysis:
         return self.ret_list
 
     def reg_userassist(self):
-        ret = subprocess.Popen("python3 %s -f %s windows.registry.userassist" % (self.vol_path, self.file),
+        ret = subprocess.Popen("python %s -f %s windows.registry.userassist" % (self.vol_path, self.file),
                                shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
 
@@ -280,7 +280,7 @@ class MemAnalysis:
             print(line.rstrip())
 
     def vadinfo(self):
-        ret      = subprocess.Popen("python3 %s -f %s windows.vadinfo" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret      = subprocess.Popen("python %s -f %s windows.vadinfo" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
         keyList  = ["PID", "Process", "Offset", "Start VPN", "End VPN", "Tag", "Protection", "CommitCharge", "PrivateMemory", "Parent", "File"]
 
@@ -290,7 +290,7 @@ class MemAnalysis:
         return self.ret_list
 
     def timeliner(self):
-        ret      = subprocess.Popen("python3 %s -f %s timeliner.Timeliner" % (self.vol_path, self.file), shell=True, stdin=None,
+        ret      = subprocess.Popen("python %s -f %s timeliner.Timeliner" % (self.vol_path, self.file), shell=True, stdin=None,
                                stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
         keyList  = ["Plugin", "Description", "Created Date", "Modified Date", "Accessed Date", "Changed Date"]
 
