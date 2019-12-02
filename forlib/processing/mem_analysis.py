@@ -8,7 +8,7 @@ class MemAnalysis:
         self.vol_path = ""
         self.ret_list = list()
         self.__path = path
-        self.__hash_val = hash_val
+        self.__hash_val = [hash_val]
         self.__calc_hash()
         
     def __regx(self, result):
