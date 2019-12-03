@@ -177,64 +177,79 @@ class IconcacheAnalysis:
         self.__hash_value.append(calc_hash.get_hash(self.path))
 
     def show_all_info(self):
-        info = dict()
+        info_version = dict()
+        info_secton_one = dict()
+        info_secton_two = dict()
+        info_secton_three = dict()
+        info_hash = dict()
         info_list = []
 
-        info["file version"] = self.__file_version()[0]["File Version"]
+        info_version["file version"] = self.__file_version()[0]["File Version"]
         section_one = self.__section_one()
-        info["section one path num"] = section_one[0]["section one path num"]
+        info_secton_one["section one path num"] = section_one[0]["section one path num"]
         for i in range(1, len(section_one)):
-            info["Section One Path" + str(i)] = section_one[i]['Path']
-            info["Section One Icon image location"+str(i)] = section_one[i]['Icon image location']
+            info_secton_one["Section One Path" + str(i)] = section_one[i]['Path']
+            info_secton_one["Section One Icon image location"+str(i)] = section_one[i]['Icon image location']
         section_two = self.__section_two()
-        info["section two path num"] = section_two[0]["section two path num"]
+        info_secton_two["section two path num"] = section_two[0]["section two path num"]
         for i in range(1, len(section_two)):
-            info["Section Two Path" + str(i)] = section_two[i]['Path']
-            info["Section Two Icon image location" + str(i)] = section_two[i]['Icon image location']
+            info_secton_two["Section Two Path" + str(i)] = section_two[i]['Path']
+            info_secton_two["Section Two Icon image location" + str(i)] = section_two[i]['Icon image location']
         section_three = self.__section_three()
-        info["section three path num"] = section_three[0]["section three path num"]
+        info_secton_three["section three path num"] = section_three[0]["section three path num"]
         for i in range(1, len(section_three)):
-            info["Section Three Path" + str(i)] = section_three[i]['Path']
-            info["Section Three Icon image location" + str(i)] = section_three[i]['Icon image location']
+            info_secton_three["Section Three Path" + str(i)] = section_three[i]['Path']
+            info_secton_three["Section Three Icon image location" + str(i)] = section_three[i]['Icon image location']
         self.__cal_hash()
-        info['before_sha1'] = self.__hash_value[0]['sha1']
-        info['before_md5'] = self.__hash_value[0]['md5']
-        info['after_sha1'] = self.__hash_value[1]['sha1']
-        info['after_md5'] = self.__hash_value[1]['md5']
+        info_hash['before_sha1'] = self.__hash_value[0]['sha1']
+        info_hash['before_md5'] = self.__hash_value[0]['md5']
+        info_hash['after_sha1'] = self.__hash_value[1]['sha1']
+        info_hash['after_md5'] = self.__hash_value[1]['md5']
 
-        print(info)
-        info_list.append(info)
+        info_list.append(info_version)
+        info_list.append(info_secton_one)
+        info_list.append(info_secton_two)
+        info_list.append(info_secton_three)
+        info_list.append(info_hash)
+        print(info_list)
 
         return info_list
 
     def get_all_info(self):
-        info = dict()
+        info_version = dict()
+        info_secton_one = dict()
+        info_secton_two = dict()
+        info_secton_three = dict()
+        info_hash = dict()
         info_list = []
 
-        info["file version"] = self.__file_version()[0]["File Version"]
+        info_version["file version"] = self.__file_version()[0]["File Version"]
         section_one = self.__section_one()
-        section_one = self.__section_one()
-        info["section one path num"] = section_one[0]["section one path num"]
+        info_secton_one["section one path num"] = section_one[0]["section one path num"]
         for i in range(1, len(section_one)):
-            info["Section One Path" + str(i)] = section_one[i]['Path']
-            info["Section One Icon image location" + str(i)] = section_one[i]['Icon image location']
+            info_secton_one["Section One Path" + str(i)] = section_one[i]['Path']
+            info_secton_one["Section One Icon image location" + str(i)] = section_one[i]['Icon image location']
         section_two = self.__section_two()
-        info["section two path num"] = section_two[0]["section two path num"]
+        info_secton_two["section two path num"] = section_two[0]["section two path num"]
         for i in range(1, len(section_two)):
-            info["Section Two Path" + str(i)] = section_two[i]['Path']
-            info["Section Two Icon image location" + str(i)] = section_two[i]['Icon image location']
+            info_secton_two["Section Two Path" + str(i)] = section_two[i]['Path']
+            info_secton_two["Section Two Icon image location" + str(i)] = section_two[i]['Icon image location']
         section_three = self.__section_three()
-        info["section three path num"] = section_three[0]["section three path num"]
+        info_secton_three["section three path num"] = section_three[0]["section three path num"]
         for i in range(1, len(section_three)):
-            info["Section Three Path" + str(i)] = section_three[i]['Path']
-            info["Section Three Icon image location" + str(i)] = section_three[i]['Icon image location']
+            info_secton_three["Section Three Path" + str(i)] = section_three[i]['Path']
+            info_secton_three["Section Three Icon image location" + str(i)] = section_three[i]['Icon image location']
         self.__cal_hash()
-        info['before_sha1'] = self.__hash_value[0]['sha1']
-        info['before_md5'] = self.__hash_value[0]['md5']
-        info['after_sha1'] = self.__hash_value[1]['sha1']
-        info['after_md5'] = self.__hash_value[1]['md5']
+        info_hash['before_sha1'] = self.__hash_value[0]['sha1']
+        info_hash['before_md5'] = self.__hash_value[0]['md5']
+        info_hash['after_sha1'] = self.__hash_value[1]['sha1']
+        info_hash['after_md5'] = self.__hash_value[1]['md5']
 
-        info_list.append(info)
+        info_list.append(info_version)
+        info_list.append(info_secton_one)
+        info_list.append(info_secton_two)
+        info_list.append(info_secton_three)
+        info_list.append(info_hash)
 
         return info_list
 
