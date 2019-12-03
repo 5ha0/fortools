@@ -695,10 +695,13 @@ class Ie_Edge:
 
 
                     mkdict["last_modified_time"] = int2date4(cache.get_value_data_as_integer(13))
-                    if cache.get_value_data(21) is not None:
-                        mkdict["server_info"] = cache.get_value_data(21).decode().split(" ")[1]
-                    else:
-                        mkdict["server_info"] = ""
+                    try:
+                        if cache.get_value_data(21) is not None:
+                            mkdict["server_info"] = cache.get_value_data(21).decode().split(" ")[1]
+                        else:
+                            mkdict["server_info"] = ""
+                    except:
+                        mkdict["server_info"]=""
                     self.cache_list.append(mkdict)
 
         def get_info(self):
