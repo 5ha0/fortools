@@ -255,7 +255,8 @@ class IconcacheAnalysis:
 
     # Use when you only want to see files with certain extensions.
     def extension_filter(self, extension):
-        extension = extension
+        extension = str(extension)
+        extension = extension.lower()
         result = []
 
         for i in range(0, 3):
@@ -268,6 +269,7 @@ class IconcacheAnalysis:
             for j in range(1, len(section)):
                 json_info = section[j]
                 path = json_info.get("Path")
+                path = path.lower()
                 if extension in path:
                     result.append(section[j])
         if result:
