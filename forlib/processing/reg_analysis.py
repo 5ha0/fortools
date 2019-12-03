@@ -117,7 +117,7 @@ class NTAnalysis:
             self.ret_list = xls+ppt+word
             return self.ret_list
         
-        if a[0] == '15.0':
+        if a[0] == '15.0' or a[0] == '12.0':
             outlook = list()
             try:
                 recent0 = self.reg.open(path+"\\%s\\Outlook\\PST" %a[0])
