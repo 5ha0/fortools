@@ -3,13 +3,21 @@ class Chatbot():
         print('input your script name')
         name = input()
 
-        file = open(r'.\\' + name+'.py' , 'w')
+        file = open(r'.\\' + name+'.py' , 'w', encoding='utf-8')
         file.write('from fortools import *\n\n')
 
         while True:
             print('\nwhat is your atrifact? \n1.Event log 2.JumpList 3.FileSystem Log 4.Registry 5.Thumbnail\n'
                   '6.Zip 7.Files 8.Browser 9.Recycle 10.IconCache \n11.Lnk 12.Prefetch 13.Disk Image \n-1.finish')
-            answer = int(input())
+            answer = input()
+            try:
+                answer=int(answer)
+            except:
+                print('Plz check your input.')
+                continue
+            if answer >13 or answer ==0 or answer<-1:
+                print('Plz check your input.')
+                continue
 
             if answer == -1:
                 break
@@ -24,7 +32,16 @@ class Chatbot():
                           'Get String of event log xml\n4.Event ID Search\n5.Date Search\n6.Time Search\n7.Day Search\n'
                           '8.Level Search\n9.Favorite\n10.Get xml strings with idx\n-1:finish')
                     print('input num: ')
-                    analysis = int(input())
+                    analysis = input()
+                    try:
+                        analysis = int(analysis)
+                    except:
+                        print('Plz check your input.')
+                        continue
+                    if analysis > 10 or analysis == 0 or analysis < -1:
+                        print('Plz check your input.')
+                        continue
+
                     if analysis == -1:
                         break
                     elif analysis == 1:
@@ -68,10 +85,26 @@ class Chatbot():
                         file.write("level_info = event.level(" + level + ")\nfor i in level_info:\n\tprint(i)\n")
                     elif analysis == 9:
                         print('You can use Favorite Function. Choose Category.[1: System 2: Account 3: Etc]')
-                        category = int(input())
+                        category = input()
+                        try:
+                            category = int(category)
+                        except:
+                            print('Plz check your input.')
+                            continue
+                        if category > 3 or category == 0 or analysis < -1:
+                            print('Plz check your input.')
+                            continue
                         if category == 1:
                             print('Choose Category.[1: System On 2: System Off 3: Dirty Off]')
-                            category = int(input())
+                            category = input()
+                            try:
+                                category = int(category)
+                            except:
+                                print('Plz check your input.')
+                                continue
+                            if category > 3 or category == 0 or analysis < -1:
+                                print('Plz check your input.')
+                                continue
                             if category == 1:
                                 file.write('sys_on = event.Favorite.System.system_on()\nfor i in sys_on:\n\tprint(i)\n')
                             elif category ==2:
@@ -81,7 +114,15 @@ class Chatbot():
                         elif category == 2:
                             print('\nChoose Category.[1: Log On 2: Log Off 3: Login Failed 4: change password 5: Delete Account '
                                   '6: Verify Account 7: Add Privileged Group]')
-                            category = int(input())
+                            category = input()
+                            try:
+                                category = int(category)
+                            except:
+                                print('Plz check your input.')
+                                continue
+                            if category > 7 or category == 0 or analysis < -1:
+                                print('Plz check your input.')
+                                continue
                             if category == 1:
                                 file.write('logon = event.Favorite.Account.logon()\nfor i in logon:\n\tprint(i)\n')
                             elif category == 2:
@@ -99,6 +140,15 @@ class Chatbot():
                         elif category == 3:
                             print('Choose Category.[1: remote 2: app_crashes 3: error_report 4: service_fails 5: firewall '
                                   '6: usb 7: wireless]')
+                            category = input()
+                            try:
+                                category = int(category)
+                            except:
+                                print('Plz check your input.')
+                                continue
+                            if category > 7 or category == 0 or analysis < -1:
+                                print('Plz check your input.')
+                                continue
                             if category == 1:
                                 file.write('remote = event.Favorite.Etc.remote()\nfor i in remote:\n\tprint(i)\n')
                             elif category == 2:
@@ -124,19 +174,43 @@ class Chatbot():
                 while True:
                     print('\nchoose your analysis. \n1.Get summary info from destlist\n2.Get destlist data list\n3.Get information from streams except destlist\n4.Print info from streams\n5.Get hash\n-1:finish')
                     print('input num: ')
-                    analysis = int(input())
+                    analysis = input()
+                    try:
+                        analysis = int(analysis)
+                    except:
+                        print('Plz check your input.')
+                        continue
+                    if analysis > 5 or analysis == 0 or analysis < -1:
+                        print('Plz check your input.')
+                        continue
                     if analysis == -1:
                         break
                     elif analysis == 1:
                         print('What is your window version? input [7, 10]: ')
-                        ver = int(input())
+                        ver = input()
+                        try:
+                            category = int(ver)
+                        except:
+                            print('Plz check your input.')
+                            continue
+                        if ver is not 7 and ver is not 10:
+                            print('Plz check your input.')
+                            continue
                         if ver == 7:
                             file.write('summary = jumplist.get_summary(7)\nfor i in summary:\n\tprint(i)\n')
                         elif ver == 10:
                             file.write('summary = jumplist.get_summary(10)\nfor i in summary:\n\tprint(i)\n')
                     elif analysis == 2:
                         print('What is your window version? input [7, 10]: ')
-                        ver = int(input())
+                        ver = input()
+                        try:
+                            category = int(ver)
+                        except:
+                            print('Plz check your input.')
+                            continue
+                        if ver is not 7 and ver is not 10:
+                            print('Plz check your input.')
+                            continue
                         if ver == 7:
                             file.write('dest_list = jumplist.get_destlist_data(7)\nfor i in dest_list:\n\tprint(i)\n')
                         elif ver == 10:
@@ -151,7 +225,15 @@ class Chatbot():
                 file.write("filesys_log = FileSystemLog.file_open(r'" + path + "')\n")
                 while True:
                     print('\nchoose your analysis. \n1.Get all info\n2.Get hash\n-1:finish\ninput num: ')
-                    analysis = int(input())
+                    analysis = input()
+                    try:
+                        analysis = int(analysis)
+                    except:
+                        print('Plz check your input.')
+                        continue
+                    if analysis > 2 or analysis == 0 or analysis < -1:
+                        print('Plz check your input.')
+                        continue
                     if analysis == -1:
                         break
                     elif analysis == 1:
@@ -162,14 +244,30 @@ class Chatbot():
                 file.write("reg_file = RegistryHive.file_open(r'" + path + "')\n")
                 while True:
                     print('\nchoose your analysis type.\n1.NTUSER.DAT\n2.SYSTEM\n3.SOFTWARE\n4.SAM\n-1.fininsh\ninput num:')
-                    types = int(input())
+                    types = input()
+                    try:
+                        types = int(types)
+                    except:
+                        print('Plz check your input.')
+                        continue
+                    if types > 4 or types == 0 or types < -1:
+                        print('Plz check your input.')
+                        continue
                     if types == -1:
                         break
                     elif types ==1:
                         while True:
                             print(
                                 '\nchoose your analysis. \n1.Find Key\n2.Get info about recent run documents\n3.Get recent file cache info\n4.Get MS Office file info\n5.Get userassist info\n-1:finish')
-                            analysis = int(input())
+                            analysis = input()
+                            try:
+                                analysis = int(analysis)
+                            except:
+                                print('Plz check your input.')
+                                continue
+                            if analysis > 5 or analysis == 0 or analysis < -1:
+                                print('Plz check your input.')
+                                continue
                             if analysis == -1:
                                 break
                             elif analysis == 1:
@@ -189,7 +287,15 @@ class Chatbot():
                         while True:
                             print(
                                 '\nchoose your analysis.\n1.Find Key\n2.Get Computer basic info about OS\n3.Get usb info\n4.Get Timezone info\n5.Get network info\n-1:finish')
-                            analysis = int(input())
+                            analysis = input()
+                            try:
+                                analysis = int(analysis)
+                            except:
+                                print('Plz check your input.')
+                                continue
+                            if analysis > 5 or analysis == 0 or analysis < -1:
+                                print('Plz check your input.')
+                                continue
                             if analysis == -1:
                                 break
                             elif analysis == 1:
@@ -209,7 +315,15 @@ class Chatbot():
                         while True:
                             print(
                                 '\nchoose your analysis.\n1.Find Key\n2.Get Computer info\n3.Get network info\n-1:finish')
-                            analysis = int(input())
+                            analysis = input()
+                            try:
+                                analysis = int(analysis)
+                            except:
+                                print('Plz check your input.')
+                                continue
+                            if analysis > 3 or analysis == 0 or analysis < -1:
+                                print('Plz check your input.')
+                                continue
                             if analysis == -1:
                                 break
                             elif analysis == 1:
@@ -224,7 +338,15 @@ class Chatbot():
                         while True:
                             print(
                                 '\nchoose your analysis.\n1.Find Key\n2.Get last login info\n3.Get user name\n4.Get user info\n-1:finish')
-                            analysis = int(input())
+                            analysis = input()
+                            try:
+                                analysis = int(analysis)
+                            except:
+                                print('Plz check your input.')
+                                continue
+                            if analysis > 4 or analysis == 0 or analysis < -1:
+                                print('Plz check your input.')
+                                continue
                             if analysis == -1:
                                 break
                             elif analysis == 1:
@@ -242,7 +364,15 @@ class Chatbot():
                 file.write("thumbnail = Thumbnail_Iconcache.file_open(r'" + path + "')\n")
                 while True:
                     print('\nchoose your analysis. \n1.Get data of thumnail\n2.Show information\n3.Get info filtering by dimension\ninput num: ')
-                    analysis = int(input())
+                    analysis = input()
+                    try:
+                        analysis = int(analysis)
+                    except:
+                        print('Plz check your input.')
+                        continue
+                    if analysis > 3 or analysis == 0 or analysis < -1:
+                        print('Plz check your input.')
+                        continue
                     if analysis == -1:
                         break
                     elif analysis == 1:
@@ -261,7 +391,15 @@ class Chatbot():
                 file.write("zip_file = Files.Zip.file_open(r'" + path + "')\n")
                 while True:
                     print('\nchoose your analysis. \n1.Get info\n2.Show info\n3.Get last modification time\n-1:finish\ninput num: ')
-                    analysis = int(input())
+                    analysis = input()
+                    try:
+                        analysis = int(analysis)
+                    except:
+                        print('Plz check your input.')
+                        continue
+                    if analysis > 3 or analysis == 0 or analysis < -1:
+                        print('Plz check your input.')
+                        continue
                     if analysis == -1:
                         break
                     elif analysis == 1:
@@ -269,23 +407,47 @@ class Chatbot():
                     elif analysis == 2:
                         file.write('zip_file.show_info()\n')
             elif answer == 7:
-                types = int(input())
                 print('Input your file type. [1:JPEG, 2:PDF, 3:HWP, 4:MSOld, 5:Get file list of folder]:')
+                types = input()
+                try:
+                    types = int(types)
+                except:
+                    print('Plz check your input.')
+                    continue
+                if types > 5 or types < 1:
+                    print('Plz check your input.')
+                    continue
                 if types == 1:
-                    file.write('jpeg = Files.JPEG.file_open(r\''+path+'\')\njpeg_info = jpeg.get_info\nfor i in jpeg_info:\n\tprint(i)\n')
+                    file.write('jpeg = Files.JPEG.file_open(r\''+path+'\')\njpeg_info = jpeg.get_info()\nfor i in jpeg_info:\n\tprint(i)\n')
                 elif types == 2:
-                    file.write('pdf = Files.PDF.file_open(r\''+path+'\')\npdf_info = pdf.get_info\nfor i in pdf_info:\n\tprint(i)\n')
+                    file.write('pdf = Files.PDF.file_open(r\''+path+'\')\npdf_info = pdf.get_info()\nfor i in pdf_info:\n\tprint(i)\n')
                 elif types == 3:
-                    file.write('hwp = Files.HWP.file_open(r\''+path+'\')\nhwp_info = hwp.get_info\nfor i in hwp_info:\n\tprint(i)\n')
+                    file.write('hwp = Files.HWP.file_open(r\''+path+'\')\nhwp_info = hwp.get_info()\nfor i in hwp_info:\n\tprint(i)\n')
                 elif types == 4:
-                    file.write('ms = Files.MSOld.file_open(r\''+path+'\')\nms_info = ms.get_info\nfor i in ms_info:\n\tprint(i)\n')
+                    file.write('ms = Files.MSOld.file_open(r\''+path+'\')\nms_info = ms.get_info()\nfor i in ms_info:\n\tprint(i)\n')
                 elif types == 5:
                     file.write("files_analysis.file_list('"+path+"')\n")
             elif answer == 8:
                 print('Input your Browser type. [1:Chrome, 2:Edge or IE, 3:Firefox]')
-                types = int(input())
+                types = input()
+                try:
+                    types = int(types)
+                except:
+                    print('Plz check your input.')
+                    continue
+                if types > 3 or types < 1:
+                    print('Plz check your input.')
+                    continue
                 print('Input your analysis file type. [1:Cookie, 2:History, 3:Download, 4:Cache]')
-                ana_type = int(input())
+                ana_type = input()
+                try:
+                    ana_type = int(ana_type)
+                except:
+                    print('Plz check your input.')
+                    continue
+                if ana_type <1 or ana_type >4:
+                    print('Plz check your input.')
+                    continue
                 if types == 1:
                     file.write('browser = Browser.Chrome.')
                 elif types == 2:
@@ -297,7 +459,7 @@ class Chatbot():
                     elif ana_type == 1 or ana_type == 2 or ana_type ==3:
                         file.write('browser = Browser.Firefox.')
                 if ana_type == 1:
-                    file.write('Cookies.file_open(r\''+path+'\')\n')
+                    file.write('Cookie.file_open(r\''+path+'\')\n')
                 elif ana_type == 2:
                     file.write('History.file_open(r\''+path+'\')\n')
                 elif ana_type == 3:
@@ -306,21 +468,37 @@ class Chatbot():
                     file.write('Cache.file_open(r\''+path+'\')\n')
                 while True:
                     print('\nchoose your analysis. \n1.Get info\n2.Get hash value\n-1:finish\ninput num: ')
-                    analysis = int(input())
+                    analysis = input()
+                    try:
+                        analysis = int(analysis)
+                    except:
+                        print('Plz check your input.')
+                        continue
+                    if analysis > 2 or analysis == 0 or analysis < -1:
+                        print('Plz check your input.')
+                        continue
                     if analysis == -1:
                         break
-                    elif analysis == 1:
+                    elif analysis == 2:
                         file.write('browser_info = browser.get_info()\nfor i in browser_info:\n\tprint(i)\n')
                         if ana_type == 1:
                             while True:
                                 print('choose aditional function?\n1.Keyword search\n2.Count sorting\n-1.None')
-                                add_func = int(input())
+                                add_func = input()
+                                try:
+                                    add_func = int(add_func)
+                                except:
+                                    print('Plz check your input.')
+                                    continue
+                                if add_func > 2 or add_func == 0 or add_func < -1:
+                                    print('Plz check your input.')
+                                    continue
                                 if add_func == 1:
                                     print('input keyword:')
                                     keyword = input()
-                                    file.write('search_info = browser_info.keyword_search(\''+keyword+'\')\nfor i in search_info:\n\tprint(i)\n')
+                                    file.write('search_info = browser.keyword_search(\''+keyword+'\')\nfor i in search_info:\n\tprint(i)\n')
                                 elif add_func == 2:
-                                    file.write('cnt_sort = browser_info.cnt_sort()\nfor i in cnt_sort:\n\tprint(i)\n')
+                                    file.write('cnt_sort = browser.cnt_sort()\nfor i in cnt_sort:\n\tprint(i)\n')
                                 elif add_func == -1:
                                     break
                     elif analysis == 2:
@@ -329,7 +507,15 @@ class Chatbot():
                 file.write("recycle = Recycle.file_open(r'" + path + "')\n")
                 while True:
                     print('\nchoose your analysis. \n1.Show all info\n2.Get all info\n-1:finish\ninput num: ')
-                    analysis = int(input())
+                    analysis = input()
+                    try:
+                        analysis = int(analysis)
+                    except:
+                        print('Plz check your input.')
+                        continue
+                    if analysis > 2 or analysis == 0 or analysis < -1:
+                        print('Plz check your input.')
+                        continue
                     if analysis == -1:
                         break
                     elif analysis == 1:
@@ -340,7 +526,15 @@ class Chatbot():
                 file.write("icon_cache = Iconcache.file_open(r'" + path + "')\n")
                 while True:
                     print('\nchoose your analysis. \n1.Show all info\n2.Get all info\n3.Check whether the drive delete program is used \n4.File extension filtering\n-1:finish\ninput num: ')
-                    analysis = int(input())
+                    analysis = input()
+                    try:
+                        analysis = int(analysis)
+                    except:
+                        print('Plz check your input.')
+                        continue
+                    if analysis > 4 or analysis == 0 or analysis < -1:
+                        print('Plz check your input.')
+                        continue
                     if analysis == -1:
                         break
                     elif analysis == 1:
@@ -357,7 +551,15 @@ class Chatbot():
                 file.write("lnk = Lnk.file_open(r'" + path + "')\n")
                 while True:
                     print('\nchoose your analysis. \n1.Show all info\n2.Get all info\n3.Get one value\n-1:finish\ninput num: ')
-                    analysis = int(input())
+                    analysis = input()
+                    try:
+                        analysis = int(analysis)
+                    except:
+                        print('Plz check your input.')
+                        continue
+                    if analysis > 3 or analysis == 0 or analysis < -1:
+                        print('Plz check your input.')
+                        continue
                     if analysis == -1:
                         break
                     elif analysis == 1:
@@ -368,7 +570,15 @@ class Chatbot():
                         file.write('parse_value = lnk.')
                         print('choose your value: \n1.creation time 2.file attribute 3.access time 4.modification time 5.lnk_access time 6.file size 7.icon_idex 8.show_command 9.volume info\n'
                               '10.localbase path 11.netbios 12.machine id 13.lnk creation time 14. lnk modification time\n input num: ')
-                        category = int(input())
+                        category = input()
+                        try:
+                            category = int(category)
+                        except:
+                            print('Plz check your input.')
+                            continue
+                        if category > 14 or category == 0 or category < -1:
+                            print('Plz check your input.')
+                            continue
                         if category == 1:
                             file.write('creation_time()')
                         elif category == 2:
@@ -403,7 +613,15 @@ class Chatbot():
                 file.write("prefetch = Prefetch.file_open(r'" + path + "')\n")
                 while True:
                     print('\nchoose your analysis.\n1.Show all info\n2.Get all info\n3.File extension filtering\n-1:finish\ninput num: ')
-                    analysis = int(input())
+                    analysis = input()
+                    try:
+                        analysis = int(analysis)
+                    except:
+                        print('Plz check your input.')
+                        continue
+                    if analysis > 3 or analysis == 0 or analysis < -1:
+                        print('Plz check your input.')
+                        continue
                     if analysis == -1:
                         break
                     elif analysis == 1:
@@ -418,12 +636,28 @@ class Chatbot():
                 file.write("disk_image = Disk.disk_open(r'" + path + "')\n")
                 while True:
                     print('\nchoose your analysis.\n1.Analysis\n2.File Collect\n-1.finish\ninput num: ')
-                    analysis = int(input())
+                    analysis = input()
+                    try:
+                        analysis = int(analysis)
+                    except:
+                        print('Plz check your input.')
+                        continue
+                    if analysis > 2 or analysis == 0 or analysis < -1:
+                        print('Plz check your input.')
+                        continue
                     if analysis == -1:
                         break
                     elif analysis == 1:
                         print('choose type of metadata.[1:e01 2:volume\ninput:')
-                        types = int(input())
+                        types = input()
+                        try:
+                            types = int(types)
+                        except:
+                            print('Plz check your input.')
+                            continue
+                        if types is not 1 and types is not 2:
+                            print('Plz check your input.')
+                            continue
                         if types == 1:
                             file.write("e01_meta = disk_image.e01_metadata()\nfor i in e01_meta:\n\tprint(i)\n")
                         elif types == 2:
