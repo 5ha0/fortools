@@ -1,8 +1,7 @@
 from fortools import *
 import time
-start_time = time.time()
 
- 
+
 # chrome_cookies = Browser.Chrome.Cookie.file_open(cookies_path)
 # chrome_history = Browser.Chrome.History.file_open(history_path)
 # chrome_download = Browser.Chrome.Download.file_open(download_path)
@@ -91,5 +90,4 @@ start_time = time.time()
 # get_docx = DocxExport()
 # get_docx.add_table((ex)IE_Edge_cookies.get_info())
 # get_docx.save("report_name")
-#
-print("---{}s seconds---".format(time.time()-start_time))
+
