@@ -2,6 +2,10 @@ from fortools import *
 
 reg_file = RegistryHive.file_open(r"..\dataset\cfreds_reg\NTUSER.DAT")
 
+'''
+Uncomment the comment you want to use.
+'''
+
 # ##################### NTUSER.DAT ###########################
 # # 1. Find the key information you want
 # info = reg_file.find_key("Microsoft")
