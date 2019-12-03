@@ -116,7 +116,7 @@ class Chatbot():
                     elif analysis == 10:
                         print('Put event log idx what you want to see. Input: ')
                         idx = input()
-                        file.write('xml_info = event.xml_with_num('+idx+')\nfor i in xml_info:\n\tprint(i)')
+                        file.write('xml_info = event.xml_with_num('+idx+')\nprint(xml_info)')
                     else:
                         print('plz input num. ex)1')
             elif answer == 2:
