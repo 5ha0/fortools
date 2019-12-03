@@ -217,6 +217,8 @@ class Lnk:
             hash_v = calc_hash.get_hash(path)
             file = lnk_open(path)
             return lnk_analysis.LnkAnalysis(file, path, hash_v)
+        print("check your file format. This is not Lnk file")
+        return -1
 
 
 class Recycle:
@@ -226,6 +228,8 @@ class Recycle:
             hash_v = calc_hash.get_hash(path)
             file = recycle_open(path)
             return recycle_analysis.RecycleAnalysis(file, path, hash_v)
+        print("check your file format. This is not Recycle $I file")
+        return -1
 
 
 class Iconcache:
@@ -235,6 +239,8 @@ class Iconcache:
             hash_v = calc_hash.get_hash(path)
             file = iconcache_open(path)
             return iconcache_analysis.IconcacheAnalysis(file, path, hash_v)
+        print("check your file format. This is not IconCache.db file")
+        return -1
 
 
 class Prefetch:
@@ -260,6 +266,8 @@ class Prefetch:
                     print('error: not supported version')
                     return -1
             return prefetch_analysis.PrefetchAnalysis(file, path, hash_v)
+        print("check your file format. This is not Prefetch file")
+        return -1
 
 
 class RegistryHive:
