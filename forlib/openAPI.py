@@ -71,8 +71,8 @@ def file_open(path):
             return Files.MSOld.file_open(file)
     elif extension == 'thumb':
         return binary_open(path)
-    elif extension == 'iconcache':
-        return binary_open(path)
+    elif extension == 'Icon':
+        return iconcache_open(path)
     elif extension == 'Zip archive data':
         return Files.ZIP.file_open(path)
     elif extension == 'Hangul (Korean) Word Processor File 5.x':
