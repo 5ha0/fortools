@@ -218,13 +218,15 @@ class PrefetchAnalysis:
 
     # Use when you only want to see files with certain extensions.
     def extension_filter_pf(self, extension):
-        extension = extension
+        extension = str(extension)
+        extension = extension.lower()
         result = []
 
         file_list = self.file_list()
         for i in range(0, len(file_list)-1):
             json_info = file_list[i]
             path = json_info.get("Ref_file")
+            path = path.lower()
             if extension in path:
                 result.append(file_list[i])
 
