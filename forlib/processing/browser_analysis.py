@@ -521,6 +521,7 @@ class Firefox:
         def __parse(self):
             try:
                 cookies_cursor = self.conn.cursor()
+                cookies_cursor_row = self.conn.cursor()
             except:
                 print("please check your file")
                 return -1
@@ -529,6 +530,29 @@ class Firefox:
             except:
                 print("This file does not have such tables")
                 return -1
+
+            cookies_get_row = sqlite_get_schema("moz_cookies", cookies_cursor_row)
+
+            for row in cookies_get_row:
+                if row[1] == "name":
+                    name = row[0]
+                elif row[1] == "value":
+                    value = row[0]
+                elif row[1] == "creationTime":
+                    creationTime = row[0]
+                elif row[1] == "lastAccessed":
+                    lastAccessed = row[0]
+                elif row[1] == "expiry":
+                    expiry = row[0]
+                elif row[1] == "host":
+                    host = row[0]
+                elif row[1] == "path":
+                    cookie_path = row[0]
+                elif row[1] == "secure" or row[1] == "isSecure":
+                    isSecure = row[0]
+                elif row[1] == "isHttpOnly" or row[1] == "is_httponly":
+                    httponly = row[0]
+
             no = 0
             for cookie in cookies_open:
                 no += 1
@@ -537,15 +561,15 @@ class Firefox:
                 mkdict["type"] = "cookies"
                 mkdict["browser"] = "firefox"
                 mkdict["timezone"] = "UTC"
-                mkdict["name"] = cookie[3]
-                mkdict["value"] = cookie[4]
-                mkdict["creation_time"] = int2date2(cookie[9])
-                mkdict["last_accessed_time"] = int2date2(cookie[8])
-                mkdict["expiry_time"] = int2date3(cookie[7])
-                mkdict["host"] = cookie[5]
-                mkdict["path"] = cookie[6]
-                mkdict["is_secure"] = cookie[10]
-                mkdict["is_httponly"] = cookie[11]
+                mkdict["name"] = cookie[name]
+                mkdict["value"] = cookie[value]
+                mkdict["creation_time"] = cookie[creationTime]
+                mkdict["last_accessed_time"] = cookie[lastAccessed]
+                mkdict["expiry_time"] = cookie[expiry]
+                mkdict["host"] = cookie[host]
+                mkdict["path"] = cookie[cookie_path]
+                mkdict["is_secure"] = cookie[isSecure]
+                mkdict["is_httponly"] = cookie[httponly]
                 self.cookie_list.append(mkdict)
 
         def get_info(self):
