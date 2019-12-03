@@ -3,7 +3,9 @@ from fortools import *
 # example of evtxlog
 
 # event log(evtx) open
-log_file = EventLog.file_open('C:\\Windows\\System32\\winevt\\Logs\\Security.evtx')
+#basic path is [C:\Windows\System32\winevt\Logs\]
+path = r'your path'
+log_file = EventLog.file_open(path)
 
 '''
 Uncomment the comment you want to use.
@@ -32,7 +34,7 @@ Uncomment the comment you want to use.
 # file.close()
 # 
 # # -------------------------------------4. Search ID with event ID---------------------------------------------------
-# event_id = log_file.eventid('your event_id')
+# event_id = log_file.eventid(your event_id)
 # for i in event_id:
 #     print(i)
 # 
@@ -52,7 +54,7 @@ Uncomment the comment you want to use.
 #     print(i)
 # 
 # # -------------------------------------8. Search ID with Level ------------------------------------------------------
-# level = log_file.level('your level_num')
+# level = log_file.level(your level_num)
 # for i in level:
 #     print(i)
 # 
@@ -80,7 +82,8 @@ Uncomment the comment you want to use.
 # service_fail = log_file.Favorite.Etc.service_fails()
 # usb = log_file.Favorite.Etc.usb()
 # 
+# # -------------------------------------9. Get xml strings --------------------------------------------------------
 # # get xml information with number of event log, in this function number is index of event log
-# xml_info = log_file.xml_with_num(1)
+# xml_info = log_file.xml_with_num(num)
 # for i in xml_info:
 #     print(i)

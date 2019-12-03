@@ -1,4 +1,4 @@
-from forlib import decompress1
+from forlib import decompress
 import os
 
 signatures = [{
@@ -185,7 +185,7 @@ def sig_check(path):
 
 def prefetch(path, f):
     f.close()
-    decompressed = decompress1.decompress(path)
+    decompressed = decompress.decompress(path)
 
     dirname = os.path.dirname(path)
     basename = os.path.basename(path)

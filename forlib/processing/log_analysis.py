@@ -101,7 +101,10 @@ class EventAnalysis:
         return day_filter("create Time", [day1, day2], self.evtx_json)
 
     def xml_with_num(self, num):
-        print(self.evtx_file.records[num].get_xml_string())
+        if num >len(self.evtx_json):
+            print('Plz check idx.')
+        else:
+            print(self.evtx_file.records[num].get_xml_string())
 
 
 # favorite method for evtx log

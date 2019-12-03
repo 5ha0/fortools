@@ -25,7 +25,9 @@ Uncomment the comment you want to use.
 # file.extension_filter(extension)
 
 ####### 5.If You want to make a report, Use This. #######
-# !caution!Use the script above first
+# # !caution!Use the script above first
+# # !caution!"3","4" does not provide the report.py function.
 # docx = DocxExport()
-# docx.make_table(information)
+# for i in range(0, len(information)):
+#     docx.table_by_json(information[i])
 # docx.save('report_name')

@@ -12,17 +12,24 @@ class Chrome:
             self.file = file
             self.conn = sqlite3.connect(self.file)
             self.history_list = []
-            self.__parse()
+            if self.__parse() == -1:
+                self.history_list=""
             self.__sort()
             self.__hash_value = [hash_v]
             self.__path = file
             self.__cal_hash()
 
         def __parse(self):
-            history_cursor = self.conn.cursor()
-            visits_open = history_cursor.execute(
-                "SELECT visits.from_visit, visits.visit_time, visits.transition, urls.url, urls.title, urls.visit_count, urls.id FROM urls, visits WHERE urls.id = visits.url")
-
+            try:
+                history_cursor = self.conn.cursor()
+            except:
+                print("please check your file")
+                return -1
+            try:
+                visits_open = history_cursor.execute("SELECT visits.from_visit, visits.visit_time, visits.transition, urls.url, urls.title, urls.visit_count, urls.id FROM urls, visits WHERE urls.id = visits.url")
+            except:
+                print("This file does not have such tables")
+                return -1
             no = 0
             for visit in visits_open:
                 no += 1
@@ -106,15 +113,25 @@ class Chrome:
             self.conn = sqlite3.connect(self.file)
             self.download_list = []
             self.__parse()
+            if self.__parse() == -1:
+                self.download_list=""
             self.__sort()
             self.__hash_value = [hash_v]
             self.__path = file
             self.__cal_hash()
 
         def __parse(self):
-            downloads_cursor = self.conn.cursor()
-            downloads_open = downloads_cursor.execute("SELECT downloads.* FROM downloads")
-            downloads_cursor_row = self.conn.cursor()
+            try:
+                downloads_cursor = self.conn.cursor()
+                downloads_cursor_row = self.conn.cursor()
+            except:
+                print("please check your file")
+                return -1
+            try:
+                downloads_open = downloads_cursor.execute("SELECT downloads.* FROM downloads")
+            except:
+                print("This file does not have such tables")
+                return -1
             downloads_get_row = sqlite_get_schema("downloads", downloads_cursor_row)
 
             for row in downloads_get_row:
@@ -183,7 +200,8 @@ class Chrome:
             self.file = file
             self.__path = file
             self.cache_list = []
-            self.__parse()
+            if self.__parse() ==-1:
+                self.cache_list==""
 
         def __get_block_info(self,url_record):
             if url_record == 1:
@@ -196,7 +214,11 @@ class Chrome:
 
         def __parse(self):
             no = 0
-            data_0_open = open(self.__path + "\\data_0", 'rb')
+            try:
+                data_0_open = open(self.__path + "\\data_0", 'rb')
+            except:
+                print("please check your folder")
+                return -1
             data_0_open.seek(0x2000)
             while True:
                 no += 1
@@ -321,7 +343,8 @@ class Chrome:
             self.file = file
             self.conn = sqlite3.connect(self.file)
             self.cookie_list = []
-            self.__parse()
+            if self.__parse() == -1:
+                self.cookie_list == ""
             self.__sort()
             self.__hash_value = [hash_v]
             self.__path = file
@@ -329,10 +352,17 @@ class Chrome:
 
         def __parse(self):
             self.cookie_list = []
-            cookies_cursor = self.conn.cursor()
-            cookies_open = cookies_cursor.execute("SELECT * FROM cookies")
-
-            cookies_cursor_row = self.conn.cursor()
+            try:
+                cookies_cursor = self.conn.cursor()
+                cookies_cursor_row = self.conn.cursor()
+            except:
+                print("please check your file")
+                return -1
+            try:
+                cookies_open = cookies_cursor.execute("SELECT * FROM cookies")
+            except:
+                print("This file does not have such tables")
+                return -1
             cookies_get_row = sqlite_get_schema("cookies", cookies_cursor_row)
 
             for row in cookies_get_row:
@@ -399,16 +429,24 @@ class Firefox:
             self.file = file
             self.conn = sqlite3.connect(self.file)
             self.history_list=[]
-            self.__parse()
+            if self.__parse() == -1:
+                self.history_list == ""
             self.__sort()
             self.__hash_value = [hash_v]
             self.__path = file
             self.__cal_hash()
 
         def __parse(self):
-            visits_cursor = self.conn.cursor()
-            visits_open = visits_cursor.execute(
-                "SELECT moz_places.title, moz_places.url,moz_historyvisits.from_visit,moz_historyvisits.visit_date,moz_places.visit_count,moz_historyvisits.visit_type FROM moz_historyvisits, moz_places WHERE moz_places.id = moz_historyvisits.place_id")
+            try:
+                visits_cursor = self.conn.cursor()
+            except:
+                print("please check your file")
+                return -1
+            try:
+                visits_open = visits_cursor.execute("SELECT moz_places.title, moz_places.url,moz_historyvisits.from_visit,moz_historyvisits.visit_date,moz_places.visit_count,moz_historyvisits.visit_type FROM moz_historyvisits, moz_places WHERE moz_places.id = moz_historyvisits.place_id")
+            except:
+                print("This file does not have such tables")
+                return -1
             no = 0
             for visit in visits_open:
                 no += 1
@@ -473,15 +511,24 @@ class Firefox:
             self.file = file
             self.conn = sqlite3.connect(self.file)
             self.cookie_list=[]
-            self.__parse()
+            if self.__parse() == -1:
+                self.cookie_list == ""
             self.__sort()
             self.__hash_value = [hash_v]
             self.__path = file
             self.__cal_hash()
 
         def __parse(self):
-            cookies_cursor = self.conn.cursor()
-            cookies_open = cookies_cursor.execute("SELECT * FROM moz_cookies")
+            try:
+                cookies_cursor = self.conn.cursor()
+            except:
+                print("please check your file")
+                return -1
+            try:
+                cookies_open = cookies_cursor.execute("SELECT * FROM moz_cookies")
+            except:
+                print("This file does not have such tables")
+                return -1
             no = 0
             for cookie in cookies_open:
                 no += 1
@@ -523,16 +570,24 @@ class Firefox:
             self.file = file
             self.conn = sqlite3.connect(self.file)
             self.download_list = []
-            self.__parse()
+            if self.__parse() == -1:
+                self.download_list == ""
             self.__sort()
             self.__hash_value = [hash_v]
             self.__path = file
             self.__cal_hash()
 
         def __parse(self):
-            moz_places_cursor = self.conn.cursor()
-            place_id_open = moz_places_cursor.execute(
-                "SELECT moz_historyvisits.place_id FROM moz_historyvisits WHERE moz_historyvisits.visit_type=7")
+            try:
+                moz_places_cursor = self.conn.cursor()
+            except:
+                print("please check your file")
+                return -1
+            try:
+                place_id_open = moz_places_cursor.execute("SELECT moz_historyvisits.place_id FROM moz_historyvisits WHERE moz_historyvisits.visit_type=7")
+            except:
+                print("This file does not have such tables")
+                return -1
             no = 0
             for moz_place in place_id_open:
                 no += 1
@@ -541,13 +596,14 @@ class Firefox:
                 mkdict["type"] = "downloads"
                 mkdict["browser"] = "firefox"
                 mkdict["timezone"] = "UTC"
-                downloads_cursor = self.conn.cursor()
-                downloads_open = downloads_cursor.execute(
-                    "SELECT moz_annos.anno_attribute_id, moz_annos.content,moz_annos.dateAdded FROM moz_annos WHERE moz_annos.place_id=" + str(
-                        moz_place[0])).fetchall()
-                anno_attribute_cursor = self.conn.cursor()
-                anno_attribute_open = anno_attribute_cursor.execute(
-                    "SELECT moz_anno_attributes.* FROM moz_anno_attributes")
+                try:
+                    downloads_cursor = self.conn.cursor()
+                    downloads_open = downloads_cursor.execute("SELECT moz_annos.anno_attribute_id, moz_annos.content,moz_annos.dateAdded FROM moz_annos WHERE moz_annos.place_id=" + str(moz_place[0])).fetchall()
+                    anno_attribute_cursor = self.conn.cursor()
+                    anno_attribute_open = anno_attribute_cursor.execute("SELECT moz_anno_attributes.* FROM moz_anno_attributes")
+                except:
+                    print("This file does not have such tables")
+                    return -1
                 for anno_attribute in anno_attribute_open:
                     for i in range(0, len(downloads_open)):
                         if anno_attribute[0] == downloads_open[i][0]:
@@ -560,9 +616,11 @@ class Firefox:
                                 mkdict["download_end_time"] = int2date3(tempdict["endTime"])
                                 mkdict["file_size"] = tempdict["fileSize"]
                 url_guid_cursor = self.conn.cursor()
-                url_guid = url_guid_cursor.execute(
-                    "SELECT moz_places.url, moz_places.guid FROM moz_places WHERE moz_places.id=" + str(
-                        moz_place[0])).fetchone()
+                try:
+                    url_guid = url_guid_cursor.execute("SELECT moz_places.url, moz_places.guid FROM moz_places WHERE moz_places.id=" + str(moz_place[0])).fetchone()
+                except:
+                    print("This file does not have such tables")
+                    return -1
                 mkdict["url"] = url_guid[0]
                 mkdict["guid"] = url_guid[1]
                 mkdict["opened"] = ""
@@ -592,7 +650,10 @@ class Ie_Edge:
         def __init__(self, file, path,hash_v):
             self.file = file
             self.cache_list = []
-            self.__parse()
+            if self.file==-1:
+                self.cache_list == ""
+            else:
+                self.__parse()
             self.__sort()
             self.__hash_value = [hash_v]
             self.__path = path
@@ -612,7 +673,6 @@ class Ie_Edge:
                 if cache_container.number_of_records == 0:
                     cache_emptyContainer.append(containerid)
                     continue
-
                 for cache in cache_container.records:
                     no += 1
                     mkdict = dict()
@@ -662,7 +722,10 @@ class Ie_Edge:
         def __init__(self, file, path,hash_v):
             self.file = file
             self.cookie_list=[]
-            self.__parse()
+            if self.file == -1:
+                self.cookie_list == ""
+            else:
+                self.__parse()
             self.__sort()
             self.__hash_value = [hash_v]
             self.__path = path
@@ -718,10 +781,13 @@ class Ie_Edge:
             return self.__hash_value
 
     class Download:
-        def __init__(self, file, path,hash_v):
+        def __init__(self, file, path, hash_v):
             self.file = file
             self.download_list=[]
-            self.__parse()
+            if self.file == -1:
+                self.download_list == ""
+            else:
+                self.__parse()
             self.__sort()
             self.__hash_value = [hash_v]
             self.__path = path
@@ -811,7 +877,10 @@ class Ie_Edge:
         def __init__(self, file, path,hash_v):
             self.file = file
             self.history_list=[]
-            self.__parse()
+            if self.file == -1:
+                self.history_list == ""
+            else:
+                self.__parse()
             self.__sort()
             self.__hash_value = [hash_v]
             self.__path = path

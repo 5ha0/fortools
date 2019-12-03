@@ -25,7 +25,7 @@ from forlib.processing import prefetch_analysis
 from forlib.processing import mem_analysis
 from forlib.processing import browser_analysis
 from forlib.processing import filesystem_analysis
-from forlib import decompress1
+from forlib import decompress
 from forlib import signature as sig
 from forlib import calc_hash as calc_hash
 
@@ -432,7 +432,11 @@ def firefox_open(path):
 
 
 def ie_edge_open(path):
-    return pyesedb.open(path, 'rb')
+    if pyesedb.check_file_signature(path):
+        return pyesedb.open(path, 'rb')
+    else:
+        print("please check your file")
+        return -1
 
 
 def ole_open(path):
