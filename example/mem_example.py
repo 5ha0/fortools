@@ -1,7 +1,10 @@
 from fortools import Mem
 
-file = Mem.mem_open("C:\\Users\\sjms1\\Downloads\\CPO_PC.vmem")
-file.vol_path = "C:\\Users\\sjms1\\Desktop\\fortools\\volatility3\\vol.py"
+file = Mem.mem_open("..\\CPO_PC.vmem")
+
+'''
+Uncomment the comment you want to use.
+'''
 
 # # Lists process command line arguments
 # result = file.cmdline()
