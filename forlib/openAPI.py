@@ -337,6 +337,11 @@ class Browser:
                 hash_v = calc_hash.get_hash(path)
                 chrome_file = browser_analysis.Chrome.Cookie(path, hash_v)
                 return chrome_file
+            
+        class Cache:
+            def file_open(path):
+                chrome_file = browser_analysis.Chrome.Cache(path)
+                return chrome_file
 
     class Firefox:
         class History:
