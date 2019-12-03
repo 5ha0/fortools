@@ -1,6 +1,11 @@
 from fortools import Disk
 
 file = Disk.disk_open(r"D:\새 폴더 (3)\Adam Ferrante - Laptop-Deadbox\Horcrux\Horcrux.E01")
+
+'''
+Uncomment the comment you want to use.
+'''
+
 '''
 Precautions
 1. You should check volume partition information before collecting files.
