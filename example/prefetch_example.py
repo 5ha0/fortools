@@ -19,7 +19,7 @@ Uncomment the comment you want to use.
 
 ####### 3. You can parse only one value. #######
 # information = file.file_list()
-# #parse list [.file_name(), .last_launch_time(), .create_time(), .write_time(), .num_launch(), .file_list(), .metadata_info(), .cal_hash()]
+# # parse list [.file_name(), .last_launch_time(), .create_time(), .write_time(), .num_launch(), .file_list(), .metadata_info(), .cal_hash()]
 # print(information)
 
 ####### 4. Allows you to find a specific extension file from file list. #######
@@ -28,8 +28,14 @@ Uncomment the comment you want to use.
 # print(information)
 
 ####### 5.If You want to make a report, Use This. #######
-# !caution!Use the script above first
-# # #How to make a report
+# # !caution!Use the script above first
+# # !caution!"4" does not provide the report.py function.
+# # How to make a report
+# # 1,2 use this
+# docx = DocxExport()
+# docx.table_by_json(information[0])
+# docx.save('report_name')
+# # 3 use this
 # docx = DocxExport()
 # docx.add_table(information)
 # docx.save('report_name')

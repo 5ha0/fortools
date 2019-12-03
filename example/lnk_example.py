@@ -19,13 +19,14 @@ Uncomment the comment you want to use.
 
 ####### 3. You can parse only one value. #######
 # information = file.lnk_creation_time()
-# parse list [.file_attribute, .creation_time(), .access_time(), .write_time(), .lnk_creation_time(), .lnk_access_time(), .lnk_write_time(), .file_size(), icon_indes(), .show_command(), .volume(), .localbase_path(), .netbios(), .machine_id, .show_all_info(), get_all_info()]
+# # parse list [.file_attribute, .creation_time(), .access_time(), .write_time(), .lnk_creation_time(), .lnk_access_time(), .lnk_write_time(), .file_size(), icon_indes(), .show_command(), .volume(), .localbase_path(), .netbios(), .machine_id, .show_all_info(), get_all_info()]
 # print(information)
 
 ####### 4.If You want to make a report, Use This. #######
-# !caution!Use the script above first
-# #How to make a report
+# # !caution!Use the script above first
+# # !caution!"3" does not provide the report.py function.
+# # How to make a report
 # docx = DocxExport()
-# docx.add_table(information)
+# docx.table_by_json(information[0])
 # docx.save('report_name')
 
