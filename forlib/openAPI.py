@@ -87,6 +87,8 @@ def file_open(path):
         return Recycle.file_open(path)
     elif extension == 'prefetch':
         return Prefetch.file_open(path)
+    elif extension == 'MFT':
+        return FileSystemLog.file_open(path)
     else:
         print('Non sig. Plz check file extension.')
 
@@ -393,6 +395,7 @@ class FileSystemLog:
         hash_v = calc_hash.get_hash(path)
         extension = sig_check(path)
         if extension == 'MFT':
+            print('extension: MFT')
             return filesystem_analysis.MFTAnalysis(filesystem_log_open(path), path, hash_v)
         else:
             return filesystem_analysis.UsnJrnl(filesystem_log_open(path), path, hash_v)
