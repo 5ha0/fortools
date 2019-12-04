@@ -75,3 +75,13 @@ def date_count(key, json_list):
             result[date_value] = 1
     return result
 
+def key_count(key, json_list):
+    result = dict()
+    for i in json_list:
+        key_value = i[key]
+        if result.get(key_value) is not None:
+            result[key_value] = result[key_value] + 1
+        else:
+            result[key_value] = 1
+    return result
+
