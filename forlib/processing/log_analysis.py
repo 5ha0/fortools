@@ -22,9 +22,11 @@ class EventAnalysis:
         self.__path = path
         self.__cal_hash()
 
-    def show_all_record(self):
+    def show_info(self):
         for i in self.evtx_json:
             print(i)
+
+    def get_info(self):
         return self.evtx_json
 
     def __make_json(self):
@@ -80,6 +82,9 @@ class EventAnalysis:
         return json_list
 
     def eventid(self, num):
+        if type(num) is not int:
+            print('Parameter of eventid() is int variable.\nPlz check your input.')
+            return -1
         for i in range(0, len(self.evtx_json)):
             if self.evtx_json[i]['eventID'] == num:
                 self._result.append(self.evtx_json[i])
