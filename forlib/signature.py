@@ -108,6 +108,11 @@ signatures = [{
         'hex': ['0x25', '0x50', '0x44', '0x46'],
         'len': 4,
         'offset': 0},
+     {
+        'file_extension': 'Data',
+        'hex': ['0xd0', '0xcf', '0x11', '0xe0', '0xa1', '0xb1', '0x1a', '0xe1'],
+        'len': 8,
+        'offset': 0},
     # {
     #     'file_extension': 'Windows executable file',
     #     'hex': ['0xE8'],
