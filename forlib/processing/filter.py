@@ -64,3 +64,24 @@ def day_filter(key, filter_list, json_list):
 def time_sort(key, json_list):
     json_list = sorted(json_list, key=lambda list_info: (list_info[key]))
     return json_list
+
+def date_count(key, json_list):
+    result = dict()
+    for i in json_list:
+        date_value = i[key].split(' ')[0]
+        if result.get(date_value) is not None:
+            result[date_value] = result[date_value] + 1
+        else:
+            result[date_value] = 1
+    return result
+
+def key_count(key, json_list):
+    result = dict()
+    for i in json_list:
+        key_value = i[key]
+        if result.get(key_value) is not None:
+            result[key_value] = result[key_value] + 1
+        else:
+            result[key_value] = 1
+    return result
+
