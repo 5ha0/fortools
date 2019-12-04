@@ -72,7 +72,7 @@ def file_open(path):
     elif extension == 'thumb':
         return binary_open(path)
     elif extension == 'Icon':
-        return iconcache_open(path)
+        return Iconcache.file_open(path)
     elif extension == 'Zip archive data':
         return Files.ZIP.file_open(path)
     elif extension == 'Hangul (Korean) Word Processor File 5.x':
