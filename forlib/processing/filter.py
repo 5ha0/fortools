@@ -13,11 +13,15 @@ def custom_filter(filter_list, json_list):
             if filter_list[j + 2] == 0:  # normal
                 check = False
                 for k in filter_list[j + 1]:
-                    if json_list[i][filter_list[j]] == k:
-                        check = True
-                        break
-                    else:
-                        pass
+                     try:
+                        if json_list[i][filter_list[j]] == k:
+                            check = True
+                            break
+                        else:
+                            pass
+                    except KeyError:
+                        print('It doesn\'t have that key. Plz check key one more time.')
+                        return -1
                 if check is True:
                     pass
                 else:
