@@ -187,15 +187,16 @@ class Chatbot():
                         break
                     elif analysis == 1:
                         print('What is your window version? input [7, 10]: ')
-                        ver = input()
-                        try:
-                            category = int(ver)
-                        except:
+                        while True:
+                            ver = input()
+                            try:
+                                ver = int(ver)
+                            except:
+                                print('Plz check your input.')
+                                continue
+                            if ver is 7 or ver is 10:
+                                break
                             print('Plz check your input.')
-                            continue
-                        if ver is not 7 and ver is not 10:
-                            print('Plz check your input.')
-                            continue
                         if ver == 7:
                             file.write('summary = jumplist.get_summary(7)\nfor i in summary:\n\tprint(i)\n')
                         elif ver == 10:
@@ -203,14 +204,15 @@ class Chatbot():
                     elif analysis == 2:
                         print('What is your window version? input [7, 10]: ')
                         ver = input()
-                        try:
-                            category = int(ver)
-                        except:
+                        while True:
+                            try:
+                                ver = int(ver)
+                            except:
+                                print('Plz check your input.')
+                                continue
+                            if ver is 7 or ver is 10:
+                                break
                             print('Plz check your input.')
-                            continue
-                        if ver is not 7 and ver is not 10:
-                            print('Plz check your input.')
-                            continue
                         if ver == 7:
                             file.write('dest_list = jumplist.get_destlist_data(7)\nfor i in dest_list:\n\tprint(i)\n')
                         elif ver == 10:
