@@ -7,13 +7,17 @@ def custom_filter(filter_list, json_list):
     if type(filter_list) is not list or len(filter_list) is not 3:
         print('\nPlz check your input. You need to input list.\nformat: [key_value,[filtering_values],type]\ntype 0 is normal filtering and 1 is regular expression')
         return -1
+    elif filter_list[2] is 0 and type(filter_list[1]) is not list:
+        print(
+            '\nPlz check your input. You need to input list.\nformat: [key_value,[filtering_values],type]\ntype 0 is normal filtering and 1 is regular expression')
+        return -1
 
     for i in range(0, len(json_list)):
         for j in range(0, len(filter_list), 3):
             if filter_list[j + 2] == 0:  # normal
                 check = False
                 for k in filter_list[j + 1]:
-                     try:
+                    try:
                         if json_list[i][filter_list[j]] == k:
                             check = True
                             break
@@ -27,7 +31,13 @@ def custom_filter(filter_list, json_list):
                 else:
                     break
             elif filter_list[j + 2] == 1:  # re
-                result_re = re.search(filter_list[j + 1], str(json_list[i][filter_list[j]]))
+                try:
+                    result_re = re.search(filter_list[j + 1], str(json_list[i][filter_list[j]]))
+                except KeyError:
+                    print('It doesn\'t have that key. Plz check key one more time.')
+                    return -1
+                except:
+                    print('Error.\nYou need to check your input.')
                 if result_re is not None:
                     pass
                 else:
