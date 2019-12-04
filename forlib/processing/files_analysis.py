@@ -1,12 +1,10 @@
 from PIL.ExifTags import TAGS
 import os
 from datetime import *
-
 import forlib.calc_hash as calc_hash
 from os.path import getmtime, getctime, getatime
 from datetime import timezone, timedelta, datetime, date, time
 from os import listdir, path
-
 import json
 import sys
 from zipfile import ZipFile
@@ -155,11 +153,11 @@ class HWPAnalysis:
     def __make_json(self):
         meta = self.__file.getproperties('\x05HwpSummaryInformation', convert_time=True, no_conversion=[10])
         file_obj = dict()
-        file_obj["Author"] = meta[4]
-        file_obj["Date"] = meta[20]
-        file_obj["Last Save"] = meta[8]
-        file_obj["Create Time"] = meta[12]
-        file_obj["Last Save Time"] = meta[13]
+        file_obj["Author"] = meta[4].replace('\x00','')
+        file_obj["Date"] = meta[20].replace('\x00','')
+        file_obj["Last Save"] = meta[8].replace('\x00','')
+        file_obj["Create Time"] = meta[12].strftime("%Y-%m-%d %H:%M:%S")
+        file_obj["Last Save Time"] = meta[13].strftime("%Y-%m-%d %H:%M:%S")
         return file_obj
 
     def __cal_hash(self):
