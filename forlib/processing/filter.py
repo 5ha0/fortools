@@ -4,6 +4,9 @@ import datetime
 
 def custom_filter(filter_list, json_list):
     __result = []
+    if type(filter_list) is not list or len(filter_list) is not 3:
+        print('\nPlz check your input. You need to input list.\nformat: [key_value,[filtering_values],type]\ntype 0 is normal filtering and 1 is regular expression')
+        return -1
 
     for i in range(0, len(json_list)):
         for j in range(0, len(filter_list), 3):
@@ -84,4 +87,3 @@ def key_count(key, json_list):
         else:
             result[key_value] = 1
     return result
-
