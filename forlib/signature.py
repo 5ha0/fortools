@@ -84,7 +84,7 @@ signatures = [{
     },
     {
         'file_extension': 'MFT',
-        'hex': ['0x46', '0x49', '0x4C', '0x45'],
+        'hex': ['0x46', '0x49', '0x4c', '0x45'],
         'len': 4,
         'offset': 0
     },
