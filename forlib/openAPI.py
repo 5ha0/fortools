@@ -167,8 +167,8 @@ class Files:
     class HWP:
         def file_open(path):
             extension = sig_check(path)
-            print('extension: ' + extension)
-            if extension == 'Hangul (Korean) Word Processor File 5.x':
+            print('extension: ' + str(extension))
+            if extension == 'Hangul (Korean) Word Processor File 5.x' or extension == 'Data':
                 hash_v = calc_hash.get_hash(path)
                 file = ole_open(path)
                 return files_analysis.HWPAnalysis(file, path, hash_v)
@@ -178,7 +178,7 @@ class Files:
     class JPEG:
         def file_open(path):
             extension = sig_check(path)
-            print('extension: ' + extension)
+            print('extension: ' + str(extension))
             if extension == 'JPEG image data':
                 hash_v = calc_hash.get_hash(path)
                 file = jpeg_open(path)
@@ -189,7 +189,7 @@ class Files:
     class PDF:
         def file_open(path):
             extension = sig_check(path)
-            print('extension: ' + extension)
+            print('extension: ' + str(extension))
             if extension == 'PDF document':
                 hash_v = calc_hash.get_hash(path)
                 file = pdf_open(path)
