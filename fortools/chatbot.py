@@ -665,8 +665,8 @@ class Chatbot():
                     elif analysis == 2:
                         print('1. You should check volume partition information before collecting files.\n2. You must enter the partition start sector you want to analyze.')
                         file.write("start_sector = []\nfor i in disk_image.volume_metadata():\n\tstart_sector.append(i[\"Start Sector\"])\n")
-                        file.write("for i in start_sector:\n\tfile_list=file.get_path(\".\",i)")
-                        file.write("# you need to input your information in file_extract()")
-                        print('you need to put your information in file_extract() yourself.')
-                        file.write("extract_files = file.file_extract()")
+                        file.write("for i in start_sector:\n\tfile_list=file.get_path(\".\",i)\n")
+                        file.write("# you need to input your information in file_extract()\n")
+                        print('you need to put your information in file_extract() yourself.\n')
+                        file.write("\n# extract_files = file.file_extract()\n")
         file.close()
