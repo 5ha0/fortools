@@ -50,31 +50,53 @@ def custom_filter(filter_list, json_list):
 def date_filter(key, filter_list, json_list):
     __result = []
     for i in range(0, len(json_list)):
-        c_date = json_list[i][key].split('.')[0]
-        if datetime.datetime.strptime(filter_list[0], "%Y-%m-%d") <= datetime.datetime.strptime(c_date, "%Y-%m-%d %H:%M:%S") \
-                <= datetime.datetime.strptime(filter_list[1], "%Y-%m-%d") + datetime.timedelta(1):
-            __result.append(json_list[i])
+        try:
+            c_date = json_list[i][key].split('.')[0]
+        except KeyError:
+            print('Key Error. You need to check your key.')
+            return -1
+        try:
+            if datetime.datetime.strptime(filter_list[0], "%Y-%m-%d") <= datetime.datetime.strptime(c_date, "%Y-%m-%d %H:%M:%S") \
+                    <= datetime.datetime.strptime(filter_list[1], "%Y-%m-%d") + datetime.timedelta(1):
+                __result.append(json_list[i])
+        except TypeError:
+            print('Plz check your input format. You need to input date type')
+            return -1
     return __result
 
 
 def time_filter(key, filter_list, json_list):
     __result = []
     for i in range(0, len(json_list)):
-        c_date = json_list[i][key].split('.')[0].split(' ')[1]
-        if datetime.datetime.strptime(filter_list[0], "%H:%M:%S") <= datetime.datetime.strptime(c_date, "%H:%M:%S") \
-                <= datetime.datetime.strptime(filter_list[1], "%H:%M:%S"):
-            __result.append(json_list[i])
+        try:
+            c_date = json_list[i][key].split('.')[0].split(' ')[1]
+        except KeyError:
+            print('Key Error. You need to check your key.')
+        try:
+            if datetime.datetime.strptime(filter_list[0], "%H:%M:%S") <= datetime.datetime.strptime(c_date, "%H:%M:%S") \
+                    <= datetime.datetime.strptime(filter_list[1], "%H:%M:%S"):
+                __result.append(json_list[i])
+        except TypeError:
+            print('Plz check your input format. You need to input time type')
+            return -1
     return __result
 
 
 def day_filter(key, filter_list, json_list):
     __result = []
     for i in range(0, len(json_list)):
-        c_date = json_list[i][key].split('.')[0]
-        if datetime.datetime.strptime(filter_list[0], "%Y-%m-%d %H:%M:%S") <= \
-                datetime.datetime.strptime(c_date, "%Y-%m-%d %H:%M:%S") \
-                <= datetime.datetime.strptime(filter_list[1], "%Y-%m-%d %H:%M:%S"):
-            __result.append(json_list[i])
+        try:
+            c_date = json_list[i][key].split('.')[0]
+        except KeyError:
+            print('Key Error. You need to check your key.')
+        try:
+            if datetime.datetime.strptime(filter_list[0], "%Y-%m-%d %H:%M:%S") <= \
+                    datetime.datetime.strptime(c_date, "%Y-%m-%d %H:%M:%S") \
+                    <= datetime.datetime.strptime(filter_list[1], "%Y-%m-%d %H:%M:%S"):
+                __result.append(json_list[i])   
+        except TypeError:
+            print('Plz check your input format. You need to input time type')
+            return -1
     return __result
 
 
@@ -85,7 +107,11 @@ def time_sort(key, json_list):
 def date_count(key, json_list):
     result = dict()
     for i in json_list:
-        date_value = i[key].split(' ')[0]
+        try:
+            date_value = i[key].split(' ')[0]
+        except KeyError:
+            print('Check your key.')
+            return -1
         if result.get(date_value) is not None:
             result[date_value] = result[date_value] + 1
         else:
@@ -95,7 +121,11 @@ def date_count(key, json_list):
 def key_count(key, json_list):
     result = dict()
     for i in json_list:
-        key_value = i[key]
+                try:
+            key_value = i[key]
+        except KeyError:
+            print('Check your key.')
+            return -1
         if result.get(key_value) is not None:
             result[key_value] = result[key_value] + 1
         else:
