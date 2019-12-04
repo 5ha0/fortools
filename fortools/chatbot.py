@@ -218,7 +218,7 @@ class Chatbot():
                         elif ver == 10:
                             file.write('dest_list = jumplist.get_destlist_data(10)\nfor i in dest_list:\n\tprint(i)\n')
                     elif analysis == 3:
-                        file.write('info_list = jumplist.get_info\nfor i in info_list:\n\tprint(i)\n')
+                        file.write('info_list = jumplist.get_info()\nfor i in info_list:\n\tprint(i)\n')
                     elif analysis == 4:
                         file.write('jumplist.show_info()\n')
                     elif analysis == 5:
