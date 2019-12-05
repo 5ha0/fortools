@@ -307,15 +307,15 @@ class JumpList:
 
 class Thumbnail_Iconcache:
     def file_open(path):
-        try:
-            extension = sig_check(path)
-            print('extension: ' + extension)
-            if extension == 'Thumb_Icon':
-                hash_v = calc_hash.get_hash(path)
-                file = cache_open(path)
-                return thumbnail_analysis.Thumbnail_analysis_windows(file, path, hash_v)
-        except:
+        extension = sig_check(path)
+        print('extension: ' + extension)
+        if extension == 'Thumb_Icon':
+            hash_v = calc_hash.get_hash(path)
+            file = cache_open(path)
+            return thumbnail_analysis.Thumbnail_analysis_windows(file, path, hash_v)
+        else:
             print("File is not found")
+            return -1
 
 
 class Browser:
