@@ -397,8 +397,12 @@ class FileSystemLog:
         if extension == 'MFT':
             print('extension: MFT')
             return filesystem_analysis.MFTAnalysis(filesystem_log_open(path), path, hash_v)
-        else:
+        elif extension == -1 or extension == 'data':
             return filesystem_analysis.UsnJrnl(filesystem_log_open(path), path, hash_v)
+        else:
+            print('extension: '+str(extension))
+            print("check your file format. This is not File System Log - $J file.")
+            return -1
 
 
 def event_open(path):
