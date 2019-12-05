@@ -31,6 +31,9 @@ class JPEGAnalysis:
     def __make_json(self):
         files_obj = dict()
         info = self.__file._getexif()
+        if info == None:
+            print('There is not information of this picture.')
+            return -1
         exif = {}
         for tag, value in info.items():
             decoded = TAGS.get(tag, tag)
