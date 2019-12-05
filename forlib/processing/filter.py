@@ -121,7 +121,7 @@ def date_count(key, json_list):
 def key_count(key, json_list):
     result = dict()
     for i in json_list:
-                try:
+        try:
             key_value = i[key]
         except KeyError:
             print('Check your key.')
