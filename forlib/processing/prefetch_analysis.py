@@ -142,7 +142,17 @@ class PrefetchAnalysis:
 
     # calculate hash value after parsing
     def cal_hash(self):
+        json_list = []
+        pf_obj = dict()
         self.__hash_value.append(calc_hash.get_hash(self.path))
+        pf_obj['before_sha1'] = self.__hash_value[0]['sha1']
+        pf_obj['before_md5'] = self.__hash_value[0]['md5']
+        pf_obj['after_sha1'] = self.__hash_value[1]['sha1']
+        pf_obj['after_md5'] = self.__hash_value[1]['md5']
+
+        json_list.append(pf_obj)
+
+        return json_list
 
     def show_all_info(self):
         info_list = []
@@ -171,11 +181,11 @@ class PrefetchAnalysis:
         info["File Write Time"] = write_time[0]["File Write Time"]
         info["File Write TimeZone"] = write_time[0]["TimeZone"]
         info["File Run Count"] = self.num_launch()[0]["File Run Count"]
-        self.cal_hash()
-        info['before_sha1'] = self.__hash_value[0]['sha1']
-        info['before_md5'] = self.__hash_value[0]['md5']
-        info['after_sha1'] = self.__hash_value[1]['sha1']
-        info['after_md5'] = self.__hash_value[1]['md5']
+        hash = self.cal_hash()
+        info['before_sha1'] = hash[0]['before_sha1']
+        info['before_md5'] = hash[0]['before_md5']
+        info['after_sha1'] = hash[0]['after_sha1']
+        info['after_md5'] = hash[0]['after_md5']
 
         print(info)
         info_list.append(info)
@@ -209,11 +219,11 @@ class PrefetchAnalysis:
         info["File Write Time"] = write_time[0]["File Write Time"]
         info["File Write TimeZone"] = write_time[0]["TimeZone"]
         info["File Run Count"] = self.num_launch()[0]["File Run Count"]
-        self.cal_hash()
-        info['before_sha1'] = self.__hash_value[0]['sha1']
-        info['before_md5'] = self.__hash_value[0]['md5']
-        info['after_sha1'] = self.__hash_value[1]['sha1']
-        info['after_md5'] = self.__hash_value[1]['md5']
+        hash = self.cal_hash()
+        info['before_sha1'] = hash[0]['before_sha1']
+        info['before_md5'] = hash[0]['before_md5']
+        info['after_sha1'] = hash[0]['after_sha1']
+        info['after_md5'] = hash[0]['after_md5']
 
         info_list.append(info)
 
