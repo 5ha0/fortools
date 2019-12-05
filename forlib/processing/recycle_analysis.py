@@ -23,6 +23,7 @@ class RecycleAnalysis:
 
         return json_list
 
+    #Read little endian binaries.
     def __header(self):
         json_list = []
         self.file.seek(0)
