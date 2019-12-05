@@ -240,7 +240,7 @@ class Chatbot():
                         break
                     elif analysis == 1:
                         file.write('file_syslog_info = filesys_log.get_info()\nfor i in file_syslog_info:\n\tprint(i)\n')
-                    elif analysis == 5:
+                    elif analysis == 2:
                         file.write('file_syslog_hash = filesys_log.get_hash()\nfor i in file_syslog_hash:\n\tprint(i)\n')
             elif answer == 4:
                 file.write("reg_file = RegistryHive.file_open(r'" + path + "')\n")
