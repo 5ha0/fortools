@@ -50,7 +50,7 @@ class MFTAnalysis:
                 self.file.read(48)
             # $STANDARD_INFORMATION
             c_time = struct.unpack("<Q", self.file.read(8))
-            if c_time == 130717688888446055:
+            if c_time[0] == 0:
                 continue
             try:
                 info_list["SIN Creation Time"] = str(convert_time(c_time[0]))
@@ -155,7 +155,7 @@ class UsnJrnl:
             parent_mft_r_num = self.__file.read(8)
             info_list["USN"] = struct.unpack("<Q", self.__file.read(8))[0]
             ts_time = struct.unpack("<Q", self.__file.read(8))
-            if ts_time == 130717688888446055:
+            if ts_time[0] == 0:
                 continue
             try:
                 info_list["Time"] = str(convert_time(ts_time[0]))
