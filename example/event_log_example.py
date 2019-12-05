@@ -13,7 +13,7 @@ Uncomment the comment you want to use.
 # 
 # # ------------------------1. It shows all the parsing provided by this library at once.---------------------------
 # # With this function, you can get index, eventID, create Time, level, source, computer Information, SID.
-# log_file.show_all_record()
+# log_file.show_info()
 # 
 # # ------------------------2. Get hash value(before open, after analysis)-------------------------------------------
 # hash_value = log_file.show_all_record()
