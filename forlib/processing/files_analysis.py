@@ -31,10 +31,10 @@ class JPEGAnalysis:
     def __make_json(self):
         files_obj = dict()
         info = self.__file._getexif()
+        exif = {}
         if info == None:
             print('There is not information of this picture.')
             return -1
-        exif = {}
         for tag, value in info.items():
             decoded = TAGS.get(tag, tag)
             exif[decoded] = value
@@ -64,7 +64,7 @@ class JPEGAnalysis:
         try:
             # getTime
             createTime = info[0x9003]
-            time = createTime[0:4] + "_" + createTime[5:7] + "_" + createTime[8:10] + "_" + createTime[11:13] + "_" + createTime[14:16] + "-" + createTime[17:19]
+            time = createTime[0:4] + "-" + createTime[5:7] + "-" + createTime[8:10] + " " + createTime[11:13] + ":" + createTime[14:16] + ":" + createTime[17:19]
         except:
             time = "no time info"
 
@@ -83,7 +83,7 @@ class JPEGAnalysis:
         print(self.__jpeg_json)
 
     def get_info(self):
-        return self.__jpeg_json
+        return [self.__jpeg_json]
 
 
 # pdf analysis: author, creator, create Time, modification Time, pdf Version
