@@ -34,6 +34,8 @@ class MFTAnalysis:
             next_attr_id = struct.unpack("<H", self.file.read(2))[0]
             flags = self.file.read(2)
             used_size = struct.unpack("<H", self.file.read(2))[0]
+            if used_size ==64:
+                continue
             self.file.read(14)
             next_id = self.file.read(2)
             self.file.seek(1024*size+next_attr_id)
@@ -55,22 +57,22 @@ class MFTAnalysis:
             try:
                 info_list["SIN Creation Time"] = str(convert_time(c_time[0]))
             except OverflowError:
-                info_list["SIN Creation Time"] = 'none'
+                continue
             m_time = struct.unpack("<Q", self.file.read(8))
             try:
                 info_list["SIN Modified Time"] = str(convert_time(m_time[0]))
             except OverflowError:
-                info_list["SIN Modified Time"] = 'none'
+                continue
             mft_modified_time = struct.unpack("<Q", self.file.read(8))
             try:
                 info_list["SIN MFT Modified Time"] = str(convert_time(mft_modified_time[0]))
             except OverflowError:
-                info_list["SIN MFT Modified Time"] = 'none'
+                continue
             a_time = struct.unpack("<Q", self.file.read(8))
             try:
                 info_list["SIN Last Accessed Time"] = str(convert_time(a_time[0]))
             except OverflowError:
-                info_list["SIN Last Accessed Time"] = 'none'
+                continue
             self.file.read(40)
             # $FILE_NAME
             if struct.unpack("<I", self.file.read(4))[0] == 48:
@@ -83,7 +85,7 @@ class MFTAnalysis:
                     self.file.read(8)
                 else:  # non-resident
                     self.file.read(48)
-                info_list["Parent Address"] = self.file.read(8).decode('utf-16')
+                info_list["Parent Address"] = self.file.read(8).decode('utf-16').replace('\x00','')
                 c_time = struct.unpack("<Q", self.file.read(8))
                 try:
                     info_list["FIN Creation Time"] = str(convert_time(c_time[0]))
