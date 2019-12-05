@@ -239,7 +239,7 @@ class Chatbot():
                     if analysis == -1:
                         break
                     elif analysis == 1:
-                        file.write('file_syslog_info = jfilesys_log.get_info()\nfor i in file_syslog_info:\n\tprint(i)\n')
+                        file.write('file_syslog_info = filesys_log.get_info()\nfor i in file_syslog_info:\n\tprint(i)\n')
                     elif analysis == 5:
                         file.write('file_syslog_hash = filesys_log.get_hash()\nfor i in file_syslog_hash:\n\tprint(i)\n')
             elif answer == 4:
@@ -546,7 +546,7 @@ class Chatbot():
                     elif analysis == 3:
                         file.write('icon_cache.drive_delete_exe()\n')
                     elif analysis == 4:
-                        print('Input extension:')
+                        print('Input extension[format:.extension]: ')
                         extension = input()
                         file.write('icon_cache.extension_filter(\''+extension+'\')\n')
             elif answer == 11:
@@ -631,7 +631,7 @@ class Chatbot():
                     elif analysis == 2:
                         file.write('prefetch_info = prefetch.get_all_info()\nfor i in prefetch_info:\n\tprint(i)\n')
                     elif analysis == 3:
-                        print('Input extension:')
+                        print('Input extension[format:.extension]:')
                         extension = input()
                         file.write('filter_info = prefetch.extension_filter_pf(\'' + extension + '\')\nfor i in filter_info:\n\tprint(i)\n')
             elif answer == 13:
