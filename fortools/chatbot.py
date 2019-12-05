@@ -363,7 +363,7 @@ class Chatbot():
                                 print('You can get time, user, RID, login info, ...')
                                 file.write('user_info = reg_file.user_info()\nfor i in user_info:\n\tprint(i)\n')
             elif answer == 5:
-                file.write(#it can use thumnail and iconcache_##)
+                file.write('#it can use thumnail and iconcache_##\n')
                 file.write("thumbnail = Thumbnail_Iconcache.file_open(r'" + path + "')\n")
                 while True:
                     print('\nchoose your analysis. \n1.Get data of thumnail\n2.Show information\n3.Get info filtering by dimension\n-1.finish\ninput num: ')
