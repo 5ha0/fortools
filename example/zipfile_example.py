@@ -1,7 +1,7 @@
 from fortools import *
 
 # input zip path
-path = r'C:\Users\sjms1\Desktop\와장창.zip'
+path = r'C:\Users\sjms1\Desktop\두루미.zip'
 
 # zip file open
 zip = file_open(path)

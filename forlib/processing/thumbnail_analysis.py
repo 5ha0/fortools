@@ -183,7 +183,12 @@ class Thumbnail_analysis_windows:   # windows version check
                               "header_checksum": None,
                               "data_checksum": None,
                               "system": None,
-                              "location": None}
+                              "location": None,
+                              "before_sha1": None,
+                              "before_md5": None,
+                              "after_sha1": None,
+                              "before_md5": None}
+
                 system_version = None
                 file_size = math.floor(entry.get("data_size") / 1024)
                 cache_file.update({"num": num})
@@ -194,6 +199,10 @@ class Thumbnail_analysis_windows:   # windows version check
                 cache_file.update({"dimension": "%sx%s" % (entry.get("width"), entry.get("height"))})
                 cache_file.update({"header_checksum": entry.get("header_checksum")})
                 cache_file.update({"data_checksum": entry.get("data_checksum")})
+                cache_file.update({"before_sha1": "%s" % (self.__hash_value[0]['sha1'])})
+                cache_file.update({"before_md5": "%s" % (self.__hash_value[0]['md5'])})
+                cache_file.update({"after_sha1": "%s" % (self.__hash_value[0]['sha1'])})
+                cache_file.update({"after_md5": "%s" % (self.__hash_value[0]['md5'])})
 
                 if db_header.get("version") == 32:
                     system_version = "Windows 10"
@@ -219,15 +228,22 @@ class Thumbnail_analysis_windows:   # windows version check
 
     def dimension(self, width, height):
         for i in range(0, len(self.thumb_list)):
-            if self.thumb_list[i]['dimension'].split('x')[0] != str(width) or self.thumb_list[i]['dimension'].split('x')[1] != str(height):
-                print("Dimension " + str(width) + "x" + str(height) + " file is not found")
-                break
+            try:
+                if self.thumb_list[i]['dimension'].split('x')[0] != str(width) or self.thumb_list[i]['dimension'].split('x')[1] != str(height):
+                    print("Dimension " + str(width) + "x" + str(height) + " file is not found")
+                    return -1
 
-        for i in range(0, len(self.thumb_list)):
-            if self.thumb_list[i]['dimension'].split('x')[0] == str(width) and self.thumb_list[i]['dimension'].split('x')[1] == str(height):
-                self._result.append(self.thumb_list[i])
-                print(self.thumb_list[i])
-        return self._result
+                elif self.thumb_list[i]['dimension'].split('x')[0] == str(width) and self.thumb_list[i]['dimension'].split('x')[1] == str(height):
+                    self._result.append(self.thumb_list[i])
+                    print(self.thumb_list[i])
+                    return self._result
+
+                elif str(width).isalpha() == False or str(height).isalpha() == False:
+                    print("Input Type Error")
+                    return -1
+            except:
+                print("Input Type Error")
+                return -1
 
     def get_info(self):
         print("Getting Data Success!\n")
