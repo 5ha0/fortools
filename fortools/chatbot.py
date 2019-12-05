@@ -7,8 +7,8 @@ class Chatbot():
         file.write('from fortools import *\n\n')
 
         while True:
-            print('\nwhat is your atrifact? \n1.Event log 2.JumpList 3.FileSystem Log 4.Registry 5.Thumbnail\n'
-                  '6.Zip 7.Files 8.Browser 9.Recycle 10.IconCache \n11.Lnk 12.Prefetch 13.Disk Image \n-1.finish')
+            print('\nwhat is your atrifact? \n1.Event log 2.JumpList 3.FileSystem Log 4.Registry 5.Thumb&Icon_##\n'
+                  '6.Zip 7.Files 8.Browser 9.Recycle 10.IconCache.db \n11.Lnk 12.Prefetch 13.Disk Image \n-1.finish')
             answer = input()
             try:
                 answer=int(answer)
@@ -365,7 +365,7 @@ class Chatbot():
             elif answer == 5:
                 file.write("thumbnail = Thumbnail_Iconcache.file_open(r'" + path + "')\n")
                 while True:
-                    print('\nchoose your analysis. \n1.Get data of thumnail\n2.Show information\n3.Get info filtering by dimension\ninput num: ')
+                    print('\nchoose your analysis. \n1.Get data of thumnail\n2.Show information\n3.Get info filtering by dimension\n-1.finish\ninput num: ')
                     analysis = input()
                     try:
                         analysis = int(analysis)
@@ -379,7 +379,7 @@ class Chatbot():
                         break
                     elif analysis == 1:
                         print('You can get info of thumbnail.\n[file name, hash value, size, system version]')
-                        file.write('thumbinfo = thumbnail.get_data()\nfor i in thumbinfo:\n\tprint(i)\n')
+                        file.write('thumbinfo = thumbnail.get_info()\nfor i in thumbinfo:\n\tprint(i)\n')
                     elif analysis == 2:
                         print('You can check info but it is not saved in variable.')
                         file.write('thumbnail.thumb_print()\n')
@@ -546,7 +546,7 @@ class Chatbot():
                     elif analysis == 3:
                         file.write('icon_cache.drive_delete_exe()\n')
                     elif analysis == 4:
-                        print('Input extension[format:.extension]: ')
+                        print('Input extension:')
                         extension = input()
                         file.write('icon_cache.extension_filter(\''+extension+'\')\n')
             elif answer == 11:
@@ -631,7 +631,7 @@ class Chatbot():
                     elif analysis == 2:
                         file.write('prefetch_info = prefetch.get_all_info()\nfor i in prefetch_info:\n\tprint(i)\n')
                     elif analysis == 3:
-                        print('Input extension[format:.extension]:')
+                        print('Input extension:')
                         extension = input()
                         file.write('filter_info = prefetch.extension_filter_pf(\'' + extension + '\')\nfor i in filter_info:\n\tprint(i)\n')
             elif answer == 13:
@@ -667,8 +667,8 @@ class Chatbot():
                     elif analysis == 2:
                         print('1. You should check volume partition information before collecting files.\n2. You must enter the partition start sector you want to analyze.')
                         file.write("start_sector = []\nfor i in disk_image.volume_metadata():\n\tstart_sector.append(i[\"Start Sector\"])\n")
-                        file.write("for i in start_sector:\n\tfile_list=file.get_path(\".\",i)\n")
-                        file.write("# you need to input your information in file_extract()\n")
-                        print('you need to put your information in file_extract() yourself.\n')
-                        file.write("\n# extract_files = file.file_extract()\n")
+                        file.write("for i in start_sector:\n\tfile_list=file.get_path(\".\",i)")
+                        file.write("# you need to input your information in file_extract()")
+                        print('you need to put your information in file_extract() yourself.')
+                        file.write("extract_files = file.file_extract()")
         file.close()
