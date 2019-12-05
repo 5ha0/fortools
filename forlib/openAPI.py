@@ -401,7 +401,7 @@ class FileSystemLog:
             return filesystem_analysis.UsnJrnl(filesystem_log_open(path), path, hash_v)
         else:
             print('extension: '+str(extension))
-            print("check your file format. This is not File System Log - $J file.")
+            print("check your file format. This is not File System Log file.")
             return -1
 
 
