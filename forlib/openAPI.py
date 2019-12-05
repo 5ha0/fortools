@@ -212,7 +212,7 @@ class Files:
 class Lnk:
     def file_open(path):
         extension = sig_check(path)
-        print('extension: ' + extension)
+        print('extension: ' + str(extension))
         if extension == 'MS Windows shortcut':
             hash_v = calc_hash.get_hash(path)
             file = lnk_open(path)
@@ -224,6 +224,7 @@ class Lnk:
 class Recycle:
     def file_open(path):
         extension = sig_check(path)
+        print('extension: ' + str(extension))
         if extension == 'recycle_i':
             hash_v = calc_hash.get_hash(path)
             file = recycle_open(path)
@@ -235,6 +236,7 @@ class Recycle:
 class Iconcache:
     def file_open(path):
         extension = sig_check(path)
+        print('extension: ' + str(extension))
         if extension == 'Icon':
             hash_v = calc_hash.get_hash(path)
             file = iconcache_open(path)
@@ -246,6 +248,7 @@ class Iconcache:
 class Prefetch:
     def file_open(path):
         extension = sig_check(path)
+        print('extension: ' + str(extension))
         if extension == 'prefetch':
             hash_v = calc_hash.get_hash(path)
             file = prefetch_open(path)
