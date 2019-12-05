@@ -25,7 +25,10 @@ class PrefetchAnalysis:
         self.file.seek(16)
         executable_file_name = self.file.read(58)
         executable_file_name = executable_file_name.decode('utf16', 'ignore')
+        executable_file_name = executable_file_name.replace('\x00\x00\x00\x00', ' ')
+        executable_file_name = executable_file_name.split(' ')[0]
         executable_file_name = executable_file_name.replace('\x00', '')
+        
         pf_obj = {"Executable File Name": str(executable_file_name)}
         json.dumps(pf_obj)
         json_list.append(pf_obj)
