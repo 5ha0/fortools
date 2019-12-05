@@ -202,9 +202,9 @@ class Files:
             extension = sig_check(path)
             print('extension: ' + str(extension))
             if extension == 'Zip archive data':
-                calc_hash.get_hash(path)
+                hash_v = calc_hash.get_hash(path)
                 file = zip_open(path)
-                return files_analysis.ZIPAnalysis(file)
+                return files_analysis.ZIPAnalysis(file, path, hash_v)
             print("check your file format. This is not ZIP file.")
             return -1
 

@@ -239,9 +239,12 @@ class MSOldAnalysis:
 
 # zip analysis: filename, comment, MAC time, zip version, Compressed size, Uncompressed size, crc, Raw time
 class ZIPAnalysis:
-    def __init__(self, file):
+    def __init__(self, file, path, hash_v):
         self.file = file
         self.__info = self.__parse()
+
+    def __cal_hash(self):
+        self.__hash_value.append(calc_hash.get_hash(self.__path))
 
     def __parse(self):
         json_list = []
@@ -274,6 +277,7 @@ class ZIPAnalysis:
             json_list.append(file_obj)
             num += 1
         return json_list
+
 
     def get_info(self):
         return self.__info
