@@ -47,7 +47,7 @@ class Chatbot():
                     elif analysis == 1:
                         print('You can get info of event log. '
                               '\n[event id, creation time, timezone, level, source, computer info, sid]')
-                        file.write('event.show_all_record()\n')
+                        file.write('event.show_info()\n')
                     elif analysis == 2:
                         print('You can get hash info of event log. [before/after analysis hash value]')
                         file.write('hash_value = event.get_hash()\nfor i in hash_value:\n\tprint(i)\n')
