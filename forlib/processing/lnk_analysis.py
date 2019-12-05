@@ -520,7 +520,19 @@ class LnkAnalysis:
 
     # calculate hash value after parsing
     def cal_hash(self):
+        lnk_list = []
+        lnk_obj = dict()
+        
         self.__hash_value.append(calc_hash.get_hash(self.path))
+        
+        lnk_obj['before_sha1'] = self.__hash_value[0]['sha1']
+        lnk_obj['before_md5'] = self.__hash_value[0]['md5']
+        lnk_obj['after_sha1'] = self.__hash_value[1]['sha1']
+        lnk_obj['after_md5'] = self.__hash_value[1]['md5']
+
+        lnk_list.append(lnk_obj)
+
+        return lnk_list
 
 #################################################################################
 
@@ -565,14 +577,15 @@ class LnkAnalysis:
         machine = self.machine_id()
         info["Droid"] = machine[0]['Droid']
         info["DroidBirth"] = machine[0]['DroidBirth']
-        self.cal_hash()
-        info['before_sha1'] = self.__hash_value[0]['sha1']
-        info['before_md5'] = self.__hash_value[0]['md5']
-        info['after_sha1'] = self.__hash_value[1]['sha1']
-        info['after_md5'] = self.__hash_value[1]['md5']
+        hash = self.cal_hash()
+        info['before_sha1'] = hash[0]['before_sha1']
+        info['before_md5'] = hash[0]['before_md5']
+        info['after_sha1'] = hash[0]['after_sha1']
+        info['after_md5'] = hash[0]['after_md5']
 
         print(info)
         info_list.append(info)
+        
         return info_list
 
     def get_all_info(self):
@@ -616,13 +629,14 @@ class LnkAnalysis:
         machine = self.machine_id()
         info["Droid"] = machine[0]['Droid']
         info["DroidBirth"] = machine[0]['DroidBirth']
-        self.cal_hash()
-        info['before_sha1'] = self.__hash_value[0]['sha1']
-        info['before_md5'] = self.__hash_value[0]['md5']
-        info['after_sha1'] = self.__hash_value[1]['sha1']
-        info['after_md5'] = self.__hash_value[1]['md5']
+        hash = self.cal_hash()
+        info['before_sha1'] = hash[0]['before_sha1']
+        info['before_md5'] = hash[0]['before_md5']
+        info['after_sha1'] = hash[0]['after_sha1']
+        info['after_md5'] = hash[0]['after_md5']
 
         info_list.append(info)
+        
         return info_list
 
 def convert_time(time):
