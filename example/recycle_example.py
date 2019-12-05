@@ -1,8 +1,8 @@
 from fortools import *
 
 file = Recycle.file_open(r'path')
-# Or you can use this
-# path = 'path'
+# # Or you can use this
+# path = r'path'
 # file = file_open(path)
 
 '''
