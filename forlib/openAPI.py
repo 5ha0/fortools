@@ -69,8 +69,6 @@ def file_open(path):
             return JumpList.file_open(path)
         else:  # if file.listdir(streams=True, storages=False)[-1][0] == 'PowerPoint Document':
             return Files.MSOld.file_open(file)
-    elif extension == 'thumb':
-        return binary_open(path)
     elif extension == 'Icon':
         return Iconcache.file_open(path)
     elif extension == 'Zip archive data':
