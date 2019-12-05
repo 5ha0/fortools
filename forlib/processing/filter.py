@@ -104,6 +104,7 @@ def time_sort(key, json_list):
     json_list = sorted(json_list, key=lambda list_info: (list_info[key]))
     return json_list
 
+
 def date_count(key, json_list):
     result = dict()
     for i in json_list:
@@ -117,6 +118,7 @@ def date_count(key, json_list):
         else:
             result[date_value] = 1
     return result
+
 
 def key_count(key, json_list):
     result = dict()
