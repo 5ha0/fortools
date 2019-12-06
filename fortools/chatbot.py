@@ -30,7 +30,7 @@ class Chatbot():
                 while True:
                     print('\nchoose your analysis\n1.Show All Info\n2.Get Hash value of Artifact\n3.'
                           'Get String of event log xml\n4.Event ID Search\n5.Date Search\n6.Time Search\n7.Day Search\n'
-                          '8.Level Search\n9.Favorite\n10.Get xml strings with idx\n-1:finish')
+                          '8.Level Search\n9.Favorite\n10.Get xml strings with idx\n11.Get All Info\n-1:finish')
                     print('input num: ')
                     analysis = input()
                     try:
@@ -45,7 +45,7 @@ class Chatbot():
                     if analysis == -1:
                         break
                     elif analysis == 1:
-                        print('You can get info of event log. '
+                        print('print info of event log. '
                               '\n[event id, creation time, timezone, level, source, computer info, sid]')
                         file.write('event.show_info()\n')
                     elif analysis == 2:
@@ -167,6 +167,10 @@ class Chatbot():
                         print('Put event log idx what you want to see. Input: ')
                         idx = input()
                         file.write('xml_info = log_file.xml_with_num('+idx+')\nprint(xml_info)\n')
+                    elif analysis == 11:
+                        print('You can get info of event log. '
+                              '\n[event id, creation time, timezone, level, source, computer info, sid]')
+                        file.write('event.get_info()\n')
                     else:
                         print('plz input num. ex)1')
             elif answer == 2:
