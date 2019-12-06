@@ -3,6 +3,8 @@ import struct
 import time
 import os
 import forlib.calc_hash as calc_hash
+from forlib.processing.jump_analysis import decode_str as de
+from binascii import hexlify
 
 
 class MFTAnalysis:
@@ -31,14 +33,18 @@ class MFTAnalysis:
             self.file.read(8)
             info_list["LSN"] = struct.unpack("<Q", self.file.read(8))[0]
             self.file.read(4)
-            next_attr_id = struct.unpack("<H", self.file.read(2))[0]
+            offset_first = struct.unpack("<H", self.file.read(2))[0]
             flags = self.file.read(2)
             used_size = struct.unpack("<H", self.file.read(2))[0]
             if used_size ==64:
                 continue
-            self.file.read(14)
+            allocated_size = struct.unpack("<I", self.file.read(4))[0]
+            file_refernce = unpack48(self.file.read(8))
+            sequence_value = file_refernce[0]
+            mft_entry_number = file_refernce[1]
+            next_attr_id = struct.unpack("<H", self.file.read(2))[0]
             next_id = self.file.read(2)
-            self.file.seek(1024*size+next_attr_id)
+            self.file.seek(1024*size+offset_first)
             self.file.read(8)
             resident_flag = self.file.read(1)
             resident_flag = struct.unpack("<B", resident_flag)[0]
@@ -85,7 +91,9 @@ class MFTAnalysis:
                     self.file.read(8)
                 else:  # non-resident
                     self.file.read(48)
-                info_list["Parent Address"] = self.file.read(8).decode('utf-16').replace('\x00','')
+                file_refernce = unpack48(self.file.read(8))
+                parent_sequence_value = file_refernce[0]
+                parent_mft_entry_number = file_refernce[1]
                 c_time = struct.unpack("<Q", self.file.read(8))
                 try:
                     info_list["FIN Creation Time"] = str(convert_time(c_time[0]))
@@ -108,6 +116,8 @@ class MFTAnalysis:
                     info_list["FIN Last Accessed Time"] = 'none'
                 self.file.read(8)  # file allocation size
                 info_list["File Size"] = struct.unpack("<Q", self.file.read(8))[0]
+                # info_list["MFT Entry Num"] = mft_entry_number
+                # info_list["Parent MFT Entry Num"] = parent_mft_entry_number
                 self.file.read(8)
                 name_length = struct.unpack("<B", self.file.read(1))[0]
                 self.file.read(1)
@@ -254,3 +264,8 @@ def filesys_filter(filter_list, json_list):
             if json_list[i][filter_list[0]][j] == filter_list[1]:
                 __result.append(json_list[i])
     return __result
+
+
+def unpack48(x):
+    x1, x2, x3 = struct.unpack('<HHI', x)
+    return x1, x2 | (x3 << 16)
