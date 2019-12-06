@@ -4,7 +4,7 @@ import time
 import os
 import forlib.calc_hash as calc_hash
 from forlib.processing.jump_analysis import decode_str as de
-from binascii import hexlify
+from bitstring import BitArray
 
 
 class MFTAnalysis:
@@ -57,6 +57,7 @@ class MFTAnalysis:
             else:  # non-resident
                 self.file.read(48)
             # $STANDARD_INFORMATION
+            info_list["TimeZone"] = "UTC +00:00"
             c_time = struct.unpack("<Q", self.file.read(8))
             if c_time[0] == 0:
                 continue
@@ -91,9 +92,9 @@ class MFTAnalysis:
                     self.file.read(8)
                 else:  # non-resident
                     self.file.read(48)
-                file_refernce = unpack48(self.file.read(8))
-                parent_sequence_value = file_refernce[0]
-                parent_mft_entry_number = file_refernce[1]
+                file_refernce = BitArray(self.file.read(8)).unpack('uintle:48, <H')
+                parent_sequence_value = file_refernce[1]
+                parent_mft_entry_number = file_refernce[0]
                 c_time = struct.unpack("<Q", self.file.read(8))
                 try:
                     info_list["FIN Creation Time"] = str(convert_time(c_time[0]))
@@ -125,8 +126,61 @@ class MFTAnalysis:
                     info_list["Name"] = self.file.read(name_length*2).decode('utf-16')
                 except UnicodeDecodeError:
                     info_list["Name"] = "Unable To Decode Filename"
+                path_list = []
+                while True:
+                    parent_result = self.__find_parent(parent_mft_entry_number)
+                    parent_mft_entry_number = parent_result[1]
+                    parent_name = parent_result[0]
+                    if parent_name == 'None' or parent_name == '.':
+                        break;
+                    else:
+                        path_list.append(parent_name)
+                path = ''
+                for p in reversed(path_list):
+                    path = path+'/'+str(p)
+                info_list["parent"] = path
             result.append(info_list)
         return result
+
+    def __find_parent(self, parent_mft_entry_number):
+        try:
+            self.file.seek(parent_mft_entry_number * 1024)
+            self.file.read(20)
+            offset_first = struct.unpack("<H", self.file.read(2))[0]
+            self.file.seek(parent_mft_entry_number * 1024 + offset_first)
+            self.file.read(8)
+            resident_flag = self.file.read(1)
+            resident_flag = struct.unpack("<B", resident_flag)[0]
+            self.file.seek(3, 1)
+            self.file.read(4)
+            if resident_flag == 0:  # resident
+                self.file.read(8)
+            else:  # non-resident
+                self.file.read(48)
+            self.file.read(72)
+            if struct.unpack("<I", self.file.read(4))[0] == 48:
+                self.file.read(4)
+                resident_flag = struct.unpack("<B", self.file.read(1))[0]
+                self.file.read(7)
+                if resident_flag == 0:  # resident
+                    self.file.read(8)
+                else:  # non-resident
+                    self.file.read(48)
+                file_refernce = BitArray(self.file.read(8)).unpack('uintle:48, <H')
+                parent_sequence_value = file_refernce[1]
+                parent_mft_entry_number = file_refernce[0]
+                self.file.read(56)
+                name_length = struct.unpack("<B", self.file.read(1))[0]
+                self.file.read(1)
+                try:
+                    name = self.file.read(name_length * 2).decode('utf-16')
+                except UnicodeDecodeError:
+                    name = "Unable To Decode Filename"
+                return [name, parent_mft_entry_number]
+            else:
+                return ['None', None]
+        except:
+            return ['None', None]
 
 
 class UsnJrnl:
