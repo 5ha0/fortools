@@ -16,25 +16,27 @@ There are few free integrated Python libraries that can be used from a forensics
 For instructions, check the example folder.
 And for beginners, we provide chatbot function. If you don't know how to use it, try typing it below.
 
-`from fortools import *
+```python
+from fortools import *
 
-Chatbot()`
+Chatbot()
+```
 
 # Precautions
-**Browser**
+**Browser**  
 You can get list of these files' analysis.
 Chrome: Cache, History, Download, Cookies(version:)
 Firefox: History, Download, Cookies (version:)
 IE_Edge: Cache, History, Download, Cookies (version: more than 10)
 Continue adding versions scheduled
 
-**Registry**
+**Registry**  
 Currently, only the following analyses are provided: SAM, SOFTWARE, NTUSER.DAT, SYSTEM File(System File is on progress)
 
-**Disk**
+**Disk**  
 If you extract file in disk, you need to check start sector with volume_metadata() function's data.
 
-**Memory**
+**Memory**  
 You need to install volatility3. Plz download it and put it in path forlib/processing. This analysis is only available for the current window memory file.
 
 # Contact
