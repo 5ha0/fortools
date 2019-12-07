@@ -62,22 +62,22 @@ class MFTAnalysis:
             if c_time[0] == 0:
                 continue
             try:
-                info_list["SIN Creation Time"] = str(convert_time(c_time[0]))
+                info_list["SIN Creation Time"] = convert_time(c_time[0]).strftime("%Y-%m-%d %H:%M:%S")
             except OverflowError:
                 continue
             m_time = struct.unpack("<Q", self.file.read(8))
             try:
-                info_list["SIN Modified Time"] = str(convert_time(m_time[0]))
+                info_list["SIN Modified Time"] = convert_time(m_time[0]).strftime("%Y-%m-%d %H:%M:%S")
             except OverflowError:
                 continue
             mft_modified_time = struct.unpack("<Q", self.file.read(8))
             try:
-                info_list["SIN MFT Modified Time"] = str(convert_time(mft_modified_time[0]))
+                info_list["SIN MFT Modified Time"] = convert_time(mft_modified_time[0]).strftime("%Y-%m-%d %H:%M:%S")
             except OverflowError:
                 continue
             a_time = struct.unpack("<Q", self.file.read(8))
             try:
-                info_list["SIN Last Accessed Time"] = str(convert_time(a_time[0]))
+                info_list["SIN Last Accessed Time"] = convert_time(a_time[0]).strftime("%Y-%m-%d %H:%M:%S")
             except OverflowError:
                 continue
             self.file.read(40)
@@ -97,22 +97,22 @@ class MFTAnalysis:
                 parent_mft_entry_number = file_refernce[0]
                 c_time = struct.unpack("<Q", self.file.read(8))
                 try:
-                    info_list["FIN Creation Time"] = str(convert_time(c_time[0]))
+                    info_list["FIN Creation Time"] = convert_time(c_time[0]).strftime("%Y-%m-%d %H:%M:%S")
                 except OverflowError:
                     info_list["FIN Creation Time"] = 'none'
                 m_time = struct.unpack("<Q", self.file.read(8))
                 try:
-                    info_list["FIN Modified Time"] = str(convert_time(m_time[0]))
+                    info_list["FIN Modified Time"] = convert_time(m_time[0]).strftime("%Y-%m-%d %H:%M:%S")
                 except OverflowError:
                     info_list["FIN Modified Time"] = 'none'
                 mft_modified_time = struct.unpack("<Q", self.file.read(8))
                 try:
-                    info_list["FIN MFT Modified Time"] = str(convert_time(mft_modified_time[0]))
+                    info_list["FIN MFT Modified Time"] = convert_time(mft_modified_time[0]).strftime("%Y-%m-%d %H:%M:%S")
                 except OverflowError:
                     info_list["FIN MFT Modified Time"] = 'none'
                 a_time = struct.unpack("<q", self.file.read(8))
                 try:
-                    info_list["FIN Last Accessed Time"] = str(convert_time(a_time[0]))
+                    info_list["FIN Last Accessed Time"] = convert_time(a_time[0]).strftime("%Y-%m-%d %H:%M:%S")
                 except OverflowError:
                     info_list["FIN Last Accessed Time"] = 'none'
                 self.file.read(8)  # file allocation size
@@ -224,7 +224,7 @@ class UsnJrnl:
             if ts_time[0] == 0:
                 continue
             try:
-                info_list["Time"] = str(convert_time(ts_time[0]))
+                info_list["Time"] = convert_time(ts_time[0]).strftime("%Y-%m-%d %H:%M:%S")
             except OverflowError:
                 info_list["Time"] = 'none'
             info_list["Event Info"] = self.__reason_flag(self.__file.read(4))
