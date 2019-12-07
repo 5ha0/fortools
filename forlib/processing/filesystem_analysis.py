@@ -139,6 +139,14 @@ class MFTAnalysis:
                 for p in reversed(path_list):
                     path = path+'/'+str(p)
                 info_list["parent"] = path
+            else:
+                info_list["FIN Creation Time"] = ''
+                info_list["FIN Modified Time"] = ''
+                info_list["FIN MFT Modified Time"] = ''
+                info_list["FIN Last Accessed Time"] = ''
+                info_list["File Size"] = ''
+                info_list["Name"] = ''
+                info_list["parent"] = ''
             result.append(info_list)
         return result
 
