@@ -108,12 +108,13 @@ class JumplistAnalysis:
                 file_attr = BitArray(hex(file_attr[0]))
                 flag_attr = self.__lnk_attrib(file_attr.bin)
                 # data_list["file attribute"] = flag_attr
+                data_list["TimeZone"] = 'UTC +00:00'
                 c_time = struct.unpack("<Q", file_data[28:36])
-                data_list["create time"] = str(convert_time(c_time[0]))
+                data_list["create time"] = convert_time(c_time[0]).strftime("%Y-%m-%d %H:%M:%S")
                 a_time = struct.unpack("<Q", file_data[36:44])
-                data_list["access time"] = str(convert_time(a_time[0]))
+                data_list["access time"] = convert_time(a_time[0]).strftime("%Y-%m-%d %H:%M:%S")
                 w_time = struct.unpack("<Q", file_data[44:52])
-                data_list["write time"] = str(convert_time(w_time[0]))
+                data_list["write time"] = convert_time(w_time[0]).strftime("%Y-%m-%d %H:%M:%S")
                 data_list["file size"] = self.__file.get_size(self.__streams[i])
                 file_size = struct.unpack("<L", file_data[52:56])[0]
                 data_list["target file size"] = file_size
@@ -170,7 +171,8 @@ class JumplistAnalysis:
         entryidnumber = struct.unpack("<L", self.__destlist[120:124])
         info_list["Netbios"] = decode_str(netbiosname) #netbiosname.replace('\x00','')
         time = struct.unpack("<Q", self.__destlist[132:140])
-        info_list["Last Access Time"] = str(convert_time(time[0]))
+        info_list["TimeZone"] = 'UTC +00:00'
+        info_list["Last Access Time"] = convert_time(time[0]).strftime("%Y-%m-%d %H:%M:%S")
         cnt = struct.unpack("<L", self.__destlist[148:152])
         info_list["Access Count"] = cnt[0]
         if ver == 7:
@@ -209,7 +211,8 @@ class JumplistAnalysis:
                         info_list["netbios"] = 'cannot decode'
                     entryidnumber = struct.unpack("<L", self.__destlist[offset + 88:offset + 92])
                     last_access_time = struct.unpack("<Q", self.__destlist[offset + 100:offset + 108])
-                    info_list["last access time"] = str(convert_time(last_access_time[0]))
+                    info_list["TimeZone"] = 'UTC +00:00'
+                    info_list["last access time"] = convert_time(last_access_time[0]).strftime("%Y-%m-%d %H:%M:%S")
                     access_cnt = struct.unpack("<L", self.__destlist[offset + 116:offset + 120])
                     info_list["access count"] = access_cnt[0]
                     len_stringdata = struct.unpack("<H", self.__destlist[offset + 128:offset + 130])
@@ -231,7 +234,8 @@ class JumplistAnalysis:
                             info_list["netbios"] = 'cannot decode'
                         entryidnumber = struct.unpack("<Q", self.__destlist[offset + 88:offset + 96])
                         last_access_time = struct.unpack("<Q", self.__destlist[offset + 100:offset + 108])
-                        info_list["last access time"] = str(convert_time(last_access_time[0]))
+                        info_list["TimeZone"] = 'UTC +00:00'
+                        info_list["last access time"] = convert_time(last_access_time[0]).strftime("%Y-%m-%d %H:%M:%S")
                         len_stringdata = struct.unpack("<H", self.__destlist[offset + 112:offset + 114])
                         offset_new = offset + 114 + 2 * len_stringdata[0]
                         string_data = self.__destlist[offset+114 :offset_new]
@@ -241,13 +245,13 @@ class JumplistAnalysis:
                             info_list["new time"] = 'non info'
                         else:
                             new_time2 = self.__convert_hex(hex(new_time[0]))
-                            info_list["new time"] = str(convert_time(new_time2 - 5748192000000000))
+                            info_list["new time"] = convert_time(new_time2 - 5748192000000000).strftime("%Y-%m-%d %H:%M:%S")
                         birth_time = struct.unpack("<Q", self.__destlist[offset + 56:offset + 64])
                         if birth_time[0] == 0:
                             info_list["birth time"] = 'non info'
                         else:
                             birth_time2 = self.__convert_hex(hex(birth_time[0]))
-                            info_list["birth time"] = str(convert_time(birth_time2 - 5748192000000000))
+                            info_list["birth time"] = convert_time(birth_time2 - 5748192000000000).strftime("%Y-%m-%d %H:%M:%S")
 
                         offset = offset_new
                         result.append(info_list)
