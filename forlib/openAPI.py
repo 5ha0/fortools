@@ -46,13 +46,13 @@ def file_open(path):
     elif extension == 'MS Windows registry file':
         file = reg_open(path)
         if Registry.HiveType.NTUSER == file.hive_type():
-            return reg_analysis.NTAnalysis(file)
+            return RegistryHive.file_open(path)
         elif Registry.HiveType.SAM == file.hive_type():
-            return reg_analysis.SAMAnalysis(file)
+            return RegistryHive.file_open(path)
         elif Registry.HiveType.SOFTWARE == file.hive_type():
-            return reg_analysis.SWAnalysis(file)
+            return RegistryHive.file_open(path)
         elif Registry.HiveType.SYSTEM == file.hive_type():
-            return reg_analysis.SYSAnalysis(file)
+            return RegistryHive.file_open(path)
         elif Registry.HiveType.SYSTEM == file.hive_type():
             print("[-] To be continue")
         else:
