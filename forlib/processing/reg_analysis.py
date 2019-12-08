@@ -214,7 +214,7 @@ class NTAnalysis:
                         "file" : '%s' % file_name
                     }
                     user_list.append(reg_obj)
-        self.ret_list = sorted(user_list, key=lambda e: (e['TimeStamp']))
+        self.ret_list = sorted(user_list, key=lambda e: (e['Time']))
         return self.ret_list
 
     def __cal_hash(self):
