@@ -13,7 +13,7 @@ class LnkAnalysis:
         self.path = path
         self.__hash_value = [hash_v]
         self.lnk_flag = []
-        self.locbase_path_uni = None
+        self.locbase_path_uni_off = None
         self.start_off = None
         self.info_size = None
         self.info_flag = None
@@ -50,13 +50,13 @@ class LnkAnalysis:
                  25: "PreferEnvironmentPath",
                  26: "KeepLocalIDListForUNCTarget"
                  }
-
+        flags_to_parse = flags_to_parse[::-1]
         for count, items in enumerate(flags_to_parse):
             if int(items) == 1:
                 self.lnk_flag.append(format(flags[count]))
             else:
                 continue
-
+        print(self.lnk_flag)
         return self.lnk_flag
 
     def __lnk_attrib(self, attrib_to_parse):
@@ -78,11 +78,13 @@ class LnkAnalysis:
                   }
 
         lnk_attributes = []
+        attrib_to_parse = attrib_to_parse[::-1]
         for count, items in enumerate(attrib_to_parse):
             if int(items) == 1:
                 lnk_attributes.append(format(attrib[count]))
             else:
                 continue
+        print(lnk_attributes)
 
         return lnk_attributes
 
@@ -96,15 +98,18 @@ class LnkAnalysis:
             5: 'DRIVE_CDROM',
             6: 'DRIVE_RAMDISK'
         }
+        for i in drive_type.keys():
+            if drive == i:
+                return drive_type[i]
 
-        drive_type_list = []
-        for count, items in enumerate(drive):
-            if int(items) == 1:
-                drive_type_list.append(format(drive_type[count]))
-            else:
-                continue
-
-        return drive_type_list
+        # drive_type_list = []
+        # for count, items in enumerate(drive):
+        #     if int(items) == 1:
+        #         drive_type_list.append(format(drive_type[count]))
+        #     else:
+        #         continue
+        #
+        # return drive_type_list
 
     ################ Shell_Link_Header #############################
 
@@ -253,6 +258,16 @@ class LnkAnalysis:
 
     def __lnkinfo_off(self):
 
+        if 'HasLinkTargetIDList' not in self.lnk_flag:
+            self.start_off = 76
+        else:
+            self.file.seek(76)
+            items_hex = self.file.read(2)
+            b = bytes(b'\x00\x00')
+            items_hex = items_hex + b
+            idlistsize = struct.unpack('<i', items_hex)[0]
+            self.start_off = 78 + idlistsize
+
         if 'HasLinkInfo' not in self.lnk_flag:
             self.linkinfo_flag = None
             #Input the value to use on the __extradata() below
@@ -262,39 +277,32 @@ class LnkAnalysis:
         else:
             self.linkinfo_flag = 'True'
 
-        if 'HasLinkTargetIDList' not in self.lnk_flag:
-            self.start_off = 76
-        else:
-            self.file.seek(76)
-            items_hex = self.file.read(2)
-            b = (b'\x00\x00')
-            items_hex = items_hex + b
-            idlistsize = struct.unpack('<i', items_hex)[0]
-            self.start_off = 78 + idlistsize
-
         self.file.seek(self.start_off)
         self.info_size = struct.unpack('<i', self.file.read(4))[0]
-        info_header_size = self.file.read(4)
-        if info_header_size == '\x00\x00\x00\x1C':
-            info_option = 'False'
-        else:
-            info_option = 'True'
+        info_header_size = struct.unpack('<i', self.file.read(4))[0]
+        if info_header_size == 28:
+            info_optional = 'not set'
+        elif info_header_size >= 36:
+            info_optional = 'set'
         self.info_flag = self.file.read(4)
-        if self.info_flag == '\x00\x00\x00\x01':
+        if self.info_flag == bytes(b'\x01\x00\x00\x00'):
             self.info_flag = 'A'
-            # volume = 'True'
-            # locbase_path = 'True'
-            # net = None
-            if info_option == 'True':
-                self.locbase_path_uni = 'True'
+            # volume_id = 'present'
+            # local_base_path = 'present'
+            if info_optional == 'set':
+                self.locbase_path_uni_off = 'set'
             else:
-                self.locbase_path_uni = None
+                self.locbase_path_uni_off = 'None'
         else:
             self.info_flag = 'B'
             # volume = None
             # locbase_path = None
-            # net = 'True'
-            self.locbase_path_uni = None
+            if info_optional == 'set':
+                self.locbase_path_uni_off = '0'
+            else:
+                self.locbase_path_uni_off = 'None'
+
+        return 0
 
     def volume(self):
         lnk_list = []
@@ -302,58 +310,51 @@ class LnkAnalysis:
         self.__lnkinfo_off()
 
         if self.linkinfo_flag != 'True':
-            print('link info (X)')
-            lnk_obj = {'Drivetype': 'None'}
-            json.dumps(lnk_obj)
-            lnk_list.append(lnk_obj)
-            lnk_obj1 = {'Driveserialnumber': 'None',
+            print('HasLinkInfo: False')
+            lnk_obj1 = {'Drivetype': 'None',
+                        'Driveserialnumber': 'None',
                         'Volumelable': 'None'}
             json.dumps(lnk_obj1)
             lnk_list.append(lnk_obj1)
             return lnk_list
         elif self.info_flag != 'A':
             print('volume id (X)')
-            lnk_obj = {'Drivetype': 'None'}
-            json.dumps(lnk_obj)
-            lnk_list.append(lnk_obj)
-            lnk_obj = {'Driveserialnumber': 'None',
+            lnk_obj = {'Drivetype': 'None',
+                       'Driveserialnumber': 'None',
                        'Volumelable': 'None'}
             json.dumps(lnk_obj)
             lnk_list.append(lnk_obj)
             return lnk_list
-
         vol_off = self.start_off + 12
         self.file.seek(vol_off)
         volumeid_off = struct.unpack('<i', self.file.read(4))[0]
         volumeid_off = volumeid_off + self.start_off
         self.file.seek(volumeid_off)
-
+        print(self.file.tell())
         vol_size = struct.unpack('<i', self.file.read(4))[0]
+        print(vol_size)
 
         drive_type = struct.unpack('<i', self.file.read(4))[0]
         drive_type = self.__drive_type_list(drive_type)
 
-        driveserialnumber = struct.unpack('<l', self.file.read(4))[0]
+        driveserialnumber = struct.unpack('<i', self.file.read(4))[0]
 
         volumelable_off = self.file.read(4)
-        if volumelable_off != '0x00000014':
-            volumelable_off = struct.unpack('<l', volumelable_off)[0]
-            vol_lable_off = volumelable_off
+        if volumelable_off == bytes(b'\x10\x00\x00\x00'):
+            volumelable_off = struct.unpack('<i', volumelable_off)[0]
             volumelable_off = volumeid_off + volumelable_off
         else:
-            volumelable_off_uni = struct.unpack('<l', self.file.read(4))[0]
-            vol_lable_off = volumelable_off_uni
+            volumelable_off_uni = struct.unpack('<i', self.file.read(4))[0]
             volumelable_off = volumeid_off + volumelable_off_uni
         self.file.seek(volumelable_off)
-        volumelable_size = vol_size - vol_lable_off
-        volumelable = self.file.read(volumelable_size)
-        volumelable = volumelable.decode('cp1252')
+        end = vol_size + volumeid_off
+        volumelable_size = end - volumelable_off
 
-        for i in range(0, len(drive_type)):
-            lnk_obj = {"Drivetype": drive_type[i]}
-            json.dumps(lnk_obj)
-            lnk_list.append(lnk_obj)
-        lnk_obj = {'Driveserialnumber': str(driveserialnumber),
+        volumelable = self.file.read(volumelable_size)
+        volumelable = volumelable.decode('utf-8', 'ignore')
+
+        lnk_obj = {'Drivetype': drive_type,
+                   'Driveserialnumber': str(driveserialnumber),
                    'Volumelable': volumelable}
         json.dumps(lnk_obj)
         lnk_list.append(lnk_obj)
@@ -367,7 +368,7 @@ class LnkAnalysis:
         self.__lnkinfo_off()
 
         if self.linkinfo_flag != 'True':
-            print('this file does not have link info')
+            print('HasLinkInfo: False')
             lnk_obj = {'Localbasepath Unicode': 'None',
                        'Localbasepath': 'None'}
             json.dumps(lnk_obj)
@@ -376,45 +377,45 @@ class LnkAnalysis:
             return lnk_list
         elif self.info_flag != 'A':
             print('locabasepath (X), locabasepathunicode (X)')
-            lnk_obj = {'Localbasepath Unicode': 'None',
+            lnk_obj = {'Localbasepath Unicode': self.locbase_path_uni_off,
                        'Localbasepath': 'None'}
             json.dumps(lnk_obj)
             lnk_list.append(lnk_obj)
 
             return lnk_list
-        elif self.locbase_path_uni != 'True':
-            lnk_obj = {'Localbasepath Unicode': '0',
-                       'Localbasepath': 'unknown'}
-            json.dumps(lnk_obj)
-            lnk_list.append(lnk_obj)
 
-            return lnk_list
-        else:
+        elif self.locbase_path_uni_off == 'set':
             locbase_path_off_uni = self.start_off + 28
             self.file.seek(locbase_path_off_uni)
             locbase_path_off_uni = struct.unpack('<l', self.file.read(4))[0]
-            self.locbase_path_uni = locbase_path_off_uni + self.start_off
-            self.file.seek(self.locbase_path_uni)
-            self.locbase_path_uni = self.file.read(100)
-            self.locbase_path_uni = self.locbase_path_uni.decode('utf-8', 'ignore')
-            self.locbase_path_uni = []
-            for i in self.locbase_path_uni.split('\x00\x00'):
-                self.locbase_path_uni.append(i)
+            com_path_off_uni = struct.unpack('<l', self.file.read(4))[0]
+            locbase_path_off_uni = locbase_path_off_uni + self.start_off
+            com_path_off_uni = com_path_off_uni + self.start_off
+            self.file.seek(locbase_path_off_uni)
+            read_info_size = com_path_off_uni - locbase_path_off_uni
+            self.locbase_path_uni_off = self.file.read(read_info_size)
+            self.locbase_path_uni_off.split(bytes(b'\x00\x00'))
+            self.locbase_path_uni_off = self.locbase_path_uni.decode('utf-8', 'ignore')
+
 
         locbasepath_off = self.start_off + 16
         self.file.seek(locbasepath_off)
         locbasepath_off = struct.unpack('<l', self.file.read(4))[0]
+        end = self.start_off + 24
+        self.file.seek(end)
+        end = struct.unpack('<l', self.file.read(4))[0]
+        end = end + self.start_off
         locbasepath_off = locbasepath_off + self.start_off
 
         self.file.seek(locbasepath_off)
-        locbasepath = self.file.read(100)
-        locbasepath = locbasepath.decode('utf-8', 'ignore')
-        locbasepath = []
-        for i in locbasepath.split('\x00\x00'):
-            locbasepath.append(i)
+        read_info_size = end - locbasepath_off
 
-        lnk_obj = {'Localbasepath Unicode': self.locbase_path_uni[0],
-                   'Localbasepath': locbasepath[0]}
+        locbasepath = self.file.read(read_info_size)
+        locbasepath = locbasepath.decode('utf-8', 'ignore')
+        locbasepath = locbasepath.replace('\x00', '')
+
+        lnk_obj = {'Localbasepath Unicode': self.locbase_path_uni_off,
+                   'Localbasepath': locbasepath}
         json.dumps(lnk_obj)
         lnk_list.append(lnk_obj)
 
@@ -424,14 +425,16 @@ class LnkAnalysis:
     def __extradata_size(self, string_off):
         self.file.seek(string_off)
         string_size = self.file.read(2)
-        b = (b'\x00\x00')
+        b = bytes(b'\x00\x00')
         string_size = string_size + b
         string_size = struct.unpack('<i', string_size)[0]
+        string_size = string_size * 2
 
         # if you want to read string, use this
         # relative_path = self.file.read(string_size)
         # relative_path = relative_path.decode('utf8', 'ignore')
         # relative_path = relative_path.replace('\x00', '')
+        # print(relative_path)
 
         string_off = string_size + string_off + 2
         return string_off
@@ -444,26 +447,41 @@ class LnkAnalysis:
         if 'HasName' in self.lnk_flag:
             string_off = self.__extradata_size(string_off)
 
-        elif 'HasRelativePath' in self.lnk_flag:
+        if 'HasRelativePath' in self.lnk_flag:
+            print(string_off)
+            print('1')
+            string_off = self.__extradata_size(string_off)
+            print(string_off)
+            print('2')
+
+        if 'HasWorkingDir' in self.lnk_flag:
+            print(string_off)
+            print('3')
+            string_off = self.__extradata_size(string_off)
+            print(string_off)
+            print('dfgsdfgdfsg')
+
+        if 'HasArguments' in self.lnk_flag:
             string_off = self.__extradata_size(string_off)
 
-        elif 'HasWorkingDir' in self.lnk_flag:
-            string_off = self.__extradata_size(string_off)
-
-        elif 'HasArguments' in self.lnk_flag:
-            string_off = self.__extradata_size(string_off)
-
-        elif 'HasIconLocation' in self.lnk_flag:
+        if 'HasIconLocation' in self.lnk_flag:
             string_off = self.__extradata_size(string_off)
 
         self.extra_off = string_off
-        block_signature = self.extra_off + 4
-        self.file.seek(block_signature)
-        block_signature = self.file.read(4)
-        if block_signature == '\xA0\x00\x00\x03':
-            self.extra_data = 'True'
-        else:
-            self.extra_data = None
+
+        self.extra_data = None
+
+        while(1):
+            self.file.seek(self.extra_off)
+            block_size = struct.unpack('<i', self.file.read(4))[0]
+            if block_size < 4:
+                break
+            block_signature = self.file.read(4)
+            if block_signature == bytes(b'\x03\x00\x00\xa0'):
+                self.extra_data = 'True'
+                break
+            else:
+                self.extra_off = self.extra_off + block_size
 
     def netbios(self):
         self.__string_data()
@@ -477,10 +495,12 @@ class LnkAnalysis:
             lnk_list.append(lnk_obj)
 
             return lnk_list
+
         netbios = self.extra_off + 16
         self.file.seek(netbios)
-        netbios = str(self.file.read(16))
-        netbios = netbios.replace('\x00', '').encode('utf-8', 'ignore').decode('utf-8')
+        netbios = self.file.read(16)
+        netbios = netbios.decode('utf8', 'ignore')
+        netbios = netbios.replace(('\x00'), '')
 
         lnk_obj = {'NetBios': str(netbios)}
         json.dumps(lnk_obj)
@@ -504,10 +524,11 @@ class LnkAnalysis:
         droid = self.extra_off + 32
         self.file.seek(droid)
         droid = str(self.file.read(32))
-        droid = droid.replace('\x00', '').encode('utf-8', 'ignore').decode('utf-8')
+        # droid = droid.decode('cp949', 'ignore')
+        # droid = droid.replace(('\x00'), '')
 
         droidbirth = str(self.file.read(32))
-        droidbirth = droidbirth.replace('\x00', '').encode('utf-8', 'ignore').decode('utf-8')
+        droidbirth = droidbirth.replace('\\x00', '').encode('utf-16', 'ignore').decode('utf-16', 'ignore')
 
         lnk_obj = {'Droid': str(droid),
                    'DroidBirth': str(droidbirth)}
@@ -522,9 +543,7 @@ class LnkAnalysis:
     def cal_hash(self):
         lnk_list = []
         lnk_obj = dict()
-        
         self.__hash_value.append(calc_hash.get_hash(self.path))
-        
         lnk_obj['before_sha1'] = self.__hash_value[0]['sha1']
         lnk_obj['before_md5'] = self.__hash_value[0]['md5']
         lnk_obj['after_sha1'] = self.__hash_value[1]['sha1']
@@ -564,12 +583,9 @@ class LnkAnalysis:
         info["IconIndex"] = self.iconindex()[0]['IconIndex']
         info["Show Command"] = self.show_command()[0]['Show Command']
         volume = self.volume()
-        count = 0
-        for i in range(0, len(file_attribute)):
-            info["Drivetype" + str(i)] = volume[i]['Drivetype']
-            count += 1
-        info["Driveserialnumber"] = volume[count]['Driveserialnumber']
-        info["Volumelable"] = volume[count]['Volumelable']
+        info['Drivetype'] = volume[0]['Drivetype']
+        info["Driveserialnumber"] = volume[0]['Driveserialnumber']
+        info["Volumelable"] = volume[0]['Volumelable']
         localbase = self.localbase_path()
         info['Localbasepath Unicode'] = localbase[0]['Localbasepath Unicode']
         info['Localbasepath'] = localbase[0]['Localbasepath']
@@ -585,7 +601,7 @@ class LnkAnalysis:
 
         print(info)
         info_list.append(info)
-        
+
         return info_list
 
     def get_all_info(self):
@@ -636,7 +652,7 @@ class LnkAnalysis:
         info['after_md5'] = hash[0]['after_md5']
 
         info_list.append(info)
-        
+
         return info_list
 
 def convert_time(time):
