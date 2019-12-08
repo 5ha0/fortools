@@ -226,7 +226,7 @@ class NTAnalysis:
     
 
 class SYSAnalysis:
-    def __init__(self, file):
+    def __init__(self, file, path, hash_val):
         self.reg = file
         self.ret_list = list()
         self.__hash_val = [hash_val]
@@ -393,7 +393,7 @@ class SYSAnalysis:
     
     
 class SWAnalysis:
-    def __init__(self, file):
+    def __init__(self, file, path, hash_val):
         self.reg = file
         self.ret_list = list()
         self.__hash_val = [hash_val]
@@ -488,7 +488,7 @@ class SWAnalysis:
     
     
 class SAMAnalysis:
-    def __init__(self, file):
+    def __init__(self, file, path, hash_val):
         self.reg = file
         self.ret_list = list()
         self.__hash_val = [hash_val]
