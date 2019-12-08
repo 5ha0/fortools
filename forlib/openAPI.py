@@ -93,13 +93,17 @@ def file_open(path):
 class Disk:
     def disk_open(path):
         hash_val = calc_hash.get_hash(path)
-        if pyewf.check_file_signature(path) == True:
-            filename = pyewf.glob(path)
-            ewf_handle = pyewf.handle()
-            ewf_handle.open(filename)
-            return disk_analysis.E01Analysis(ewf_handle, path, hash_val)
-        else:
-            return disk_analysis.DDAnalysis(path, hash_val)
+        try:
+            if pyewf.check_file_signature(path) == True:
+                filename = pyewf.glob(path)
+                ewf_handle = pyewf.handle()
+                ewf_handle.open(filename)
+                return disk_analysis.E01Analysis(ewf_handle, path, hash_val)
+            else:
+                return disk_analysis.DDAnalysis(path, hash_val)
+        except:
+            print("Check the file structure or extension")
+            return -1
 
 class Mem:
     def mem_open(path):
