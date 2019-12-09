@@ -183,11 +183,7 @@ class Thumbnail_analysis_windows:   # windows version check
                               "header_checksum": None,
                               "data_checksum": None,
                               "system": None,
-                              "location": None,
-                              "before_sha1": None,
-                              "before_md5": None,
-                              "after_sha1": None,
-                              "before_md5": None}
+                              "location": None}
 
                 system_version = None
                 file_size = math.floor(entry.get("data_size") / 1024)
@@ -199,10 +195,7 @@ class Thumbnail_analysis_windows:   # windows version check
                 cache_file.update({"dimension": "%sx%s" % (entry.get("width"), entry.get("height"))})
                 cache_file.update({"header_checksum": entry.get("header_checksum")})
                 cache_file.update({"data_checksum": entry.get("data_checksum")})
-                cache_file.update({"before_sha1": "%s" % (self.__hash_value[0]['sha1'])})
-                cache_file.update({"before_md5": "%s" % (self.__hash_value[0]['md5'])})
-                cache_file.update({"after_sha1": "%s" % (self.__hash_value[0]['sha1'])})
-                cache_file.update({"after_md5": "%s" % (self.__hash_value[0]['md5'])})
+
 
                 if db_header.get("version") == 32:
                     system_version = "Windows 10"
@@ -249,6 +242,8 @@ class Thumbnail_analysis_windows:   # windows version check
         print("Getting Data Success!\n")
         return self.thumb_list
 
+    def get_hash(self):
+        return self.__hash_value
 
 
 

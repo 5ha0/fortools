@@ -6,6 +6,8 @@ path = r'..\thumbcache_32.db'
 # thumbcache_xx.db, iconcache_xx.db file open
 thumbnail = file_open(path)
 
+for i in thumbnail.get_hash():
+    print(i)
 ####### 1. It shows all the parsing provided by this library at once. #######
 # thumbnail.show_info()
 
@@ -15,7 +17,7 @@ information = thumbnail.get_info()
 ####### 3. It shows specific width, height file data by this library at once. #######
 info = thumbnail.dimension(30, 30)
 
-####### 3.If You want to make a report, Use This. #######
+####### 4.If You want to make a report, Use This. #######
 # docu = DocxExport()
 # docu.add_table(info) # [{key:value},{key:value}]
 # docu.save('example')

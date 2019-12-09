@@ -608,7 +608,7 @@ class LnkAnalysis:
         info_list = []
         info = dict()
         file_attribute = self.file_attribute()
-                for i in range(0, len(file_attribute)):
+        for i in range(0, len(file_attribute)):
             info["File Attributes"+ str(i)] = file_attribute[i]['File Attributes']
         t_creation_time = self.creation_time()
         info["Target File Creation Time"] = t_creation_time[0]['Target File Creation Time']
