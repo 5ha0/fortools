@@ -608,8 +608,8 @@ class LnkAnalysis:
         info_list = []
         info = dict()
         file_attribute = self.file_attribute()
-        for i in range(0, len(file_attribute)):
-            info["File Attributes" + str(i)] = file_attribute[i]['File Attributes']
+                for i in range(0, len(file_attribute)):
+            info["File Attributes"+ str(i)] = file_attribute[i]['File Attributes']
         t_creation_time = self.creation_time()
         info["Target File Creation Time"] = t_creation_time[0]['Target File Creation Time']
         info['Target File Creation TimeZone'] = t_creation_time[0]['TimeZone']
@@ -632,17 +632,14 @@ class LnkAnalysis:
         info["IconIndex"] = self.iconindex()[0]['IconIndex']
         info["Show Command"] = self.show_command()[0]['Show Command']
         volume = self.volume()
-        count = 0
-        for i in range(0, len(file_attribute)):
-            info["Drivetype" + str(i)] = volume[i]['Drivetype']
-            count += 1
-        info["Driveserialnumber"] = volume[count]['Driveserialnumber']
-        info["Volumelable"] = volume[count]['Volumelable']
+        info['Drivetype'] = volume[0]['Drivetype']
+        info["Driveserialnumber"] = volume[0]['Driveserialnumber']
+        info["Volumelable"] = volume[0]['Volumelable']
         localbase = self.localbase_path()
         info['Localbasepath Unicode'] = localbase[0]['Localbasepath Unicode']
         info['Localbasepath'] = localbase[0]['Localbasepath']
         info["NetBios"] = self.netbios()[0]['NetBios']
-        machine = self.machine_id()
+        machine = self.droid_value()
         info["Droid"] = machine[0]['Droid']
         info["DroidBirth"] = machine[0]['DroidBirth']
         hash = self.cal_hash()
