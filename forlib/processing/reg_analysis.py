@@ -260,27 +260,6 @@ class SYSAnalysis:
             if v.name() == "Current":
                 return v.value()
 
-    def __rec(self, key, get_path, find_val):
-#        get_path(key, find_val)
-        for subkey in key.subkeys():
-            self.__rec(subkey, get_path, find_val)
-        path = get_path(key,find_val)
-
-    def __get_path(self, key, find_val):
-        for value in [v.value() for v in key.values()
-                        if v.value_type() == Registry.RegSZ
-                        or v.value_type() == Registry.RegExpandSZ]:
-                        if find_val in value:
-                            reg_key_obj = {
-                                "find_keyword" : find_val,
-                                "key" : key.path()
-                            }
-                            ret_list.append(reg_obj)
-        return ret_list
-
-    def find_key(self, keyword):
-        self.__rec(self.reg.root(), self.__get_path, keyword)
-
     def get_computer_info(self):
         path = "ControlSet00%s\\services\\Tcpip\\Parameters" % self.__control_set_check(self.reg)
         computer_path = self.reg.open(path)
