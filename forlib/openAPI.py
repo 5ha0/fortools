@@ -37,6 +37,9 @@ def sig_check(path):
     return extension
 
 
+def file_list(path):
+    return files_analysis.FileList(path)
+
 def file_open(path):
     extension = sig_check(path)
     if extension == 'MS Windows Vista Event Log':
