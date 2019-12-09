@@ -16,9 +16,21 @@ class MFTAnalysis:
         self.__result = self.__parse_info()
         self.__cal_hash()
 
-    def get_info(self):
+    def get_all_info(self):
         return self.__result
 
+    def get_info(self, list):
+        result = []
+        for i in self.__result:
+            info = dict()
+            try:
+                for j in list:
+                    info[j] = i[j]
+                result.append(info)
+            except KeyError:
+                print("Plz check your key.")
+                return -1
+        return result
 
     def get_hash(self):
         return self.__hash_value
@@ -145,10 +157,10 @@ class MFTAnalysis:
                         break
                     else:
                         path_list.append(parent_name)
-                path = '.'
+                path = ''
                 for p in reversed(path_list):
                     path = path+'\\'+str(p)
-                info_list["parent"] = path
+                info_list["Parent"] = path
             else:
                 info_list["FIN Creation Time"] = ''
                 info_list["FIN Modified Time"] = ''
@@ -156,7 +168,7 @@ class MFTAnalysis:
                 info_list["FIN Last Accessed Time"] = ''
                 info_list["File Size"] = ''
                 info_list["Name"] = ''
-                info_list["parent"] = ''
+                info_list["Parent"] = ''
             result.append(info_list)
         return result
 
@@ -216,8 +228,21 @@ class UsnJrnl:
         self.__result = self.__parse()
         self.__cal_hash()
 
-    def get_info(self):
+    def get_all_info(self):
         return self.__result
+
+    def get_info(self, list):
+        result = []
+        for i in self.__result:
+            info = dict()
+            try:
+                for j in list:
+                    info[j] = i[j]
+                result.append(info)
+            except KeyError:
+                print("Plz check your key.")
+                return -1
+        return result
 
     def event_filter(self, name):
         return filesys_filter(['Event Info', name], self.__result)
