@@ -24,7 +24,7 @@ class Thumbnail_analysis_windows:   # windows version check
                                 "Windows_10": 0x20}
         self.__hash_value = [hash_v]
         self.__path = path
-        self.thumb_list = self._get_data(self.__path)
+        self.thumb_list = self.__parse(self.__path)
         self._result = []
         self.__file = file
         self.__cal_hash()
@@ -32,7 +32,7 @@ class Thumbnail_analysis_windows:   # windows version check
     def __cal_hash(self):
         self.__hash_value.append(calc_hash.get_hash(self.__path))
 
-    def _get_data(self, path):   # thumbnail data check
+    def __parse(self, path):   # thumbnail data check
         try:
             info_list=[]
             file = open(path, "rb")

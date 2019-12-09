@@ -10,10 +10,10 @@ thumbnail = file_open(path)
 # thumbnail.show_info()
 
 ####### 2. It handles all parsing provided by this library at once. #######
-information = thumbnail.get_info()
+# information = thumbnail.get_info()
 
 ####### 3. It shows specific width, height file data by this library at once. #######
-info = thumbnail.dimension(30, 30)
+# info = thumbnail.dimension(30, 30)
 
 ####### 4.If You want to make a report, Use This. #######
 # docu = DocxExport()

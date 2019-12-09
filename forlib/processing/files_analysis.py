@@ -7,7 +7,7 @@ from datetime import timezone, timedelta, datetime, date, time
 from os import listdir, path
 import json
 import sys
-from zipfile import ZipFile
+import zipfile
 from forlib import signature as sig
 import magic
 
@@ -246,7 +246,7 @@ class ZIPAnalysis:
         self.file = file
         self.__path = path
         self.__hash_value = [hash_v]
-        self.__info = self.__parse()
+        self.zipinfo_list = self.__parse()
         self.__cal_hash()
 
     def __parse(self):
@@ -281,17 +281,31 @@ class ZIPAnalysis:
         return json_list
 
     def get_info(self):
-        return self.__info
+        return self.zipinfo_list
 
     def show_info(self):
-        for i in self.__info:
+        for i in self.zipinfo_list:
             print(i)
+
+    def extract(self):
+        zip_name = []
+        for i in range(0, len(self.zipinfo_list)):
+            if(self.zipinfo_list[i]['FileName'].split('.')[1] == 'zip'):
+                zip_name.append(self.zipinfo_list[i]['FileName'])
+                # print(self.zipinfo_list[i]['FileName'])
+                with zipfile.ZipFile(self.__path) as zf:
+                    zf.extractall()
+        for i in range(0, len(zip_name)):
+            with zipfile.ZipFile(zip_name[i]) as zf:
+                zf.extractall()
+                print("Uncompress Success!")
 
     def __cal_hash(self):
         self.__hash_value.append(calc_hash.get_hash(self.__path))
 
     def get_hash(self):
         return self.__hash_value
+
 
     # def last_modtime(self):
     #     num = 1
