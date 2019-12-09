@@ -7,7 +7,7 @@ from datetime import timezone, timedelta, datetime, date, time
 from os import listdir, path
 import json
 import sys
-import zipfile
+from zipfile import ZipFile
 from forlib import signature as sig
 import magic
 
@@ -64,10 +64,7 @@ class JPEGAnalysis:
         try:
             # getTime
             createTime = info[0x9003]
-            time = createTime[0:4] + "-" + createTime[5:7] + "-" + createTime[8:10] + " " + createTime[
-                                                                                            11:13] + ":" + createTime[
-                                                                                                           14:16] + ":" + createTime[
-                                                                                                                          17:19]
+            time = createTime[0:4] + "-" + createTime[5:7] + "-" + createTime[8:10] + " " + createTime[11:13] + ":" + createTime[14:16] + ":" + createTime[17:19]
         except:
             time = "no time info"
 
@@ -85,8 +82,21 @@ class JPEGAnalysis:
     def show_info(self):
         print(self.__jpeg_json)
 
-    def get_info(self):
+    def get_all_info(self):
         return [self.__jpeg_json]
+    
+    def get_info(self, list):
+        result = []
+        info = dict()
+        try:
+            for j in list:
+                info[j] = self.__jpeg_json
+            result.append(info)
+        except KeyError:
+            print("Plz check your key.")
+            return -1
+        return result
+
 
 
 # pdf analysis: author, creator, create Time, modification Time, pdf Version
@@ -136,7 +146,19 @@ class PDFAnalysis:
     def get_hash(self):
         return self.__hash_value
 
-    def get_info(self):
+    def get_info(self, list):
+        result = []
+        info = dict()
+        try:
+            for j in list:
+                info[j] = self.__pdf_json[j]
+            result.append(info)
+        except KeyError:
+            print("Plz check your key.")
+            return -1
+        return result
+
+    def get_all_info(self):
         return [self.__pdf_json]
 
     def show_info(self):
@@ -159,9 +181,9 @@ class HWPAnalysis:
     def __make_json(self):
         meta = self.__file.getproperties('\x05HwpSummaryInformation', convert_time=True, no_conversion=[10])
         file_obj = dict()
-        file_obj["Author"] = meta[4].replace('\x00', '')
-        file_obj["Date"] = meta[20].replace('\x00', '')
-        file_obj["Last Save"] = meta[8].replace('\x00', '')
+        file_obj["Author"] = meta[4].replace('\x00','')
+        file_obj["Date"] = meta[20].replace('\x00','')
+        file_obj["Last Save"] = meta[8].replace('\x00','')
         file_obj["Create Time"] = meta[12].strftime("%Y-%m-%d %H:%M:%S")
         file_obj["Last Save Time"] = meta[13].strftime("%Y-%m-%d %H:%M:%S")
         return file_obj
@@ -175,7 +197,19 @@ class HWPAnalysis:
     def show_info(self):
         print(self.__hwp_info)
 
-    def get_info(self):
+    def get_info(self, list):
+        result = []
+        info = dict()
+        try:
+            for j in list:
+                info[j] = self.__hwp_info[j]
+            result.append(info)
+        except KeyError:
+            print("Plz check your key.")
+            return -1
+        return result
+    
+    def get_all_info(self):
         return [self.__hwp_info]
 
     def get_prev(self):
@@ -236,18 +270,30 @@ class MSOldAnalysis:
     def show_info(self):
         print(self.__ms_json)
 
-    def get_info(self):
+    def get_all_info(self):
         return [self.__ms_json]
+
+    def get_info(self, list):
+        result = []
+        info = dict()
+        try:
+            for j in list:
+                info[j] = self.__ms_json[j]
+            result.append(info)
+        except KeyError:
+            print("Plz check your key.")
+            return -1
+        return result
 
 
 # zip analysis: filename, comment, MAC time, zip version, Compressed size, Uncompressed size, crc, Raw time
 class ZIPAnalysis:
     def __init__(self, file, path, hash_v):
         self.file = file
-        self.__path = path
-        self.__hash_value = [hash_v]
-        self.zipinfo_list = self.__parse()
-        self.__cal_hash()
+        self.__info = self.__parse()
+
+    def __cal_hash(self):
+        self.__hash_value.append(calc_hash.get_hash(self.__path))
 
     def __parse(self):
         json_list = []
@@ -262,7 +308,7 @@ class ZIPAnalysis:
             mod_time = datetime(*info.date_time)
 
             mtime = str(mod_time.astimezone()).split('+')[1]
-            file_obj['TimeZone'] = "UTC+" + str(mtime)
+            file_obj['TimeZone'] = "UTC+"+str(mtime)
             file_obj['Modified'] = str(mod_time)
             file_obj['System'] = str(info.create_system) + "(0 = Windows, 3 = Unix)"
             file_obj['version'] = str(info.create_version)
@@ -276,36 +322,18 @@ class ZIPAnalysis:
             file_obj['Flag bits'] = str(info.flag_bits)
             file_obj['Raw time'] = str(info._raw_time)
 
+
             json_list.append(file_obj)
             num += 1
         return json_list
 
+
     def get_info(self):
-        return self.zipinfo_list
+        return self.__info
 
     def show_info(self):
-        for i in self.zipinfo_list:
+        for i in self.__info:
             print(i)
-
-    def extract(self):
-        zip_name = []
-        for i in range(0, len(self.zipinfo_list)):
-            if(self.zipinfo_list[i]['FileName'].split('.')[1] == 'zip'):
-                zip_name.append(self.zipinfo_list[i]['FileName'])
-                # print(self.zipinfo_list[i]['FileName'])
-                with zipfile.ZipFile(self.__path) as zf:
-                    zf.extractall()
-        for i in range(0, len(zip_name)):
-            with zipfile.ZipFile(zip_name[i]) as zf:
-                zf.extractall()
-                print("Uncompress Success!")
-
-    def __cal_hash(self):
-        self.__hash_value.append(calc_hash.get_hash(self.__path))
-
-    def get_hash(self):
-        return self.__hash_value
-
 
     # def last_modtime(self):
     #     num = 1
@@ -317,13 +345,9 @@ class ZIPAnalysis:
 
 
 # Print files in folder
-class FileList:
-    def __init__(self, path):
-        self.__path = path
-        self.__info = self.file_list(path)
-
-    def file_list(__path):
-        files = [f for f in listdir(__path)]
+def file_list(in_path):
+    try:
+        files = [f for f in listdir(in_path)]
         file_length = len(files)
         filename = []
         folder_list = []
@@ -334,37 +358,38 @@ class FileList:
 
         for i in range(file_length):
             filename.append(files[i])
-            abs_path = __path + '\\' + str(files[i])
+            abs_path = in_path + '\\' + str(files[i])
             folder_check = os.path.isdir(abs_path)
             if folder_check is True:
                 folder_list.append(abs_path)
             elif folder_check is False:
                 sig_type = sig_check(abs_path)
 
-            # print('-' * 20 + abs_path + '-' * 20)
-            mt = datetime.fromtimestamp(getmtime(__path)).strftime('%Y-%m-%d %H:%M:%S')
-            ct = datetime.fromtimestamp(getctime(__path)).strftime('%Y-%m-%d %H:%M:%S')
-            at = datetime.fromtimestamp(getatime(__path)).strftime('%Y-%m-%d %H:%M:%S')
-            file_name = files[i]
+            #print('-' * 20 + abs_path + '-' * 20)
+            mt = datetime.fromtimestamp(getmtime(in_path)).strftime('%Y-%m-%d %H:%M:%S')
+            ct = datetime.fromtimestamp(getctime(in_path)).strftime('%Y-%m-%d %H:%M:%S')
+            at = datetime.fromtimestamp(getatime(in_path)).strftime('%Y-%m-%d %H:%M:%S')
+
             file_obj = {
-                "FileName : "
                 "Modified Time": mt,
                 "Created Time": ct,
                 "Access Time": at,
                 "Folder": folder_check,
                 "Type": sig_type
             }
-            print(json.dumps(file_obj))
-            # print('[' + str(i + 1) + '] FileNanme: ' + abs_path + " " + json.dumps(file_obj))
+            print('[' + str(i + 1) + '] FileNanme: ' + str(files[i]) + ' ' + json.dumps(file_obj))
+            #print('[' + str(i + 1) + '] FileNanme: ' + abs_path + " " + json.dumps(file_obj))
         if file_length != 0:
             print("Total: " + str(file_length))
             print("Folder path : " + os.path.abspath(os.path.join(abs_path, os.pardir)) + "\n")
 
+
         for i in range(0, len(folder_list)):
-            FileList.file_list(folder_list[i])
+            file_list(folder_list[i])
+
+    except:
+        print("[Error] Path is not found. Check your input")
 
 
 
-    def get_info(self):
-        for i in self.__info:
-            print(i)
+
