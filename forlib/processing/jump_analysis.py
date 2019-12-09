@@ -263,8 +263,21 @@ class JumplistAnalysis:
         for i in self.__json_list:
             print(i)
 
-    def get_info(self):
+    def get_all_info(self):
         return self.__json_list
+
+    def get_info(self):
+        result = []
+        for i in self.__json_list:
+            info = dict()
+            try:
+                for j in list:
+                    info[j] = i[j]
+                result.append(info)
+            except KeyError:
+                print("Plz check your key.")
+                return -1
+        return result
 
     def __convert_hex(self,gethex):
         gethex = gethex[:2] + "0" + gethex[3:]
