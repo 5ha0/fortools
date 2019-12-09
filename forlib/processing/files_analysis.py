@@ -64,7 +64,10 @@ class JPEGAnalysis:
         try:
             # getTime
             createTime = info[0x9003]
-            time = createTime[0:4] + "-" + createTime[5:7] + "-" + createTime[8:10] + " " + createTime[11:13] + ":" + createTime[14:16] + ":" + createTime[17:19]
+            time = createTime[0:4] + "-" + createTime[5:7] + "-" + createTime[8:10] + " " + createTime[
+                                                                                            11:13] + ":" + createTime[
+                                                                                                           14:16] + ":" + createTime[
+                                                                                                                          17:19]
         except:
             time = "no time info"
 
@@ -156,9 +159,9 @@ class HWPAnalysis:
     def __make_json(self):
         meta = self.__file.getproperties('\x05HwpSummaryInformation', convert_time=True, no_conversion=[10])
         file_obj = dict()
-        file_obj["Author"] = meta[4].replace('\x00','')
-        file_obj["Date"] = meta[20].replace('\x00','')
-        file_obj["Last Save"] = meta[8].replace('\x00','')
+        file_obj["Author"] = meta[4].replace('\x00', '')
+        file_obj["Date"] = meta[20].replace('\x00', '')
+        file_obj["Last Save"] = meta[8].replace('\x00', '')
         file_obj["Create Time"] = meta[12].strftime("%Y-%m-%d %H:%M:%S")
         file_obj["Last Save Time"] = meta[13].strftime("%Y-%m-%d %H:%M:%S")
         return file_obj
@@ -259,7 +262,7 @@ class ZIPAnalysis:
             mod_time = datetime(*info.date_time)
 
             mtime = str(mod_time.astimezone()).split('+')[1]
-            file_obj['TimeZone'] = "UTC+"+str(mtime)
+            file_obj['TimeZone'] = "UTC+" + str(mtime)
             file_obj['Modified'] = str(mod_time)
             file_obj['System'] = str(info.create_system) + "(0 = Windows, 3 = Unix)"
             file_obj['version'] = str(info.create_version)
@@ -277,8 +280,6 @@ class ZIPAnalysis:
             num += 1
         return json_list
 
-
-
     def get_info(self):
         return self.__info
 
@@ -290,7 +291,7 @@ class ZIPAnalysis:
         self.__hash_value.append(calc_hash.get_hash(self.__path))
 
     def get_hash(self):
-         return self.__hash_value
+        return self.__hash_value
 
     # def last_modtime(self):
     #     num = 1
@@ -302,9 +303,13 @@ class ZIPAnalysis:
 
 
 # Print files in folder
-def file_list(in_path):
-    try:
-        files = [f for f in listdir(in_path)]
+class FileList:
+    def __init__(self, path):
+        self.__path = path
+        self.__info = self.file_list(path)
+
+    def file_list(__path):
+        files = [f for f in listdir(__path)]
         file_length = len(files)
         filename = []
         folder_list = []
@@ -315,38 +320,37 @@ def file_list(in_path):
 
         for i in range(file_length):
             filename.append(files[i])
-            abs_path = in_path + '\\' + str(files[i])
+            abs_path = __path + '\\' + str(files[i])
             folder_check = os.path.isdir(abs_path)
             if folder_check is True:
                 folder_list.append(abs_path)
             elif folder_check is False:
                 sig_type = sig_check(abs_path)
 
-            #print('-' * 20 + abs_path + '-' * 20)
-            mt = datetime.fromtimestamp(getmtime(in_path)).strftime('%Y-%m-%d %H:%M:%S')
-            ct = datetime.fromtimestamp(getctime(in_path)).strftime('%Y-%m-%d %H:%M:%S')
-            at = datetime.fromtimestamp(getatime(in_path)).strftime('%Y-%m-%d %H:%M:%S')
-
+            # print('-' * 20 + abs_path + '-' * 20)
+            mt = datetime.fromtimestamp(getmtime(__path)).strftime('%Y-%m-%d %H:%M:%S')
+            ct = datetime.fromtimestamp(getctime(__path)).strftime('%Y-%m-%d %H:%M:%S')
+            at = datetime.fromtimestamp(getatime(__path)).strftime('%Y-%m-%d %H:%M:%S')
+            file_name = files[i]
             file_obj = {
+                "FileName : "
                 "Modified Time": mt,
                 "Created Time": ct,
                 "Access Time": at,
                 "Folder": folder_check,
                 "Type": sig_type
             }
-            print('[' + str(i + 1) + '] FileNanme: ' + str(files[i]) + ' ' + json.dumps(file_obj))
-            #print('[' + str(i + 1) + '] FileNanme: ' + abs_path + " " + json.dumps(file_obj))
+            print(json.dumps(file_obj))
+            # print('[' + str(i + 1) + '] FileNanme: ' + abs_path + " " + json.dumps(file_obj))
         if file_length != 0:
             print("Total: " + str(file_length))
             print("Folder path : " + os.path.abspath(os.path.join(abs_path, os.pardir)) + "\n")
 
-
         for i in range(0, len(folder_list)):
-            file_list(folder_list[i])
-
-    except:
-        print("[Error] Path is not found. Check your input")
+            FileList.file_list(folder_list[i])
 
 
 
-
+    def get_info(self):
+        for i in self.__info:
+            print(i)

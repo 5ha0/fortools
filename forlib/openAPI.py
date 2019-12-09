@@ -38,7 +38,7 @@ def sig_check(path):
 
 
 def file_list(path):
-    return files_analysis.FileList(path)
+    return files_analysis.FileList.file_list(path)
 
 def file_open(path):
     extension = sig_check(path)
@@ -214,6 +214,10 @@ class Files:
                 return files_analysis.ZIPAnalysis(file, path, hash_v)
             print("check your file format. This is not ZIP file.")
             return -1
+
+    class FileList:
+        def file_list(path):
+            return files_analysis.FileList(path)
 
 
 class Lnk:

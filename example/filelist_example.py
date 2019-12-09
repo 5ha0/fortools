@@ -4,4 +4,5 @@ from fortools import *
 path = r"C:\Users\sjms1\Desktop\두루미"
 
 # folder list print
-files_analysis.file_list(path)
+data = file_list(path)
+
