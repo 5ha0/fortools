@@ -26,8 +26,21 @@ class EventAnalysis:
         for i in self.evtx_json:
             print(i)
 
-    def get_info(self):
+    def get_all_info(self):
         return self.evtx_json
+
+    def get_info(self, list):
+        result = []
+        for i in self.evtx_json:
+            info = dict()
+            try:
+                for j in list:
+                    info[j] = i[j]
+                result.append(info)
+            except KeyError:
+                print("Plz check your key.")
+                return -1
+        return result
 
     def __make_json(self):
         time_cnt = dict()
@@ -36,7 +49,7 @@ class EventAnalysis:
             log_obj = dict()
             log_obj["number"] = i
             log_obj["eventID"] = self.evtx_file.records[i].get_event_identifier()
-            log_obj["create Time"] = str(self.evtx_file.records[i].get_creation_time())
+            log_obj["create Time"] = self.evtx_file.records[i].get_creation_time().strftime("%Y-%m-%d %H:%M:%S")
             date = log_obj["create Time"][:7]
             if time_cnt.get(date):
                 time_cnt[date] = time_cnt[date] + 1
