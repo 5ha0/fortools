@@ -6,8 +6,6 @@ path = r'..\thumbcache_32.db'
 # thumbcache_xx.db, iconcache_xx.db file open
 thumbnail = file_open(path)
 
-for i in thumbnail.get_hash():
-    print(i)
 ####### 1. It shows all the parsing provided by this library at once. #######
 # thumbnail.show_info()
 
@@ -27,3 +25,6 @@ info = thumbnail.dimension(30, 30)
 # for i in filter_info:
 #    print(i)
 
+####### 6.If You want to get hash data, Use This. #######
+for i in thumbnail.get_hash():
+    print(i)

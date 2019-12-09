@@ -26,6 +26,9 @@ fil = custom_filter(['FileName', r'\w+.jpg', 1], information)
 for i in fil:
     print(i)
 
+####### 5.If You want to get hash data, Use This. #######
+for i in zip.get_hash():
+    print(i)
 
 
 

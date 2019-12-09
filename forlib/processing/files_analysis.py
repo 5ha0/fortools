@@ -241,10 +241,10 @@ class MSOldAnalysis:
 class ZIPAnalysis:
     def __init__(self, file, path, hash_v):
         self.file = file
+        self.__path = path
+        self.__hash_value = [hash_v]
         self.__info = self.__parse()
-
-    def __cal_hash(self):
-        self.__hash_value.append(calc_hash.get_hash(self.__path))
+        self.__cal_hash()
 
     def __parse(self):
         json_list = []
@@ -273,10 +273,10 @@ class ZIPAnalysis:
             file_obj['Flag bits'] = str(info.flag_bits)
             file_obj['Raw time'] = str(info._raw_time)
 
-
             json_list.append(file_obj)
             num += 1
         return json_list
+
 
 
     def get_info(self):
@@ -285,6 +285,12 @@ class ZIPAnalysis:
     def show_info(self):
         for i in self.__info:
             print(i)
+
+    def __cal_hash(self):
+        self.__hash_value.append(calc_hash.get_hash(self.__path))
+
+    def get_hash(self):
+         return self.__hash_value
 
     # def last_modtime(self):
     #     num = 1
