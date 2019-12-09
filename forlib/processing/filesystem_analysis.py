@@ -3,7 +3,7 @@ import struct
 import time
 import os
 import forlib.calc_hash as calc_hash
-from forlib.processing.jump_analysis import decode_str as de
+# from forlib.processing.jump_analysis import decode_str as de
 from bitstring import BitArray
 
 
@@ -18,6 +18,7 @@ class MFTAnalysis:
 
     def get_info(self):
         return self.__result
+
 
     def get_hash(self):
         return self.__hash_value
@@ -81,17 +82,15 @@ class MFTAnalysis:
             except OverflowError:
                 continue
             self.file.read(40)
+            file_name_off = self.file.tell()
             # $FILE_NAME
             if struct.unpack("<I", self.file.read(4))[0] == 48:
-                self.file.read(4)
-                resident_flag = struct.unpack("<B", self.file.read(1))[0]
+                attr_len = struct.unpack("<I", self.file.read(4))[0]
+                self.file.read(1)
+                #resident_flag = struct.unpack("<B", self.file.read(1))[0]
                 name_length = struct.unpack("<B", self.file.read(1))[0]
                 offset_name = struct.unpack("<H", self.file.read(2))[0]
-                self.file.read(4)
-                if resident_flag == 0:  # resident
-                    self.file.read(8)
-                else:  # non-resident
-                    self.file.read(48)
+                self.file.read(12)
                 file_refernce = BitArray(self.file.read(8)).unpack('uintle:48, <H')
                 parent_sequence_value = file_refernce[1]
                 parent_mft_entry_number = file_refernce[0]
@@ -121,23 +120,34 @@ class MFTAnalysis:
                 # info_list["Parent MFT Entry Num"] = parent_mft_entry_number
                 self.file.read(8)
                 name_length = struct.unpack("<B", self.file.read(1))[0]
-                self.file.read(1)
-                try:
-                    info_list["Name"] = self.file.read(name_length*2).decode('utf-16')
-                except UnicodeDecodeError:
-                    info_list["Name"] = "Unable To Decode Filename"
+                name_type = struct.unpack("<B", self.file.read(1))[0]
+                if name_type == 2:
+                    try:
+                        self.file.read(name_length * 2).decode('utf-16')
+                        self.file.read(attr_len-(self.file.tell()-file_name_off))
+                        self.file.read(88)
+                        name_length = struct.unpack("<B", self.file.read(1))[0]
+                        self.file.read(1)
+                        info_list["Name"] = self.file.read(name_length * 2).decode('utf-16')
+                    except UnicodeDecodeError:
+                        info_list["Name"] = "Unable To Decode Filename"
+                else:
+                    try:
+                        info_list["Name"] = self.file.read(name_length*2).decode('utf-16')
+                    except UnicodeDecodeError:
+                        info_list["Name"] = "Unable To Decode Filename"
                 path_list = []
                 while True:
                     parent_result = self.__find_parent(parent_mft_entry_number)
                     parent_mft_entry_number = parent_result[1]
                     parent_name = parent_result[0]
                     if parent_name == 'None' or parent_name == '.':
-                        break;
+                        break
                     else:
                         path_list.append(parent_name)
-                path = ''
+                path = '.'
                 for p in reversed(path_list):
-                    path = path+'/'+str(p)
+                    path = path+'\\'+str(p)
                 info_list["parent"] = path
             else:
                 info_list["FIN Creation Time"] = ''
@@ -166,24 +176,31 @@ class MFTAnalysis:
             else:  # non-resident
                 self.file.read(48)
             self.file.read(72)
+            file_name_off = self.file.tell()
             if struct.unpack("<I", self.file.read(4))[0] == 48:
-                self.file.read(4)
-                resident_flag = struct.unpack("<B", self.file.read(1))[0]
-                self.file.read(7)
-                if resident_flag == 0:  # resident
-                    self.file.read(8)
-                else:  # non-resident
-                    self.file.read(48)
+                attr_len = struct.unpack("<I", self.file.read(4))[0]
+                self.file.read(1)
+                name_length = struct.unpack("<B", self.file.read(1))[0]
+                offset_name = struct.unpack("<H", self.file.read(2))[0]
+                self.file.read(12)
                 file_refernce = BitArray(self.file.read(8)).unpack('uintle:48, <H')
                 parent_sequence_value = file_refernce[1]
                 parent_mft_entry_number = file_refernce[0]
                 self.file.read(56)
                 name_length = struct.unpack("<B", self.file.read(1))[0]
-                self.file.read(1)
-                try:
-                    name = self.file.read(name_length * 2).decode('utf-16')
-                except UnicodeDecodeError:
-                    name = "Unable To Decode Filename"
+                name_type = struct.unpack("<B", self.file.read(1))[0]
+                if name_type == 2:
+                    self.file.read(name_length * 2).decode('utf-16')
+                    self.file.read(attr_len - (self.file.tell() - file_name_off))
+                    self.file.read(88)
+                    name_length = struct.unpack("<B", self.file.read(1))[0]
+                    name_type = struct.unpack("<B", self.file.read(1))[0]
+                    name = self.file.read(name_length * 2).decode('utf-16').replace('\x00\x00\x90', '')
+                else:
+                    try:
+                        name = self.file.read(name_length*2).decode('utf-16')
+                    except UnicodeDecodeError:
+                        name = "Unable To Decode Filename"
                 return [name, parent_mft_entry_number]
             else:
                 return ['None', None]
