@@ -222,7 +222,7 @@ class Thumbnail_analysis_windows:   # windows version check
             return None
 
 
-    def thumb_print(self):
+    def show_info(self):
         for i in self.thumb_list:
             print(i)
 
