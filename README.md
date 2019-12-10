@@ -39,5 +39,24 @@ If you extract file in disk, you need to check start sector with volume_metadata
 **Memory**  
 You need to install volatility3. Plz download it and put it in path forlib/processing. This analysis is only available for the current window memory file.
 
+**Recycle**
+This module will analyze only $I files among the recycle bin files. And now, this module analyzes Windows 7/8/10.
+About functions
+- show_all_info/get_all_info: json format(file name, header contents(read as little endian binary), file size, original path and deleted time)
+
+**Iconcache**
+Now, this module analyzes Windows 7/10. And parse only meanigful contents in forensics.
+This module will analyze only iconcache.db files. If you want to analyze other files like iconcache_##.db, you can use *thumbnail analysis*.
+About functions
+- extension_filter: you can find file path of specific extension file
+
+**Prefetch**
+Now, this module analyzes Windows 7/10. And parse only meanigful contents in forensics.
+About functions
+- extension_filter_pf: you can find file path of specific extension file
+ 
+ **Lnk**
+Now, this module analyzes Windows 7/10. And parse only meanigful contents in forensics.
+ 
 # Contact
 If you have any questions , feel free to send us an e-mail(fortools.official@gmail.com).
