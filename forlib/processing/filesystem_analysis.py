@@ -3,7 +3,6 @@ import struct
 import time
 import os
 import forlib.calc_hash as calc_hash
-# from forlib.processing.jump_analysis import decode_str as de
 from bitstring import BitArray
 
 
@@ -15,6 +14,10 @@ class MFTAnalysis:
         self.__hash_value = [hash_v]
         self.__result = self.__parse_info()
         self.__cal_hash()
+
+    def show_all_info(self):
+        for i in self.__result:
+            print(i)
 
     def get_all_info(self):
         return self.__result
@@ -159,7 +162,7 @@ class MFTAnalysis:
                         path_list.append(parent_name)
                 path = ''
                 for p in reversed(path_list):
-                    path = path+'\\'+str(p)
+                    path = path+str(p)+'\\'
                 info_list["Parent"] = path
             else:
                 info_list["FIN Creation Time"] = ''
@@ -230,6 +233,10 @@ class UsnJrnl:
 
     def get_all_info(self):
         return self.__result
+
+    def show_all_info(self):
+        for i in self.__result:
+            print(i)
 
     def get_info(self, list):
         result = []
