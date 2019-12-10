@@ -1,5 +1,5 @@
 from Registry import Registry
-import json
+import re
 import codecs
 from datetime import datetime, timedelta
 import forlib.calc_hash as calc_hash
@@ -10,192 +10,174 @@ class NTAnalysis:
     def __init__(self, file, path, hash_val):
         self.reg = file
         self.ret_list = list()
+        self.__common_file = _CommonFunction(self.reg)
         self.__hash_val = [hash_val]
         self.__path = path
         self.__cal_hash()
 
-    def __rec(self, key, get_path, find_val):
-#        get_path(key, find_val)
-        for subkey in key.subkeys():
-            self.__rec(subkey, get_path, find_val)
-        path = get_path(key,find_val)
-
-    def __get_path(self, key, find_val):
-        for value in [v.value() for v in key.values()
-                        if v.value_type() == Registry.RegSZ
-                        or v.value_type() == Registry.RegExpandSZ]:
-                        if find_val in value:
-                            reg_key_obj = {
-                                "find_keyword" : find_val,
-                                "key" : key.path()
-                            }
-                            print(json.dumps(reg_key_obj))
-
     def find_key(self, keyword):
-        self.__rec(self.reg.root(), self.__get_path, keyword)
+        self.ret_list = self.__common_file.find_key(keyword)
+        return self.ret_list
 
-    def __bin_to_int(self, info):
-        bin_to_little_endian = bytes.decode(binascii.hexlify(info[0:][::-1]))
-        int_info = int(bin_to_little_endian, 16)
-        return int_info
-
-    def __cal_time(self, info_time):
-        int_time = self.__bin_to_int(info_time)
-        int_time = int_time*0.1
-        if int_time == 0:
-            date = 'Never'
-        else:
-            date = datetime(1601, 1, 1) + timedelta(microseconds=int_time)
-        return str(date)
+    def find_value(self, path):
+        self.ret_list = self.__common_file.find_value(path)
+        return self.ret_list
 
     def get_recent_docs(self):
         recent = self.reg.open("SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs")
-        
+
         for i, v in enumerate(recent.values()):
             if i == 0:
                 continue
-            #print(v.value().decode('utf-16'))
-            reg_obj  = {
-                    "time" : str(recent.timestamp()),
-                    "TimeZone" : "UTC",
-                    "name" : v.name(),
-                    "data" : v.value().decode('utf-16').split('\x00')[0]}
+            # print(v.value().decode('utf-16'))
+            reg_obj = {
+                "time": str(recent.timestamp()),
+                "TimeZone": "UTC",
+                "name": v.name(),
+                "data": v.value().decode('utf-16').split('\x00')[0]}
             self.ret_list.append(reg_obj)
         return self.ret_list
-    
+
     def get_recent_MRU(self):
         recent = self.reg.open("Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU")
         for i, v in enumerate(recent.values()):
-            reg_obj  = {
-                    "time" : str(recent.timestamp()),
-                    "TimeZone" : "UTC",
-                    "name" : v.name(),
-                    "data" : v.value()}
+            reg_obj = {
+                "time": str(recent.timestamp()),
+                "TimeZone": "UTC",
+                "name": v.name(),
+                "data": v.value()}
             self.ret_list.append(reg_obj)
         return self.ret_list
-    
+
     def __print_ms(self, recent):
         ret_list = list()
-        #print("recent.values : ", dir(recent.values()[0]))
-        #print("raw_data      : ", recent.values()[0].raw_data())
-        #print("raw_data      : ", recent.values()[0].raw_data().decode("utf-16"))
+        # print("recent.values : ", dir(recent.values()[0]))
+        # print("raw_data      : ", recent.values()[0].raw_data())
+        # print("raw_data      : ", recent.values()[0].raw_data().decode("utf-16"))
         for i, v in enumerate(recent.values()):
             file_name = v.raw_data().decode('utf-16').split("*")[1]
             reg_obj = {
-                    "MS Key Last Written time" : recent.timestamp().strftime('%Y-%m-%d %H:%M:%S'),
-                    "TimeZone" : "UTC",
-                    "path" : file_name[:-1]
-                    }
+                "MS Key Last Written time": recent.timestamp().strftime('%Y-%m-%d %H:%M:%S'),
+                "TimeZone": "UTC",
+                "path": file_name[:-1]
+            }
             ret_list.append(reg_obj)
         return ret_list
 
-    def get_ms_office(self): 
+    def get_ms_office(self):
         path  = "Software\\Microsoft\\Office"
         version = self.reg.open(path)
+        temp_list = list()
         a = list()
         for items in version.subkeys():
-            a.append(items.name())
-        
-        if a[0] == '11.0':    
             try:
-                recent1 = self.reg.open(path + "\\%s\\Excel\\Recent Files" %(a[0]))
-                xls = self.__print_ms(recent1)
+                float(items.name())
+                a.append(items.name())
             except:
-                xls = []
-                
-            try:
-                recent2 = self.reg.open(path + "\\%s\\PowerPoint\\Recent File List" %(a[0]))
-                ppt = self.__print_ms(recent2)
-            except:
-                ppt = []
-                
-            try:
-                recent3 = self.reg.open(path + "\\%s\\Word\\Recent File List" %(a[0]))
-                word = self.__print_ms(recent3)
-            except:
-                word = []
-            self.ret_list = xls+ppt+word
-            return self.ret_list
-        
-        if a[0] == '15.0' or a[0] == '12.0':
-            outlook = list()
-            try:
-                recent0 = self.reg.open(path+"\\%s\\Outlook\\PST" %a[0])
-                for i, v in enumerate(recent0.values()):
-                    file_name = v.raw_data().decode('utf-16')
-                    reg_obj = {
-                            "MS Key Last Written time" : recent0.timestamp().strftime('%Y-%m-%d %H:%M:%S'),
-                            "TimeZone" : "UTC",
-                            "path" : file_name[:-1]
+                pass
+
+        for i in range(len(a)):
+            if a[i] == '11.0':
+                try:
+                    recent1 = self.reg.open(path + "\\%s\\Excel\\Recent Files" %(a[i]))
+                    xls = self.__print_ms(recent1, a[i])
+                except:
+                    xls = []
+
+                try:
+                    recent2 = self.reg.open(path + "\\%s\\PowerPoint\\Recent File List" %(a[i]))
+                    ppt = self.__print_ms(recent2, a[i])
+                except:
+                    ppt = []
+
+                try:
+                    recent3 = self.reg.open(path + "\\%s\\Word\\Recent File List" %(a[i]))
+                    word = self.__print_ms(recent3, a[i])
+                except:
+                    word = []
+                temp_list = xls+ppt+word
+
+            if a[i] == '15.0' or a[i] == '12.0':
+                outlook = list()
+                try:
+                    recent0 = self.reg.open(path+"\\%s\\Outlook\\PST" %a[i])
+                    for i, v in enumerate(recent0.values()):
+                        file_name = v.raw_data().decode('utf-16')
+                        reg_obj = {
+                                "Version" : a[i],
+                                "MS Key Last Written time" : recent0.timestamp().strftime('%Y-%m-%d %H:%M:%S'),
+                                "TimeZone" : "UTC",
+                                "path" : file_name[:-1]
+                            }
+                        outlook.append(reg_obj)
+
+                except:
+                    outlook = []
+
+                try:
+                    recent1 = self.reg.open(path + "\\%s\\Excel\\File MRU" %a[i])
+                    xls = self.__print_ms(recent1, a[i])
+                except:
+                    xls = []
+
+                try:
+                    recent2 = self.reg.open(path + "\\%s\\PowerPoint\\File MRU" %a[i])
+                    ppt = self.__print_ms(recent2, a[i])
+                except:
+                    ppt = []
+
+                try:
+                    recent3 = self.reg.open(path + "\\%s\\Word\\File MRU" %a[i])
+                    print(recent3)
+                    word = self.__print_ms(recent3, a[i])
+                except:
+                    word = []
+
+                temp_list = outlook+xls+ppt+word
+
+            if a[i] == '16.0':
+                path2 = path+"\\%s\\Excel\\User MRU"%(a[i])
+                LiveId = self.reg.open(path2)
+                outlook = list()
+                b = list()
+                for items in LiveId.subkeys():
+                    b.append(items.name())
+
+                try:
+                    recent0 = self.reg.open(path+"\\%s\\Outlook\\Search" %a[i])
+                    for v in recent0.values():
+                        ret_obj = {
+                            "MS key Last Written time" : str(recent0.timestamp()),
+                            "name" : v.name()
                         }
-                    outlook.append(reg_obj)
+                        outlook.append(ret_obj)
 
-            except:
-                outlook = []
-                            
-            try:
-                recent1 = self.reg.open(path + "\\%s\\Excel\\File MRU" %a[0])
-                xls = self.__print_ms(recent1)
-            except:
-                xls = []
+                except:
+                    outlook = []
 
-            try:
-                recent2 = self.reg.open(path + "\\%s\\PowerPoint\\File MRU" %a[0])
-                ppt = self.__print_ms(recent2)
-            except:
-                ppt = []
+                try:
+                    recent1 = self.reg.open(path + "\\%s\\Excel\\User MRU\\%s\\File MRU" %(a[i], b[0]))
+                    xls = self.__print_ms(recent1, a[i])
+                except:
+                    xls = []
 
-            try:
-                recent3 = self.reg.open(path + "\\%s\\Word\\File MRU" %a[0])
-                word = self.__print_ms(recent3)
-            except:
-                word = []
-                
-            self.ret_list = outlook+xls+ppt+word
-            return self.ret_list
+                try:
+                    recent2 = self.reg.open(path + "\\%s\\PowerPoint\\User MRU\\%s\\File MRU" %(a[i], b[0]))
+                    ppt = self.__print_ms(recent2, a[i])
+                except:
+                    ppt = []
 
-        if a[0] == '16.0':
-            path2 = path+"\\%s\\Excel\\User MRU"%(a[0])
-            LiveId = self.reg.open(path2)
-            outlook = list()
-            b = list()
-            for items in LiveId.subkeys():
-                b.append(items.name())
-            
-            try:
-                recent0 = self.reg.open(path+"\\%s\\Outlook\\Search" %a[0])
-                for v in recent0.values():
-                    ret_obj = {
-                        "MS key Last Written time" : str(recent0.timestamp()),
-                        "name" : v.name()
-                    }
-                    outlook.append(ret_obj)
+                try:
+                    recent3 = self.reg.open(path + "\\%s\\Word\\User MRU\\%s\\File MRU" %(a[i], b[0]))
+                    word = self.__print_ms(recent3, a[i])
+                except:
+                    word = []
 
-            except:
-                outlook = []
-                            
-            try:
-                recent1 = self.reg.open(path + "\\%s\\Excel\\User MRU\\%s\\File MRU" %(a[0], b[0]))
-                xls = self.__print_ms(recent1)
-            except:
-                xls = []
-
-            try:
-                recent2 = self.reg.open(path + "\\%s\\PowerPoint\\User MRU\\%s\\File MRU" %(a[0], b[0]))
-                ppt = self.__print_ms(recent2)
-            except:
-                ppt = []
-
-            try:
-                recent3 = self.reg.open(path + "\\%s\\Word\\User MRU\\%s\\File MRU" %(a[0], b[0]))
-                word = self.__print_ms(recent3)
-            except:
-                word = []
-
-            self.ret_list = outlook+xls+ppt+word
-            return self.ret_list
+                temp_list = outlook+xls+ppt+word
+            self.ret_list = self.ret_list + temp_list
+        return self.ret_list
             #ret_ms.append(self.print_ms(recent1))
-           
+
     def get_userassist(self):
         # CE : 실행파일 목록
         # F4 : 바로가기 목록
@@ -203,15 +185,15 @@ class NTAnalysis:
         user_list = list()
         user = self.reg.open(path)
         for items in user.subkeys():
-            keys = self.reg.open(path+"\\%s" %(items.name()))
+            keys = self.reg.open(path + "\\%s" % (items.name()))
             for userassist_keys in keys.subkeys():
                 for userassist_values in userassist_keys.values():
                     file_name = codecs.decode(userassist_values.name(), 'rot_13')
                     reg_obj = {
-                        "Time" : self.__cal_time(userassist_values.value()[60:68]),
-                        "TimeZone" : "UTC",
-                        "Run Count" : self.__bin_to_int(userassist_values.value()[4:8]),
-                        "file" : '%s' % file_name
+                        "Time": self.__common_file.cal_time(userassist_values.value()[60:68]),
+                        "TimeZone": "UTC",
+                        "Run Count": self.__common_file.bin_to_int(userassist_values.value()[4:8]),
+                        "file": '%s' % file_name
                     }
                     user_list.append(reg_obj)
         self.ret_list = sorted(user_list, key=lambda e: (e['Time']))
@@ -223,36 +205,24 @@ class NTAnalysis:
 
     def get_hash(self):
         return self.__hash_val
-    
+
 
 class SYSAnalysis:
     def __init__(self, file, path, hash_val):
         self.reg = file
         self.ret_list = list()
+        self.__common_file = _CommonFunction(self.reg)
         self.__hash_val = [hash_val]
         self.__path = path
         self.__cal_hash()
-        
-    def __rec(self, key, get_path, find_val):
-#        get_path(key, find_val)
-        for subkey in key.subkeys():
-            self.__rec(subkey, get_path, find_val)
-        path = get_path(key,find_val)
-
-    def __get_path(self, key, find_val):
-        for value in [v.value() for v in key.values()
-                        if v.value_type() == Registry.RegSZ
-                        or v.value_type() == Registry.RegExpandSZ]:
-                        if find_val in value:
-                            reg_key_obj = {
-                                "find_keyword" : find_val,
-                                "key" : key.path()
-                            }
-                            print(json.dumps(reg_key_obj))
 
     def find_key(self, keyword):
-        self.__rec(self.reg.root(), self.__get_path, keyword)
+        self.ret_list = self.__common_file.find_key(keyword)
+        return self.ret_list
 
+    def find_value(self, path):
+        self.ret_list = self.__common_file_file.find_value(path)
+        return self.ret_list
 
     def __control_set_check(self, file):
         key = file.open("Select")
@@ -275,24 +245,24 @@ class SYSAnalysis:
                 network_dict['DhcpNameServer'] = v.value()
             if v.name() == "DhcpDomain":
                 network_dict['DhcpDomain'] = v.value()
-        
+
         net_obj = {
-                "ICSDomain" : network_dict['ICSDomain'],
-                "DataBasePath" : network_dict['DataBasePath'],
-                "Hostname" : network_dict['Hostname'],
-                "DhcpNameServer" : network_dict['DhcpNameServer'],
-                "DhcpDomain" : network_dict['DhcpDomain']
-            }
+            "ICSDomain": network_dict['ICSDomain'],
+            "DataBasePath": network_dict['DataBasePath'],
+            "Hostname": network_dict['Hostname'],
+            "DhcpNameServer": network_dict['DhcpNameServer'],
+            "DhcpDomain": network_dict['DhcpDomain']
+        }
         self.ret_list.append(net_obj)
         return self.ret_list
 
     def get_USB(self):
-        recent = self.reg.open("ControlSet00%s\\Enum\\USB" %self.__control_set_check(self.reg))
+        recent = self.reg.open("ControlSet00%s\\Enum\\USB" % self.__control_set_check(self.reg))
         for i, v in enumerate(recent.values()):
-            reg_obj  = {
-                    "time" : str(recent.timestamp()),
-                    "TimeZone" : "UTC",
-                    "path" : v.value()}
+            reg_obj = {
+                "time": str(recent.timestamp()),
+                "TimeZone": "UTC",
+                "path": v.value()}
             self.ret_list.append(reg_obj)
         return self.ret_list
 
@@ -310,9 +280,9 @@ class SYSAnalysis:
                 time_dict['ActiveTimeBias'] = v.value()
 
         time_obj = {
-            "Bias" : time_dict["Bias"],
-            "TimeZoneKeyName" : time_dict["TimeZoneKeyName"],
-            "ActiveTimeBias" : time_dict['ActiveTimeBias']
+            "Bias": time_dict["Bias"],
+            "TimeZoneKeyName": time_dict["TimeZoneKeyName"],
+            "ActiveTimeBias": time_dict['ActiveTimeBias']
         }
         self.ret_list.append(time_obj)
         return self.ret_list
@@ -341,7 +311,7 @@ class SYSAnalysis:
                     network_dict['DhcpServer'] = v.value()
                 if v.name() == "DhcpSubnetMask":
                     network_dict['DhcpSubnetMask'] = v.value()
-               
+
             if (not 'Domain' in network_dict) or (network_dict['Domain'] == ''):
                 network_dict['Domain'] = "N/A"
             if (not 'IPAddress' in network_dict) or (network_dict['IPAddress'] == ''):
@@ -354,56 +324,45 @@ class SYSAnalysis:
                 network_dict['DhcpSubnetMask'] = "N/A"
 
             net_obj = {
-                "Domain" : network_dict['Domain'],
-                "IPAddress" : network_dict['IPAddress'],
-                "DhcpIPAddress" : network_dict['DhcpIPAddress'],
-                "DhcpServer" : network_dict['DhcpServer'],
-                "DhcpSubnetMask" : network_dict['DhcpSubnetMask']
+                "Domain": network_dict['Domain'],
+                "IPAddress": network_dict['IPAddress'],
+                "DhcpIPAddress": network_dict['DhcpIPAddress'],
+                "DhcpServer": network_dict['DhcpServer'],
+                "DhcpSubnetMask": network_dict['DhcpSubnetMask']
             }
             self.ret_list.append(net_obj)
         return self.ret_list
-    
+
     def __cal_hash(self):
         after_hash = calc_hash.get_hash(self.__path)
         self.__hash_val.append(after_hash)
 
     def get_hash(self):
-        return self.__hash_val     
-    
-    
+        return self.__hash_val
+
+
 class SWAnalysis:
     def __init__(self, file, path, hash_val):
         self.reg = file
         self.ret_list = list()
+        self.__common_file = _CommonFunction(self.reg)
         self.__hash_val = [hash_val]
         self.__path = path
         self.__cal_hash()
-        
+
+    def find_key(self, keyword):
+        self.ret_list = self.__common_file.find_key(keyword)
+        return self.ret_list
+
+    def find_value(self, path):
+        self.ret_list = self.__common_file.find_value(path)
+        return self.ret_list
+
     def __control_set_check(self, file):
         key = file.open("Select")
         for v in key.values():
             if v.name() == "Current":
                 return v.value()
-
-    def __rec(self, key, get_path, find_val):
-#        get_path(key, find_val)
-        for subkey in key.subkeys():
-            self.__rec(subkey, get_path, find_val)
-        path = get_path(key,find_val)
-
-    def __get_path(self, key, find_val):
-        for value in [v.value() for v in key.values()
-                        if v.value_type() == Registry.RegSZ
-                        or v.value_type() == Registry.RegExpandSZ]:
-                        if find_val in value:
-                            reg_key_obj = {
-                                "find_keyword" : find_val,
-                                "key" : key.path()
-                            }
-                            print(json.dumps(reg_key_obj))
-
-    def find_key(self, keyword):
-        self.__rec(self.reg.root(), self.__get_path, keyword)
 
     def get_info(self):
         ret_list = []
@@ -424,16 +383,16 @@ class SWAnalysis:
                 os_dict['ProductName'] = v.value()
 
         os_obj = {
-            "CurrentVersion" : os_dict['CurrentVersion'],
-            "CurrentBuild" : os_dict['CurrentBuild'],
-            "InstallDate" : os_dict['InstallDate'],
-            "TimeZone" : "UTC",
-            "RegisteredOwner" : os_dict['RegisteredOwner'],
-            "EditionID" : os_dict['EditionID'],
-            "ProductName" : os_dict['ProductName']
+            "CurrentVersion": os_dict['CurrentVersion'],
+            "CurrentBuild": os_dict['CurrentBuild'],
+            "InstallDate": os_dict['InstallDate'],
+            "TimeZone": "UTC",
+            "RegisteredOwner": os_dict['RegisteredOwner'],
+            "EditionID": os_dict['EditionID'],
+            "ProductName": os_dict['ProductName']
         }
         self.ret_list.append(os_obj)
-            
+
         return self.ret_list
 
     def get_network_info(self):
@@ -444,7 +403,7 @@ class SWAnalysis:
             card_num.append(v.name())
 
         for item in card_num:
-            path = self.reg.open("Microsoft\\Windows NT\\CurrentVersion\\NetworkCards\\%s" %item)
+            path = self.reg.open("Microsoft\\Windows NT\\CurrentVersion\\NetworkCards\\%s" % item)
             for v in path.values():
                 if v.name() == "ServiceName":
                     network_info['ServiceName'] = v.value()
@@ -452,8 +411,8 @@ class SWAnalysis:
                     network_info['Description'] = v.value()
 
             net_obj = {
-                "ServiceName" : network_info['ServiceName'],
-                "Description" : network_info['Description']
+                "ServiceName": network_info['ServiceName'],
+                "Description": network_info['Description']
             }
             self.ret_list.append(net_obj)
         return self.ret_list
@@ -464,49 +423,24 @@ class SWAnalysis:
 
     def get_hash(self):
         return self.__hash_val
-    
-    
+
+
 class SAMAnalysis:
     def __init__(self, file, path, hash_val):
         self.reg = file
         self.ret_list = list()
+        self.__common_file = _CommonFunction(self.reg)
         self.__hash_val = [hash_val]
         self.__path = path
         self.__cal_hash()
-        
-    def __rec(self, key, get_path, find_val):
-#        get_path(key, find_val)
-        for subkey in key.subkeys():
-            self.__rec(subkey, get_path, find_val)
-        path = get_path(key,find_val)
-
-    def __get_path(self, key, find_val):
-        for value in [v.value() for v in key.values()
-                        if v.value_type() == Registry.RegSZ
-                        or v.value_type() == Registry.RegExpandSZ]:
-                        if find_val in value:
-                            reg_key_obj = {
-                                "find_keyword" : find_val,
-                                "key" : key.path()
-                            }
-                            print(json.dumps(reg_key_obj))
 
     def find_key(self, keyword):
-        self.__rec(self.reg.root(), self.__get_path, keyword)
+        self.ret_list = self.__common_file.find_key(keyword)
+        return self.ret_list
 
-    def __bin_to_int(self, info):
-        bin_to_little_endian = bytes.decode(binascii.hexlify(info[0:][::-1]))
-        int_info = int(bin_to_little_endian, 16)
-        return int_info
-
-    def __cal_time(self, info_time):
-        int_time = self.__bin_to_int(info_time)
-        int_time = int_time*0.1
-        if int_time == 0:
-            date = 'Never'
-        else:
-            date = datetime(1601, 1, 1) + timedelta(microseconds=int_time)
-        return str(date)
+    def find_value(self, path):
+        self.ret_list = self.self.__common_file.find_value(path)
+        return self.ret_list
 
     def last_login(self):
         last_list = self.user_info()
@@ -516,10 +450,10 @@ class SAMAnalysis:
                 pass
             else:
                 login_list.append(last_list[i])
-                
+
         sort_list = sorted(login_list, key=lambda e: (e['Last Login']))
         last = len(sort_list)
-        self.ret_list.append(sort_list[last-1])
+        self.ret_list.append(sort_list[last - 1])
         return self.ret_list
 
     def user_name(self):
@@ -527,52 +461,112 @@ class SAMAnalysis:
         user = self.reg.open(user_path)
         for items in user.subkeys():
             user_obj = {
-                    'UserName' : items.name(), 
-                    'Last Written Time' : items.timestamp().strftime("%Y-%m-%d %H:%M:%S"),
-                    'TimeZone' : "UTC"
-                }
+                'UserName': items.name(),
+                'Last Written Time': items.timestamp().strftime("%Y-%m-%d %H:%M:%S"),
+                'TimeZone': "UTC"
+            }
             self.ret_list.append(user_obj)
         return self.ret_list
 
-    def user_info(self): 
+    def user_info(self):
         user_path = "SAM\\Domains\\Account\\Users"
         user = self.reg.open(user_path)
         ret_list1 = list()
         ret_list2 = list()
         for items in user.subkeys():
-            path2 = self.reg.open(user_path+"\\%s"%(items.name()))
+            path2 = self.reg.open(user_path + "\\%s" % (items.name()))
             for info_key in path2.values():
-                if info_key.name() == "F":  
+                if info_key.name() == "F":
                     info_data = info_key.value()
                     user_obj = {
-                        'Last Login' : self.__cal_time(info_data[8:16]),
-                        'Last PW Change' : self.__cal_time(info_data[24:32]),
-                        'Log Fail Time' : self.__cal_time(info_data[40:48]),
-                        'TimeZone' : "UTC",
-                        'RID' : self.__bin_to_int(info_data[48:52]),
-                        'Logon Success Count' : self.__bin_to_int(info_data[64:66]),
-                        'Logon Fail Count' : self.__bin_to_int(info_data[66:68])
+                        'Last Login': self.__common_file.cal_time(info_data[8:16]),
+                        'Last PW Change': self.__common_file.cal_time(info_data[24:32]),
+                        'Log Fail Time': self.__common_file.cal_time(info_data[40:48]),
+                        'TimeZone': "UTC",
+                        'RID': self.__common_file.bin_to_int(info_data[48:52]),
+                        'Logon Success Count': self.__common_file.bin_to_int(info_data[64:66]),
+                        'Logon Fail Count': self.__common_file.bin_to_int(info_data[66:68])
                     }
                     ret_list1.append(user_obj)
 
-                #V 필드에서는 기본적으로 offset CC 부터 상재값으로 시작
+                # V 필드에서는 기본적으로 offset CC 부터 상재값으로 시작
                 if info_key.name() == "V":
                     info_data = info_key.value()
-                    user_offset = self.__bin_to_int(info_data[12:16]) + 0xCC
-                    user_len = self.__bin_to_int(info_data[16:24])
+                    user_offset = self.__common_file.bin_to_int(info_data[12:16]) + 0xCC
+                    user_len = self.__common_file.bin_to_int(info_data[16:24])
 
                     user_obj = {
-                        'UserName' : info_data[user_offset:user_offset+user_len].decode('utf16')
+                        'UserName': info_data[user_offset:user_offset + user_len].decode('utf16')
                     }
                     ret_list2.append(user_obj)
         for i in range(len(ret_list1)):
             ret_list1[i].update(ret_list2[i])
 
         return ret_list1
-        
+
     def __cal_hash(self):
         after_hash = calc_hash.get_hash(self.__path)
         self.__hash_val.append(after_hash)
 
     def get_hash(self):
         return self.__hash_val
+
+class _CommonFunction:
+    def __init__(self, file):
+        self.reg = file
+        self.ret_list = list()
+
+    def bin_to_int(self, info):
+        bin_to_little_endian = bytes.decode(binascii.hexlify(info[0:][::-1]))
+        int_info = int(bin_to_little_endian, 16)
+        return int_info
+
+    def cal_time(self, info_time):
+        int_time = self.bin_to_int(info_time)
+        int_time = int_time * 0.1
+        if int_time == 0:
+            date = 'Never'
+        else:
+            date = datetime(1601, 1, 1) + timedelta(microseconds=int_time)
+        return str(date)
+
+    def __print_path(self, find_val, reg_key):
+        split_list = reg_key.split("\\")
+        key_obj = {
+            "Search Keywork" : find_val,
+            "Root Key" : split_list[0],
+            "Search Key Path" : "\\".join(split_list[1:])
+        }
+        self.ret_list.append(key_obj)
+        return self.ret_list
+
+    def __rec(self, key, get_path, find_val):
+        for subkey in key.subkeys():
+            get_path(subkey, find_val)
+            self.__rec(subkey, get_path, find_val)
+
+    def __get_path(self, key, find_val):
+        find_pattern = re.compile(find_val)
+
+        if find_pattern.findall(key.path()):
+            self.__print_path(find_val, key.path())
+        else:
+            pass
+
+    def find_key(self, keyword):
+        self.__rec(self.reg.root(), self.__get_path, keyword)
+        return self.ret_list
+
+    def find_value(self, key):
+        key_path = self.reg.open(key)
+        all_value = dict()
+        time_pattern = re.compile("Time")
+
+        for i in key_path.values():
+            if time_pattern.findall(i.name()) and i.value_type() == Registry.RegBin:
+                all_value[i.name()] = self.cal_time(i.value())
+            else:
+                all_value[i.name()] = i.value()
+
+            self.ret_list.append(all_value)
+        return self.ret_list
