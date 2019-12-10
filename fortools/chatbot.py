@@ -66,7 +66,7 @@ class Chatbot():
                         file.write('\n# Print EventLog Information. [event id, creation time, timezone, level, source, computer info, sid]\n')
                         print('print info of event log. '
                               '\n[event id, creation time, timezone, level, source, computer info, sid]')
-                        file.write('event.show_info()\n')
+                        file.write('event.show_all_info()\n')
                     elif analysis == 2:
                         file.write('\n# Get hash info of event log. [before/after analysis hash value]\n')
                         print('You can get hash info of event log. [before/after analysis hash value]')
@@ -215,7 +215,7 @@ class Chatbot():
                         file.write('\n# Get event log info. [event id, creation time, timezone, level, source, computer info, sid]\n')
                         print('You can get info of event log. '
                               '\n[event id, creation time, timezone, level, source, computer info, sid]')
-                        file.write('event.get_info()\n')
+                        file.write('event.get_all_info()\n')
                     else:
                         print('plz input num. ex)1')
             elif answer == 2:
@@ -266,15 +266,15 @@ class Chatbot():
                                 break
                             print('Plz check your input.')
                         if ver == 7:
-                            file.write('dest_list = jumplist.get_destlist_data(7)\nfor i in dest_list:\n\tprint(i)\n')
+                            file.write('dest_list = jumplist.get_destlist_data(7,\'all\')\nfor i in dest_list:\n\tprint(i)\n')
                         elif ver == 10:
-                            file.write('dest_list = jumplist.get_destlist_data(10)\nfor i in dest_list:\n\tprint(i)\n')
+                            file.write('dest_list = jumplist.get_destlist_data(10,\'all\')\nfor i in dest_list:\n\tprint(i)\n')
                     elif analysis == 3:
                         file.write('\n# Get information from streams.\n# You can get MAC time, File size, Target file size, Local path, Drive type, Drive serial number, Volume label\n')
-                        file.write('info_list = jumplist.get_info()\nfor i in info_list:\n\tprint(i)\n')
+                        file.write('info_list = jumplist.get_all_info()\nfor i in info_list:\n\tprint(i)\n')
                     elif analysis == 4:
                         file.write('\n# Print information from streams.\n# You can get MAC time, File size, Target file size, Local path, Drive type, Drive serial number, Volume label\n')
-                        file.write('jumplist.show_info()\n')
+                        file.write('jumplist.show_all_info()\n')
                     elif analysis == 5:
                         file.write('\n# Get hash\n')
                         file.write('jump_hash = jumplist.get_hash()\nfor i in jump_hash:\n\tprint(i)\n')
@@ -296,7 +296,7 @@ class Chatbot():
                         break
                     elif analysis == 1:
                         file.write('\n# Get information of filesystem log.\n')
-                        file.write('file_syslog_info = filesys_log.get_info()\nfor i in file_syslog_info:\n\tprint(i)\n')
+                        file.write('file_syslog_info = filesys_log.get_all_info()\nfor i in file_syslog_info:\n\tprint(i)\n')
                     elif analysis == 2:
                         file.write('\n# Get hash\n')
                         file.write('file_syslog_hash = filesys_log.get_hash()\nfor i in file_syslog_hash:\n\tprint(i)\n')
@@ -405,7 +405,7 @@ class Chatbot():
                                 file.write('key_value = reg_file.find_key(\''+key_input+'\')')
                             elif analysis == 2:
                                 file.write('\n# Get basic information of computer OS.\n')
-                                file.write('basic_info = reg_file.get_info()\nfor i in basic_info:\n\tprint(i)\n')
+                                file.write('basic_info = reg_file.get_all_info()\nfor i in basic_info:\n\tprint(i)\n')
                             elif analysis == 3:
                                 file.write('\n# Get network card information.\n')
                                 file.write('net_info = reg_file.get_network_info()\nfor i in net_info:\n\tprint(i)\n')
@@ -459,7 +459,7 @@ class Chatbot():
                     elif analysis == 1:
                         file.write('\n# Get information of artifact.[file name, hash value, size, system version]\n')
                         print('You can get info of artifact.\n[file name, hash value, size, system version]')
-                        file.write('thumbinfo = thumbnail.get_info()\nfor i in thumbinfo:\n\tprint(i)\n')
+                        file.write('thumbinfo = thumbnail.get_all_info()\nfor i in thumbinfo:\n\tprint(i)\n')
                     elif analysis == 2:
                         file.write('\n# Print information of artifact.\n')
                         print('You can check info but it is not saved in variable.')
@@ -489,10 +489,10 @@ class Chatbot():
                         break
                     elif analysis == 1:
                         file.write('\n# Get information of zip\n')
-                        file.write('zip_info = zip_file.get_info()\nfor i in zip_info:\n\tprint(i)\n')
+                        file.write('zip_info = zip_file.get_all_info()\nfor i in zip_info:\n\tprint(i)\n')
                     elif analysis == 2:
                         file.write('\n# Show information of zip\n')
-                        file.write('zip_file.show_info()\n')
+                        file.write('zip_file.show_all_info()\n')
             elif answer == 7:
                 print('Input your file type. [1:JPEG, 2:PDF, 3:HWP, 4:MSOld, 5:Get file list of folder]:')
                 types = input()
@@ -506,22 +506,22 @@ class Chatbot():
                     continue
                 if types == 1:
                     file.write('\n# Artifact: JPEG\n')
-                    file.write('jpeg = Files.JPEG.file_open(r\''+path+'\')\njpeg_info = jpeg.get_info()\nfor i in jpeg_info:\n\tprint(i)\n')
+                    file.write('jpeg = Files.JPEG.file_open(r\''+path+'\')\njpeg_info = jpeg.get_all_info()\nfor i in jpeg_info:\n\tprint(i)\n')
                     file.write('\n# Get Hash Value\n')
                     file.write('hash_value = jpeg.get_hash()\nfor i in hash_value:\n\tprint(i)\n')
                 elif types == 2:
                     file.write('\n# Artifact: PDF\n')
-                    file.write('pdf = Files.PDF.file_open(r\''+path+'\')\npdf_info = pdf.get_info()\nfor i in pdf_info:\n\tprint(i)\n')
+                    file.write('pdf = Files.PDF.file_open(r\''+path+'\')\npdf_info = pdf.get_all_info()\nfor i in pdf_info:\n\tprint(i)\n')
                     file.write('\n# Get Hash Value\n')
                     file.write('hash_value = pdf_info.get_hash()\nfor i in hash_value:\n\tprint(i)\n')
                 elif types == 3:
                     file.write('\n# Artifact: HWP\n')
-                    file.write('hwp = Files.HWP.file_open(r\''+path+'\')\nhwp_info = hwp.get_info()\nfor i in hwp_info:\n\tprint(i)\n')
+                    file.write('hwp = Files.HWP.file_open(r\''+path+'\')\nhwp_info = hwp.get_all_info()\nfor i in hwp_info:\n\tprint(i)\n')
                     file.write('\n# Get Hash Value\n')
                     file.write('hash_value = hwp_info.get_hash()\nfor i in hash_value:\n\tprint(i)\n')
                 elif types == 4:
                     file.write('\n# Artifact: MS old\n')
-                    file.write('ms = Files.MSOld.file_open(r\''+path+'\')\nms_info = ms.get_info()\nfor i in ms_info:\n\tprint(i)\n')
+                    file.write('ms = Files.MSOld.file_open(r\''+path+'\')\nms_info = ms.get_all_info()\nfor i in ms_info:\n\tprint(i)\n')
                     file.write('\n# Get Hash Value\n')
                     file.write('hash_value = ms_info.get_hash()\nfor i in hash_value:\n\tprint(i)\n')
                 elif types == 5:
@@ -581,7 +581,7 @@ class Chatbot():
                     if analysis == -1:
                         break
                     elif analysis == 2:
-                        file.write('browser_info = browser.get_info()\nfor i in browser_info:\n\tprint(i)\n')
+                        file.write('browser_info = browser.get_all_info()\nfor i in browser_info:\n\tprint(i)\n')
                         if ana_type == 1:
                             while True:
                                 print('choose aditional function?\n1.Keyword search\n2.Count sorting\n-1.None')
