@@ -129,7 +129,6 @@ class NTAnalysis:
 
                 try:
                     recent3 = self.reg.open(path + "\\%s\\Word\\File MRU" %a[i])
-                    print(recent3)
                     word = self.__print_ms(recent3, a[i])
                 except:
                     word = []
@@ -292,7 +291,6 @@ class SYSAnalysis:
 
     def get_network_info(self):
         path = "ControlSet00%s\\services\\Tcpip\\Parameters\\Interfaces" % self.__control_set_check(self.reg)
-        print(path)
         net_key = self.reg.open(path)
         guid_list = list()
         network_dict = dict()
