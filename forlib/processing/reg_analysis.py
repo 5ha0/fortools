@@ -1,53 +1,27 @@
 from Registry import Registry
-import json
+import re
 import codecs
 from datetime import datetime, timedelta
 import forlib.calc_hash as calc_hash
 import time
 import binascii
 
-
 class NTAnalysis:
     def __init__(self, file, path, hash_val):
         self.reg = file
         self.ret_list = list()
+        self.__common_file = _CommonFunction(self.reg)
         self.__hash_val = [hash_val]
         self.__path = path
         self.__cal_hash()
 
-    def __rec(self, key, get_path, find_val):
-        #        get_path(key, find_val)
-        for subkey in key.subkeys():
-            self.__rec(subkey, get_path, find_val)
-        path = get_path(key, find_val)
-
-    def __get_path(self, key, find_val):
-        for value in [v.value() for v in key.values()
-                      if v.value_type() == Registry.RegSZ
-                         or v.value_type() == Registry.RegExpandSZ]:
-            if find_val in value:
-                reg_key_obj = {
-                    "find_keyword": find_val,
-                    "key": key.path()
-                }
-                print(json.dumps(reg_key_obj))
-
     def find_key(self, keyword):
-        self.__rec(self.reg.root(), self.__get_path, keyword)
+        self.ret_list = self.__common_file.find_key(keyword)
+        return self.ret_list
 
-    def __bin_to_int(self, info):
-        bin_to_little_endian = bytes.decode(binascii.hexlify(info[0:][::-1]))
-        int_info = int(bin_to_little_endian, 16)
-        return int_info
-
-    def __cal_time(self, info_time):
-        int_time = self.__bin_to_int(info_time)
-        int_time = int_time * 0.1
-        if int_time == 0:
-            date = 'Never'
-        else:
-            date = datetime(1601, 1, 1) + timedelta(microseconds=int_time)
-        return str(date)
+    def find_value(self, path):
+        self.ret_list = self.__common_file.find_value(path)
+        return self.ret_list
 
     def get_recent_docs(self):
         recent = self.reg.open("SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs")
@@ -155,6 +129,7 @@ class NTAnalysis:
 
                 try:
                     recent3 = self.reg.open(path + "\\%s\\Word\\File MRU" %a[i])
+                    print(recent3)
                     word = self.__print_ms(recent3, a[i])
                 except:
                     word = []
@@ -173,7 +148,7 @@ class NTAnalysis:
                     recent0 = self.reg.open(path+"\\%s\\Outlook\\Search" %a[i])
                     for v in recent0.values():
                         ret_obj = {
-                            "Version" : a[i],
+                            "Version": a[i],
                             "MS key Last Written time" : str(recent0.timestamp()),
                             "TimeZone" : "UTC",
                             "name" : v.name()
@@ -218,9 +193,9 @@ class NTAnalysis:
                 for userassist_values in userassist_keys.values():
                     file_name = codecs.decode(userassist_values.name(), 'rot_13')
                     reg_obj = {
-                        "Time": self.__cal_time(userassist_values.value()[60:68]),
+                        "Time": self.__common_file.cal_time(userassist_values.value()[60:68]),
                         "TimeZone": "UTC",
-                        "Run Count": self.__bin_to_int(userassist_values.value()[4:8]),
+                        "Run Count": self.__common_file.bin_to_int(userassist_values.value()[4:8]),
                         "file": '%s' % file_name
                     }
                     user_list.append(reg_obj)
@@ -239,29 +214,18 @@ class SYSAnalysis:
     def __init__(self, file, path, hash_val):
         self.reg = file
         self.ret_list = list()
+        self.__common_file = _CommonFunction(self.reg)
         self.__hash_val = [hash_val]
         self.__path = path
         self.__cal_hash()
 
-    def __rec(self, key, get_path, find_val):
-        #        get_path(key, find_val)
-        for subkey in key.subkeys():
-            self.__rec(subkey, get_path, find_val)
-        path = get_path(key, find_val)
-
-    def __get_path(self, key, find_val):
-        for value in [v.value() for v in key.values()
-                      if v.value_type() == Registry.RegSZ
-                         or v.value_type() == Registry.RegExpandSZ]:
-            if find_val in value:
-                reg_key_obj = {
-                    "find_keyword": find_val,
-                    "key": key.path()
-                }
-                print(json.dumps(reg_key_obj))
-
     def find_key(self, keyword):
-        self.__rec(self.reg.root(), self.__get_path, keyword)
+        self.ret_list = self.__common_file.find_key(keyword)
+        return self.ret_list
+
+    def find_value(self, path):
+        self.ret_list = self.__common_file_file.find_value(path)
+        return self.ret_list
 
     def __control_set_check(self, file):
         key = file.open("Select")
@@ -384,35 +348,24 @@ class SWAnalysis:
     def __init__(self, file, path, hash_val):
         self.reg = file
         self.ret_list = list()
+        self.__common_file = _CommonFunction(self.reg)
         self.__hash_val = [hash_val]
         self.__path = path
         self.__cal_hash()
+
+    def find_key(self, keyword):
+        self.ret_list = self.__common_file.find_key(keyword)
+        return self.ret_list
+
+    def find_value(self, path):
+        self.ret_list = self.__common_file.find_value(path)
+        return self.ret_list
 
     def __control_set_check(self, file):
         key = file.open("Select")
         for v in key.values():
             if v.name() == "Current":
                 return v.value()
-
-    def __rec(self, key, get_path, find_val):
-        #        get_path(key, find_val)
-        for subkey in key.subkeys():
-            self.__rec(subkey, get_path, find_val)
-        path = get_path(key, find_val)
-
-    def __get_path(self, key, find_val):
-        for value in [v.value() for v in key.values()
-                      if v.value_type() == Registry.RegSZ
-                         or v.value_type() == Registry.RegExpandSZ]:
-            if find_val in value:
-                reg_key_obj = {
-                    "find_keyword": find_val,
-                    "key": key.path()
-                }
-                print(json.dumps(reg_key_obj))
-
-    def find_key(self, keyword):
-        self.__rec(self.reg.root(), self.__get_path, keyword)
 
     def get_info(self):
         ret_list = []
@@ -479,43 +432,18 @@ class SAMAnalysis:
     def __init__(self, file, path, hash_val):
         self.reg = file
         self.ret_list = list()
+        self.__common_file = _CommonFunction(self.reg)
         self.__hash_val = [hash_val]
         self.__path = path
         self.__cal_hash()
 
-    def __rec(self, key, get_path, find_val):
-        #        get_path(key, find_val)
-        for subkey in key.subkeys():
-            self.__rec(subkey, get_path, find_val)
-        path = get_path(key, find_val)
-
-    def __get_path(self, key, find_val):
-        for value in [v.value() for v in key.values()
-                      if v.value_type() == Registry.RegSZ
-                         or v.value_type() == Registry.RegExpandSZ]:
-            if find_val in value:
-                reg_key_obj = {
-                    "find_keyword": find_val,
-                    "key": key.path()
-                }
-                print(json.dumps(reg_key_obj))
-
     def find_key(self, keyword):
-        self.__rec(self.reg.root(), self.__get_path, keyword)
+        self.ret_list = self.__common_file.find_key(keyword)
+        return self.ret_list
 
-    def __bin_to_int(self, info):
-        bin_to_little_endian = bytes.decode(binascii.hexlify(info[0:][::-1]))
-        int_info = int(bin_to_little_endian, 16)
-        return int_info
-
-    def __cal_time(self, info_time):
-        int_time = self.__bin_to_int(info_time)
-        int_time = int_time * 0.1
-        if int_time == 0:
-            date = 'Never'
-        else:
-            date = datetime(1601, 1, 1) + timedelta(microseconds=int_time)
-        return str(date)
+    def find_value(self, path):
+        self.ret_list = self.self.__common_file.find_value(path)
+        return self.ret_list
 
     def last_login(self):
         last_list = self.user_info()
@@ -554,21 +482,21 @@ class SAMAnalysis:
                 if info_key.name() == "F":
                     info_data = info_key.value()
                     user_obj = {
-                        'Last Login': self.__cal_time(info_data[8:16]),
-                        'Last PW Change': self.__cal_time(info_data[24:32]),
-                        'Log Fail Time': self.__cal_time(info_data[40:48]),
+                        'Last Login': self.__common_file.cal_time(info_data[8:16]),
+                        'Last PW Change': self.__common_file.cal_time(info_data[24:32]),
+                        'Log Fail Time': self.__common_file.cal_time(info_data[40:48]),
                         'TimeZone': "UTC",
-                        'RID': self.__bin_to_int(info_data[48:52]),
-                        'Logon Success Count': self.__bin_to_int(info_data[64:66]),
-                        'Logon Fail Count': self.__bin_to_int(info_data[66:68])
+                        'RID': self.__common_file.bin_to_int(info_data[48:52]),
+                        'Logon Success Count': self.__common_file.bin_to_int(info_data[64:66]),
+                        'Logon Fail Count': self.__common_file.bin_to_int(info_data[66:68])
                     }
                     ret_list1.append(user_obj)
 
                 # V 필드에서는 기본적으로 offset CC 부터 상재값으로 시작
                 if info_key.name() == "V":
                     info_data = info_key.value()
-                    user_offset = self.__bin_to_int(info_data[12:16]) + 0xCC
-                    user_len = self.__bin_to_int(info_data[16:24])
+                    user_offset = self.__common_file.bin_to_int(info_data[12:16]) + 0xCC
+                    user_len = self.__common_file.bin_to_int(info_data[16:24])
 
                     user_obj = {
                         'UserName': info_data[user_offset:user_offset + user_len].decode('utf16')
@@ -585,3 +513,63 @@ class SAMAnalysis:
 
     def get_hash(self):
         return self.__hash_val
+
+class _CommonFunction:
+    def __init__(self, file):
+        self.reg = file
+        self.ret_list = list()
+
+    def bin_to_int(self, info):
+        bin_to_little_endian = bytes.decode(binascii.hexlify(info[0:][::-1]))
+        int_info = int(bin_to_little_endian, 16)
+        return int_info
+
+    def cal_time(self, info_time):
+        int_time = self.bin_to_int(info_time)
+        int_time = int_time * 0.1
+        if int_time == 0:
+            date = 'Never'
+        else:
+            date = datetime(1601, 1, 1) + timedelta(microseconds=int_time)
+        return str(date)
+
+    def __print_path(self, find_val, reg_key):
+        split_list = reg_key.split("\\")
+        key_obj = {
+            "Search Keywork" : find_val,
+            "Root Key" : split_list[0],
+            "Search Key Path" : "\\".join(split_list[1:])
+        }
+        self.ret_list.append(key_obj)
+        return self.ret_list
+
+    def __rec(self, key, get_path, find_val):
+        for subkey in key.subkeys():
+            get_path(subkey, find_val)
+            self.__rec(subkey, get_path, find_val)
+
+    def __get_path(self, key, find_val):
+        find_pattern = re.compile(find_val)
+
+        if find_pattern.findall(key.path()):
+            self.__print_path(find_val, key.path())
+        else:
+            pass
+
+    def find_key(self, keyword):
+        self.__rec(self.reg.root(), self.__get_path, keyword)
+        return self.ret_list
+
+    def find_value(self, key):
+        key_path = self.reg.open(key)
+        all_value = dict()
+        time_pattern = re.compile("Time")
+
+        for i in key_path.values():
+            if time_pattern.findall(i.name()) and i.value_type() == Registry.RegBin:
+                all_value[i.name()] = self.cal_time(i.value())
+            else:
+                all_value[i.name()] = i.value()
+
+            self.ret_list.append(all_value)
+        return self.ret_list
