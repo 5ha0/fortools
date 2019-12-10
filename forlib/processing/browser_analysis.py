@@ -4,13 +4,14 @@ import re
 from datetime import *
 from forlib.processing.filter import *
 import forlib.calc_hash as calc_hash
+import os
 
 
 class Chrome:
     class History:
         def __init__(self, file, hash_v):
-            self.file = file
-            self.conn = sqlite3.connect(self.file)
+            self.__file = file
+            self.conn = sqlite3.connect(self.__file)
             self.history_list = []
             if self.__parse() == -1:
                 self.history_list=""
@@ -71,8 +72,26 @@ class Chrome:
 
                 self.history_list.append(mkdict)
 
-        def get_info(self):
+        def get_all_info(self):
             return self.history_list
+
+        def get_info(self, list):
+            result=[]
+            for i in self.history_list:
+                info=dict()
+                try:
+                    for j in list:
+                        info[j]=i[j]
+                    result.append(info)
+                except:
+                    print("Plz check your key.")
+                    return -1
+            return result
+
+
+        def show_info(self):
+            for i in self.history_list:
+                print(i)
 
         def __sort(self):
             self.history_list=time_sort('visit_time', self.history_list)
@@ -109,8 +128,8 @@ class Chrome:
 
     class Download:
         def __init__(self, file, hash_v):
-            self.file = file
-            self.conn = sqlite3.connect(self.file)
+            self.__file = file
+            self.conn = sqlite3.connect(self.__file)
             self.download_list = []
             self.__parse()
             if self.__parse() == -1:
@@ -178,8 +197,25 @@ class Chrome:
                 mkdict["state"] = download[state]
                 self.download_list.append(mkdict)
 
-        def get_info(self):
+        def get_all_info(self):
             return self.download_list
+
+        def get_info(self, list):
+            result = []
+            for i in self.download_list:
+                info = dict()
+                try:
+                    for j in list:
+                        info[j] = i[j]
+                    result.append(info)
+                except:
+                    print("Plz check your key.")
+                    return -1
+            return result
+
+        def show_info(self):
+            for i in self.download_list:
+                print(i)
 
         def __sort(self):
             self.download_list=time_sort('download_start_time', self.download_list)
@@ -196,12 +232,15 @@ class Chrome:
             return self.__hash_value
 
     class Cache:
-        def __init__(self, file):
-            self.file = file
+        def __init__(self, file,hash_v):
+            self.__file = file
             self.__path = file
             self.cache_list = []
             if self.__parse() ==-1:
                 self.cache_list==""
+            self.__hash_value = hash_v
+            self.__path = file
+            self.__cal_hash()
 
         def __get_block_info(self,url_record):
             if url_record == 1:
@@ -248,14 +287,16 @@ class Chrome:
                 data_file_open.seek(url_record_location)
                 url_record = data_file_open.read(0x60)
                 url_size = int(bytes.decode(binascii.hexlify(url_record[0x20:0x20 + 0x04][::-1])), 16)
+                url_location=bytes.decode(binascii.hexlify(url_record[0x24:0x24 + 0x04][::-1]))
                 meta_data_size = int(bytes.decode(binascii.hexlify(url_record[0x28:0x28 + 0x04][::-1])), 16)
                 data_size = int(bytes.decode(binascii.hexlify(url_record[0x2C:0x2C + 0x04][::-1])), 16)
 
                 # get url
-                try:
+                if url_location=="00000000":
                     url = data_file_open.read(url_size)
                     url = url.decode()
-                except:
+
+                else:
                     url_file_index = url_record[0x24 + 0x02]
                     url_block_size = self.__get_block_info(url_record[0x24 + 0x02])
                     url_block_index = int(bytes.decode(binascii.hexlify(url_record[0x24:0x24 + 0x02][::-1])), 16)
@@ -286,20 +327,42 @@ class Chrome:
                         if status_regex:
                             status=bytes.fromhex(status_regex.group()).decode().split(":")[-1]
                         date_regex=re.search("(44|64)+6174653a(20)?\w{50}",meta_data)
+
                         if date_regex:
                             if week.search(bytes.fromhex(date_regex.group()).decode()[5:9]):
-                                access=" ".join(bytes.fromhex(date_regex.group()).decode().split(" ")[-4:])
-                                access=str(datetime.datetime.strptime(access,'%d %b %Y %H:%M:%S'))
+                                if date_regex.group()[-2:]=="20":
+                                    access = " ".join(bytes.fromhex(date_regex.group()).decode().split(" ")[-5:])
+                                    access=access.strip()
+                                    access = str(datetime.datetime.strptime(access, '%d %b %Y %H:%M:%S'))
+                                else:
+                                    access = " ".join(bytes.fromhex(date_regex.group()).decode().split(" ")[-4:])
+                                    access = str(datetime.datetime.strptime(access, '%d %b %Y %H:%M:%S'))
+
+
                         expires_regex=re.search("657870697265733a+\w{50}",meta_data)
                         if expires_regex:
                             if week.search(bytes.fromhex(expires_regex.group()).decode()[8:12]):
-                                expiry = " ".join(bytes.fromhex(expires_regex.group()).decode().split(" ")[-4:])
-                                expiry = str(datetime.datetime.strptime(expiry, '%d %b %Y %H:%M:%S'))
+                                if expires_regex.group()[-2:] == "20":
+                                    expiry = " ".join(bytes.fromhex(expires_regex.group()).decode().split(" ")[-5:])
+                                    expiry = expiry.strip()
+                                    expiry = str(datetime.datetime.strptime(expiry, '%d %b %Y %H:%M:%S'))
+                                else:
+                                    expiry = " ".join(bytes.fromhex(expires_regex.group()).decode().split(" ")[-4:])
+                                    expiry = str(datetime.datetime.strptime(expiry, '%d %b %Y %H:%M:%S'))
+
+
                         last_modified_regex=re.search("6c6173742d6d6f6469666965643a+\w{50}",meta_data)
                         if last_modified_regex:
                             if week.search(bytes.fromhex(last_modified_regex.group()).decode()[14:18]):
-                                last_modify=" ".join(bytes.fromhex(last_modified_regex.group()).decode().split(" ")[-4:])
-                                last_modify = str(datetime.datetime.strptime(last_modify, '%d %b %Y %H:%M:%S'))
+                                if last_modified_regex.group()[-2:]=="20":
+                                    last_modify = " ".join(bytes.fromhex(last_modified_regex.group()).decode().split(" ")[-5:])
+                                    last_modify=last_modify.strip()
+                                    last_modify = str(datetime.datetime.strptime(last_modify, '%d %b %Y %H:%M:%S'))
+                                else:
+                                    last_modify = " ".join(
+                                        bytes.fromhex(last_modified_regex.group()).decode().split(" ")[-4:])
+                                    last_modify = str(datetime.datetime.strptime(last_modify, '%d %b %Y %H:%M:%S'))
+
                 # get data/file_path and file_name
                 file_path=""
                 file_name=""
@@ -335,13 +398,42 @@ class Chrome:
                 mkdict["server_info"]=status
                 self.cache_list.append(mkdict)
 
-        def get_info(self):
+        def get_all_info(self):
             return self.cache_list
+
+        def get_info(self, list):
+            result = []
+            for i in self.cache_list:
+                info = dict()
+                try:
+                    for j in list:
+                        info[j] = i[j]
+                    result.append(info)
+                except:
+                    print("Plz check your key.")
+                    return -1
+            return result
+
+        def show_info(self):
+            for i in self.cache_list:
+                print(i)
+
+        def __cal_hash(self):
+            after_hash=[]
+            if os.path.exists(self.__path):
+                cache_file_list = os.listdir(self.__path)
+            for i in range(0, len(cache_file_list)):
+                hashdic = {cache_file_list[i]: calc_hash.get_hash(self.__path + '\\' + cache_file_list[i])}
+                after_hash.append(hashdic)
+            self.__hash_value.append(after_hash)
+
+        def get_hash(self):
+            return self.__hash_value
 
     class Cookie:
         def __init__(self, file, hash_v):
-            self.file = file
-            self.conn = sqlite3.connect(self.file)
+            self.__file = file
+            self.conn = sqlite3.connect(self.__file)
             self.cookie_list = []
             if self.__parse() == -1:
                 self.cookie_list == ""
@@ -405,8 +497,25 @@ class Chrome:
 
                 self.cookie_list.append(mkdict)
 
-        def get_info(self):
+        def get_all_info(self):
             return self.cookie_list
+
+        def get_info(self, list):
+            result = []
+            for i in self.cookie_list:
+                info = dict()
+                try:
+                    for j in list:
+                        info[j] = i[j]
+                    result.append(info)
+                except:
+                    print("Plz check your key.")
+                    return -1
+            return result
+
+        def show_info(self):
+            for i in self.cookie_list:
+                print(i)
 
         def __sort(self):
             self.cookie_list=time_sort('creation_time', self.cookie_list)
@@ -426,8 +535,8 @@ class Chrome:
 class Firefox:
     class History:
         def __init__(self, file, hash_v):
-            self.file = file
-            self.conn = sqlite3.connect(self.file)
+            self.__file = file
+            self.conn = sqlite3.connect(self.__file)
             self.history_list=[]
             if self.__parse() == -1:
                 self.history_list == ""
@@ -476,8 +585,25 @@ class Firefox:
                 mkdict["visit_type"] = visit[5]
                 self.history_list.append(mkdict)
 
-        def get_info(self):
+        def get_all_info(self):
             return self.history_list
+
+        def get_info(self, list):
+            result = []
+            for i in self.history_list:
+                info = dict()
+                try:
+                    for j in list:
+                        info[j] = i[j]
+                    result.append(info)
+                except:
+                    print("Plz check your key.")
+                    return -1
+            return result
+
+        def show_info(self):
+            for i in self.history_list:
+                print(i)
 
         def __sort(self):
             self.history_list=time_sort('visit_time', self.history_list)
@@ -508,8 +634,8 @@ class Firefox:
 
     class Cookie:
         def __init__(self, file, hash_v):
-            self.file = file
-            self.conn = sqlite3.connect(self.file)
+            self.__file = file
+            self.conn = sqlite3.connect(self.__file)
             self.cookie_list=[]
             if self.__parse() == -1:
                 self.cookie_list == ""
@@ -572,8 +698,25 @@ class Firefox:
                 mkdict["is_httponly"] = cookie[httponly]
                 self.cookie_list.append(mkdict)
 
-        def get_info(self):
+        def get_all_info(self):
             return self.cookie_list
+
+        def get_info(self, list):
+            result = []
+            for i in self.cookie_list:
+                info = dict()
+                try:
+                    for j in list:
+                        info[j] = i[j]
+                    result.append(info)
+                except:
+                    print("Plz check your key.")
+                    return -1
+            return result
+
+        def show_info(self):
+            for i in self.cookie_list:
+                print(i)
 
         def __sort(self):
             self.cookie_list=time_sort('creation_time', self.cookie_list)
@@ -591,8 +734,8 @@ class Firefox:
 
     class Download:
         def __init__(self, file, hash_v):
-            self.file = file
-            self.conn = sqlite3.connect(self.file)
+            self.__file = file
+            self.conn = sqlite3.connect(self.__file)
             self.download_list = []
             if self.__parse() == -1:
                 self.download_list == ""
@@ -651,8 +794,25 @@ class Firefox:
                 mkdict["state"] = ""
                 self.download_list.append(mkdict)
 
-        def get_info(self):
+        def get_all_info(self):
             return self.download_list
+
+        def get_info(self, list):
+            result = []
+            for i in self.download_list:
+                info = dict()
+                try:
+                    for j in list:
+                        info[j] = i[j]
+                    result.append(info)
+                except:
+                    print("Plz check your key.")
+                    return -1
+            return result
+
+        def show_info(self):
+            for i in self.download_list:
+                print(i)
 
         def __sort(self):
             self.download_list=time_sort('download_start_time', self.download_list)
@@ -672,9 +832,9 @@ class Firefox:
 class Ie_Edge:
     class Cache:
         def __init__(self, file, path,hash_v):
-            self.file = file
+            self.__file = file
             self.cache_list = []
-            if self.file==-1:
+            if self.__file==-1:
                 self.cache_list == ""
             else:
                 self.__parse()
@@ -686,11 +846,11 @@ class Ie_Edge:
         def __parse(self):
             cache_noContainer = []  # 없는 container 저장하는 list
             cache_emptyContainer = []  # 빈 container 저장하는 list
-            cache_container_id = get_ContainerID(self.file, "Content")
+            cache_container_id = get_ContainerID(self.__file, "Content")
             no = 0
             for containerid in cache_container_id.keys():
-                col_name = esedb_get_schema(self.file, containerid)
-                cache_container = self.file.get_table_by_name(containerid)
+                col_name = esedb_get_schema(self.__file, containerid)
+                cache_container = self.__file.get_table_by_name(containerid)
                 if col_name == None:
                     cache_noContainer.append(containerid)
                     continue
@@ -705,11 +865,17 @@ class Ie_Edge:
                     mkdict["browser"] = "IE10+ Edge"
                     mkdict["timezone"] = "UTC"
                     mkdict["file_name"] = cache.get_value_data_as_string(18)
+
                     mkdict["url"] = cache.get_value_data_as_string(17)
                     mkdict["access_time"] = int2date4(cache.get_value_data_as_integer(13))
                     mkdict["creation_time"] = int2date4(cache.get_value_data_as_integer(10))
                     mkdict["file_size"] = cache.get_value_data_as_integer(5)
                     mkdict["file_path"] = cache.get_value_data_as_integer(4)
+
+                    if len(mkdict["url"].split("."))==1:
+                        print(no)
+                        print(str(mkdict["url"]))
+                        print(str(cache.get_value_data(17)))
 
 
                     if cache.get_value_data_as_integer(11) == 0:
@@ -728,8 +894,25 @@ class Ie_Edge:
                         mkdict["server_info"]=""
                     self.cache_list.append(mkdict)
 
-        def get_info(self):
+        def get_all_info(self):
             return self.cache_list
+
+        def get_info(self, list):
+            result = []
+            for i in self.cache_list:
+                info = dict()
+                try:
+                    for j in list:
+                        info[j] = i[j]
+                    result.append(info)
+                except:
+                    print("Plz check your key.")
+                    return -1
+            return result
+
+        def show_info(self):
+            for i in self.cache_list:
+                print(i)
 
         def __sort(self):
             self.cache_list=time_sort('creation_time', self.cache_list)
@@ -747,9 +930,9 @@ class Ie_Edge:
 
     class Cookie:
         def __init__(self, file, path,hash_v):
-            self.file = file
+            self.__file = file
             self.cookie_list=[]
-            if self.file == -1:
+            if self.__file == -1:
                 self.cookie_list == ""
             else:
                 self.__parse()
@@ -761,11 +944,11 @@ class Ie_Edge:
         def __parse(self):
             cookies_no_container = []  # 없는 container 저장하는 list
             cookies_empty_container = []  # 빈 container 저장하는 list
-            cookies_container_id = get_ContainerID(self.file, "Cookies")
+            cookies_container_id = get_ContainerID(self.__file, "Cookies")
             no = 0
             for containerid in cookies_container_id.keys():
-                col_name = esedb_get_schema(self.file, containerid)
-                cookies_container = self.file.get_table_by_name(containerid)
+                col_name = esedb_get_schema(self.__file, containerid)
+                cookies_container = self.__file.get_table_by_name(containerid)
                 if col_name is None:
                     cookies_no_container.append(containerid)
                     continue
@@ -790,8 +973,25 @@ class Ie_Edge:
                     mkdict["is_httponly"] = ""
                     self.cookie_list.append(mkdict)
 
-        def get_info(self):
+        def get_all_info(self):
             return self.cookie_list
+
+        def get_info(self, list):
+            result = []
+            for i in self.cookie_list:
+                info = dict()
+                try:
+                    for j in list:
+                        info[j] = i[j]
+                    result.append(info)
+                except:
+                    print("Plz check your key.")
+                    return -1
+            return result
+
+        def show_info(self):
+            for i in self.cookie_list:
+                print(i)
 
         def __sort(self):
             self.cookie_list=time_sort('creation_time', self.cookie_list)
@@ -809,9 +1009,9 @@ class Ie_Edge:
 
     class Download:
         def __init__(self, file, path, hash_v):
-            self.file = file
+            self.__file = file
             self.download_list=[]
-            if self.file == -1:
+            if self.__file == -1:
                 self.download_list == ""
             else:
                 self.__parse()
@@ -823,11 +1023,11 @@ class Ie_Edge:
         def __parse(self):
             downloads_no_container = []  # 없는 container 저장하는 list
             downloads_empty_container = []  # 빈 container 저장하는 list
-            downloads_container_id = get_ContainerID(self.file, "iedownload")
+            downloads_container_id = get_ContainerID(self.__file, "iedownload")
             no = 0
             for containerid in downloads_container_id.keys():
-                col_name = esedb_get_schema(self.file, containerid)
-                downloads_container = self.file.get_table_by_name(containerid)
+                col_name = esedb_get_schema(self.__file, containerid)
+                downloads_container = self.__file.get_table_by_name(containerid)
 
                 if col_name is None:
                     downloads_no_container.append(containerid)
@@ -883,8 +1083,25 @@ class Ie_Edge:
 
                     self.download_list.append(mkdict)
 
-        def get_info(self):
+        def get_all_info(self):
             return self.download_list
+
+        def get_info(self, list):
+            result = []
+            for i in self.download_list:
+                info = dict()
+                try:
+                    for j in list:
+                        info[j] = i[j]
+                    result.append(info)
+                except:
+                    print("Plz check your key.")
+                    return -1
+            return result
+
+        def show_info(self):
+            for i in self.download_list:
+                print(i)
 
         def __sort(self):
             self.download_list=time_sort('download_start_time', self.download_list)
@@ -902,13 +1119,13 @@ class Ie_Edge:
 
     class History:
         def __init__(self, file, path,hash_v):
-            self.file = file
+            self.__file = file
             self.history_list=[]
-            if self.file == -1:
+            if self.__file == -1:
                 self.history_list == ""
             else:
                 self.__parse()
-            self.__sort()
+            # self.__sort()
             self.__hash_value = [hash_v]
             self.__path = path
             self.__cal_hash()
@@ -916,12 +1133,11 @@ class Ie_Edge:
         def __parse(self):
             history_no_container = []  # 없는 container 저장하는 list
             history_empty_container = []  # 빈 container 저장하는 list
-
-            history_container_id = get_ContainerID(self.file, "Hist")
+            history_container_id = get_ContainerID(self.__file, "Hist")
             no = 0
             for containerid in history_container_id.keys():
-                col_name = esedb_get_schema(self.file,containerid)
-                history_container = self.file.get_table_by_name(containerid)
+                col_name = esedb_get_schema(self.__file,containerid)
+                history_container = self.__file.get_table_by_name(containerid)
 
                 if col_name is None:
                     history_no_container.append(containerid)
@@ -946,14 +1162,12 @@ class Ie_Edge:
                         binary_data = visit.get_value_data(21)
                         size_a = bytes.decode(binascii.hexlify(binary_data[58:62][::-1]))
                         size = int(size_a, 16) * 2
-                        if size > len(binary_data):
-                            raise Exception
-
                         title = bytes.decode(binascii.hexlify(binary_data[62:62 + size]))
                         mkdict["title"] = bytes.fromhex(title).decode("utf-16").rstrip("\x00")
                     except:
                         mkdict["title"] = ""
                     mkdict["url"] = visit.get_value_data_as_string(17)
+                    # print(mkdict["url"])
                     mkdict["from_visit"] = ""
                     mkdict["keyword_search"] = ""
                     mkdict["visit_time"] = int2date4(visit.get_value_data_as_integer(13))
@@ -962,8 +1176,25 @@ class Ie_Edge:
 
                     self.history_list.append(mkdict)
 
-        def get_info(self):
+        def get_all_info(self):
             return self.history_list
+
+        def get_info(self, list):
+            result = []
+            for i in self.history_list:
+                info = dict()
+                try:
+                    for j in list:
+                        info[j] = i[j]
+                    result.append(info)
+                except:
+                    print("Plz check your key.")
+                    return -1
+            return result
+
+        def show_all_info(self):
+            for i in self.history_list:
+                print(i)
 
         def __sort(self):
             self.history_list=time_sort('visit_time', self.history_list)
