@@ -22,7 +22,7 @@ class EventAnalysis:
         self.__path = path
         self.__cal_hash()
 
-    def show_info(self):
+    def show_all_info(self):
         for i in self.evtx_json:
             print(i)
 
@@ -55,7 +55,7 @@ class EventAnalysis:
                 time_cnt[date] = time_cnt[date] + 1
             else:
                 time_cnt[date] = 1
-            log_obj["TimeZone"] = 'UTC+0'
+            log_obj["TimeZone"] = 'UTC +00:00'
             log_obj["level"] = self.evtx_file.records[i].get_event_level()
             log_obj["source"] = self.evtx_file.records[i].get_source_name()
             log_obj["computer Info"] = self.evtx_file.records[i].get_computer_name()
@@ -95,19 +95,21 @@ class EventAnalysis:
         return json_list
 
     def eventid(self, num):
+        result = []
         if type(num) is not int:
             print('Parameter of eventid() is int variable.\nPlz check your input.')
             return -1
         for i in range(0, len(self.evtx_json)):
             if self.evtx_json[i]['eventID'] == num:
-                self._result.append(self.evtx_json[i])
-        return self._result
+                result.append(self.evtx_json[i])
+        return result
 
     def level(self, num):
+        result = []
         for i in range(0, len(self.evtx_json)):
             if self.evtx_json[i]['level'] == num:
-                self._result.append(self.evtx_json[i])
-        return self._result
+                result.append(self.evtx_json[i])
+        return result
 
     def date(self, date1, date2):
         return date_filter("create Time", [date1, date2], self.evtx_json)
@@ -128,7 +130,6 @@ class EventAnalysis:
 # favorite method for evtx log
 class Favorite:
     def __init__(self, json):
-        self._result = []
         self.evtx_json = json
         self.Account = Account(self.evtx_json)
         self.System = System(self.evtx_json)
@@ -138,133 +139,79 @@ class Favorite:
 class Etc:
     def __init__(self, evtx_json):
         self.evtx_json = evtx_json
-        self._result = []
-
 
     # detect remote logon record
     def remote(self):
-        EventAnalysis.eventid(self, 540)
-        EventAnalysis.eventid(self, 4776)
-        return self._result
+        return EventAnalysis.eventid(self, 540) + EventAnalysis.eventid(self, 4776)
 
     # app error(1000), app hang(1002)
     def app_crashes(self):
-        EventAnalysis.eventid(self, 1000)
-        EventAnalysis.eventid(self, 1002)
-        return self._result
+        return EventAnalysis.eventid(self, 1000) + EventAnalysis.eventid(self, 1002)
 
     # windows error reporting(1001)
     def error_report(self):
-        EventAnalysis.eventid(self,1001)
-        return self._result
+        return EventAnalysis.eventid(self,1001)
 
     def service_fails(self):
-        EventAnalysis.eventid(self, 7022)
-        EventAnalysis.eventid(self, 7023)
-        EventAnalysis.eventid(self, 7024)
-        EventAnalysis.eventid(self, 7026)
-        EventAnalysis.eventid(self, 7031)
-        EventAnalysis.eventid(self, 7032)
-        EventAnalysis.eventid(self, 7034)
-        return self._result
+        return EventAnalysis.eventid(self, 7022) + EventAnalysis.eventid(self, 7023) + EventAnalysis.eventid(self, 7024) + EventAnalysis.eventid(self, 7026) + EventAnalysis.eventid(self, 7031) +EventAnalysis.eventid(self, 7032) + EventAnalysis.eventid(self, 7034)
 
     # rule add(2004), rule change(2005), rule deleted(2006, 2033), fail to load group policy(2009)
     def firewall(self):
-        EventAnalysis.eventid(self, 2004)
-        EventAnalysis.eventid(self, 2005)
-        EventAnalysis.eventid(self, 2006)
-        EventAnalysis.eventid(self, 2009)
-        EventAnalysis.eventid(self, 2033)
-        return self._result
+        return EventAnalysis.eventid(self, 2004)+EventAnalysis.eventid(self, 2005)+EventAnalysis.eventid(self, 2006)+EventAnalysis.eventid(self, 2009)+EventAnalysis.eventid(self, 2033)
 
     # new device(43), new mass storage installation(400, 410)
     def usb(self):
-        EventAnalysis.eventid(self, 43)
-        EventAnalysis.eventid(self, 400)
-        EventAnalysis.eventid(self, 410)
-        return self._result
+        return EventAnalysis.eventid(self, 43)+EventAnalysis.eventid(self, 400)+EventAnalysis.eventid(self, 410)
 
     # starting a wireless connection(8000, 8011), successfully connected(8001), disconnect(8003), failed(8002)
     def wireless(self):
-        EventAnalysis.eventid(self, 8000)
-        EventAnalysis.eventid(self, 8001)
-        EventAnalysis.eventid(self, 8002)
-        EventAnalysis.eventid(self, 8003)
-        EventAnalysis.eventid(self, 8011)
-        EventAnalysis.eventid(self, 10000)
-        EventAnalysis.eventid(self, 10001)
-        EventAnalysis.eventid(self, 11000)
-        EventAnalysis.eventid(self, 11001)
-        EventAnalysis.eventid(self, 11002)
-        EventAnalysis.eventid(self, 11004)
-        EventAnalysis.eventid(self, 11005)
-        EventAnalysis.eventid(self, 11006)
-        EventAnalysis.eventid(self, 11010)
-        EventAnalysis.eventid(self, 12011)
-        EventAnalysis.eventid(self, 12012)
-        EventAnalysis.eventid(self, 12013)
-        return self._result
+        return EventAnalysis.eventid(self, 8000)+EventAnalysis.eventid(self, 8001)+EventAnalysis.eventid(self, 8002)+EventAnalysis.eventid(self, 8003)+EventAnalysis.eventid(self, 8011)+EventAnalysis.eventid(self, 10000)+EventAnalysis.eventid(self, 10001)+EventAnalysis.eventid(self, 11000)+EventAnalysis.eventid(self, 11001)+EventAnalysis.eventid(self, 11002)+EventAnalysis.eventid(self, 11004)+EventAnalysis.eventid(self, 11005)+EventAnalysis.eventid(self, 11006)+EventAnalysis.eventid(self, 11010)+EventAnalysis.eventid(self, 12011)+EventAnalysis.eventid(self, 12012)+EventAnalysis.eventid(self, 12013)
 
 
 class System:
     def __init__(self, evtx_json):
         self.evtx_json = evtx_json
-        self._result = []
 
     # window start
     def system_on(self):
-        EventAnalysis.eventid(self, 4608)
-        return self._result
+        return EventAnalysis.eventid(self, 4608)
 
     # window shut down
     def system_off(self):
-        EventAnalysis.eventid(self, 4609)
-        EventAnalysis.eventid(self, 6006)
-        return self._result
+        return EventAnalysis.eventid(self, 4609)+EventAnalysis.eventid(self, 6006)+EventAnalysis.eventid(self, 1100)
     
     # window dirty shut down
     def dirty_shutdown(self):
-        EventAnalysis.eventid(self, 6008)
-        return self._result
+        return EventAnalysis.eventid(self, 6008)
 
 
 # filtering based on logon type
 class Account:
     def __init__(self, evtx_json):
         self.evtx_json = evtx_json
-        self._result = []
 
     # detect valid logon record
     def logon(self):
-        EventAnalysis.eventid(self, 4624)
-        return self._result
+        return EventAnalysis.eventid(self, 4624)
 
     def logoff(self):
-        EventAnalysis.eventid(self, 4647)
-        return self._result
+        return EventAnalysis.eventid(self, 4647)
 
     # detect failed user account login
     def login_failed(self):
-        EventAnalysis.eventid(self, 4625)
-        return self._result
+        return EventAnalysis.eventid(self, 4625)
 
     def change_pwd(self):
-        EventAnalysis.eventid(self, 4723)
-        return self._result
+        return EventAnalysis.eventid(self, 4723)
 
     def delete_account(self):
-        EventAnalysis.eventid(self, 4726)
-        return self._result
+        return EventAnalysis.eventid(self, 4726)
 
     def verify_account(self):
-        EventAnalysis.eventid(self, 4720)
-        return self._result
+        return EventAnalysis.eventid(self, 4720)
 
     def add_privileged_group(self):
-        EventAnalysis.eventid(self, 4728)
-        EventAnalysis.eventid(self, 4732)
-        EventAnalysis.eventid(self, 4756)
-        return self._result
+        return EventAnalysis.eventid(self, 4728)+EventAnalysis.eventid(self, 4732)+EventAnalysis.eventid(self, 4756)
 
 
 # analysis for LinuxLog
@@ -292,12 +239,25 @@ class ApacheLog:
             self.__file = file
             self.__json = err_parse(self.__file)
 
-        def show_info(self):
+        def show_all_info(self):
             for i in range(0, len(self.__json)):
                 print(self.__json[i])
 
-        def get_info(self):
+        def get_all_info(self):
             return self.__json
+
+        def get_info(self):
+            result = []
+            for i in self.__json:
+                info = dict()
+                try:
+                    for j in list:
+                        info[j] = i[j]
+                    result.append(info)
+                except KeyError:
+                    print("Plz check your key.")
+                    return -1
+            return result
 
         def date(self, date):
             result = []
@@ -318,12 +278,25 @@ class ApacheLog:
             self.__file = file
             self.__json = access_parse(self.__file)
 
-        def show_info(self):
+        def show_all_info(self):
             for i in range(0, len(self.__json)):
                 print(self.__json[i])
 
-        def get_info(self):
+        def get_all_info(self):
             return self.__json
+
+        def get_info(self):
+            result = []
+            for i in self.__json:
+                info = dict()
+                try:
+                    for j in list:
+                        info[j] = i[j]
+                    result.append(info)
+                except KeyError:
+                    print("Plz check your key.")
+                    return -1
+            return result
 
         def date(self, date):
             result = []
@@ -359,9 +332,25 @@ class IIS:
         self.__file = file
         self.__json = iis_parse(self.__file)
 
-    def show_info(self):
+    def show_all_info(self):
         for i in self.__json:
             print(i)
+
+    def get_all_info(self):
+        return self.__json
+
+    def get_info(self):
+        result = []
+        for i in self.__json:
+            info = dict()
+            try:
+                for j in list:
+                    info[j] = i[j]
+                result.append(info)
+            except KeyError:
+                print("Plz check your key.")
+                return -1
+        return result
 
     def date(self, date):
         result = []
