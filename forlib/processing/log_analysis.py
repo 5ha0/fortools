@@ -29,12 +29,12 @@ class EventAnalysis:
     def get_all_info(self):
         return self.evtx_json
 
-    def get_info(self, list):
+    def get_info(self, lists):
         result = []
         for i in self.evtx_json:
             info = dict()
             try:
-                for j in list:
+                for j in lists:
                     info[j] = i[j]
                 result.append(info)
             except KeyError:
@@ -246,12 +246,12 @@ class ApacheLog:
         def get_all_info(self):
             return self.__json
 
-        def get_info(self):
+        def get_info(self,lists):
             result = []
             for i in self.__json:
                 info = dict()
                 try:
-                    for j in list:
+                    for j in lists:
                         info[j] = i[j]
                     result.append(info)
                 except KeyError:
@@ -285,12 +285,12 @@ class ApacheLog:
         def get_all_info(self):
             return self.__json
 
-        def get_info(self):
+        def get_info(self, lists):
             result = []
             for i in self.__json:
                 info = dict()
                 try:
-                    for j in list:
+                    for j in lists:
                         info[j] = i[j]
                     result.append(info)
                 except KeyError:
@@ -339,12 +339,12 @@ class IIS:
     def get_all_info(self):
         return self.__json
 
-    def get_info(self):
+    def get_info(self,lists):
         result = []
         for i in self.__json:
             info = dict()
             try:
-                for j in list:
+                for j in lists:
                     info[j] = i[j]
                 result.append(info)
             except KeyError:
