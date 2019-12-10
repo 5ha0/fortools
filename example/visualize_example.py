@@ -1,13 +1,24 @@
 from fortools import *
 
-# for example we will use event log. But you can use other artifacts.
-path =r'your path'
-file = EventLog.file_open(path)
+# In this example we use event log. But every artifact can be filtered with these functions.
+event = EventLog.file_open(r'.\Security.evtx')
+event_info = event.get_all_info()
 
-# In this example, i will use date filter. This function returns values within a certain period in json format.
-date_fi = file.date('2019-11-01', '2019-11-18')
+# Visualize type: barchart, piechart, timeline
+# Every result was saved in result folder
 
-#  -------------------------- make chart.-------------------------------------
-# You need to input json list and name. In this example i made a json variable using the date_count function.
-BarChart(date_count("create Time", date_fi), 'name')
-Timeline(date_count("create Time", date_fi), 'time')
+# In this example, I used the function key_count to create the json data.
+cnt = key_count('create Time', event_info[0:10])
+
+# 1. Bar Chart
+# how to use: BarChart(json, 'chart name')
+BarChart(cnt, 'barchart')
+
+# 2. Timeline
+# how to use: Timeline(json, 'chart name')
+Timeline(cnt, 'TIMELINE')
+
+# 3. PieChart
+# how to use: PieChart(data, label, 'chart name')
+PieChart(cnt, 'Pie')
+
