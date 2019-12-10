@@ -617,5 +617,5 @@ class SAMAnalysis:
                     ret_list2.append(user_obj)
         for i in range(len(ret_list1)):
             ret_list1[i].update(ret_list2[i])
-
-        return ret_list1
+        self.ret_list = ret_list1
+        return self.ret_list
