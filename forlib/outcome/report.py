@@ -15,7 +15,7 @@ class MdExport:
             if e.errno != errno.EEXIST:
                 print("fail to create folder")
                 raise
-        file = open('./result/'+name+'.md', 'w')
+        file = open('./result/'+name+'.md', 'w', encoding='utf-8')
         self.file = file
         self.file.write('# <center>Analysis Report\n\n')
         self.file.write('<div style = "text-align: right"> '+str(datetime.now())+' </div>\n\n\n')
@@ -32,11 +32,14 @@ class MdExport:
             print("There is no data")
             return -1
         self.file.write('|')
-        for i in data[0].keys():
-            self.file.write('<center>'+i+'|')
-        self.file.write('\n')
-        for i in data[0].keys():
-            self.file.write('--------------------|')
+        try:
+            for i in data[0].keys():
+                self.file.write('<center>'+i+'|')
+            self.file.write('\n')
+            for i in data[0].keys():
+                self.file.write('--------------------|')
+        except:
+            print('There are some characters that we can\'t decode')
 
         self.file.write('\n')
         for i in range(0, len(data)):
