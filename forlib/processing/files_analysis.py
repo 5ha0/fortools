@@ -79,17 +79,17 @@ class JPEGAnalysis:
     def get_hash(self):
         return self.__hash_value
 
-    def show_info(self):
+    def show_all_info(self):
         print(self.__jpeg_json)
 
     def get_all_info(self):
         return [self.__jpeg_json]
-    
-    def get_info(self, list):
+
+    def get_info(self, lists):
         result = []
         info = dict()
         try:
-            for j in list:
+            for j in lists:
                 info[j] = self.__jpeg_json
             result.append(info)
         except KeyError:
@@ -146,11 +146,11 @@ class PDFAnalysis:
     def get_hash(self):
         return self.__hash_value
 
-    def get_info(self, list):
+    def get_info(self, lists):
         result = []
         info = dict()
         try:
-            for j in list:
+            for j in lists:
                 info[j] = self.__pdf_json[j]
             result.append(info)
         except KeyError:
@@ -161,7 +161,7 @@ class PDFAnalysis:
     def get_all_info(self):
         return [self.__pdf_json]
 
-    def show_info(self):
+    def show_all_info(self):
         print(self.__pdf_json)
 
 
@@ -194,21 +194,21 @@ class HWPAnalysis:
     def get_hash(self):
         return self.__hash_value
 
-    def show_info(self):
+    def show_all_info(self):
         print(self.__hwp_info)
 
-    def get_info(self, list):
+    def get_info(self, lists):
         result = []
         info = dict()
         try:
-            for j in list:
+            for j in lists:
                 info[j] = self.__hwp_info[j]
             result.append(info)
         except KeyError:
             print("Plz check your key.")
             return -1
         return result
-    
+
     def get_all_info(self):
         return [self.__hwp_info]
 
@@ -267,17 +267,17 @@ class MSOldAnalysis:
     def get_hash(self):
         return self.__hash_value
 
-    def show_info(self):
+    def show_all_info(self):
         print(self.__ms_json)
 
     def get_all_info(self):
         return [self.__ms_json]
 
-    def get_info(self, list):
+    def get_info(self, lists):
         result = []
         info = dict()
         try:
-            for j in list:
+            for j in lists:
                 info[j] = self.__ms_json[j]
             result.append(info)
         except KeyError:
