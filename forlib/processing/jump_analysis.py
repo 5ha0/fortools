@@ -186,7 +186,7 @@ class JumplistAnalysis:
             info_list["Data String"] = destlist_stringdata.decode('utf-16')
         return [info_list]
 
-    def get_destlist_data(self, ver):
+    def __destlist_data(self, ver):
         result = []
         total_num = struct.unpack("<L", self.__destlist[4:8])
         entryidnumber = struct.unpack("<L", self.__destlist[120:124])
@@ -259,19 +259,40 @@ class JumplistAnalysis:
                         pass
         return result
 
-    def show_info(self):
+    def get_destlist_data(self, ver, lists):
+        result = self.__destlist_data(ver)
+        if type(lists) == str and lists == 'all':
+            return result
+        elif type(lists) == list:
+            parse_result = []
+            for i in result:
+                info = dict()
+                try:
+                    for j in lists:
+                        info[j] = i[j]
+                    parse_result.append(info)
+                except KeyError:
+                    print("Plz check your key.")
+                    return -1
+            return parse_result
+        else:
+            print('check your list')
+            return -1
+
+
+    def show_all_info(self):
         for i in self.__json_list:
             print(i)
 
     def get_all_info(self):
         return self.__json_list
 
-    def get_info(self):
+    def get_info(self, lists):
         result = []
         for i in self.__json_list:
             info = dict()
             try:
-                for j in list:
+                for j in lists:
                     info[j] = i[j]
                 result.append(info)
             except KeyError:
