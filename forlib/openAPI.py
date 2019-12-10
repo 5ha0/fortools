@@ -354,7 +354,15 @@ class Browser:
             
         class Cache:
             def file_open(path):
-                chrome_file = browser_analysis.Chrome.Cache(path)
+                hash_v=[]
+                before_hash=[]
+                if os.path.exists(path):
+                    cache_file_list=os.listdir(path)
+                for i in range (0,len(cache_file_list)):
+                    hashdic={cache_file_list[i]: calc_hash.get_hash(path+'\\'+cache_file_list[i])}
+                    before_hash.append(hashdic)
+                hash_v.append(before_hash)
+                chrome_file = browser_analysis.Chrome.Cache(path, hash_v)
                 return chrome_file
 
     class Firefox:
