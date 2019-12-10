@@ -224,7 +224,7 @@ class SYSAnalysis:
         return self.ret_list
 
     def find_value(self, path):
-        self.ret_list = self.__common_file_file.find_value(path)
+        self.ret_list = self.__common_file.find_value(path)
         return self.ret_list
 
     def __control_set_check(self, file):
@@ -442,7 +442,7 @@ class SAMAnalysis:
         return self.ret_list
 
     def find_value(self, path):
-        self.ret_list = self.self.__common_file.find_value(path)
+        self.ret_list = self.__common_file.find_value(path)
         return self.ret_list
 
     def last_login(self):
