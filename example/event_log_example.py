@@ -13,10 +13,10 @@ Uncomment the comment you want to use.
 # 
 # # ------------------------1. It shows all the parsing provided by this library at once.---------------------------
 # # With this function, you can get index, eventID, create Time, level, source, computer Information, SID.
-# log_file.show_info()
+# log_file.show_all_info()
 # 
 # # ------------------------2. Get hash value(before open, after analysis)-------------------------------------------
-# hash_value = log_file.show_all_record()
+# hash_value = log_file.get_hash()
 # for i in hash_value:
 #     print(i)
 # 
@@ -86,4 +86,16 @@ Uncomment the comment you want to use.
 # # get xml information with number of event log, in this function number is index of event log
 # xml_info = log_file.xml_with_num(num)
 # for i in xml_info:
+#     print(i)
+#
+# # -------------------------------------10. Get all info --------------------------------------------------------
+# # With this function, you can get index, eventID, create Time, level, source, computer Information, SID.
+# event_info = log_file.get_all_info()
+# for i in event_info:
+#     print(i)
+#
+# # -------------------------------------11. Get specific info --------------------------------------------------------
+# # With this function, you can get index, eventID, create Time, level, source, computer Information, SID.
+# event_info = log_file.get_info([key1, key2])
+# for i in event_info:
 #     print(i)
