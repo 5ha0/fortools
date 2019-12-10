@@ -47,19 +47,7 @@ def file_open(path):
     elif extension == 'JPEG image data':
         return Files.JPEG.file_open(path)
     elif extension == 'MS Windows registry file':
-        file = reg_open(path)
-        if Registry.HiveType.NTUSER == file.hive_type():
-            return RegistryHive.file_open(path)
-        elif Registry.HiveType.SAM == file.hive_type():
-            return RegistryHive.file_open(path)
-        elif Registry.HiveType.SOFTWARE == file.hive_type():
-            return RegistryHive.file_open(path)
-        elif Registry.HiveType.SYSTEM == file.hive_type():
-            return RegistryHive.file_open(path)
-        elif Registry.HiveType.SYSTEM == file.hive_type():
-            print("[-] To be continue")
-        else:
-            print("[-] This is not HiveFile")
+        return RegistryHive.file_open(path)
     elif extension == 'Composite Document File V2 Document':
         file = ole_open(path)
         list_info = file.listdir(streams=True, storages=False)
@@ -291,19 +279,21 @@ class RegistryHive:
             file = reg_open(path)
             hash_val = calc_hash.get_hash(path)
             if Registry.HiveType.NTUSER == file.hive_type():
-                return reg_analysis.NTAnalysis(file, path, hash_val)
+                return reg_analysis.RegAnalysis(file, path, hash_val)
             elif Registry.HiveType.SAM == file.hive_type():
-                return reg_analysis.SAMAnalysis(file, path, hash_val)
+                return reg_analysis.RegAnalysis(file, path, hash_val)
             elif Registry.HiveType.SOFTWARE == file.hive_type():
-                return reg_analysis.SWAnalysis(file, path, hash_val)
+                return reg_analysis.RegAnalysis(file, path, hash_val)
             elif Registry.HiveType.SYSTEM == file.hive_type():
-                return reg_analysis.SYSAnalysis(file, path, hash_val)
-            elif Registry.HiveType.SYSTEM == file.hive_type():
+                return reg_analysis.RegAnalysis(file, path, hash_val)
+            elif Registry.HiveType.SECURITY == file.hive_type():
                 print("[-] To be continue")
             else:
                 print("[-] This is not HiveFile")
+                return -1
         else:
             print("[-] This is not Registry file")
+            return -1
 
 
 class JumpList:
