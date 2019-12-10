@@ -49,7 +49,7 @@ class NTAnalysis:
             self.ret_list.append(reg_obj)
         return self.ret_list
 
-    def __print_ms(self, recent):
+    def __print_ms(self, recent, version):
         ret_list = list()
         # print("recent.values : ", dir(recent.values()[0]))
         # print("raw_data      : ", recent.values()[0].raw_data())
@@ -57,6 +57,7 @@ class NTAnalysis:
         for i, v in enumerate(recent.values()):
             file_name = v.raw_data().decode('utf-16').split("*")[1]
             reg_obj = {
+                "Version" : version,
                 "MS Key Last Written time": recent.timestamp().strftime('%Y-%m-%d %H:%M:%S'),
                 "TimeZone": "UTC",
                 "path": file_name[:-1]
