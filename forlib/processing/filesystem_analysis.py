@@ -3,6 +3,7 @@ import struct
 import time
 import os
 import forlib.calc_hash as calc_hash
+# from forlib.processing.jump_analysis import decode_str as de
 from bitstring import BitArray
 
 
@@ -22,12 +23,12 @@ class MFTAnalysis:
     def get_all_info(self):
         return self.__result
 
-    def get_info(self, list):
+    def get_info(self, lists):
         result = []
         for i in self.__result:
             info = dict()
             try:
-                for j in list:
+                for j in lists:
                     info[j] = i[j]
                 result.append(info)
             except KeyError:
@@ -238,12 +239,12 @@ class UsnJrnl:
         for i in self.__result:
             print(i)
 
-    def get_info(self, list):
+    def get_info(self, lists):
         result = []
         for i in self.__result:
             info = dict()
             try:
-                for j in list:
+                for j in lists:
                     info[j] = i[j]
                 result.append(info)
             except KeyError:
