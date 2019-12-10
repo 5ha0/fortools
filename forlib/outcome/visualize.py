@@ -4,14 +4,14 @@ from matplotlib import pyplot as plt
 
 
 class PieChart:
-    def __init__(self, data, label):
+    def __init__(self, data, name):
         self.data = data
-        self.label = label
+        self.__name = name
         self.__show()
 
     def __show(self):
         plt.figure(3)
-        plt.pie(self.data, labels=self.label)
+        plt.pie(self.data.values(), labels=self.data.keys())
         try:
             if not (os.path.isdir('result')):
                 os.makedirs(os.path.join('result'))
@@ -19,7 +19,7 @@ class PieChart:
             if e.errno != errno.EEXIST:
                 print("fail to create folder")
                 raise
-        plt.savefig('./result/pie.png')
+        plt.savefig('./result/'+self.__name+'.png')
 
 
 class Timeline:
