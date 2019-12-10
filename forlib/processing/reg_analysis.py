@@ -55,11 +55,20 @@ class RegAnalysis:
             pass
 
     def find_key(self, keyword):
-        self.__rec(self.reg.root(), self.__get_path, keyword)
-        return self.ret_list
+        try:
+            self.__rec(self.reg.root(), self.__get_path, keyword)
+            return self.ret_list
+        except:
+            print("[-] Plz Check the file or keyword")
+            return -1
 
     def find_value(self, key):
-        key_path = self.reg.open(key)
+        try:
+            key_path = self.reg.open(key)
+        except:
+            print("[-] Plz Check the path or file")
+            return -1
+
         all_value = dict()
         time_pattern = re.compile("Time")
 
