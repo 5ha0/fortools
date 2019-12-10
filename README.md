@@ -42,18 +42,18 @@ You need to install volatility3. Plz download it and put it in path forlib/proce
 **Recycle**
 This module will analyze only $I files among the recycle bin files. And now, this module analyzes Windows 7/8/10.
 About functions
-- show_all_info/get_all_info: json format(file name, header contents(read as little endian binary), file size, original path and deleted time)<br>
+->show_all_info/get_all_info: json format(file name, header contents(read as little endian binary), file size, original path and deleted time)<br>
 
 **Iconcache**
 Now, this module analyzes Windows 7/10. And parse only meanigful contents in forensics.
 This module will analyze only iconcache.db files. If you want to analyze other files like iconcache_##.db, you can use *thumbnail analysis*.
 About functions
-- extension_filter: you can find file path of specific extension file<br>
+->extension_filter: you can find file path of specific extension file<br>
 
 **Prefetch**
 Now, this module analyzes Windows 7/10. And parse only meanigful contents in forensics.
 About functions
-- extension_filter_pf: you can find file path of specific extension file<br>
+->extension_filter_pf: you can find file path of specific extension file<br>
  
  **Lnk**
 Now, this module analyzes Windows 7/10. And parse only meanigful contents in forensics.
