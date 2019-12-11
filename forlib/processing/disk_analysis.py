@@ -60,8 +60,13 @@ class E01Analysis:
         with open('$J', 'wb') as o:
             offset = 0
             size = attr.info.size
-            buf = f.read_random(offset, f.info.meta.size, attr.info.type, attr.info.id)
-            o.write(buf)
+            while offset < size:
+                available_to_read = min(1024 * 1024, size - offset)
+                buf = f.read_random(offset, available_to_read, attr.info.type, attr.info.id)
+                if not buf:
+                    break
+                file_w.write(buf)
+                offset += len(buf)
 
     def __mft_log_extract(self, filename, output_name, length):
         fs = self.open_fs(length)
