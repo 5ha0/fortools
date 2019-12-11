@@ -120,7 +120,7 @@ class Chrome:
             return result
 
         def __cal_hash(self):
-            self.__hash_value.append(calc_hash.get_hash(self.__path))
+            self.__hash_value.append(calc_hash.get_hash(self.__path), "after")
 
         def get_hash(self):
             return self.__hash_value
@@ -226,7 +226,7 @@ class Chrome:
             return data_list
 
         def __cal_hash(self):
-            self.__hash_value.append(calc_hash.get_hash(self.__path))
+            self.__hash_value.append(calc_hash.get_hash(self.__path), "after")
 
         def get_hash(self):
             return self.__hash_value
@@ -419,13 +419,11 @@ class Chrome:
                 print(i)
 
         def __cal_hash(self):
-            after_hash=[]
             if os.path.exists(self.__path):
                 cache_file_list = os.listdir(self.__path)
             for i in range(0, len(cache_file_list)):
-                hashdic = {cache_file_list[i]: calc_hash.get_hash(self.__path + '\\' + cache_file_list[i])}
-                after_hash.append(hashdic)
-            self.__hash_value.append(after_hash)
+                hashdic = calc_hash.get_hash(self.__path +'\\'+cache_file_list[i], "after")
+                self.__hash_value.append(hashdic)
 
         def get_hash(self):
             return self.__hash_value
@@ -526,7 +524,7 @@ class Chrome:
             return sort_date
 
         def __cal_hash(self):
-            self.__hash_value.append(calc_hash.get_hash(self.__path))
+            self.__hash_value.append(calc_hash.get_hash(self.__path), "after")
 
         def get_hash(self):
             return self.__hash_value
@@ -627,8 +625,7 @@ class Firefox:
             return result
 
         def __cal_hash(self):
-            self.__hash_value.append(calc_hash.get_hash(self.__path))
-
+            self.__hash_value.append(calc_hash.get_hash(self.__path), "after")
         def get_hash(self):
             return self.__hash_value
 
@@ -727,7 +724,7 @@ class Firefox:
             return data_list
 
         def __cal_hash(self):
-            self.__hash_value.append(calc_hash.get_hash(self.__path))
+            self.__hash_value.append(calc_hash.get_hash(self.__path), "after")
 
         def get_hash(self):
             return self.__hash_value
@@ -823,7 +820,7 @@ class Firefox:
             return data_list
 
         def __cal_hash(self):
-            self.__hash_value.append(calc_hash.get_hash(self.__path))
+            self.__hash_value.append(calc_hash.get_hash(self.__path), "after")
 
         def get_hash(self):
             return self.__hash_value
@@ -923,7 +920,7 @@ class Ie_Edge:
             return data_list
 
         def __cal_hash(self):
-            self.__hash_value.append(calc_hash.get_hash(self.__path))
+            self.__hash_value.append(calc_hash.get_hash(self.__path), "after")
 
         def get_hash(self):
             return self.__hash_value
@@ -1002,7 +999,7 @@ class Ie_Edge:
             return data_list
 
         def __cal_hash(self):
-            self.__hash_value.append(calc_hash.get_hash(self.__path))
+            self.__hash_value.append(calc_hash.get_hash(self.__path), "after")
 
         def get_hash(self):
             return self.__hash_value
@@ -1112,7 +1109,7 @@ class Ie_Edge:
             return data_list
 
         def __cal_hash(self):
-            self.__hash_value.append(calc_hash.get_hash(self.__path))
+            self.__hash_value.append(calc_hash.get_hash(self.__path), "after")
 
         def get_hash(self):
             return self.__hash_value
@@ -1218,7 +1215,7 @@ class Ie_Edge:
             return result
 
         def __cal_hash(self):
-            self.__hash_value.append(calc_hash.get_hash(self.__path))
+            self.__hash_value.append(calc_hash.get_hash(self.__path), "after")
 
         def get_hash(self):
             return self.__hash_value
