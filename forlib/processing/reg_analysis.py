@@ -80,7 +80,7 @@ class RegAnalysis:
                 all_value["Last Written Time"] = str(key_path.timestamp())
                 all_value[i.name()] = i.value()
 
-            self.ret_list.append(all_value)
+        self.ret_list.append(all_value)
         return self.ret_list
 
     def __cal_hash(self):
