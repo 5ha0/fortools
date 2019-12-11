@@ -99,7 +99,9 @@ class JumplistAnalysis:
             file_data = data.read()
             header_value = file_data[:4]
 
-            if header_value[0] == 76:
+            if header_value is b'':
+                pass
+            elif header_value[0] == 76:
                 data_list = dict()
                 lnk_flag = struct.unpack("<L", file_data[20:24])
                 lnk_flag = BitArray(hex(lnk_flag[0]))
@@ -188,75 +190,80 @@ class JumplistAnalysis:
 
     def __destlist_data(self, ver):
         result = []
-        total_num = struct.unpack("<L", self.__destlist[4:8])
-        entryidnumber = struct.unpack("<L", self.__destlist[120:124])
-        if ver == 7:
-            len_stringdata = struct.unpack("<H", self.__destlist[144:146])
-            offset = 146 + 2 * len_stringdata[0]
-        elif ver==10:
-            len_stringdata = struct.unpack("<H", self.__destlist[160:162])
-            offset = 166 + 2 * len_stringdata[0]
-        for entry in range(total_num[0] - 1):
-            if entryidnumber[0] > 1:
-                info_list = dict()
-                if ver==10:
-                    mac = self.__destlist[offset + 34:offset + 40]
-                    info_list["MAC(new)"] = format(mac[0], '02x') + ':' + format(mac[1], '02x') + ':' + format(mac[2],'02x') + ':' + format(mac[3], '02x') + ':' + format(mac[4], '02x') + ':' + format(mac[5], '02x')
-                    mac = self.__destlist[offset + 66:offset + 72]
-                    info_list["MAC(birth)"] = format(mac[0], '02x') + ':' + format(mac[1], '02x') + ':' + format(mac[2],'02x') + ':' + format(mac[3], '02x') + ':' + format(mac[4], '02x') + ':' + format(mac[5], '02x')
-                    netbiosname = self.__destlist[offset+72:offset+88]
-                    try:
-                        info_list["netbios"] = netbiosname.decode('ascii').replace('\x00','')
-                    except UnicodeDecodeError:
-                        info_list["netbios"] = 'cannot decode'
-                    entryidnumber = struct.unpack("<L", self.__destlist[offset + 88:offset + 92])
-                    last_access_time = struct.unpack("<Q", self.__destlist[offset + 100:offset + 108])
-                    info_list["TimeZone"] = 'UTC +00:00'
-                    info_list["last access time"] = convert_time(last_access_time[0]).strftime("%Y-%m-%d %H:%M:%S")
-                    access_cnt = struct.unpack("<L", self.__destlist[offset + 116:offset + 120])
-                    info_list["access count"] = access_cnt[0]
-                    len_stringdata = struct.unpack("<H", self.__destlist[offset + 128:offset + 130])
-                    offset_new = offset + 130 + 2 * len_stringdata[0]
-                    string_data = self.__destlist[offset + 130:offset_new]
-                    info_list["data"] = string_data.decode('utf-16')
-                    offset = offset_new + 4
-                    result.append(info_list)
-                elif ver==7:
-                    try:
+        try:
+            total_num = struct.unpack("<L", self.__destlist[4:8])
+            entryidnumber = struct.unpack("<L", self.__destlist[120:124])
+            if ver == 7:
+                len_stringdata = struct.unpack("<H", self.__destlist[144:146])
+                offset = 146 + 2 * len_stringdata[0]
+            elif ver==10:
+                len_stringdata = struct.unpack("<H", self.__destlist[160:162])
+                offset = 166 + 2 * len_stringdata[0]
+            for entry in range(total_num[0] - 1):
+                if entryidnumber[0] > 1:
+                    info_list = dict()
+                    if ver==10:
                         mac = self.__destlist[offset + 34:offset + 40]
-                        info_list["MAC(new)"] = format(mac[0],'02x')+':'+format(mac[1],'02x')+':'+format(mac[2],'02x')+':'+format(mac[3],'02x')+':'+format(mac[4],'02x')+':'+format(mac[5],'02x')
+                        info_list["MAC(new)"] = format(mac[0], '02x') + ':' + format(mac[1], '02x') + ':' + format(mac[2],'02x') + ':' + format(mac[3], '02x') + ':' + format(mac[4], '02x') + ':' + format(mac[5], '02x')
                         mac = self.__destlist[offset + 66:offset + 72]
-                        info_list["MAC(birth)"] = format(mac[0], '02x') + ':' + format(mac[1], '02x') + ':' + format(mac[2], '02x') + ':' + format(mac[3], '02x') + ':' + format(mac[4], '02x') + ':' + format(mac[5], '02x')
-                        netbiosname = self.__destlist[offset + 72:offset + 88]
+                        info_list["MAC(birth)"] = format(mac[0], '02x') + ':' + format(mac[1], '02x') + ':' + format(mac[2],'02x') + ':' + format(mac[3], '02x') + ':' + format(mac[4], '02x') + ':' + format(mac[5], '02x')
+                        netbiosname = self.__destlist[offset+72:offset+88]
                         try:
                             info_list["netbios"] = netbiosname.decode('ascii').replace('\x00','')
                         except UnicodeDecodeError:
                             info_list["netbios"] = 'cannot decode'
-                        entryidnumber = struct.unpack("<Q", self.__destlist[offset + 88:offset + 96])
+                        entryidnumber = struct.unpack("<L", self.__destlist[offset + 88:offset + 92])
                         last_access_time = struct.unpack("<Q", self.__destlist[offset + 100:offset + 108])
                         info_list["TimeZone"] = 'UTC +00:00'
                         info_list["last access time"] = convert_time(last_access_time[0]).strftime("%Y-%m-%d %H:%M:%S")
-                        len_stringdata = struct.unpack("<H", self.__destlist[offset + 112:offset + 114])
-                        offset_new = offset + 114 + 2 * len_stringdata[0]
-                        string_data = self.__destlist[offset+114 :offset_new]
+                        access_cnt = struct.unpack("<L", self.__destlist[offset + 116:offset + 120])
+                        info_list["access count"] = access_cnt[0]
+                        len_stringdata = struct.unpack("<H", self.__destlist[offset + 128:offset + 130])
+                        offset_new = offset + 130 + 2 * len_stringdata[0]
+                        string_data = self.__destlist[offset + 130:offset_new]
                         info_list["data"] = string_data.decode('utf-16')
-                        new_time = struct.unpack("<Q", self.__destlist[offset + 24:offset + 32])
-                        if new_time[0] == 0:
-                            info_list["new time"] = 'non info'
-                        else:
-                            new_time2 = self.__convert_hex(hex(new_time[0]))
-                            info_list["new time"] = convert_time(new_time2 - 5748192000000000).strftime("%Y-%m-%d %H:%M:%S")
-                        birth_time = struct.unpack("<Q", self.__destlist[offset + 56:offset + 64])
-                        if birth_time[0] == 0:
-                            info_list["birth time"] = 'non info'
-                        else:
-                            birth_time2 = self.__convert_hex(hex(birth_time[0]))
-                            info_list["birth time"] = convert_time(birth_time2 - 5748192000000000).strftime("%Y-%m-%d %H:%M:%S")
-
-                        offset = offset_new
+                        offset = offset_new + 4
                         result.append(info_list)
-                    except:
-                        pass
+                    elif ver==7:
+                        try:
+                            mac = self.__destlist[offset + 34:offset + 40]
+                            info_list["MAC(new)"] = format(mac[0],'02x')+':'+format(mac[1],'02x')+':'+format(mac[2],'02x')+':'+format(mac[3],'02x')+':'+format(mac[4],'02x')+':'+format(mac[5],'02x')
+                            mac = self.__destlist[offset + 66:offset + 72]
+                            info_list["MAC(birth)"] = format(mac[0], '02x') + ':' + format(mac[1], '02x') + ':' + format(mac[2], '02x') + ':' + format(mac[3], '02x') + ':' + format(mac[4], '02x') + ':' + format(mac[5], '02x')
+                            netbiosname = self.__destlist[offset + 72:offset + 88]
+                            try:
+                                info_list["netbios"] = netbiosname.decode('ascii').replace('\x00','')
+                            except UnicodeDecodeError:
+                                info_list["netbios"] = 'cannot decode'
+                            entryidnumber = struct.unpack("<Q", self.__destlist[offset + 88:offset + 96])
+                            last_access_time = struct.unpack("<Q", self.__destlist[offset + 100:offset + 108])
+                            info_list["TimeZone"] = 'UTC +00:00'
+                            info_list["last access time"] = convert_time(last_access_time[0]).strftime("%Y-%m-%d %H:%M:%S")
+                            len_stringdata = struct.unpack("<H", self.__destlist[offset + 112:offset + 114])
+                            offset_new = offset + 114 + 2 * len_stringdata[0]
+                            string_data = self.__destlist[offset+114 :offset_new]
+                            info_list["data"] = string_data.decode('utf-16')
+                            new_time = struct.unpack("<Q", self.__destlist[offset + 24:offset + 32])
+                            if new_time[0] == 0:
+                                info_list["new time"] = 'non info'
+                            else:
+                                new_time2 = self.__convert_hex(hex(new_time[0]))
+                                info_list["new time"] = convert_time(new_time2 - 5748192000000000).strftime("%Y-%m-%d %H:%M:%S")
+                            birth_time = struct.unpack("<Q", self.__destlist[offset + 56:offset + 64])
+                            if birth_time[0] == 0:
+                                info_list["birth time"] = 'non info'
+                            else:
+                                birth_time2 = self.__convert_hex(hex(birth_time[0]))
+                                info_list["birth time"] = convert_time(birth_time2 - 5748192000000000).strftime("%Y-%m-%d %H:%M:%S")
+
+                            offset = offset_new
+                            result.append(info_list)
+                        except:
+                            pass
+        except struct.error:
+            pass
+        except AttributeError:
+            pass
         return result
 
     def get_destlist_data(self, ver, lists):
