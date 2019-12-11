@@ -251,24 +251,6 @@ class IconcacheAnalysis:
                 for i in range(1, end+1):
                     info["Section Three Path" + str(i)] = icon_info[0]["Section Three Path" + str(i)]
                     info["Section Three Icon image location" + str(i)] = icon_info[0]["Section Three Icon image location" + str(i)]
-            # if i == 1:
-            #     section_one = self.__section_one()
-            #     info["Section One Path Num"] = section_one[0]["Section One Path Num"]
-            #     for i in range(1, len(section_one)):
-            #         info["Section One Path" + str(i)] = section_one[i]['Path']
-            #         info["Section One Icon image location" + str(i)] = section_one[i]['Icon image location']
-            # elif i == 2:
-            #     section_two = self.__section_two()
-            #     info["Section Two Path Num"] = section_two[0]["Section Two Path Num"]
-            #     for i in range(1, len(section_two)):
-            #         info["Section Two Path" + str(i)] = section_two[i]['Path']
-            #         info["Section Two Icon image location" + str(i)] = section_two[i]['Icon image location']
-            # elif i == 3:
-            #     section_three = self.__section_two()
-            #     info["Section Three Path Num"] = section_three[0]["Section Three Path Num"]
-            #     for i in range(1, len(section_three)):
-            #         info["Section Three Path" + str(i)] = section_three[i]['Path']
-            #         info["Section Three Icon image location" + str(i)] = section_three[i]['Icon image location']
 
         result_list.append(info)
 
