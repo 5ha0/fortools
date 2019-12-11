@@ -17,9 +17,9 @@ class LnkAnalysis:
         self.__locbase_path_uni_off = None
         self.__start_off = None
         self.__info_size = None
-        self.__info_flag = None
+        self.__info_flag = 'False'
         self.__extra_off = None
-        self.__extra_data = None
+        self.__extra_data = 'False'
         self.__linkinfo_flag = self.__link_flags()
         self.__lnk_json = self.__make_json()
         self.__cal_hash()
@@ -472,7 +472,7 @@ class LnkAnalysis:
 
         self.__extra_off = string_off
 
-        self.__extra_data = None
+        self.__extra_data = 'False'
 
         while(1):
             self.__file.seek(self.__extra_off)
