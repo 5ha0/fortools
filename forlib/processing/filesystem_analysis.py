@@ -40,7 +40,7 @@ class MFTAnalysis:
         return self.__hash_value
 
     def __cal_hash(self):
-        self.__hash_value.append(calc_hash.get_hash(self.path))
+        self.__hash_value.append(calc_hash.get_hash(self.path, 'after'))
 
     def __parse_info(self):
         result = []
@@ -259,7 +259,7 @@ class UsnJrnl:
         return self.__hash_value
 
     def __cal_hash(self):
-        self.__hash_value.append(calc_hash.get_hash(self.__path))
+        self.__hash_value.append(calc_hash.get_hash(self.__path, 'after'))
 
     def __parse(self):
         result = []
