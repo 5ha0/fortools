@@ -74,7 +74,7 @@ class JPEGAnalysis:
         return files_obj
 
     def __cal_hash(self):
-        self.__hash_value.append(calc_hash.get_hash(self.__path))
+        self.__hash_value.append(calc_hash.get_hash(self.__path, 'after'))
 
     def get_hash(self):
         return self.__hash_value
@@ -141,7 +141,7 @@ class PDFAnalysis:
         return info_obj
 
     def __cal_hash(self):
-        self.__hash_value.append(calc_hash.get_hash(self.__path))
+        self.__hash_value.append(calc_hash.get_hash(self.__path, 'after'))
 
     def get_hash(self):
         return self.__hash_value
@@ -189,7 +189,7 @@ class HWPAnalysis:
         return file_obj
 
     def __cal_hash(self):
-        self.__hash_value.append(calc_hash.get_hash(self.__path))
+        self.__hash_value.append(calc_hash.get_hash(self.__path, 'after'))
 
     def get_hash(self):
         return self.__hash_value
@@ -262,7 +262,7 @@ class MSOldAnalysis:
         return file_obj
 
     def __cal_hash(self):
-        self.__hash_value.append(calc_hash.get_hash(self.__path))
+        self.__hash_value.append(calc_hash.get_hash(self.__path, 'after'))
 
     def get_hash(self):
         return self.__hash_value
@@ -293,7 +293,7 @@ class ZIPAnalysis:
         self.__info = self.__parse()
 
     def __cal_hash(self):
-        self.__hash_value.append(calc_hash.get_hash(self.__path))
+        self.__hash_value.append(calc_hash.get_hash(self.__path, 'after'))
 
     def __parse(self):
         json_list = []
