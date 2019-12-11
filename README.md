@@ -32,8 +32,8 @@ Continue adding versions scheduled
 
 **Registry**  
 Currently, only the following analyses are provided: SAM, SOFTWARE, NTUSER.DAT, SYSTEM File(System File is on progress)
-If the key position you want to find is extended, it may be slow.
-ex) find_key("Uninstall") --> Microsoft\\Windows\\CurrentVersion\\Uninstall (this key location is 4th)
+\nIf the key position you want to find is extended, it may be slow.
+\nex) find_key("Uninstall") --> Microsoft\\Windows\\CurrentVersion\\Uninstall (this key location is 4th)
 
 **Disk**  
 If you extract file in disk, you need to check start sector with volume_metadata() function's data.
