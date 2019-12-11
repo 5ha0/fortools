@@ -30,7 +30,7 @@ class Thumbnail_analysis_windows:   # windows version check
         self.__cal_hash()
 
     def __cal_hash(self):
-        self.__hash_value.append(calc_hash.get_hash(self.__path))
+        self.__hash_value.append(calc_hash.get_hash(self.__path, 'after'))
 
     def __parse(self, path):   # thumbnail data check
         try:
