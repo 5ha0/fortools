@@ -545,7 +545,7 @@ class LnkAnalysis:
     def __cal_hash(self):
         lnk_list = []
         lnk_obj = dict()
-        self.__hash_value.append(calc_hash.get_hash(self.__path))
+        self.__hash_value.append(calc_hash.get_hash(self.__path, 'after'))
         lnk_obj['before_sha1'] = self.__hash_value[0]['sha1']
         lnk_obj['before_md5'] = self.__hash_value[0]['md5']
         lnk_obj['after_sha1'] = self.__hash_value[1]['sha1']
