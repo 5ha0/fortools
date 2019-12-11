@@ -62,6 +62,8 @@ def date_filter(key, filter_list, json_list):
         except TypeError:
             print('Plz check your input format. You need to input date type')
             return -1
+        except ValueError:
+            pass
     return __result
 
 
@@ -79,6 +81,8 @@ def time_filter(key, filter_list, json_list):
         except TypeError:
             print('Plz check your input format. You need to input time type')
             return -1
+        except ValueError:
+            pass
     return __result
 
 
@@ -97,6 +101,8 @@ def day_filter(key, filter_list, json_list):
         except TypeError:
             print('Plz check your input format. You need to input time type')
             return -1
+        except ValueError:
+            pass
     return __result
 
 
