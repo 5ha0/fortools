@@ -6,7 +6,9 @@ reg_file2 = RegistryHive.file_open("D:\\cfreds_reg\\SYSTEM")
 reg_file3 = RegistryHive.file_open("D:\\cfreds_reg\\SOFTWARE")
 reg_file4 = RegistryHive.file_open("D:\\cfreds_reg\\SAM")
 
-# # 1. File Path
+# # 1. File Path -- if you find key, If you want to find the key, enter the value that goes into the key path.
+# # ex) Find Path : Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\RunMRU --> input : reg_file.find_key("MRU")
+
 info = reg_file1.find_key("MRU")
 # info = reg_file2.find_key("Microsoft")
 # info = reg_file3.find_key("CurrentVersion")
