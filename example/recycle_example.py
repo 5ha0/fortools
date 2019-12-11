@@ -10,15 +10,30 @@ Uncomment the comment you want to use.
 '''
 
 ####### 1. It shows all the parsing provided by this library at once. #######
-# information = file.show_all_info()
+# file.show_info()
 
 ####### 2. It handles all parsing provided by this library at once. #######
-# information = file.get_all_info()
-# # if you show 2, use print()
-# print(information)
+# recycle = file.get_all_info()
+# # if you show 2. use print()
+# print(recycle)
 
-####### 3.If You want to make a report, Use This. #######
+####### 3. Used when you want to see only some of the information. #######
+# recycle = file.get_info(['key list'])
+# # if you show 2. use print()
+# print(recycle)
+
+####### 4. Use when you want to return the hash value before and after analysis of a file #######
+# recycle = file.get_hash()
+# # if you show 2. use print()
+# print(recycle)
+
+####### 5.If You want to make a report, Use This. #######
 # # !caution!Use the script above first
+# # 5-1. Docx
 # docx = DocxExport()
-# docx.add_table(information)
-# docx.save('report_name')
+# docx.add_table(recycle)
+# docx.save('Recycle')
+# # 5-2. MD
+# md = MdExport('Recycle')
+# md.add_table(recycle)
+# md.save()
