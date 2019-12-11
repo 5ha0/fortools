@@ -44,7 +44,7 @@ class E01Analysis:
         except:
             print("[-] This is Unallocated Area")
 
-    def __UsnJrnl_extract(self, filename, length):
+    def __UsnJrnl_extract(self, length, filename):
         fs = self.open_fs(length)
         f = fs.open(filename)
         found = False
@@ -57,7 +57,7 @@ class E01Analysis:
         if not found:
             print("[-] $J is not found")
 
-        with open('$J', 'wb') as o:
+        with open('$J', 'wb') as file_w:
             offset = 0
             size = attr.info.size
             while offset < size:
@@ -68,30 +68,19 @@ class E01Analysis:
                 file_w.write(buf)
                 offset += len(buf)
 
-    def __mft_log_extract(self, filename, output_name, length):
-        fs = self.open_fs(length)
-        f = fs.open(filename)
-        # for attr in f:
-        #     print(attr.info.type)
-        with open(output_name, 'wb') as file_w:
-            buf = f.read_random(0, f.info.meta.size)
-            file_w.write(buf)
-        print("[+] Success Extract : " + output_name)
-
     def file_extract(self, length, filepath, output_name):
         fs = self.open_fs(length)
         f = fs.open(filepath)
-        for attr in f:
-            print(attr.info.type)
+
         with open(output_name, 'wb') as file_w:
             buf = f.read_random(0, f.info.meta.size)
             file_w.write(buf)
         print("[+] Success Extract : " + output_name)
 
     def fslog_extract(self, length):
-        mft_list = self.__mft_log_extract('/$MFT', '$MFT', length)
-        log_list = self.__mft_log_extract('/$LogFile', '$LogFile', length)
-        UsnJrnl = self.__UsnJrnl_extract('/$Extend/$UsnJrnl', length)
+        mft_list = self.file_extract(length, '/$MFT', '$MFT')
+        log_list = self.file_extract(length, '/$LogFile', '$LogFile')
+        UsnJrnl = self.__UsnJrnl_extract(length, '/$Extend/$UsnJrnl')
 
     def open_fs(self, length):
         if self.vol is not None:
@@ -217,7 +206,7 @@ class DDAnalysis:
         except:
             print("[-] This is Unallocated Area")
 
-    def __UsnJrnl_extract(self, filename, length):
+    def __UsnJrnl_extract(self, length, filename):
         fs = self.open_fs(length)
         f = fs.open(filename)
         found = False
@@ -236,16 +225,6 @@ class DDAnalysis:
             buf = f.read_random(offset, f.info.meta.size, attr.info.type, attr.info.id)
             o.write(buf)
 
-    def __mft_log_extract(self, filename, output_name, length):
-        fs = self.open_fs(length)
-        f = fs.open(filename)
-        # for attr in f:
-        #     print(attr.info.type)
-        with open(output_name, 'wb') as file_w:
-            buf = f.read_random(0, f.info.meta.size)
-            file_w.write(buf)
-        print("[+] Success Extract : " + output_name)
-
     def file_extract(self, length, filepath, output_name):
         fs = self.open_fs(length)
         f = fs.open(filepath)
@@ -257,9 +236,9 @@ class DDAnalysis:
         print("[+] Success Extract : " + output_name)
 
     def fslog_extract(self, length):
-        mft_list = self.__mft_log_extract('/$MFT', '$MFT', length)
-        log_list = self.__mft_log_extract('/$LogFile', '$LogFile', length)
-        UsnJrnl = self.__UsnJrnl_extract('/$Extend/$UsnJrnl', length)
+        mft_list = self.file_extract(length, '/$MFT', '$MFT')
+        log_list = self.file_extract(length, '/$LogFile', '$LogFile')
+        UsnJrnl = self.__UsnJrnl_extract(length, '/$Extend/$UsnJrnl')
 
     def open_fs(self, length):
         if self.vol is not None:
