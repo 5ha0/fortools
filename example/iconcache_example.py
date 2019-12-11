@@ -1,8 +1,8 @@
 from fortools import *
 
 file = Iconcache.file_open(r'path')
-# Or you can use this
-# path = 'path'
+# # Or you can use this
+# path = r'path'
 # file = file_open(path)
 
 '''
@@ -10,24 +10,45 @@ Uncomment the comment you want to use.
 '''
 
 ####### 1. It shows all the parsing provided by this library at once. #######
-# information = file.show_all_info()
+# file.show_all_info()
 
 ####### 2. It handles all parsing provided by this library at once. #######
-# information = file.get_all_info()
+# icon = file.get_all_info()
 # # if you show 2, use print()
-# print(information)
+# print(icon)
 
-####### 3.Allows you to check whether the drive delete program is used. #######
+####### 3. Used when you want to see only some of the information. #######
+# icon = file.get_info(['key list'])
+# # if you show 2. use print()
+# print(icon)
+
+####### 3. Used when you want to see only some of the information. #######
+# icon = file.get_info_by_section(['section number list'])
+# # if you show 2. use print()
+# print(icon)
+
+####### 4. Use when you want to return the hash value before and after analysis of a file #######
+# icon = file.get_hash()
+# # if you show 2. use print()
+# print(icon)
+
+####### 5.Allows you to check whether the drive delete program is used. #######
 # file.drive_delete_exe()
 
-####### 4.Allows you to find a specific extension file from all sections. #######
-# extension = '.extension'
-# file.extension_filter(extension)
+####### 6.Allows you to find a specific extension file from all sections. #######
+# extension = 'extension'
+# icon = file.extension_filter(extension)
+# # if you show 6. use print()
+# print(icon)
 
-####### 5.If You want to make a report, Use This. #######
+####### 7.If You want to make a report, Use This. #######
 # # !caution!Use the script above first
-# # !caution!"3","4" does not provide the report.py function.
+# # !caution!"5" does not provide the report.py function.
+# # 7-1. Docx
 # docx = DocxExport()
-# for i in range(0, len(information)):
-#     docx.table_by_json(information[i])
-# docx.save('report_name')
+# docx.table_by_json(icon[i])
+# docx.save('ICON')
+# # 7-2. MD
+# md = MdExport('ICON')
+# md.add_table(info)
+# md.save()
