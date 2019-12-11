@@ -74,7 +74,7 @@ class RecycleAnalysis:
 
     # calculate hash value after parsing
     def __cal_hash(self):
-        self.__hash_value.append(calc_hash.get_hash(self.__path))
+        self.__hash_value.append(calc_hash.get_hash(self.__path, 'after'))
 
     def get_hash(self):
         return self.__hash_value
