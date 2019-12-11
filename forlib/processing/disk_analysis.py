@@ -142,7 +142,7 @@ class E01Analysis:
         return self.ret_list
 
     def __cal_hash(self):
-        after_hash = calc_hash.get_hash(self.__path)
+        after_hash = calc_hash.get_hash(self.__path, 'after')
         self.__hash_val.append(after_hash)
 
     def get_hash(self):
@@ -267,7 +267,7 @@ class DDAnalysis:
         return self.ret_list
 
     def __cal_hash(self):
-        after_hash = calc_hash.get_hash(self.file)
+        after_hash = calc_hash.get_hash(self.file, 'after')
         self.__hash_val.append(after_hash)
 
     def get_hash(self):
