@@ -509,4 +509,5 @@ def name_list(path):
     result = []
     for i in os.listdir(path):
         result.append(path +'\\'+str(i))
+    return result
 
