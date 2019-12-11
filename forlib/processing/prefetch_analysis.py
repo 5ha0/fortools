@@ -152,7 +152,7 @@ class PrefetchAnalysis:
     def __cal_hash(self):
         json_list = []
         pf_obj = dict()
-        self.__hash_value.append(calc_hash.get_hash(self.__path))
+        self.__hash_value.append(calc_hash.get_hash(self.__path, 'after'))
         pf_obj['before_sha1'] = self.__hash_value[0]['sha1']
         pf_obj['before_md5'] = self.__hash_value[0]['md5']
         pf_obj['after_sha1'] = self.__hash_value[1]['sha1']
