@@ -83,7 +83,7 @@ def file_open(path):
 
 class Disk:
     def disk_open(path):
-        hash_val = calc_hash.get_hash(path)
+        hash_val = calc_hash.get_hash(path, 'before')
         try:
             if pyewf.check_file_signature(path) == True:
                 filename = pyewf.glob(path)
@@ -100,7 +100,7 @@ class Mem:
     def mem_open(path):
         extension = sig_check(path)
         if extension == 'data' or extension == 'block special':    
-            hash_val = calc_hash.get_hash(path)
+            hash_val = calc_hash.get_hash(path,  'before')
             return mem_analysis.MemAnalysis(path, hash_val)
 
 
@@ -109,7 +109,7 @@ class EventLog:
         extension = sig_check(path)
         print('extension: ' + extension)
         if extension == 'MS Windows Vista Event Log':
-            hash_v = calc_hash.get_hash(path)
+            hash_v = calc_hash.get_hash(path, 'before')
             file = event_open(path)
             return log_analysis.EventAnalysis(file, path, hash_v)
         print("check your file format. This is not EVTX file.")
@@ -119,13 +119,13 @@ class EventLog:
 class LinuxLog:
     class SysLog:
         def file_open(path):
-            calc_hash.get_hash(path)
+            calc_hash.get_hash(path, 'before')
             file = normal_file_oepn(path)
             return log_analysis.LinuxLogAnalysis.SysLog(file)
 
     class AuthLog:
         def file_open(path):
-            calc_hash.get_hash(path)
+            calc_hash.get_hash(path, 'before')
             file = normal_file_oepn(path)
             return log_analysis.LinuxLogAnalysis.AuthLog(file)
 
@@ -133,13 +133,13 @@ class LinuxLog:
 class Apache:
     class AccessLog:
         def file_open(path):
-            calc_hash.get_hash(path)
+            calc_hash.get_hash(path, 'before')
             file = normal_file_oepn(path)
             return log_analysis.ApacheLog.Access(file)
 
     class ErrLog:
         def file_open(path):
-            calc_hash.get_hash(path)
+            calc_hash.get_hash(path, 'before')
             file = normal_file_oepn(path)
             return log_analysis.ApacheLog.Error(file)
 
@@ -147,7 +147,7 @@ class Apache:
 # class IIS:
 class IIS:
     def file_open(path):
-        calc_hash.get_hash(path)
+        calc_hash.get_hash(path, 'before')
         file = normal_file_oepn(path)
         return log_analysis.IIS(file)
 
@@ -155,7 +155,7 @@ class IIS:
 class Files:
     class MSOld:
         def file_open(path):
-            hash_v = calc_hash.get_hash(path)
+            hash_v = calc_hash.get_hash(path, 'before')
             file = ole_open(path)
             return files_analysis.MSOldAnalysis(file, path, hash_v)
 
@@ -164,7 +164,7 @@ class Files:
             extension = sig_check(path)
             print('extension: ' + str(extension))
             if extension == 'Hangul (Korean) Word Processor File 5.x' or extension == 'Data':
-                hash_v = calc_hash.get_hash(path)
+                hash_v = calc_hash.get_hash(path, 'before')
                 file = ole_open(path)
                 return files_analysis.HWPAnalysis(file, path, hash_v)
             print("check your file format. This is not HWP file.")
@@ -175,7 +175,7 @@ class Files:
             extension = sig_check(path)
             print('extension: ' + str(extension))
             if extension == 'JPEG image data':
-                hash_v = calc_hash.get_hash(path)
+                hash_v = calc_hash.get_hash(path, 'before')
                 file = jpeg_open(path)
                 return files_analysis.JPEGAnalysis(file, path, hash_v)
             print("check your file format. This is not JPEG file.")
@@ -186,7 +186,7 @@ class Files:
             extension = sig_check(path)
             print('extension: ' + str(extension))
             if extension == 'PDF document':
-                hash_v = calc_hash.get_hash(path)
+                hash_v = calc_hash.get_hash(path, 'before')
                 file = pdf_open(path)
                 return files_analysis.PDFAnalysis(file, path, hash_v)
             print("check your file format. This is not PDF file.")
@@ -197,7 +197,7 @@ class Files:
             extension = sig_check(path)
             print('extension: ' + str(extension))
             if extension == 'Zip archive data':
-                hash_v = calc_hash.get_hash(path)
+                hash_v = calc_hash.get_hash(path, 'before')
                 file = zip_open(path)
                 return files_analysis.ZIPAnalysis(file, path, hash_v)
             print("check your file format. This is not ZIP file.")
@@ -213,7 +213,7 @@ class Lnk:
         extension = sig_check(path)
         print('extension: ' + str(extension))
         if extension == 'MS Windows shortcut':
-            hash_v = calc_hash.get_hash(path)
+            hash_v = calc_hash.get_hash(path, 'before')
             file = lnk_open(path)
             return lnk_analysis.LnkAnalysis(file, path, hash_v)
         print("check your file format. This is not Lnk file")
@@ -225,7 +225,7 @@ class Recycle:
         extension = sig_check(path)
         print('extension: ' + str(extension))
         if extension == 'recycle_i':
-            hash_v = calc_hash.get_hash(path)
+            hash_v = calc_hash.get_hash(path, 'before')
             file = recycle_open(path)
             return recycle_analysis.RecycleAnalysis(file, path, hash_v)
         print("check your file format. This is not Recycle $I file")
@@ -237,7 +237,7 @@ class Iconcache:
         extension = sig_check(path)
         print('extension: ' + str(extension))
         if extension == 'Icon':
-            hash_v = calc_hash.get_hash(path)
+            hash_v = calc_hash.get_hash(path, 'before')
             file = iconcache_open(path)
             return iconcache_analysis.IconcacheAnalysis(file, path, hash_v)
         print("check your file format. This is not IconCache.db file")
@@ -249,7 +249,7 @@ class Prefetch:
         extension = sig_check(path)
         print('extension: ' + str(extension))
         if extension == 'prefetch':
-            hash_v = calc_hash.get_hash(path)
+            hash_v = calc_hash.get_hash(path, 'before')
             file = prefetch_open(path)
             file.seek(0)
             version = struct.unpack_from('I', file.read(4))[0]
@@ -277,7 +277,7 @@ class RegistryHive:
         extension = sig_check(path)
         if extension == 'MS Windows registry file':
             file = reg_open(path)
-            hash_val = calc_hash.get_hash(path)
+            hash_val = calc_hash.get_hash(path, 'before')
             if Registry.HiveType.NTUSER == file.hive_type():
                 return reg_analysis.RegAnalysis(file, path, hash_val)
             elif Registry.HiveType.SAM == file.hive_type():
@@ -301,7 +301,7 @@ class JumpList:
         extension = sig_check(path)
         print('extension: ' + extension)
         if extension == 'Composite Document File V2 Document':
-            hash_v = calc_hash.get_hash(path)
+            hash_v = calc_hash.get_hash(path, 'before')
             file = ole_open(path)
             return jump_analysis.JumplistAnalysis(file, path, hash_v)
         else:
@@ -314,7 +314,7 @@ class Thumbnail_Iconcache:
         extension = sig_check(path)
         print('extension: ' + extension)
         if extension == 'Thumb_Icon':
-            hash_v = calc_hash.get_hash(path)
+            hash_v = calc_hash.get_hash(path, 'before')
             file = cache_open(path)
             return thumbnail_analysis.Thumbnail_analysis_windows(file, path, hash_v)
         else:
@@ -326,19 +326,19 @@ class Browser:
     class Chrome:
         class History:
             def file_open(path):
-                hash_v=calc_hash.get_hash(path)
+                hash_v=calc_hash.get_hash(path, 'before')
                 chrome_file = browser_analysis.Chrome.History(path, hash_v)
                 return chrome_file
 
         class Download:
             def file_open(path):
-                hash_v = calc_hash.get_hash(path)
+                hash_v = calc_hash.get_hash(path, 'before')
                 chrome_file = browser_analysis.Chrome.Download(path, hash_v)
                 return chrome_file
 
         class Cookie:
             def file_open(path):
-                hash_v = calc_hash.get_hash(path)
+                hash_v = calc_hash.get_hash(path, 'before')
                 chrome_file = browser_analysis.Chrome.Cookie(path, hash_v)
                 return chrome_file
             
@@ -348,7 +348,7 @@ class Browser:
                 if os.path.exists(path):
                     cache_file_list=os.listdir(path)
                 for i in range (0,len(cache_file_list)):
-                    hashdic={cache_file_list[i]: calc_hash.get_hash(path+'\\'+cache_file_list[i])}
+                    hashdic={cache_file_list[i]: calc_hash.get_hash(path+'\\'+cache_file_list[i], 'before')}
                     before_hash.append(hashdic)
                 chrome_file = browser_analysis.Chrome.Cache(path, before_hash)
                 return chrome_file
@@ -356,51 +356,51 @@ class Browser:
     class Firefox:
         class History:
             def file_open(path):
-                hash_v = calc_hash.get_hash(path)
+                hash_v = calc_hash.get_hash(path, 'before')
                 firefox_file = browser_analysis.Firefox.History(path, hash_v)
                 return firefox_file
 
         class Download:
             def file_open(path):
-                hash_v = calc_hash.get_hash(path)
+                hash_v = calc_hash.get_hash(path, 'before')
                 firefox_file = browser_analysis.Firefox.Download(path, hash_v)
                 return firefox_file
 
         class Cookie:
             def file_open(path):
-                hash_v = calc_hash.get_hash(path)
+                hash_v = calc_hash.get_hash(path, 'before')
                 firefox_file = browser_analysis.Firefox.Cookie(path, hash_v)
                 return firefox_file
 
     class Ie_Edge:
         class Cache:
             def file_open(path):
-                hash_v = calc_hash.get_hash(path)
+                hash_v = calc_hash.get_hash(path, 'before')
                 ie_edge_file = browser_analysis.Ie_Edge.Cache(ie_edge_open(path), path, hash_v)
                 return ie_edge_file
 
         class Cookie:
             def file_open(path):
-                hash_v = calc_hash.get_hash(path)
+                hash_v = calc_hash.get_hash(path, 'before')
                 ie_edge_file = browser_analysis.Ie_Edge.Cookie(ie_edge_open(path), path, hash_v)
                 return ie_edge_file
 
         class History:
             def file_open(path):
-                hash_v = calc_hash.get_hash(path)
+                hash_v = calc_hash.get_hash(path, 'before')
                 ie_edge_file = browser_analysis.Ie_Edge.History(ie_edge_open(path), path, hash_v)
                 return ie_edge_file
 
         class Download:
             def file_open(path):
-                hash_v = calc_hash.get_hash(path)
+                hash_v = calc_hash.get_hash(path, 'before')
                 ie_edge_file = browser_analysis.Ie_Edge.Download(ie_edge_open(path), path, hash_v)
                 return ie_edge_file
 
 
 class FileSystemLog:
     def file_open(path):
-        hash_v = calc_hash.get_hash(path)
+        hash_v = calc_hash.get_hash(path, 'before')
         extension = sig_check(path)
         if extension == 'MFT':
             print('extension: MFT')
