@@ -504,3 +504,9 @@ def prefetch_open(path):
 
 def filesystem_log_open(path):
     return binary_open(path)
+
+def name_list(path):
+    result = []
+    for i in os.listdir(path):
+        result.append(path +'\\'+str(i))
+
