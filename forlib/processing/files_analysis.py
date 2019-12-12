@@ -214,7 +214,6 @@ class HWPAnalysis:
 
     def get_prev(self):
         prev = self.__file.openstream('PrvText').read().decode('utf-16')
-        print(prev)
         return prev
 
     def show_bin(self, name):
