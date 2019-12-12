@@ -351,6 +351,17 @@ class SYSAnalysis:
             if v.name() == "DhcpDomain":
                 network_dict['DhcpDomain'] = v.value()
 
+        if (not 'ICSDomain' in network_dict) or (network_dict['ICSDomain'] == ''):
+            network_dict['ICSDomain'] = "N/A"
+        if (not 'DataBasePath' in network_dict) or (network_dict['DataBasePath'] == ''):
+            network_dict['DataBasePath'] = "N/A"
+        if (not 'Hostname' in network_dict) or (network_dict['Hostname'] == ''):
+            network_dict['Hostname'] = "N/A"
+        if (not 'DhcpNameServer' in network_dict) or (network_dict['DhcpNameServer'] == ''):
+            network_dict['DhcpNameServer'] = "N/A"
+        if (not 'DhcpDomain' in network_dict) or (network_dict['DhcpDomain'] == ''):
+            network_dict['DhcpDomain'] = "N/A"
+
         net_obj = {
                 "ICSDomain" : network_dict['ICSDomain'],
                 "DataBasePath" : network_dict['DataBasePath'],
