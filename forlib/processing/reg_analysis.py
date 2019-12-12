@@ -275,6 +275,7 @@ class NTAnalysis:
                         b.append(items.name())
                 except:
                     try:
+                        outlook = list()
                         recent0 = self.reg.open(path + "\\%s\\Outlook\\Search" % a[i])
                         for v in recent0.values():
                             ret_obj = {
