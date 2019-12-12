@@ -168,7 +168,7 @@ class PDFAnalysis:
 class HWPAnalysis:
     def __init__(self, file, path, hash_v):
         self.__file = file
-        self.list = self.__return_list
+        self.list = self.__return_list()
         self.__hwp_info = self.__make_json()
         self.__hash_value = [hash_v]
         self.__path = path
