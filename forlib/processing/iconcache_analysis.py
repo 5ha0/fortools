@@ -167,7 +167,7 @@ class IconcacheAnalysis:
     def __cal_hash(self):
         icon_list = []
         icon_obj = dict()
-        self.__hash_value.append(calc_hash.get_hash(self.__path, 'after'))
+        self.__hash_value.append(calc_hash.get_hash(self.__path))
         icon_obj['before_sha1'] = self.__hash_value[0]['sha1']
         icon_obj['before_md5'] = self.__hash_value[0]['md5']
         icon_obj['after_sha1'] = self.__hash_value[1]['sha1']
@@ -277,14 +277,14 @@ class IconcacheAnalysis:
         end = int(end)
         for i in range(1, end + 1):
             value = icon_info[0]["Section Two Path" + str(i)]
-            lower_value = lower_value.split('.')[-1]
+            lower_value = value.split('.')[-1]
             if extension == lower_value:
                 info["Section Two Path" + str(i)] = value
         end = icon_info[0]["Section Three Path Num"]
         end = int(end)
         for i in range(1, end + 1):
             value = icon_info[0]["Section Three Path" + str(i)]
-            lower_value = lower_value.split('.')[-1]
+            lower_value = value.split('.')[-1]
             if extension == lower_value:
                 info["Section Three Path" + str(i)] = value
 
