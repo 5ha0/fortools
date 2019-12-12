@@ -90,6 +90,26 @@ Now, this module analyzes Windows 7/10. And parse only meanigful contents in for
  
  **Lnk**
 Now, this module analyzes Windows 7/10. And parse only meanigful contents in forensics.
+
+# Key Info
+**Event Log**  
+[Idx, eventID, create Time, TimeZone, level, source, computer Info, SID]
+
+**JumpList**  
+- get_info: [TimeZone, create time, access time, write time, file size, target file size, Local Path, drive type, drive serial number, Volume Label]  
+- get_summary: [Total Num of JumpList, otal Num of Add/Delete/Open action, Netbios, TimeZone, Last Access Time, Access Count, Data String]  
+- get_destlist_data:[MAC(new), MAC(birth), netbios, TimeZone, last access time, access count, data]  
+
+**Filesystem Log**  
+- get_info($MFT): [LSN, TimeZone, SIN Creation Time, SIN Modified Time, SIN MFT Modified Time, SIN Last Accessed Time, FIN Creation Time, FIN Modified Time, FIN MFT Modified Time, FIN Last Accessed Time, File Size, Name, Parent]  
+- get_info($J): [USN, TimeZone, Time, Source, File Attribute, Filename]  
+
+**Files**
+- get_info(JPEG): [time, Latitude, Longitude]
+- get_info(PDF): [author, creator, creation, modification, TimeZone]
+- get_info(HWP): [Author, Date, Last Save, Create Time, Last Save Time]
+- get_info(MS Old version): [title, Author, Create Time, Last Save, Last Save Time, creating_application]
+
  
 # Contact
 If you have any questions , feel free to send us an e-mail(fortools.official@gmail.com).
