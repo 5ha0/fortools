@@ -41,8 +41,8 @@ NTUSER.DAT: %UserProfile%
 **Browser**  
 *Chrome*  
 Cache: %UserProfile%\AppData\Local\Google\Chrome\User Data\Default(or Guest Profile)\Cache(folder)  
-History: %UserProfile%\AppData\Local\Google\Chrome\User Data\Default(or Guest Profile)\History  
-Cookies %UserProfile%\AppData\Local\Google\Chrome\User Data\Default(or Guest Profile)\Cookies  
+History, Download: %UserProfile%\AppData\Local\Google\Chrome\User Data\Default(or Guest Profile)\History  
+Cookies: %UserProfile%\AppData\Local\Google\Chrome\User Data\Default(or Guest Profile)\Cookies  
 
 *Firefox*  
 Cookies: %UserProfile%\AppData\Roaming\Mozilla\Firefox\Profiles\<random number>\cookies.sqlite  
