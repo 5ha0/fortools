@@ -16,6 +16,7 @@ class Thumbnail_analysis:
 
 class Thumbnail_analysis_windows:   # windows version check
     def __init__(self, file, path, hash_v):
+        self.file = file
         self.window_version = { "Windows_7": 0x15,
                                 "Windows_8": 0x1A,
                                 "Windows_8v2": 0x1C,
@@ -26,7 +27,6 @@ class Thumbnail_analysis_windows:   # windows version check
         self.__path = path
         self.thumb_list = self.__parse(self.__path)
         self._result = []
-        self.__file = file
         self.__cal_hash()
 
     def __cal_hash(self):
