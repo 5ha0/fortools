@@ -168,7 +168,7 @@ class PDFAnalysis:
 class HWPAnalysis:
     def __init__(self, file, path, hash_v):
         self.__file = file
-        self.list = self.__return_list()
+        self.__list = self.__return_list()
         self.__hwp_info = self.__make_json()
         self.__hash_value = [hash_v]
         self.__path = path
@@ -215,6 +215,9 @@ class HWPAnalysis:
     def get_prev(self):
         prev = self.__file.openstream('PrvText').read().decode('utf-16')
         return prev
+
+    def get_list(self):
+        return self.__list
 
     def show_bin(self, name):
         for i in range(0, len(self.list)):
