@@ -32,7 +32,11 @@ def custom_filter(filter_list, json_list):
                     break
             elif filter_list[j + 2] == 1:  # re
                 try:
-                    result_re = re.search(filter_list[j + 1], str(json_list[i][filter_list[j]]))
+                    if type(json_list[i][filter_list[j]]) == list:
+                        for n in json_list[i][filter_list[j]]:
+                            result_re = re.search(filter_list[j + 1], str(n))
+                    else:
+                        result_re = re.search(filter_list[j + 1], str(json_list[i][filter_list[j]]))
                 except KeyError:
                     print('It doesn\'t have that key. Plz check key one more time.')
                     return -1
