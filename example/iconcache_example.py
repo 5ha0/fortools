@@ -32,23 +32,20 @@ Uncomment the comment you want to use.
 # # if you show 2. use print()
 # print(icon)
 
-####### 5.Allows you to check whether the drive delete program is used. #######
-# file.drive_delete_exe()
-
-####### 6.Allows you to find a specific extension file from all sections. #######
+####### 5.Allows you to find a specific extension file from all sections. #######
 # extension = 'extension'
 # icon = file.extension_filter(extension)
 # # if you show 6. use print()
 # print(icon)
 
-####### 7.If You want to make a report, Use This. #######
+####### 6.If You want to make a report, Use This. #######
 # # !caution!Use the script above first
 # # !caution!"5" does not provide the report.py function.
-# # 7-1. Docx
+# # 6-1. Docx
 # docx = DocxExport()
 # docx.table_by_json(icon[i])
 # docx.save('ICON')
-# # 7-2. MD
+# # 6-2. MD
 # md = MdExport('ICON')
 # md.add_table(info)
 # md.save()
