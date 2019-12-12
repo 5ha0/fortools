@@ -22,6 +22,8 @@ from fortools import *
 Chatbot()
 ```
 
+When you open an editor, you must enable it with administrator privileges.
+
 # Basic Path
 **Event Log**  
 C:\Windows\System32\winevt\Logs\Security.evtx
@@ -69,31 +71,31 @@ ex) find_key("Uninstall") --> Microsoft\\Windows\\CurrentVersion\\Uninstall (thi
 **Disk**  
 If you extract file in disk, you need to check start sector with volume_metadata() function's data.
 
-**Memory**  
+**Memory**   
 You need to install volatility3. Plz download it and put it in path forlib/processing. This analysis is only available for the current window memory file.
 
-**Recycle**
+**Recycle**  
 This module will analyze only $I files among the recycle bin files. And now, this module analyzes Windows 7/8/10.
   About functions  
 ->show_all_info/get_all_info: json format(file name, header contents(read as little endian binary), file size, original path and deleted time)<br>
 
-**Iconcache**
+**Iconcache**  
 Now, this module analyzes Windows 7/10. And parse only meanigful contents in forensics.
 This module will analyze only iconcache.db files. If you want to analyze other files like iconcache_##.db, you can use *thumbnail analysis*.
   About functions  
 ->extension_filter: you can find file path of specific extension file<br>
 
-**Prefetch**
+**Prefetch**  
 Now, this module analyzes Windows 7/10. And parse only meanigful contents in forensics.
   About functions  
 ->extension_filter_pf: you can find file path of specific extension file<br>
  
- **Lnk**
+ **Lnk**  
 Now, this module analyzes Windows 7/10. And parse only meanigful contents in forensics.
 
 # Key Info
 **Event Log**  
-[Idx, eventID, create Time, TimeZone, level, source, computer Info, SID]
+- [Idx, eventID, create Time, TimeZone, level, source, computer Info, SID]
 
 **JumpList**  
 - get_info: [TimeZone, create time, access time, write time, file size, target file size, Local Path, drive type, drive serial number, Volume Label]  
