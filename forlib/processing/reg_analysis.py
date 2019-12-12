@@ -153,7 +153,24 @@ class NTAnalysis:
                     "data" : v.value()}
             ret_list.append(reg_obj)
         return ret_list
+    
+    def get_IE_visit(self):
+        ret_list = list()
+        try:
+            recent = self.reg.open("Software\Microsoft\Internet Explorer\TypedURLs")
+        except:
+            print("Plz Check the file. This file is ", self.reg.hive_type())
+            return -1
 
+        for i, v in enumerate(recent.values()):
+            #print(v.value().decode('utf-16'))
+            reg_obj  = {
+                    "time" : str(recent.timestamp()),
+                    "TimeZone" : "UTC",
+                    "data" : v.value()}
+            ret_list.append(reg_obj)
+        return ret_list
+    
     def __print_ms(self, recent, version):
         ms_list = list()
         #print("recent.values : ", dir(recent.values()[0]))
