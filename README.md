@@ -45,8 +45,8 @@ History, Download: %UserProfile%\AppData\Local\Google\Chrome\User Data\Default(o
 Cookies: %UserProfile%\AppData\Local\Google\Chrome\User Data\Default(or Guest Profile)\Cookies  
 
 *Firefox*  
-Cookies: %UserProfile%\AppData\Roaming\Mozilla\Firefox\Profiles -> <random number>\cookies.sqlite  
-History, Download: %UserProfile%\AppData\Roaming\Mozilla\Firefox\Profiles -> <random number>\places.sqlite  
+Cookies: %UserProfile%\AppData\Roaming\Mozilla\Firefox\Profiles -> random number\cookies.sqlite  
+History, Download: %UserProfile%\AppData\Roaming\Mozilla\Firefox\Profiles -> random number\places.sqlite  
 
 *IE && Edge*  
  %UserProfile%AppData\Local\Microsoft\Windows\WebCache\WebCacheV01.dat
