@@ -220,10 +220,10 @@ class HWPAnalysis:
         return self.__list
 
     def show_bin(self, name):
-        for i in range(0, len(self.list)):
-            if name == self.list[i]:
-                return i
-            print(self.__file.openstream(self.list[i].read()))
+        for i in self.__list:
+            for j in i:
+                if name == j:
+                    print(self.__file.openstream(i).read())
 
 
 class MSOldAnalysis:
