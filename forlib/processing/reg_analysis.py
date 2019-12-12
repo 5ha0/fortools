@@ -282,7 +282,7 @@ class NTAnalysis:
                                 "Version": a[i],
                                 "MS key Last Written time": str(recent0.timestamp()),
                                 "TimeZone": "UTC",
-                                "name": v.name()
+                                "path": v.name()
                             }
                             outlook.append(ret_obj)
 
@@ -297,7 +297,7 @@ class NTAnalysis:
                             "Version" : a[i],
                             "MS key Last Written time" : str(recent0.timestamp()),
                             "TimeZone" : "UTC",
-                            "name" : v.name()
+                            "path" : v.name()
                         }
                         outlook.append(ret_obj)
 
