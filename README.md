@@ -30,9 +30,9 @@ C:\Windows\System32\winevt\Logs\Security.evtx
 %UserProfile%\AppData\Roaming\Microsoft\Windows\Recent\AutomaticDestinations
 
 **Filesystem Log**  
-$UsnJrnl : C:\$Extend\$Usnjrnl:$J
-$MFT : C:\$MFT
-$LogFile : C:\$LogFile
+$UsnJrnl : C:\$Extend\$Usnjrnl:$J  
+$MFT : C:\$MFT  
+$LogFile : C:\$LogFile  
 
 **Registry**  
 SAM, SOFTWARE, SECURITY, SYSTEM: C:\Windows\System32\Config  
@@ -40,13 +40,13 @@ NTUSER.DAT: %UserProfile%
 
 **Browser**  
 *Chrome*  
-Cache: %UserProfile%\AppData\Local\Google\Chrome\User Data\Default(or Guest Profile)\Cache(folder)
-History: %UserProfile%\AppData\Local\Google\Chrome\User Data\Default(or Guest Profile)\History
-Cookies %UserProfile%\AppData\Local\Google\Chrome\User Data\Default(or Guest Profile)\Cookies
+Cache: %UserProfile%\AppData\Local\Google\Chrome\User Data\Default(or Guest Profile)\Cache(folder)  
+History: %UserProfile%\AppData\Local\Google\Chrome\User Data\Default(or Guest Profile)\History  
+Cookies %UserProfile%\AppData\Local\Google\Chrome\User Data\Default(or Guest Profile)\Cookies  
 
 *Firefox*  
-Cookies: %UserProfile%\AppData\Roaming\Mozilla\Firefox\Profiles\<random number>\cookies.sqlite
-History, Download: %UserProfile%\AppData\Roaming\Mozilla\Firefox\Profiles\<random number>\places.sqlite 
+Cookies: %UserProfile%\AppData\Roaming\Mozilla\Firefox\Profiles\<random number>\cookies.sqlite  
+History, Download: %UserProfile%\AppData\Roaming\Mozilla\Firefox\Profiles\<random number>\places.sqlite  
 
 *IE && Edge*  
  %UserProfile%AppData\Local\Microsoft\Windows\WebCache\WebCacheV01.dat
