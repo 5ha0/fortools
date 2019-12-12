@@ -35,8 +35,8 @@ $MFT : C:\$MFT
 $LogFile : C:\$LogFile
 
 **Registry**  
-SAM, SOFTWARE, SECURITY, SYSTEM: C:\Windows\System32\Config
-NTUSER.DAT: %UserProfile%
+SAM, SOFTWARE, SECURITY, SYSTEM: C:\Windows\System32\Config  
+NTUSER.DAT: %UserProfile% 
 
 **Browser**  
 *Chrome*  
