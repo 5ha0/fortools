@@ -40,7 +40,6 @@ Uncomment the comment you want to use.
 
 ####### 6.If You want to make a report, Use This. #######
 # # !caution!Use the script above first
-# # !caution!"5" does not provide the report.py function.
 # # 6-1. Docx
 # docx = DocxExport()
 # docx.table_by_json(icon[i])
