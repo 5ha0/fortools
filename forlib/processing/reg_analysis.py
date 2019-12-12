@@ -264,12 +264,30 @@ class NTAnalysis:
                 temp_list = outlook+xls+ppt+word
 
             if a[i] == '16.0':
-                path2 = path+"\\%s\\Excel\\User MRU"%(a[i])
-                LiveId = self.reg.open(path2)
-                outlook = list()
-                b = list()
-                for items in LiveId.subkeys():
-                    b.append(items.name())
+                try:
+                    path2 = path + "\\%s\\Excel\\User MRU"%(a[i])
+                    path2 = path + "\\%s\\PowerPoint\\User MRU"%(a[i])
+                    path2 = path + "\\%s\\Word\\User MRU" % (a[i])
+                    LiveId = self.reg.open(path2)
+                    outlook = list()
+                    b = list()
+                    for items in LiveId.subkeys():
+                        b.append(items.name())
+                except:
+                    try:
+                        recent0 = self.reg.open(path + "\\%s\\Outlook\\Search" % a[i])
+                        for v in recent0.values():
+                            ret_obj = {
+                                "Version": a[i],
+                                "MS key Last Written time": str(recent0.timestamp()),
+                                "TimeZone": "UTC",
+                                "name": v.name()
+                            }
+                            outlook.append(ret_obj)
+
+                    except:
+                        outlook = []
+                    return outlook
 
                 try:
                     recent0 = self.reg.open(path+"\\%s\\Outlook\\Search" %a[i])
