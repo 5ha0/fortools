@@ -23,7 +23,7 @@ class LnkAnalysis:
         self.__linkinfo_flag = self.__link_flags()
         self.__lnk_json = self.__make_json()
         self.__cal_hash()
-        self.__has_link_info = 'False'
+        self.__has_info_flag = 'False'
 
     def __lnk_flag(self, flags_to_parse):
         flags = {0: "HasLinkTargetIDList",
@@ -61,7 +61,6 @@ class LnkAnalysis:
                 self.__lnk_flags_value.append(format(flags[count]))
             else:
                 continue
-
         return self.__lnk_flags_value
 
     def __lnk_attrib(self, attrib_to_parse):
@@ -105,6 +104,109 @@ class LnkAnalysis:
         for i in drive_type.keys():
             if drive == i:
                 return drive_type[i]
+
+    def __net_flag(self, netflag):
+        attrib = {0: "A",
+                  1: "B"
+                  }
+
+        lnk_attributes = []
+        netflag = netflag[::-1]
+        for count, items in enumerate(netflag):
+            if int(items) == 1:
+                lnk_attributes.append(format(attrib[count]))
+            else:
+                continue
+
+        return lnk_attributes
+
+    def __net_type(self, nettype):
+        if nettype == '001A0000':
+            return "WNNC_NET_AVID"
+        if nettype == '001B0000':
+            return "WNNC_NET_DOCUSPACE"
+        if nettype == '001C0000':
+            return "WNNC_NET_MANGOSOFT"
+        if nettype == '001D0000':
+            return "WNNC_NET_SERNET"
+        if nettype == '001E0000':
+            return "WNNC_NET_RIVERFRONT1"
+        if nettype == '001F0000':
+            return "WNNC_NET_RIVERFRONT2"
+        if nettype == '00200000':
+            return "WNNC_NET_DECORB"
+        if nettype == '00210000':
+            return "WNNC_NET_PROTSTOR"
+        if nettype == '00220000':
+            return "WNNC_NET_FJ_REDIR"
+        if nettype == '00230000':
+            return "WNNC_NET_DISTINCT"
+        if nettype == '00240000':
+            return "WNNC_NET_TWINS"
+        if nettype == '00250000':
+            return "WNNC_NET_RDR2SAMPLE"
+        if nettype == '00260000':
+            return "WNNC_NET_CSC"
+        if nettype == '00270000':
+            return "WNNC_NET_3IN1"
+        if nettype == '00290000':
+            return "WNNC_NET_EXTENDNET"
+        if nettype == '002A0000':
+            return "WNNC_NET_STAC"
+        if nettype == '002B0000':
+            return "WNNC_NET_FOXBAT"
+        if nettype == '002C0000':
+            return "WNNC_NET_YAHOO"
+        if nettype == '002D0000':
+            return "WNNC_NET_EXIFS"
+        if nettype == '002E0000':
+            return "WNNC_NET_DAV"
+        if nettype == '002F0000':
+            return "WNNC_NET_KNOWARE"
+        if nettype == '00300000':
+            return "WNNC_NET_OBJECT_DIRE"
+        if nettype == '00310000':
+            return "WNNC_NET_MASFAX"
+        if nettype == '00320000':
+            return "WNNC_NET_HOB_NFS"
+        if nettype == '00330000':
+            return "WNNC_NET_SHIVA"
+        if nettype == '00340000':
+            return "WNNC_NET_IBMAL"
+        if nettype == '00350000':
+            return "WNNC_NET_LOCK"
+        if nettype == '00360000':
+            return "WNNC_NET_TERMSRV"
+        if nettype == '00370000':
+            return "WNNC_NET_SRT"
+        if nettype == '00380000':
+            return "WNNC_NET_QUINCY"
+        if nettype == '00390000':
+            return "WNNC_NET_OPENAFS"
+        if nettype == '003A0000':
+            return "WNNC_NET_AVID1"
+        if nettype == '003B0000':
+            return "WNNC_NET_DFS"
+        if nettype == '003C0000':
+            return "WNNC_NET_KWNP"
+        if nettype == '003D0000':
+            return "WNNC_NET_ZENWORKS"
+        if nettype == '003E0000':
+            return "WNNC_NET_DRIVEONWEB"
+        if nettype == '003F0000':
+            return "WNNC_NET_VMWARE"
+        if nettype == '00400000':
+            return "WNNC_NET_RSFX"
+        if nettype == '00410000':
+            return "WNNC_NET_MFILES"
+        if nettype == '00420000':
+            return "WNNC_NET_MS_NFS"
+        if nettype == '00430000':
+            return "WNNC_NET_GOOGLE"
+
+        return "UNKNOWN"
+
+
 
     ################ Shell_Link_Header #############################
 
@@ -258,6 +360,7 @@ class LnkAnalysis:
     ################ Link_Info #############################
 
     def __lnkinfo_off(self):
+        self.__start_off = 76
 
         if 'HasLinkTargetIDList' not in self.__lnk_flags_value:
             self.__start_off = 76
@@ -270,9 +373,8 @@ class LnkAnalysis:
             self.__start_off = 78 + idlistsize
 
         if 'HasLinkInfo' not in self.__lnk_flags_value:
-            self.__linkinfo_flag = None
+            self.__linkinfo_flag = 'False'
             #Input the value to use on the __extradata() below
-            self.__start_off = 76
             self.__info_size = 0
             return 0
         else:
@@ -321,7 +423,6 @@ class LnkAnalysis:
             return lnk_list
 
         elif self.__info_flag != 'A':
-            self.__has_link_info = 'True'
             lnk_obj = {'Drivetype': 'None',
                        'Driveserialnumber': 'None',
                        'Volumelable': 'None'}
@@ -330,7 +431,6 @@ class LnkAnalysis:
 
             return lnk_list
 
-        self.__has_link_info = 'True'
 
         vol_off = self.__start_off + 12
         self.__file.seek(vol_off)
@@ -384,7 +484,6 @@ class LnkAnalysis:
 
             return lnk_list
         elif self.__info_flag != 'A':
-            self.__has_link_info = 'True'
 
             lnk_obj = {'Localbasepath Unicode': self.__locbase_path_uni_off,
                        'Localbasepath': 'None'}
@@ -408,8 +507,6 @@ class LnkAnalysis:
             self.__locbase_path_uni_off = self.locbase_path_uni.decode('utf-8', 'ignore')
             self.__locbase_path_uni_off = self.__locbase_path_uni_off.replace('\x00', '')
 
-        self.__has_link_info = 'True'
-
         locbasepath_off = self.__start_off + 16
         self.__file.seek(locbasepath_off)
         locbasepath_off = struct.unpack('<l', self.__file.read(4))[0]
@@ -427,6 +524,112 @@ class LnkAnalysis:
 
         lnk_obj = {'Localbasepath Unicode': self.__locbase_path_uni_off,
                    'Localbasepath': locbasepath}
+        json.dumps(lnk_obj)
+        lnk_list.append(lnk_obj)
+
+        return lnk_list
+
+    def __common_network_relative_link(self):
+        lnk_list = []
+
+        self.__lnkinfo_off()
+
+        if self.__linkinfo_flag != 'True':
+            lnk_obj = {'NetName': 'None',
+                       'DeviceName': 'None',
+                       'NetworkProviderType': 'None'}
+            json.dumps(lnk_obj)
+            lnk_list.append(lnk_obj)
+
+            return lnk_list
+        elif self.__info_flag != 'B':
+            lnk_obj = {'NetName': 'None',
+                       'DeviceName': 'None',
+                       'NetworkProviderType': 'None'}
+            json.dumps(lnk_obj)
+            lnk_list.append(lnk_obj)
+
+            return lnk_list
+
+        self.__lnkinfo_off()
+        net_off = self.__start_off + 20
+        net_off = self.__file.seek(net_off)
+        net_off = struct.unpack('<i', self.__file.read(4))[0]
+
+        net_off = self.__start_off + net_off
+        self.__file.seek(net_off)
+        net_size = struct.unpack('<i', self.__file.read(4))[0]
+        net_size = net_off + net_size
+        net_flag_info = self.__file.read(4)
+        net_flag_info = BitArray(hex(net_flag_info[0]))
+        net_flag = self.__net_flag(net_flag_info)
+
+        net_name = struct.unpack('<i', self.__file.read(4))[0]
+        if net_name > 20:
+            optional = 'True'
+        else:
+            optional = 'False'
+        net_name = net_name + net_off
+
+        device_name = struct.unpack('<i', self.__file.read(4))[0]
+        device_name = device_name + net_off
+
+        if 'B' in net_flag:
+            net_type = struct.unpack('<i', self.__file.read(4))[0]
+            net_type = "%08x" % net_type
+            net_type = self.__net_type(net_type)
+        else:
+            net_type = 'None'
+
+        self.__file.seek(net_name)
+        net_name_size = device_name - net_name
+        net_name = self.__file.read(net_name_size)
+        net_name = net_name.decode('utf8', 'ignore')
+        net_name = net_name.replace('\x00', '')
+
+        if optional == 'True':
+            name_uni_off = net_off + 20
+            name_uni_off = struct.unpack('<i', string_size)[0]
+            name_uni_off = net_off + name_uni
+
+            device_uni_off = net_off + 24
+            device_uni_off = struct.unpack('<i', string_size)[0]
+            device_uni_off = net_off + device_uni_off
+
+            self.__file.seek(name_uni_off)
+            name_uni_size = device_uni_off - name_uni_off
+            name_uni = self.__file.read(name_uni_size)
+            name_uni = name_uni.decode('utf8', 'ignore')
+            name_uni = name_uni.replace('\x00', '')
+
+            self.__file.seek(device_uni_off)
+            device_uni_off_size = net_size - device_uni_off
+            device_uni = self.__file.read(device_uni_off_size)
+            device_uni = device_uni.decode('utf8', 'ignore')
+            device_uni = device_uni.replace('\x00', '')
+
+            if 'A' in net_flag:
+                self.__file.seek(device_name)
+                device_name_size = name_uni - device_name_size
+                device_name = self.__file.read(device_name_size)
+                device_name = device_name.decode('utf8', 'ignore')
+                device_name = device_name.replace('\x00', '')
+            else:
+                device_name = 'None'
+
+        else:
+            if 'A' in net_flag:
+                self.__file.seek(device_name)
+                device_name_size = net_size - device_name
+                device_name = self.__file.read(device_name_size)
+                device_name = device_name.decode('utf8', 'ignore')
+                device_name = device_name.replace('\x00', '')
+            else:
+                device_name = 'None'
+
+        lnk_obj = {'NetName': net_name,
+                   'DeviceName': device_name,
+                   'NetworkProviderType': net_type}
         json.dumps(lnk_obj)
         lnk_list.append(lnk_obj)
 
@@ -545,7 +748,7 @@ class LnkAnalysis:
     def __cal_hash(self):
         lnk_list = []
         lnk_obj = dict()
-        self.__hash_value.append(calc_hash.get_hash(self.__path, 'after'))
+        self.__hash_value.append(calc_hash.get_hash(self.__path))
         lnk_obj['before_sha1'] = self.__hash_value[0]['sha1']
         lnk_obj['before_md5'] = self.__hash_value[0]['md5']
         lnk_obj['after_sha1'] = self.__hash_value[1]['sha1']
@@ -592,6 +795,10 @@ class LnkAnalysis:
         localbase = self.__localbase_path()
         info['Localbasepath Unicode'] = localbase[0]['Localbasepath Unicode']
         info['Localbasepath'] = localbase[0]['Localbasepath']
+        network = self.__common_network_relative_link()
+        info['NetName'] = network[0]['NetName']
+        info['DeviceName'] = network[0]['DeviceName']
+        info['NetworkProviderType'] = network[0]['NetworkProviderType']
         info["NetBios"] = self.__netbios()[0]['NetBios']
         machine = self.__droid_value()
         info["Droid"] = machine[0]['Droid']
@@ -599,7 +806,7 @@ class LnkAnalysis:
 
         info_list.append(info)
 
-        print('HasLinkInfo: ' + self.__has_link_info + 'LinkInfo Flag: ' + self.__info_flag + 'Tracker Data Block' + self.__extra_data)
+        print('HasLinkInfo:' + self.__linkinfo_flag + '/ Tracker Data Block:' + self.__extra_data)
 
         return info_list
 
