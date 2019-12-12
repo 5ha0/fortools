@@ -167,7 +167,7 @@ class IconcacheAnalysis:
     def __cal_hash(self):
         icon_list = []
         icon_obj = dict()
-        self.__hash_value.append(calc_hash.get_hash(self.__path))
+        self.__hash_value.append(calc_hash.get_hash(self.__path, 'after'))
         icon_obj['before_sha1'] = self.__hash_value[0]['sha1']
         icon_obj['before_md5'] = self.__hash_value[0]['md5']
         icon_obj['after_sha1'] = self.__hash_value[1]['sha1']
