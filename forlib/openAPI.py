@@ -317,9 +317,8 @@ class Thumbnail_Iconcache:
             hash_v = calc_hash.get_hash(path, 'before')
             file = cache_open(path)
             return thumbnail_analysis.Thumbnail_analysis_windows(file, path, hash_v)
-        else:
-            print("File is not found")
-            return -1
+        print("check your file format. This is not Thumbcache file and Iconcache file.")
+        return -1
 
 
 class Browser:
