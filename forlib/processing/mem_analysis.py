@@ -297,7 +297,19 @@ class MemAnalysis:
         self.ret_list = self.__processing(reg_list, keyList)
 
         return self.ret_list
-
+    
+    def get_info(self, dictonary, search_list):
+        for i in dictonary:
+            info = dict()
+            try:
+                for j in search_list:
+                    info[j] = i[j]
+                self.ret_list.append(info)
+            except:
+                print("Plz check your key.")
+                return -1
+        return self.ret_list
+    
     def __cal_hash(self):
         after_hash = calc_hash.get_hash(self.file, 'after')
         self.__hash_val.append(after_hash)
