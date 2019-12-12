@@ -59,16 +59,39 @@ class Chrome:
 
                 keyword_list=[]
                 for i in get_keyword:
-                    for j in range(0, len(get_keyword)):
+                    for j in range(0, len(i)):
                         keyword_list.append(i[j])
-
                 mkdict["keyword_search"]=keyword_list
-
                 if mkdict["keyword_search"] == []:
                     mkdict["keyword_search"] = ""
                 mkdict["visit_time"] = int2date1(visit[1])
                 mkdict["visit_count"] = visit[5]
-                mkdict["visit_type"] = visit[2]
+                type=visit[2] & 0xFF
+                print(type)
+                if type==0:
+                    mkdict["visit_type"]="link"
+                elif type==1:
+                    mkdict["visit_type"]="typed"
+                elif type==2:
+                    mkdict["visit_type"]="auto_bookmark"
+                elif type==3:
+                    mkdict["visit_type"]="auto_subframe"
+                elif type==4:
+                    mkdict["visit_type"]="manual_subframe"
+                elif type==5:
+                    mkdict["visit_type"]="generated"
+                elif type==6:
+                    mkdict["visit_type"]="auto_toplevel"
+                elif type==7:
+                    mkdict["visit_type"]="form_submit"
+                elif type==8:
+                    mkdict["visit_type"]="reload"
+                elif type==9:
+                    mkdict["visit_type"]="keyword"
+                elif type ==10:
+                    mkdict["visit_type"]="keyword_generated"
+                else:
+                    mkdict["visit_type"]=""
 
                 self.history_list.append(mkdict)
 
@@ -236,19 +259,22 @@ class Chrome:
             self.__file = file
             self.__path = file
             self.cache_list = []
+            self.__parse()
             if self.__parse() ==-1:
                 self.cache_list==""
             self.__hash_value = hash_v
             self.__path = file
             self.__cal_hash()
 
-        def __get_block_info(self,url_record):
+        def __get_block_info(self, url_record):
             if url_record == 1:
                 block_size = 0x100
             elif url_record == 2:
                 block_size = 0x400
             elif url_record == 3:
                 block_size = 0x1000
+            else:
+                block_size=-1
             return block_size
 
         def __parse(self):
@@ -280,12 +306,16 @@ class Chrome:
                 # file index/ block size
                 file_index = url_record_info[0x02]
                 block_size = self.__get_block_info(url_record_info[0x02])
+                if block_size == -1:
+                    continue
                 # get url_record_location
                 url_record_location = block_index * block_size + 0x2000
                 # open block which has url record
                 data_file_open = open(self.__path + "\\data_" + str(file_index), 'rb')
                 data_file_open.seek(url_record_location)
                 url_record = data_file_open.read(0x60)
+                if bytes.decode(binascii.hexlify(url_record)) =="":
+                    continue
                 url_size = int(bytes.decode(binascii.hexlify(url_record[0x20:0x20 + 0x04][::-1])), 16)
                 url_location=bytes.decode(binascii.hexlify(url_record[0x24:0x24 + 0x04][::-1]))
                 meta_data_size = int(bytes.decode(binascii.hexlify(url_record[0x28:0x28 + 0x04][::-1])), 16)
@@ -299,8 +329,9 @@ class Chrome:
                 else:
                     url_file_index = url_record[0x24 + 0x02]
                     url_block_size = self.__get_block_info(url_record[0x24 + 0x02])
+                    if url_block_size ==-1:
+                        continue
                     url_block_index = int(bytes.decode(binascii.hexlify(url_record[0x24:0x24 + 0x02][::-1])), 16)
-
                     go_to_url_location = url_block_size * url_block_index + 0x2000
                     url_data_file_open = open(self.__path + "\\data_" + str(url_file_index), 'rb')
                     url_data_file_open.seek(go_to_url_location)
@@ -318,6 +349,8 @@ class Chrome:
                     meta_data_block_index = int(bytes.decode(binascii.hexlify(url_record[0x38:0x38 + 0x02][::-1])), 16)
                     if meta_data_block_index != 0:
                         meta_data_block_size = self.__get_block_info(meta_data_file_index)
+                        if meta_data_block_size ==-1:
+                            continue
                         meta_data_location = meta_data_block_size * meta_data_block_index + 0x2000
                         meta_data_open = open(self.__path + "\\data_" + str(meta_data_file_index), 'rb')
                         meta_data_open.seek(meta_data_location)
@@ -380,6 +413,8 @@ class Chrome:
                     data_file_index = url_record[0x3c:0x3c + 0x04][0x02]
                     if data_size != 0:
                         data_block_size = self.__get_block_info(data_file_index)
+                        if data_block_size ==-1:
+                            continue
                         data_block_index = int(bytes.decode(binascii.hexlify(url_record[0x3C:0x3C + 0x02][::-1])), 16)
                         data_location = data_block_size * data_block_index + 0x2000
                         data_open = open(self.__path + "\\data_" + str(data_file_index), 'rb')
@@ -1052,7 +1087,7 @@ class Ie_Edge:
                     path = ""
                     name = ""
                     url = ""
-
+                    
                     try:
                         data = bytes.decode(binascii.hexlify(binary_data[0x148:]))
                         path = bytes.fromhex(data).decode("utf-16").split("\x00")[-2]
@@ -1152,15 +1187,15 @@ class Ie_Edge:
                     mkdict["browser"] = "IE10+ Edge"
                     mkdict["timezone"] = "UTC"
                     # get title from response header
-                    try:
-                        binary_data = visit.get_value_data(21)
+
+                    binary_data = visit.get_value_data(21)
+                    mkdict["title"]=""
+                    if binary_data is not None:
                         size_a = bytes.decode(binascii.hexlify(binary_data[58:62][::-1]))
                         size = int(size_a, 16) * 2
-                        title = bytes.decode(binascii.hexlify(binary_data[62:62 + size]))
-                        mkdict["title"] = bytes.fromhex(title).decode("utf-16").rstrip("\x00")
-                    except:
-                        mkdict["title"] = ""
-
+                        if size < len(binary_data):
+                            title = bytes.decode(binascii.hexlify(binary_data[62:62 + size]))
+                            mkdict["title"] = bytes.fromhex(title).decode("utf-16").rstrip("\x00")
 
                     mkdict["url"] = visit.get_value_data_as_string(17)
                     mkdict["from_visit"] = ""
@@ -1169,8 +1204,9 @@ class Ie_Edge:
                     mkdict["visit_count"] = visit.get_value_data_as_integer(8)
                     mkdict["visit_type"] = ""
 
-
                     self.history_list.append(mkdict)
+
+
 
         def get_all_info(self):
             return self.history_list
