@@ -61,12 +61,15 @@ class Chrome:
                 for i in get_keyword:
                     for j in range(0, len(i)):
                         keyword_list.append(i[j])
+
                 mkdict["keyword_search"]=keyword_list
+
                 if mkdict["keyword_search"] == []:
                     mkdict["keyword_search"] = ""
                 mkdict["visit_time"] = int2date1(visit[1])
                 mkdict["visit_count"] = visit[5]
                 type=visit[2] & 0xFF
+
                 if type==0:
                     mkdict["visit_type"]="link"
                 elif type==1:
@@ -129,16 +132,7 @@ class Chrome:
             return json_list
 
         def keyword_search(self, keyword):
-            result = []
-            json_list=self.history_list
-            for i in json_list:
-                for j in i["keyword_search"]: #j: keyword서치튜플
-                    for k in range (0,len(j)):
-                        if keyword in j:
-                            result.append(i)
-                            break
-                    if i in result: #중복방지
-                        break
+            result=custom_filter(['keyword_search',keyword,1], self.history_list)
             return result
 
         def __cal_hash(self):
@@ -651,11 +645,7 @@ class Firefox:
             return json_list
 
         def keyword_search(self, keyword):
-            result = []
-            json_list=self.history_list
-            for i in json_list:
-                if keyword in i["title"]:
-                    result.append(i)
+            result = custom_filter(['title', keyword, 1], self.history_list)
             return result
 
         def __cal_hash(self):
@@ -897,6 +887,8 @@ class Ie_Edge:
                     mkdict["browser"] = "IE10+ Edge"
                     mkdict["timezone"] = "UTC"
                     mkdict["file_name"] = cache.get_value_data_as_string(18)
+
+                    
 
                     mkdict["url"] = cache.get_value_data_as_string(17)
                     mkdict["access_time"] = int2date4(cache.get_value_data_as_integer(13))
@@ -1188,23 +1180,49 @@ class Ie_Edge:
                     # get title from response header
 
                     binary_data = visit.get_value_data(21)
-                    mkdict["title"]=""
+
                     if binary_data is not None:
-                        size_a = bytes.decode(binascii.hexlify(binary_data[58:62][::-1]))
-                        size = int(size_a, 16) * 2
-                        if size < len(binary_data):
-                            title = bytes.decode(binascii.hexlify(binary_data[62:62 + size]))
-                            mkdict["title"] = bytes.fromhex(title).decode("utf-16").rstrip("\x00")
+                        mkdict["title"] = self.__get_title(binary_data, 58)
+                        if mkdict["title"]=="":
+                            mkdict["title"] = self.__get_title(binary_data, 75)
+                            if mkdict["title"]=="":
+                                mkdict["title"]= self.__get_title(binary_data, 92)
+                                if mkdict["title"]=="":
+                                    mkdict["title"] = ""
+                    else:
+                        mkdict["title"] = ""
+                    
 
                     mkdict["url"] = visit.get_value_data_as_string(17)
+                    if len(mkdict["url"].split("@"))>1:
+                        if mkdict["url"].split("@")[1][:4]=="file":
+                            mkdict["title"]=mkdict["url"].split("//")[-1]
+                            mkdict["title"]=mkdict["title"].replace("%20", " ")
+                            if mkdict["title"][0]=="/":
+                                mkdict["title"]=mkdict["title"][1:]
+                        if mkdict["url"].split("@")[1][:7]=="outlook":
+                            mkdict["title"]="outlook"
                     mkdict["from_visit"] = ""
                     mkdict["keyword_search"] = ""
                     mkdict["visit_time"] = int2date4(visit.get_value_data_as_integer(13))
                     mkdict["visit_count"] = visit.get_value_data_as_integer(8)
                     mkdict["visit_type"] = ""
-
                     self.history_list.append(mkdict)
 
+        def __get_title(self,binary_data,offset):
+            try:
+                size_a = bytes.decode(binascii.hexlify(binary_data[offset:offset+4][::-1]))
+                size = int(size_a, 16) * 2
+                if size<len(binary_data):
+                    title = bytes.decode(binascii.hexlify(binary_data[offset+4:offset+4 + size]))
+                    title = str(bytes.fromhex(title).decode("utf-16").rstrip("\x00"))
+                else:
+                    title=""
+
+            except:
+                title=""
+
+            return title
 
 
         def get_all_info(self):
@@ -1241,11 +1259,7 @@ class Ie_Edge:
             return json_list
 
         def keyword_search(self, keyword):
-            result = []
-            json_list=self.history_list
-            for i in json_list:
-                if keyword in i["title"]:
-                    result.append(i)
+            result = custom_filter(['title', keyword, 1], self.history_list)
             return result
 
         def __cal_hash(self):
