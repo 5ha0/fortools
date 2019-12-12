@@ -287,7 +287,7 @@ class RegistryHive:
             elif Registry.HiveType.SYSTEM == file.hive_type():
                 return reg_analysis.RegAnalysis(file, path, hash_val)
             elif Registry.HiveType.SECURITY == file.hive_type():
-                print("[-] To be continue")
+                return reg_analysis.RegAnalysis(file, path, hash_val)
             else:
                 print("[-] This is not HiveFile")
                 return -1
