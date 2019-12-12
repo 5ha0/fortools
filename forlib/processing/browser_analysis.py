@@ -67,7 +67,6 @@ class Chrome:
                 mkdict["visit_time"] = int2date1(visit[1])
                 mkdict["visit_count"] = visit[5]
                 type=visit[2] & 0xFF
-                print(type)
                 if type==0:
                     mkdict["visit_type"]="link"
                 elif type==1:
