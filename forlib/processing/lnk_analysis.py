@@ -581,12 +581,6 @@ class LnkAnalysis:
         else:
             net_type = 'None'
 
-        self.__file.seek(net_name)
-        net_name_size = device_name - net_name
-        net_name = self.__file.read(net_name_size)
-        net_name = net_name.decode('utf8', 'ignore')
-        net_name = net_name.replace('\x00', '')
-
         if optional == 'True':
             name_uni_off = net_off + 20
             name_uni_off = struct.unpack('<i', string_size)[0]
@@ -609,22 +603,46 @@ class LnkAnalysis:
             device_uni = device_uni.replace('\x00', '')
 
             if 'A' in net_flag:
+                self.__file.seek(net_name)
+                net_name_size = device_name - net_name
+                net_name = self.__file.read(net_name_size)
+                net_name = net_name.decode('utf8', 'ignore')
+                net_name = net_name.replace('\x00', '')
+
                 self.__file.seek(device_name)
                 device_name_size = name_uni - device_name_size
                 device_name = self.__file.read(device_name_size)
                 device_name = device_name.decode('utf8', 'ignore')
                 device_name = device_name.replace('\x00', '')
             else:
+                self.__file.seek(net_name)
+                net_name_size = name_uni_off - net_name
+                net_name = self.__file.read(net_name_size)
+                net_name = net_name.decode('utf8', 'ignore')
+                net_name = net_name.replace('\x00', '')
+
                 device_name = 'None'
 
         else:
             if 'A' in net_flag:
+                self.__file.seek(net_name)
+                net_name_size = device_name - net_name
+                net_name = self.__file.read(net_name_size)
+                net_name = net_name.decode('utf8', 'ignore')
+                net_name = net_name.replace('\x00', '')
+
                 self.__file.seek(device_name)
                 device_name_size = net_size - device_name
                 device_name = self.__file.read(device_name_size)
                 device_name = device_name.decode('utf8', 'ignore')
                 device_name = device_name.replace('\x00', '')
             else:
+                self.__file.seek(net_name)
+                net_name_size = net_size - net_name
+                net_name = self.__file.read(net_name_size)
+                net_name = net_name.decode('utf8', 'ignore')
+                net_name = net_name.replace('\x00', '')
+
                 device_name = 'None'
 
         lnk_obj = {'NetName': net_name,
@@ -748,7 +766,7 @@ class LnkAnalysis:
     def __cal_hash(self):
         lnk_list = []
         lnk_obj = dict()
-        self.__hash_value.append(calc_hash.get_hash(self.__path))
+        self.__hash_value.append(calc_hash.get_hash(self.__path, 'after'))
         lnk_obj['before_sha1'] = self.__hash_value[0]['sha1']
         lnk_obj['before_md5'] = self.__hash_value[0]['md5']
         lnk_obj['after_sha1'] = self.__hash_value[1]['sha1']
