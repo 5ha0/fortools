@@ -1,7 +1,8 @@
 import pytsk3
 import pyewf
 import json
-import datetime
+import time
+from datetime import datetime, timedelta
 import forlib.calc_hash as calc_hash
 
 
@@ -16,33 +17,65 @@ class E01Analysis:
         self.__hash_val = [hash_val]
         self.__cal_hash()
 
+    def __cal_time(self, int_time):
+        if int_time == 0:
+            date = 'Never'
+        else:
+            date = datetime.utcfromtimestamp(int_time)
+        return str(date)
+
     def get_path(self, path, length):
         for partition in self.vol:
             self.partition_list.append(partition.start)
 
         print("please input argument partition start sector : ", self.partition_list)
 
-        fs = self.open_fs(length)
+        try:
+            fs = self.open_fs(length)
+        except:
+            print("[-] Plz Check Disk Area")
 
         try:
             f = fs.open_dir(path)
             for i in f:
                 file_type = str(i.info.name.type)
                 if file_type == "TSK_FS_NAME_TYPE_REG":
-                    file_type = "file"
+                    file_type = "FILE"
                 elif file_type == "TSK_FS_NAME_TYPE_DIR":
-                    file_type = "directory"
+                    file_type = "DIR"
                 else:
                     file_type = str(i.info.name.type)
-                f_path_obj = {
-                    "file_name": i.info.name.name.decode(),
-                    "file_type": file_type
-                }
-                self.ret_list.append(f_path_obj)
+
+                if i.info.meta is None:
+                    f_path_obj = {
+                        "file_name": i.info.name.name.decode(),
+                        "file_type": file_type,
+                        "Type": "Delete",
+                        "size": "None",
+                        "ctime": "None",
+                        "mtime": "None",
+                        "atime": "None",
+                        "change time": "None"
+                    }
+                    self.ret_list.append(f_path_obj)
+                else:
+                    f_path_obj = {
+                        "file_name": i.info.name.name.decode(),
+                        "file_type": file_type,
+                        "Type" : "Exist",
+                        "size": str(i.info.meta.size),
+                        "ctime": self.__cal_time(i.info.meta.crtime),
+                        "mtime": self.__cal_time(i.info.meta.mtime),
+                        "atime": self.__cal_time(i.info.meta.atime),
+                        "change time": self.__cal_time(i.info.meta.ctime)
+                    }
+                    self.ret_list.append(f_path_obj)
             return self.ret_list
 
         except:
-            print("[-] This is Unallocated Area")
+            print("[-]  This is not included this path or Not data")
+            return -1
+
 
     def __UsnJrnl_extract(self, length, filename):
         fs = self.open_fs(length)
@@ -107,7 +140,7 @@ class E01Analysis:
 
         for head in headers:
             if head == "acquiry_date" or head == "system_date":
-                timestamp = datetime.datetime.strptime(headers[head], "%a %b %d %H:%M:%S %Y")
+                timestamp = datetime.strptime(headers[head], "%a %b %d %H:%M:%S %Y")
                 head_obj[head] = str(timestamp)
             else:
                 head_obj[head] = headers[head]
@@ -184,27 +217,51 @@ class DDAnalysis:
             self.partition_list.append(partition.start)
 
         print("please input argument partition start sector : ", self.partition_list)
+        try:
+            fs = self.open_fs(length)
+        except:
+            print("[-] Plz Check Disk Area")
 
-        fs = self.open_fs(length)
         try:
             f = fs.open_dir(path)
             for i in f:
                 file_type = str(i.info.name.type)
                 if file_type == "TSK_FS_NAME_TYPE_REG":
-                    file_type = "file"
+                    file_type = "FILE"
                 elif file_type == "TSK_FS_NAME_TYPE_DIR":
-                    file_type = "directory"
+                    file_type = "DIR"
                 else:
                     file_type = str(i.info.name.type)
-                f_path_obj = {
-                    "file_name": i.info.name.name.decode(),
-                    "file_type": file_type
-                }
-                self.ret_list.append(f_path_obj)
+
+                if i.info.meta is None:
+                    f_path_obj = {
+                        "file_name": i.info.name.name.decode(),
+                        "file_type": file_type,
+                        "Type": "Delete",
+                        "size": "None",
+                        "ctime": "None",
+                        "mtime": "None",
+                        "atime": "None",
+                        "change time": "None"
+                    }
+                    self.ret_list.append(f_path_obj)
+                else:
+                    f_path_obj = {
+                        "file_name": i.info.name.name.decode(),
+                        "file_type": file_type,
+                        "Type" : "Exist",
+                        "size": str(i.info.meta.size),
+                        "ctime": self.__cal_time(i.info.meta.crtime),
+                        "mtime": self.__cal_time(i.info.meta.mtime),
+                        "atime": self.__cal_time(i.info.meta.atime),
+                        "change time": self.__cal_time(i.info.meta.ctime)
+                    }
+                    self.ret_list.append(f_path_obj)
             return self.ret_list
 
         except:
-            print("[-] This is Unallocated Area")
+            print("[-] This is not included this path or Not data")
+            return -1
 
     def __UsnJrnl_extract(self, length, filename):
         fs = self.open_fs(length)
