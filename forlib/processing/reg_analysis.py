@@ -288,7 +288,6 @@ class NTAnalysis:
 
                     except:
                         outlook = []
-                    return outlook
 
                 try:
                     recent0 = self.reg.open(path+"\\%s\\Outlook\\Search" %a[i])
