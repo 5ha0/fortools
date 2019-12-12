@@ -290,32 +290,3 @@ class IconcacheAnalysis:
 
         result.append(info)
         return result
-
-    # if you want to know execution for drive delete program, use this
-    def drive_delete_exe(self):
-        hard_disk_delete = ["Disk Wipe", 'Drive Wipe', 'DBAN', 'CBL Data Shredder', 'MHDD', 'PCDiskEraser', 'KillDisk',
-                            'Format Command With Write Zero Option', 'Macrorit Data Wiper', 'Eraser', 'WipeDisk',
-                            'MiniTool Partition Wizard', 'KillDisk', 'CCleaner', 'PCDiskEraser', 'Super File Shredder']
-        path = []
-        execution = []
-
-        for i in range(0, 3):
-            if i == 0:
-                section = self.__section_one()
-            elif i == 1:
-                section = self.__section_two()
-            else:
-                section = self.__section_three()
-            for j in range(1, len(section)):
-                json_info = section[j]
-                path.append(json_info.get("Path"))
-
-        for i in range(0, len(path)):
-            if path[i] in hard_disk_delete:
-                execution.append(path[i])
-
-        if execution:
-            print('This file was executed for hard disk deletion program.' + str(execution))
-            return execution
-        print('This file was not executed for hard disk deletion program.')
-        return execution
