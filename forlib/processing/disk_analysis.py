@@ -24,17 +24,18 @@ class E01Analysis:
             date = datetime.utcfromtimestamp(int_time)
         return str(date)
 
-    def get_info(self, dictonary, search_list):
-        for i in dictonary:
+    def get_info(self, dictionary, search_list):
+        result = []
+        for i in dictionary:
             info = dict()
             try:
-                for j in search_list:
+                for j in lists:
                     info[j] = i[j]
-                self.ret_list.append(info)
-            except:
+                result.append(info)
+            except KeyError:
                 print("Plz check your key.")
                 return -1
-        return self.ret_list    
+        return result   
     
     def get_path(self, path, length):
         for partition in self.vol:
@@ -224,17 +225,18 @@ class DDAnalysis:
         self.__hash_val = [hash_val]
         self.__cal_hash()
 
-    def get_info(self, dictonary, search_list):
-        for i in dictonary:
+    def get_info(self, dictionary, search_list):
+        result = []
+        for i in dictionary:
             info = dict()
             try:
-                for j in search_list:
+                for j in lists:
                     info[j] = i[j]
-                self.ret_list.append(info)
-            except:
+                result.append(info)
+            except KeyError:
                 print("Plz check your key.")
                 return -1
-        return self.ret_list        
+        return result         
         
     def get_path(self, path, length):
         for partition in self.vol:
