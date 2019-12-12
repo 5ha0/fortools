@@ -16,7 +16,7 @@ class Chrome:
             if self.__parse() == -1:
                 self.history_list=""
             self.__sort()
-            self.__hash_value = [hash_v]
+            self.__hash_value = {'before':hash_v}
             self.__path = file
             self.__cal_hash()
 
@@ -89,7 +89,7 @@ class Chrome:
             return result
 
 
-        def show_info(self):
+        def show_all_info(self):
             for i in self.history_list:
                 print(i)
 
@@ -120,10 +120,10 @@ class Chrome:
             return result
 
         def __cal_hash(self):
-            self.__hash_value.append(calc_hash.get_hash(self.__path, "after"))
+            self.__hash_value["after"]=calc_hash.get_hash(self.__path,"after")
 
         def get_hash(self):
-            return self.__hash_value
+            return [self.__hash_value]
 
 
     class Download:
@@ -213,7 +213,7 @@ class Chrome:
                     return -1
             return result
 
-        def show_info(self):
+        def show_all_info(self):
             for i in self.download_list:
                 print(i)
 
@@ -226,7 +226,7 @@ class Chrome:
             return data_list
 
         def __cal_hash(self):
-            self.__hash_value.append(calc_hash.get_hash(self.__path, "after"))
+            self.__hash_value.append(calc_hash.get_hash(self.__path,"after"))
 
         def get_hash(self):
             return self.__hash_value
@@ -414,7 +414,7 @@ class Chrome:
                     return -1
             return result
 
-        def show_info(self):
+        def show_all_info(self):
             for i in self.cache_list:
                 print(i)
 
@@ -422,7 +422,7 @@ class Chrome:
             if os.path.exists(self.__path):
                 cache_file_list = os.listdir(self.__path)
             for i in range(0, len(cache_file_list)):
-                hashdic = calc_hash.get_hash(self.__path +'\\'+cache_file_list[i], "after")
+                hashdic = calc_hash.get_hash(self.__path + '\\' + cache_file_list[i], "after")
                 self.__hash_value.append(hashdic)
 
         def get_hash(self):
@@ -511,7 +511,7 @@ class Chrome:
                     return -1
             return result
 
-        def show_info(self):
+        def show_all_info(self):
             for i in self.cookie_list:
                 print(i)
 
@@ -524,7 +524,7 @@ class Chrome:
             return sort_date
 
         def __cal_hash(self):
-            self.__hash_value.append(calc_hash.get_hash(self.__path, "after"))
+            self.__hash_value.append(calc_hash.get_hash(self.__path,"after"))
 
         def get_hash(self):
             return self.__hash_value
@@ -599,7 +599,7 @@ class Firefox:
                     return -1
             return result
 
-        def show_info(self):
+        def show_all_info(self):
             for i in self.history_list:
                 print(i)
 
@@ -625,7 +625,8 @@ class Firefox:
             return result
 
         def __cal_hash(self):
-            self.__hash_value.append(calc_hash.get_hash(self.__path, "after"))
+            self.__hash_value.append(calc_hash.get_hash(self.__path,"after"))
+
         def get_hash(self):
             return self.__hash_value
 
@@ -711,7 +712,7 @@ class Firefox:
                     return -1
             return result
 
-        def show_info(self):
+        def show_all_info(self):
             for i in self.cookie_list:
                 print(i)
 
@@ -724,7 +725,7 @@ class Firefox:
             return data_list
 
         def __cal_hash(self):
-            self.__hash_value.append(calc_hash.get_hash(self.__path, "after"))
+            self.__hash_value.append(calc_hash.get_hash(self.__path,"after"))
 
         def get_hash(self):
             return self.__hash_value
@@ -807,7 +808,7 @@ class Firefox:
                     return -1
             return result
 
-        def show_info(self):
+        def show_all_info(self):
             for i in self.download_list:
                 print(i)
 
@@ -820,7 +821,7 @@ class Firefox:
             return data_list
 
         def __cal_hash(self):
-            self.__hash_value.append(calc_hash.get_hash(self.__path, "after"))
+            self.__hash_value.append(calc_hash.get_hash(self.__path,"after"))
 
         def get_hash(self):
             return self.__hash_value
@@ -869,10 +870,6 @@ class Ie_Edge:
                     mkdict["file_size"] = cache.get_value_data_as_integer(5)
                     mkdict["file_path"] = cache.get_value_data_as_integer(4)
 
-                    if len(mkdict["url"].split("."))==1:
-                        print(no)
-                        print(str(mkdict["url"]))
-                        print(str(cache.get_value_data(17)))
 
 
                     if cache.get_value_data_as_integer(11) == 0:
@@ -907,7 +904,7 @@ class Ie_Edge:
                     return -1
             return result
 
-        def show_info(self):
+        def show_all_info(self):
             for i in self.cache_list:
                 print(i)
 
@@ -920,7 +917,7 @@ class Ie_Edge:
             return data_list
 
         def __cal_hash(self):
-            self.__hash_value.append(calc_hash.get_hash(self.__path, "after"))
+            self.__hash_value.append(calc_hash.get_hash(self.__path,"after"))
 
         def get_hash(self):
             return self.__hash_value
@@ -986,7 +983,7 @@ class Ie_Edge:
                     return -1
             return result
 
-        def show_info(self):
+        def show_all_info(self):
             for i in self.cookie_list:
                 print(i)
 
@@ -999,7 +996,7 @@ class Ie_Edge:
             return data_list
 
         def __cal_hash(self):
-            self.__hash_value.append(calc_hash.get_hash(self.__path, "after"))
+            self.__hash_value.append(calc_hash.get_hash(self.__path,"after"))
 
         def get_hash(self):
             return self.__hash_value
@@ -1035,7 +1032,6 @@ class Ie_Edge:
                     continue
 
                 for download in downloads_container.records:
-
                     no += 1
                     mkdict = dict()
                     mkdict["index"] = no
@@ -1056,6 +1052,7 @@ class Ie_Edge:
                     path = ""
                     name = ""
                     url = ""
+
                     try:
                         data = bytes.decode(binascii.hexlify(binary_data[0x148:]))
                         path = bytes.fromhex(data).decode("utf-16").split("\x00")[-2]
@@ -1096,7 +1093,7 @@ class Ie_Edge:
                     return -1
             return result
 
-        def show_info(self):
+        def show_all_info(self):
             for i in self.download_list:
                 print(i)
 
@@ -1109,7 +1106,7 @@ class Ie_Edge:
             return data_list
 
         def __cal_hash(self):
-            self.__hash_value.append(calc_hash.get_hash(self.__path, "after"))
+            self.__hash_value.append(calc_hash.get_hash(self.__path,"after"))
 
         def get_hash(self):
             return self.__hash_value
@@ -1122,7 +1119,7 @@ class Ie_Edge:
                 self.history_list == ""
             else:
                 self.__parse()
-            # self.__sort()
+            self.__sort()
             self.__hash_value = [hash_v]
             self.__path = path
             self.__cal_hash()
@@ -1163,13 +1160,15 @@ class Ie_Edge:
                         mkdict["title"] = bytes.fromhex(title).decode("utf-16").rstrip("\x00")
                     except:
                         mkdict["title"] = ""
+
+
                     mkdict["url"] = visit.get_value_data_as_string(17)
-                    # print(mkdict["url"])
                     mkdict["from_visit"] = ""
                     mkdict["keyword_search"] = ""
                     mkdict["visit_time"] = int2date4(visit.get_value_data_as_integer(13))
                     mkdict["visit_count"] = visit.get_value_data_as_integer(8)
                     mkdict["visit_type"] = ""
+
 
                     self.history_list.append(mkdict)
 
@@ -1215,7 +1214,7 @@ class Ie_Edge:
             return result
 
         def __cal_hash(self):
-            self.__hash_value.append(calc_hash.get_hash(self.__path, "after"))
+            self.__hash_value.append(calc_hash.get_hash(self.__path,"after"))
 
         def get_hash(self):
             return self.__hash_value
