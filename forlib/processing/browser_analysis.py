@@ -454,6 +454,7 @@ class Chrome:
         def get_hash(self):
             return self.__hash_value
 
+
     class Cookie:
         def __init__(self, file, hash_v):
             self.__file = file
@@ -888,7 +889,7 @@ class Ie_Edge:
 
                     if cache.is_long_value(17):
                         if cache.get_value_data_as_long_value(17) is not None:
-                            mkdict["url"] = cache.get_value_data_as_integer(17).get_data_as_string()
+                            mkdict["url"] = cache.get_value_data_as_long_value(17).get_data_as_string()
                         else:
                             mkdict["url"] = ""
                     else:
@@ -990,7 +991,7 @@ class Ie_Edge:
                     mkdict["expiry_time"] = int2date4(cookie.get_value_data_as_integer(11))
                     if cookie.is_long_value(17):
                         if cookie.get_value_data_as_long_value(17) is not None:
-                            mkdict["host"] = cookie.get_value_data_as_integer(17).get_data_as_string()
+                            mkdict["host"] = cookie.get_value_data_as_long_value(17).get_data_as_string()
                         else:
                             mkdict["host"] = ""
                     else:
@@ -1083,6 +1084,7 @@ class Ie_Edge:
                     path = ""
                     name = ""
                     url = ""
+                    size = ""
                     if binary_data is not None:
                         # get file size
                         try:
