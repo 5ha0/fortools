@@ -543,7 +543,7 @@ class SWAnalysis:
             if v.name() == "Current":
                 return v.value()
 
-    def get_info(self):
+    def get_os_info(self):
         ret_list = list()
         try:
             os_info = self.reg.open("Microsoft\\Windows NT\\CurrentVersion")
