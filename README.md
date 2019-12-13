@@ -52,8 +52,22 @@ History, Download: %UserProfile%\AppData\Roaming\Mozilla\Firefox\Profiles -> ran
 *IE && Edge*  
  %UserProfile%AppData\Local\Microsoft\Windows\WebCache\WebCacheV01.dat
  
- **Thumbcache__x.db && iconcache_xx.db**   
- C:\Users\"username"\AppData\Local\Microsoft\Windows\Explorer(windows 10)
+**Thumbcache__x.db && iconcache_xx.db**   
+C:\Users\"username"\AppData\Local\Microsoft\Windows\Explorer(windows 10)  
+ 
+**Prefetch**   
+%SystemRoot%\Prefetch  
+
+**Iconcache**   
+%UserProfile%\AppData\Local\IconCache.db  
+
+**Lnk**  
+C:\USERS<user name>\AppData\Roaming\Microsoft\Windows\Recent  
+ 
+**Recycle** 
+C:\$Recycle.Bin\[USER SID]  
+-> [USER SID] can be identified by typing whoami /user in the cmd window.  
+-> domain accounts: wmic UserAccount Where LocalAccount=True Get SID
 
 # Precautions
 **Browser**  
