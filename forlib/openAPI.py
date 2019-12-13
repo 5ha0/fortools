@@ -378,6 +378,7 @@ class Browser:
                 return Browser.Ie_Edge.Cookie.file_open(path)
             else:
                 print("PLZ check your file name")
+                
     class Chrome:
         class History:
             def file_open(path):
