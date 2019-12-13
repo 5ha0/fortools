@@ -34,7 +34,7 @@ class RegAnalysis:
         split_list = reg_key.split("\\")
         key_obj = {
             "Last Written Time" : str(ktime),
-            "Search Keywork" : find_val,
+            "Search Keyword" : find_val,
             "Root Key" : split_list[0],
             "Search Key Path" : "\\".join(split_list[1:])
         }
