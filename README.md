@@ -171,6 +171,12 @@ Now, this module analyzes Windows 7/10. And parse only meanigful contents in for
 - reg_userassist : [only print]  
 - vadinfo : [PID, Process, Offset, Start VPN, End VPN, Tag, Protection, CommitCharge, PrivateMemory, Parent, File]  
 - timeliner : [Plugin, Description, Created Date, Modified Date, Accessed Date, Changed Date]  
+
+**Browser**  
+- Cache: [index, type, browser, timezone, file_name, url, access_time, creation_time, file_size, file_path, expiry_time, last_modified_time, server_info]  
+- Download: [index, type, browser, timezone, file name, download_path, download_start_time, download_end_time, file_size, url, guid, opened, state]  
+- History: [index, type, browser, timezone, file name, download_path, download_start_time, download_end_time, file_size, url, guid, opened, state]  
+- Cookie: [index, type, browser, timezone, name, value, creation_time, last_accessed_time, expiry_time, host, path, is_secure, is_httponly]  
  
 # Contact
 If you have any questions , feel free to send us an e-mail(fortools.official@gmail.com).
