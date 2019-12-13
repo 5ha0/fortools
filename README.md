@@ -95,7 +95,11 @@ This module will analyze only $I files among the recycle bin files. And now, thi
 
 **Iconcache**  
 Now, this module analyzes Windows 7/10. And parse only meanigful contents in forensics.
-This module will analyze only iconcache.db files. If you want to analyze other files like iconcache_##.db, you can use *thumbnail analysis*.
+This module will analyze only iconcache.db files. If you want to analyze other files like iconcache_##.db, you can use *thumbnail analysis*.  
+*File section information*  
+- First Section: The path information for icons that are installed by default during Windows installation, and the application that users view or run, are stored in order.
+- Second Section: Path information for links or short icons is saved.
+- Third Section: After Windows is installed, icon path information for applications that you have run, viewed, and copied is saved in order.
   About functions  
 ->extension_filter: you can find file path of specific extension file<br>
 
