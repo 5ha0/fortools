@@ -64,7 +64,7 @@ C:\Users\"username"\AppData\Local\Microsoft\Windows\Explorer(windows 10)
 **Lnk**  
 C:\USERS<user name>\AppData\Roaming\Microsoft\Windows\Recent  
  
-**Recycle** 
+**Recycle**   
 C:\$Recycle.Bin\[USER SID]  
 -> [USER SID] can be identified by typing whoami /user in the cmd window.  
 -> domain accounts: wmic UserAccount Where LocalAccount=True Get SID
@@ -79,9 +79,7 @@ Continue adding versions scheduled
 
 **Registry**  
 Currently, only the following analyses are provided: SAM, SOFTWARE, NTUSER.DAT, SYSTEM File(System File is on progress)
-
 If the key position you want to find is extended, it may be slow.
-
 ex) find_key("Uninstall") --> Microsoft\\Windows\\CurrentVersion\\Uninstall (this key location is 4th)
 
 **Disk**  
