@@ -63,6 +63,7 @@ class RegAnalysis:
             return -1
 
     def find_value(self, key):
+        ret_list = list()
         try:
             key_path = self.reg.open(key)
         except:
@@ -80,21 +81,21 @@ class RegAnalysis:
                 all_value["Last Written Time"] = str(key_path.timestamp())
                 all_value[i.name()] = i.value()
 
-        self.ret_list.append(all_value)
-        return self.ret_list
+        ret_list.append(all_value)
+        return ret_list
     
-    def get_info(self, dictionary, search_list):
-        result = []
-        for i in dictionary:
+    def get_info(self, dictonary, search_list):
+        ret_list = list()
+        for i in dictonary:
             info = dict()
             try:
-                for j in lists:
+                for j in search_list:
                     info[j] = i[j]
-                result.append(info)
-            except KeyError:
+                ret_list.append(info)
+            except:
                 print("Plz check your key.")
                 return -1
-        return result 
+        return ret_list
     
     def __cal_hash(self):
         after_hash = calc_hash.get_hash(self.__path, 'after')
