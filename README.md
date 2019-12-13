@@ -193,16 +193,16 @@ Now, this module analyzes Windows 7/10. And parse only meanigful contents in for
 - Cookie: [index, type, browser, timezone, name, value, creation_time, last_accessed_time, expiry_time, host, path, is_secure, is_httponly]  
 
 **Recycle**  
-['$I Name','File Header','Original File Size','File Deleted Time','Time Zone','Original File Path']  
+- ['$I Name','File Header','Original File Size','File Deleted Time','Time Zone','Original File Path']  
 
 **Prefetch**  
-['Executable File Name', 'Ref_file#', 'Num Metadata Records', 'Volume Device Path', 'Volume Creation Time', 'Volume Creation TimeZone', 'Volume Serial Num', 'File Last Launch Time#', 'File Last Launch TimeZone#', 'File Create Time', 'File Create TimeZone', 'File Write Time', 'File Write TimeZone', 'File Run Count']  
+- ['Executable File Name', 'Ref_file#', 'Num Metadata Records', 'Volume Device Path', 'Volume Creation Time', 'Volume Creation TimeZone', 'Volume Serial Num', 'File Last Launch Time#', 'File Last Launch TimeZone#', 'File Create Time', 'File Create TimeZone', 'File Write Time', 'File Write TimeZone', 'File Run Count']  
 
 **Iconcache**  
-['File Version', 'Section One Path Num', 'Section One Path#', 'Section One Icon image location#', 'Section Two Path Num', 'Section Two Path#', 'Section Two Icon image location#', 'Section Three Path Num', 'Section Three Path#', 'Section Three Icon image location#']  
+- ['File Version', 'Section One Path Num', 'Section One Path#', 'Section One Icon image location#', 'Section Two Path Num', 'Section Two Path#', 'Section Two Icon image location#', 'Section Three Path Num', 'Section Three Path#', 'Section Three Icon image location#']  
 
 **Lnk**  
-['File Attributes0', 'Target File Creation Time', 'Target File Creation TimeZone', 'Target File Access Time', 'Target File Access TimeZone', 'Target File Write Time', 'Target File Write TimeZone', 'Link File Creation Time', 'Link File Creation TimeZone', 'Link File Last Access Time', 'Link File Last Access TimeZone', 'Link File Write Time', 'Link File Write TimeZone', 'Target File Size', 'IconIndex', 'Show Command', 'Drivetype', 'Driveserialnumber', 'Volumelable', 'Localbasepath Unicode', 'Localbasepath', 'NetName', 'DeviceName', 'NetworkProviderType', 'NetBios', 'Droid', 'DroidBirth']  
+- ['File Attributes0', 'Target File Creation Time', 'Target File Creation TimeZone', 'Target File Access Time', 'Target File Access TimeZone', 'Target File Write Time', 'Target File Write TimeZone', 'Link File Creation Time', 'Link File Creation TimeZone', 'Link File Last Access Time', 'Link File Last Access TimeZone', 'Link File Write Time', 'Link File Write TimeZone', 'Target File Size', 'IconIndex', 'Show Command', 'Drivetype', 'Driveserialnumber', 'Volumelable', 'Localbasepath Unicode', 'Localbasepath', 'NetName', 'DeviceName', 'NetworkProviderType', 'NetBios', 'Droid', 'DroidBirth']  
 
 
 # Contact
