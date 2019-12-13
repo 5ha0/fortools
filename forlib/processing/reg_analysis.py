@@ -441,6 +441,7 @@ class SYSAnalysis:
             for v in key2.subkeys():
                 key3 = self.reg.open(path + "\\%s\\%s" %(i, v.name()))
                 for k in key3.values():
+                    usb_obj["Device Name"] = i
                     usb_obj[k.name()] = k.value()
                 ret_list.append(usb_obj)
         return ret_list
