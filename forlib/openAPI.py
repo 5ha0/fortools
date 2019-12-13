@@ -246,6 +246,17 @@ class Iconcache:
 
 class Prefetch:
     def file_open(path):
+        result = os.path.isfile(path)
+        result = str(result)
+        if result != 'True':
+            for a in os.listdir(path):
+                file_exetension = a.split('.')[-1]
+                if file_exetension == 'pf':
+                    fullPath = os.path.join(path, a)
+                    file = Prefetch.file_open(fullPath)
+                    file.show_all_info()
+                if a == os.listdir(path)[-1]:
+                    return 0
         extension = sig_check(path)
         print('extension: ' + str(extension))
         if extension == 'prefetch':
