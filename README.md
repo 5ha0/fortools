@@ -121,6 +121,56 @@ Now, this module analyzes Windows 7/10. And parse only meanigful contents in for
 - get_info(MS Old version): [title, Author, Create Time, Last Save, Last Save Time, creating_application]  
 - get_info(ZIP): [TimeZone, Modified, System, version, Compressed, Uncompressed, CRC, Volume, Internal attr, External attr, Header offset, Flag bits, Raw time]  
 
+**Disk**  
+- get_info: [file_name, file_type, Type, size, ctime, mtime, atime, chage time]  
+- e01_metadata:  [case_number, description, examiner_name, evidence_number, notes, acquiry_date, system_date, acquiry_operating_system, acquiry_software_Version, extents, Bytes per Sector, Number of Sector, Total Size, MD5, SHA1]  
+- volume_metadata : [Type, Num, Start Sector, Total Sector, Size]  
+
+**Registry**  
+- find_key : [Last Written Time, Search Keyword, Root Key, Search Key Path]  
+*Favorite.NTAnalysis*  
+- get_recent_docs : [time, TimeZone, name, data]  
+- get_recent_MRU : [time, TimeZone, name, data]  
+- get_IE_visit  : [time, TimeZone, data]  
+- get_ms_office : [Version, MS Key Last Written time, TimeZone, path]  
+- get_userassist : [Time, TimeZone, Run Count, file]  
+
+*Favorite.SYSAnalysis*
+- get_computer_info : [ICSDomain, DataBasePath, Hostname, DhcpNameServer, DhcpDomain]  
+- get_USB : [Device Name, DeviceDesc, Capabilities, HardwareID, CompatibleIDs, ContainerID, ConfigFlags, ClassGUID, Driver, Class, Mfg, Service, FriendlyName]  
+- get_timezone : [Bias, TimeZoneKeyName, ActiveTimeBias]  
+- get_network_info : [Domain, IPAddress, DhcpIPAddress, DhcpServer, DhcpSubnetMask]  
+
+*Favorite.SWAnalysis*
+- get_os_info : [CurrentVersion, CurrentBuild, InstallDate, TimeZone, RegisteredOwner, EditionID, ProductName]  
+- get_network_info : [ServiceName, Description]  
+
+*Favorite.SAMAnalysis*
+- last_login : [Last Login, Last PW Change, Log Fail Time, TimeZone, RID, Logon Success Count, Logon Fail Count, UserName]  
+- user_name : [UserName, Last Written Time, TimeZone]  
+- user_info : [Last Login, Last PW Change, Log Fail Time, TimeZone, RID, Logon Success Count, Logon Fail Count, UserName]  
+
+**Memory**
+- cmdline : [PID, Process, Args]  
+- dlldump : [PID, Process, Result]  
+- dlllist : [PID, Process, Base, Size, Name, Path]  
+- driverirp : [Offset, Driver Name, IRP, Address, Module, Symbol]  
+- driverscan : [Offset, Start, Size, Service Key, Driver Name, Name]  
+- filescan : [Offset, Name]  
+- handles : [PID, Process, Offset, HandleValue, Type, GrantendAccess, Name]  
+- info : [Variable, Value]  
+- mutantscan : [Offset, Name]  
+- malfind : [PID, Process, Start, End, Tag, Protection, CommitCharge, PrivateMemory, HexDump, Disasm]  
+- pslist : [PID, PPID, ImageFileName, Offset(V), Threads, Handles, SessionId, Wow64, CreateTime, ExitTime]  
+- psscan : [PID, PPID, ImageFileName, Offset(V), Threads, Handles, SessionId, Wow64, CreateTime, ExitTime]  
+- pstree : [PID, PPID, ImageFileName, Offset(V), Threads, Handles, SessionId, Wow64, CreateTime, ExitTime]  
+- reg_certificates : [Certificate Path, Certificate Section, Certificate ID, Certificate Name]  
+- reg_hivelist : [Offset, FileFullPath]  
+- reg_hivescan : [Offset]  
+- reg_printkey : [Last Write Time, Hive Offset, Type, Key, Name, Data, Volatile]  
+- reg_userassist : [only print]  
+- vadinfo : [PID, Process, Offset, Start VPN, End VPN, Tag, Protection, CommitCharge, PrivateMemory, Parent, File]  
+- timeliner : [Plugin, Description, Created Date, Modified Date, Accessed Date, Changed Date]  
  
 # Contact
 If you have any questions , feel free to send us an e-mail(fortools.official@gmail.com).
