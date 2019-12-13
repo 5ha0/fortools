@@ -53,6 +53,9 @@ History, Download: %UserProfile%\AppData\Roaming\Mozilla\Firefox\Profiles -> ran
 
 *IE && Edge*  
  %UserProfile%AppData\Local\Microsoft\Windows\WebCache\WebCacheV01.dat
+ 
+ **Thumbcache__x.db && iconcache_xx.db** 
+ C:\Users\"username"\AppData\Local\Microsoft\Windows\Explorer(windows 10)
 
 # Precautions
 **Browser**  
@@ -107,11 +110,16 @@ Now, this module analyzes Windows 7/10. And parse only meanigful contents in for
 - get_info($MFT): [LSN, TimeZone, SIN Creation Time, SIN Modified Time, SIN MFT Modified Time, SIN Last Accessed Time, FIN Creation Time, FIN Modified Time, FIN MFT Modified Time, FIN Last Accessed Time, File Size, Name, Parent]  
 - get_info($J): [USN, TimeZone, Time, Source, File Attribute, Filename]  
 
-**Files**
+**Thumbcache && Iconcache**
+- get_info: [num, file_name, entry_hash, size, dimension, header_checksum, data_checksum, system, location]  
+- dimension: [width, height]
+
+**Files**  
 - get_info(JPEG): [time, Latitude, Longitude]
 - get_info(PDF): [author, creator, creation, modification, TimeZone]
 - get_info(HWP): [Author, Date, Last Save, Create Time, Last Save Time]
-- get_info(MS Old version): [title, Author, Create Time, Last Save, Last Save Time, creating_application]
+- get_info(MS Old version): [title, Author, Create Time, Last Save, Last Save Time, creating_application]  
+- get_info(ZIP): [TimeZone, Modified, System, version, Compressed, Uncompressed, CRC, Volume, Internal attr, External attr, Header offset, Flag bits, Raw time]  
 
  
 # Contact
