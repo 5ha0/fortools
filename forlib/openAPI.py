@@ -38,7 +38,7 @@ def sig_check(path):
 
 
 def file_list(path):
-    return files_analysis.FileList.file_list(path)
+    return files_analysis.file_list(path)
 
 def file_open(path):
     extension = sig_check(path)
