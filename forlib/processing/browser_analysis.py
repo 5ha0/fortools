@@ -888,7 +888,7 @@ class Ie_Edge:
                     mkdict["timezone"] = "UTC"
                     mkdict["file_name"] = cache.get_value_data_as_string(18)
 
-                    
+
 
                     mkdict["url"] = cache.get_value_data_as_string(17)
                     mkdict["access_time"] = int2date4(cache.get_value_data_as_integer(13))
@@ -1078,7 +1078,7 @@ class Ie_Edge:
                     path = ""
                     name = ""
                     url = ""
-                    
+
                     try:
                         data = bytes.decode(binascii.hexlify(binary_data[0x148:]))
                         path = bytes.fromhex(data).decode("utf-16").split("\x00")[-2]
@@ -1191,7 +1191,7 @@ class Ie_Edge:
                                     mkdict["title"] = ""
                     else:
                         mkdict["title"] = ""
-                    
+
 
                     mkdict["url"] = visit.get_value_data_as_string(17)
                     if len(mkdict["url"].split("@"))>1:
