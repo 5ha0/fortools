@@ -422,18 +422,26 @@ class SYSAnalysis:
 
     def get_USB(self):
         ret_list = list()
+        stor_list = list()
+        usb_obj = dict()
+
         try:
-            recent = self.reg.open("ControlSet00%s\\Enum\\USB" %self.__control_set_check(self.reg))
+            path = "ControlSet00%s\\Enum\\USBSTOR" %self.__control_set_check(self.reg)
+            recent = self.reg.open(path)
         except:
             print("Plz Check the file. This file is ", self.reg.hive_type())
             return -1
 
-        for i, v in enumerate(recent.values()):
-            reg_obj  = {
-                    "time" : str(recent.timestamp()),
-                    "TimeZone" : "UTC",
-                    "path" : v.value()}
-            ret_list.append(reg_obj)
+        for v in recent.subkeys():
+            stor_list.append(v.name())
+
+        for i in stor_list:
+            key2 = self.reg.open(path + "\\%s" % i)
+            for v in key2.subkeys():
+                key3 = self.reg.open(path + "\\%s\\%s" %(i, v.name()))
+                for k in key3.values():
+                    usb_obj[k.name()] = k.value()
+                ret_list.append(usb_obj)
         return ret_list
 
     def get_timezone(self):
