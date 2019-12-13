@@ -294,6 +294,7 @@ class ZIPAnalysis:
         self.__file = file
         self.__path = path
         self.__info = self.__parse()
+        self.__hash_value = [hash_v]
 
     def __cal_hash(self):
         self.__hash_value.append(calc_hash.get_hash(self.__path, 'after'))
