@@ -54,7 +54,7 @@ History, Download: %UserProfile%\AppData\Roaming\Mozilla\Firefox\Profiles -> ran
 *IE && Edge*  
  %UserProfile%AppData\Local\Microsoft\Windows\WebCache\WebCacheV01.dat
  
- **Thumbcache__x.db && iconcache_xx.db** 
+ **Thumbcache__x.db && iconcache_xx.db**   
  C:\Users\"username"\AppData\Local\Microsoft\Windows\Explorer(windows 10)
 
 # Precautions
