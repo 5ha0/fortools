@@ -11,6 +11,7 @@ There are few free integrated Python libraries that can be used from a forensics
 'fortools' can be installed with *pip install fortools*.
 
 # License 
+GNU General Public License version 3.0 (GPLv3)
 
 # How to Use
 For instructions, check the example folder.
