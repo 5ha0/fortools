@@ -886,23 +886,26 @@ class Ie_Edge:
                     mkdict["timezone"] = "UTC"
                     mkdict["file_name"] = cache.get_value_data_as_string(18)
 
+                    if cache.is_long_value(17):
+                        if cache.get_value_data_as_long_value(17) is not None:
+                            mkdict["url"] = cache.get_value_data_as_integer(17).get_data_as_string()
+                        else:
+                            mkdict["url"] = ""
+                    else:
+                        mkdict["url"] = cache.get_value_data_as_string(17)
 
-
-                    mkdict["url"] = cache.get_value_data_as_string(17)
                     mkdict["access_time"] = int2date4(cache.get_value_data_as_integer(13))
                     mkdict["creation_time"] = int2date4(cache.get_value_data_as_integer(10))
                     mkdict["file_size"] = cache.get_value_data_as_integer(5)
                     mkdict["file_path"] = cache.get_value_data_as_integer(4)
-
-
 
                     if cache.get_value_data_as_integer(11) == 0:
                         mkdict["expiry_time"] = 0
                     else:
                         mkdict["expiry_time"] = int2date4(cache.get_value_data_as_integer(11))
 
-
                     mkdict["last_modified_time"] = int2date4(cache.get_value_data_as_integer(13))
+
                     try:
                         if cache.get_value_data(21) is not None:
                             mkdict["server_info"] = cache.get_value_data(21).decode().split(" ")[1]
@@ -985,6 +988,13 @@ class Ie_Edge:
                     mkdict["creation_time"] = int2date4(cookie.get_value_data_as_integer(10))
                     mkdict["last_accessed_time"] = int2date4(cookie.get_value_data_as_integer(13))
                     mkdict["expiry_time"] = int2date4(cookie.get_value_data_as_integer(11))
+                    if cookie.is_long_value(17):
+                        if cookie.get_value_data_as_long_value(17) is not None:
+                            mkdict["host"] = cookie.get_value_data_as_integer(17).get_data_as_string()
+                        else:
+                            mkdict["host"] = ""
+                    else:
+                        mkdict["host"] = cookie.get_value_data_as_string(17)
                     mkdict["host"] = cookie.get_value_data_as_string(17)
                     mkdict["path"] = ""
                     mkdict["is_secure"] = ""
@@ -1063,31 +1073,35 @@ class Ie_Edge:
                     mkdict["browser"] = "IE10+ Edge"
                     mkdict["timezone"] = "UTC"
                     # get binary data
-                    binary_data = download.get_value_data(21)
-
-                    # get file size
-                    try:
-                        size_a = bytes.decode(binascii.hexlify(binary_data[0x48:0x4F][::-1]))
-                        size = int(size_a, 16)
-                    except:
-                        size = ""
-
-                    # get filename/filepath/fileurl
+                    if download.is_long_value(21):
+                        if download.get_value_data_as_long_value(21) is not None:
+                            binary_data = download.get_value_data_as_long_value(21).get_data()
+                        else:
+                            binary_data = None
+                    else:
+                        binary_data = download.get_value_data(21)
                     path = ""
                     name = ""
                     url = ""
-
-                    try:
-                        data = bytes.decode(binascii.hexlify(binary_data[0x148:]))
-                        path = bytes.fromhex(data).decode("utf-16").split("\x00")[-2]
-                        name = path.split("\\")[-1]
-                    except:
-                        pass
-                    try:
-                        data = bytes.decode(binascii.hexlify(binary_data[0x148:]))
-                        url = bytes.fromhex(data).decode("utf-16").split("\x00")[-3]
-                    except:
-                        pass
+                    if binary_data is not None:
+                        # get file size
+                        try:
+                            size_a = bytes.decode(binascii.hexlify(binary_data[0x48:0x4F][::-1]))
+                            size = int(size_a, 16)
+                        except:
+                            size = ""
+                        # get filename/filepath/fileurl
+                        try:
+                            data = bytes.decode(binascii.hexlify(binary_data[0x148:]))
+                            path = bytes.fromhex(data).decode("utf-16").split("\x00")[-2]
+                            name = path.split("\\")[-1]
+                        except:
+                            pass
+                        try:
+                            data = bytes.decode(binascii.hexlify(binary_data[0x148:]))
+                            url = bytes.fromhex(data).decode("utf-16").split("\x00")[-3]
+                        except:
+                            pass
 
                     mkdict["file name"] = name
                     mkdict["download_path"] = path
@@ -1177,7 +1191,13 @@ class Ie_Edge:
                     mkdict["timezone"] = "UTC"
                     # get title from response header
 
-                    binary_data = visit.get_value_data(21)
+                    if visit.is_long_value(21):
+                        if visit.get_value_data_as_long_value(21) is not None:
+                            binary_data = visit.get_value_data_as_long_value(21).get_data()
+                        else:
+                            binary_data = None
+                    else:
+                        binary_data = visit.get_value_data(21)
 
                     if binary_data is not None:
                         mkdict["title"] = self.__get_title(binary_data, 58)
@@ -1190,8 +1210,14 @@ class Ie_Edge:
                     else:
                         mkdict["title"] = ""
 
+                    if visit.is_long_value(17):
+                        if visit.get_value_data_as_long_value(17) is not None:
+                            mkdict["url"]=visit.get_value_data_as_long_value(17).get_data_as_string()
+                        else:
+                            mkdict["url"]=""
+                    else:
+                        mkdict["url"] = visit.get_value_data_as_string(17)
 
-                    mkdict["url"] = visit.get_value_data_as_string(17)
                     if len(mkdict["url"].split("@"))>1:
                         if mkdict["url"].split("@")[1][:4]=="file":
                             mkdict["title"]=mkdict["url"].split("//")[-1]
