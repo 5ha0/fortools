@@ -147,7 +147,6 @@ class Chrome:
             self.__file = file
             self.conn = sqlite3.connect(self.__file)
             self.download_list = []
-            self.__parse()
             if self.__parse() == -1:
                 self.download_list=""
             self.__sort()
@@ -252,7 +251,6 @@ class Chrome:
             self.__file = file
             self.__path = file
             self.cache_list = []
-            self.__parse()
             if self.__parse() ==-1:
                 self.cache_list==""
             self.__hash_value = hash_v
