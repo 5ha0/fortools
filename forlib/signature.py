@@ -185,7 +185,7 @@ def sig_check(path):
                     return extension
 
                 return sig['file_extension']
-    return -1
+    return 'None in our sig DB'
 
 
 def prefetch(path, f):
