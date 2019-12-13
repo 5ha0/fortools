@@ -330,13 +330,24 @@ class ZIPAnalysis:
         return json_list
 
 
-    def get_info(self):
+    def get_all_info(self):
         return self.__info
 
-    def show_info(self):
+    def show_all_info(self):
         for i in self.__info:
             print(i)
-
+    def get_info(self, lists):
+        result = []
+        for i in self.__info:
+            info = dict()
+            try:
+                for j in lists:
+                    info[j] = i[j]
+                result.append(info)
+            except KeyError:
+                print("Plz check your key.")
+                return -1
+        return result
     # def last_modtime(self):
     #     num = 1
     #     for info in self.file.infolist():

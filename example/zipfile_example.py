@@ -13,7 +13,7 @@ zip = file_open(path)
 zip.show_info()
 
 ####### 2. It handles all parsing provided by this library at once. #######
-# information = zip.get_info()
+# information = zip.get_all_info()
 # print(information)
 
 ####### 3.If You want to make a report, Use This. #######
@@ -30,6 +30,10 @@ zip.show_info()
 # for i in zip.get_hash():
 #     print(i)
 
-####### 6.If You want to extract data, Use This. #######
+####### 6. Used when you want to see only some of the information. #######
+# for i in zip.get_info(['num','FileName']):
+#     print(i)
+
+####### 7.If You want to extract data, Use This. #######
 # zip.extract()
 

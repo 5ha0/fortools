@@ -10,7 +10,7 @@ thumbnail = file_open(path)
 # thumbnail.show_info()
 
 ####### 2. It handles all parsing provided by this library at once. #######
-# information = thumbnail.get_info()
+# information = thumbnail.get_all_info()
 
 ####### 3. It shows specific width, height file data by this library at once. #######
 # info = thumbnail.dimension(30, 30)
@@ -25,6 +25,10 @@ thumbnail = file_open(path)
 # for i in filter_info:
 #    print(i)
 
-####### 6.If You want to get hash data, Use This. #######
+####### 6. Used when you want to see only some of the information. #######
+# for i in thumbnail.get_info(['num','dimension']):
+#     print(i)
+
+####### 7.If You want to get hash data, Use This. #######
 for i in thumbnail.get_hash():
     print(i)
