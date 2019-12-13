@@ -42,9 +42,9 @@ NTUSER.DAT: %UserProfile%
 
 **Browser**  
 *Chrome*  
-Cache: %UserProfile%\AppData\Local\Google\Chrome\User Data\Default(or Guest Profile)\Cache(folder)  
-History, Download: %UserProfile%\AppData\Local\Google\Chrome\User Data\Default(or Guest Profile)\History  
-Cookies: %UserProfile%\AppData\Local\Google\Chrome\User Data\Default(or Guest Profile)\Cookies  
+Cache: %UserProfile%\AppData\Local\Google\Chrome\User Data\Default(or some Profile)\Cache(folder)  
+History, Download: %UserProfile%\AppData\Local\Google\Chrome\User Data\Default(or some Profile)\History  
+Cookies: %UserProfile%\AppData\Local\Google\Chrome\User Data\Default(or some Profile)\Cookies  
 
 *Firefox*  
 Cookies: %UserProfile%\AppData\Roaming\Mozilla\Firefox\Profiles -> random number\cookies.sqlite  
