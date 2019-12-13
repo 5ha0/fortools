@@ -333,6 +333,51 @@ class Thumbnail_Iconcache:
 
 
 class Browser:
+    class History:
+        def file_open(path):
+            file = path.split("\\")[-1]
+            if file == "History":
+                return Browser.Chrome.History.file_open(path)
+            elif file == "places.sqlite":
+                return Browser.Firefox.History.file_open(path)
+            elif file == "WebCacheV01.dat":
+                return Browser.Ie_Edge.History.file_open(path)
+            else:
+                print("PLZ check your file name")
+                
+    class Cache:
+        def file_open(path):
+            file = path.split("\\")[-1]
+            if file == "Cache":
+                return Browser.Chrome.Cache.file_open(path)
+            elif file == "WebCacheV01.dat":
+                return Browser.Ie_Edge.Cache.file_open(path)
+            else:
+                print("PLZ check your file name")
+                
+    class Download:
+        def file_open(path):
+            file = path.split("\\")[-1]
+            if file == "History":
+                return Browser.Chrome.Download.file_open(path)
+            elif file == "places.sqlite":
+                return Browser.Firefox.Download.file_open(path)
+            elif file == "WebCacheV01.dat":
+                return Browser.Ie_Edge.Download.file_open(path)
+            else:
+                print("PLZ check your file name")
+
+    class Cookie:
+        def file_open(path):
+            file = path.split("\\")[-1]
+            if file == "Cookie":
+                return Browser.Chrome.Cookie.file_open(path)
+            elif file == "cookies.sqlite":
+                return Browser.Firefox.Cookie.file_open(path)
+            elif file == "WebCacheV01.dat":
+                return Browser.Ie_Edge.Cookie.file_open(path)
+            else:
+                print("PLZ check your file name")
     class Chrome:
         class History:
             def file_open(path):
