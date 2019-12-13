@@ -291,7 +291,8 @@ class MSOldAnalysis:
 # zip analysis: filename, comment, MAC time, zip version, Compressed size, Uncompressed size, crc, Raw time
 class ZIPAnalysis:
     def __init__(self, file, path, hash_v):
-        self.file = file
+        self.__file = file
+        self.__path = path
         self.__info = self.__parse()
 
     def __cal_hash(self):
@@ -300,7 +301,7 @@ class ZIPAnalysis:
     def __parse(self):
         json_list = []
         num = 1
-        for info in self.file.infolist():
+        for info in self.__file.infolist():
             file_obj = dict()
             file_name = os.path.basename(info.filename)
             file_obj['num'] = num
@@ -336,6 +337,7 @@ class ZIPAnalysis:
     def show_all_info(self):
         for i in self.__info:
             print(i)
+
     def get_info(self, lists):
         result = []
         for i in self.__info:
@@ -348,6 +350,10 @@ class ZIPAnalysis:
                 print("Plz check your key.")
                 return -1
         return result
+
+    def get_hash(self):
+        return self.__hash_value
+
     # def last_modtime(self):
     #     num = 1
     #     for info in self.file.infolist():
