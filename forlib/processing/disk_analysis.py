@@ -29,7 +29,7 @@ class E01Analysis:
         for i in dictionary:
             info = dict()
             try:
-                for j in lists:
+                for j in search_list:
                     info[j] = i[j]
                 result.append(info)
             except KeyError:
@@ -230,13 +230,13 @@ class DDAnalysis:
         for i in dictionary:
             info = dict()
             try:
-                for j in lists:
+                for j in search_list:
                     info[j] = i[j]
                 result.append(info)
             except KeyError:
                 print("Plz check your key.")
                 return -1
-        return result         
+        return result           
         
     def get_path(self, path, length):
         for partition in self.vol:
