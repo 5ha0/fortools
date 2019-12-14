@@ -28,12 +28,13 @@ class RegAnalysis:
             date = 'Never'
         else:
             date = datetime(1601, 1, 1) + timedelta(microseconds=int_time)
-        return str(date)
+            date = date.strftime('%Y-%m-%d %H:%M:%S')
+        return date
 
     def __print_path(self, find_val, reg_key, ktime):
         split_list = reg_key.split("\\")
         key_obj = {
-            "Last Written Time" : str(ktime),
+            "Last Written Time" : ktime.strftime("%Y-%m-%d %H:%M:%S"),
             "Search Keyword" : find_val,
             "Root Key" : split_list[0],
             "Search Key Path" : "\\".join(split_list[1:])
@@ -78,7 +79,7 @@ class RegAnalysis:
                 all_value[i.name()] = self.__cal_time(i.value())
             else:
                 all_value["Key Path"] = key
-                all_value["Last Written Time"] = str(key_path.timestamp())
+                all_value["Last Written Time"] = key_path.timestamp().strftime("%Y-%m-%d %H:%M:%S")
                 all_value[i.name()] = i.value()
 
         ret_list.append(all_value)
@@ -129,7 +130,8 @@ class NTAnalysis:
             date = 'Never'
         else:
             date = datetime(1601, 1, 1) + timedelta(microseconds=int_time)
-        return str(date)
+            date = date.strftime('%Y-%m-%d %H:%M:%S')
+        return date
 
     def get_recent_docs(self):
         ret_list = list()
@@ -144,7 +146,7 @@ class NTAnalysis:
                 continue
             #print(v.value().decode('utf-16'))
             reg_obj  = {
-                    "time" : str(recent.timestamp()),
+                    "time" : recent.timestamp().strftime("%Y-%m-%d %H:%M:%S"),
                     "TimeZone" : "UTC",
                     "name" : v.name(),
                     "data" : v.value().decode('utf-16').split('\x00')[0]}
@@ -161,7 +163,7 @@ class NTAnalysis:
 
         for i, v in enumerate(recent.values()):
             reg_obj  = {
-                    "time" : str(recent.timestamp()),
+                    "time" : recent.timestamp().strftime("%Y-%m-%d %H:%M:%S"),
                     "TimeZone" : "UTC",
                     "name" : v.name(),
                     "data" : v.value()}
@@ -179,7 +181,7 @@ class NTAnalysis:
         for i, v in enumerate(recent.values()):
             #print(v.value().decode('utf-16'))
             reg_obj  = {
-                    "time" : str(recent.timestamp()),
+                    "time" : recent.timestamp().strftime("%Y-%m-%d %H:%M:%S"),
                     "TimeZone" : "UTC",
                     "data" : v.value()}
             ret_list.append(reg_obj)
@@ -644,7 +646,8 @@ class SAMAnalysis:
             date = 'Never'
         else:
             date = datetime(1601, 1, 1) + timedelta(microseconds=int_time)
-        return str(date)
+            date = date.strftime('%Y-%m-%d %H:%M:%S')
+        return date
 
     def last_login(self):
         ret_list = list()
