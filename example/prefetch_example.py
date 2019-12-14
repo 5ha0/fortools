@@ -1,9 +1,19 @@
 from fortools import *
 
-file = Prefetch.file_open(r'path')
+file = Prefetch.file_open(r'file path')
 # # Or you can use this
 # path = r'path'
 # file = file_open(path)
+
+# #Use this when you want to analyze files in a folder
+# info = Prefetch.file_open(r'folder path')
+# # if you want to show this, use print()
+# print(info)
+# # if You want to make a report, Use This
+# docx = DocxExport()
+# for i in range(0, len(info)):
+#     docx.table_by_json(info[i])
+# docx.save('PF')
 
 '''
 Uncomment the comment you want to use.
