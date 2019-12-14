@@ -1,5 +1,4 @@
 from fortools import *
-import time
 
 
 # chrome_cookies = Browser.Chrome.Cookie.file_open(cookies_path)
@@ -12,16 +11,16 @@ import time
 # print(chrome_download.get_hash())
 
 # print("history")
-# for i in chrome_history.get_info():
+# for i in chrome_history.get_all_info():
 #    print(i)
 # print("cookies")
-# for i in chrome_cookies.get_info():
+# for i in chrome_cookies.get_all_info():
 #     print(i)
 # print("download")
-# for i in chrome_download.get_info():
+# for i in chrome_download.get_all_info():
 #     print(i)
 # print("cache")
-# for i in chrome_cache.get_info():
+# for i in chrome_cache.get__all_info():
 #     print(i)
 
 
@@ -38,16 +37,16 @@ import time
 # print(IE_Edge_cache.get_hash())
 
 # print("history")
-# for i in IE_Edge_history.get_info():
+# for i in IE_Edge_history.get_all_info():
 #     print(i)
 # print("cookie")
-# for i in IE_Edge_cookies.get_info():
+# for i in IE_Edge_cookies.get_all_info():
 #     print(i)
 # print("download")
-# for i in IE_Edge_download.get_info():
+# for i in IE_Edge_download.get_all_info():
 #      print(i)
 # print("cache")
-# for i in IE_Edge_cache.get_info():
+# for i in IE_Edge_cache.get_all_info():
 #      print(i)
 
 # Firefox_cookies=Browser.Firefox.Cookie.file_open(cookies_path)
@@ -59,13 +58,13 @@ import time
 # print(Firefox_download.get_hash())
 
 # print("history")
-# for i in Firefox_history.get_info():
+# for i in Firefox_history.get_all_info():
 #     print(i)
 # print("cookie")
-# for i in Firefox_cookies.get_info():
+# for i in Firefox_cookies.get_all_info():
 #     print(i)
 # print("download")
-# for i in Firefox_download.get_info():
+# for i in Firefox_download.get_all_info():
 #      print(i)
 
 
@@ -88,6 +87,6 @@ import time
 
 # #make report
 # get_docx = DocxExport()
-# get_docx.add_table((ex)IE_Edge_cookies.get_info())
+# get_docx.add_table((ex)IE_Edge_cookies.get_all_info())
 # get_docx.save("report_name")
 
