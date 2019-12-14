@@ -365,8 +365,7 @@ class NTAnalysis:
                         "Run Count" : self.__bin_to_int(userassist_values.value()[4:8]),
                         "file" : '%s' % file_name
                     }
-                    user_list.append(reg_obj)
-        ret_list = sorted(user_list, key=lambda e: (e['Time']))
+                    ret_list.append(reg_obj)
         return ret_list
 
 
