@@ -127,7 +127,7 @@ class Filter():
         return __result
 
 
-    def sorting(key, json_list, type):
+    def sorting(key, type, json_list):
         json_list = sorted(json_list, key=lambda list_info: (list_info[key]), reverse=type)
         return json_list
 
