@@ -16,6 +16,7 @@ class TimeZone:
             
         if int_time == 0:
             date_time = 0
+            return date_time
         else:
             date_time = datetime(1601, 1, 1) + timedelta(microseconds=int_time + timedelta(hours=time_zone[0], minutes=time_split[1]))
             return date_time
