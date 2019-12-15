@@ -45,7 +45,7 @@ class Chatbot():
                 while True:
                     print('\nchoose your analysis\n1.Show All Info\n2.Get Hash value of Artifact\n3.'
                           'Get String of event log xml\n4.Event ID Search\n5.Date Search\n6.Time Search\n7.Day Search\n'
-                          '8.Level Search\n9.Favorite\n10.Get xml strings with idx\n11.Get All Info\n12.Get info\n-1:finish')
+                          '8.Level Search\n9.Favorite\n10.Get xml strings with idx\n11.Get All Info\n-1:finish')
                     print('input num: ')
                     analysis = input()
                     try:
@@ -53,7 +53,7 @@ class Chatbot():
                     except:
                         print('Plz check your input.')
                         continue
-                    if analysis > 12 or analysis == 0 or analysis < -1:
+                    if analysis > 11 or analysis == 0 or analysis < -1:
                         print('Plz check your input.')
                         continue
 
@@ -212,28 +212,13 @@ class Chatbot():
                         file.write('\n# Get all event log info. [event id, creation time, timezone, level, source, computer info, sid]\n')
                         print('You can get info of event log.\n[event id, creation time, timezone, level, source, computer info, sid]')
                         file.write('event_info = event.get_all_info()\nfor i in event_info:\n\tprint(i)\n')
-                    elif analysis == 12:
-                        print('You can get info of event log.\nchoose key in [0: event id, 1: creation time, 2: timezone, 3: level, 4: source, 5: computer info, 6: sid, -1: finish]\nInput your key value: ')
-                        keys = ['event id', 'creation time', 'timezone', 'level', 'source', 'computer info', 'sid']
-                        key_list = []
-                        while True:
-                            key_input = int(input())
-                            if key_input == -1:
-                                break
-                            else:
-                                key_list.append(keys[key_input])
-                        file.write('\n# Get event log info of specific keys.\n')
-                        file.write('event_info = event.get_info([')
-                        for i in range(0, len(key_list)-1):
-                            file.write('\''+key_list[i]+'\', ')
-                        file.write('\''+key_list[-1]+'\'])\nfor i in event_info:\n\tprint(i)\n')
                     else:
                         print('plz input num. ex)1')
             elif answer == 2:
                 file.write('\n# Artifact: Jumplist\n')
                 file.write("jumplist = JumpList.file_open(r'" + path + "')\n")
                 while True:
-                    print('\nchoose your analysis. \n1.Get summary info from destlist\n2.Get destlist data list\n3.Get information from streams except destlist\n4.Print all info from streams\n5.Get hash\n6.Get specific info from streams.\n-1:finish')
+                    print('\nchoose your analysis. \n1.Get summary info from destlist\n2.Get destlist data list\n3.Get information from streams except destlist\n4.Print all info from streams\n5.Get hash\n-1:finish')
                     print('input num: ')
                     analysis = input()
                     try:
@@ -241,7 +226,7 @@ class Chatbot():
                     except:
                         print('Plz check your input.')
                         continue
-                    if analysis > 6 or analysis == 0 or analysis < -1:
+                    if analysis > 5 or analysis == 0 or analysis < -1:
                         print('Plz check your input.')
                         continue
                     if analysis == -1:
@@ -289,25 +274,6 @@ class Chatbot():
                     elif analysis == 5:
                         file.write('\n# Get hash\n')
                         file.write('jump_hash = jumplist.get_hash()\nfor i in jump_hash:\n\tprint(i)\n')
-                    elif analysis == 6:
-                        print('You can get info of jumplist.\nchoose key in [0: TimeZone, 1: create time, 2: access time, 3: write time, 4: file size, 5: target file size, 6: Local Path, 7: drive type, 8: drive serial number, 9: Volume Label, -1: finish]\nInput your key value: ')
-                        keys = ['TimeZone', 'create time', 'access time', 'write time', 'file size', 'target file size', 'Local Path', 'drive type', 'drive serial number', 'Volume Label']
-                        key_list = []
-                        while True:
-                            try:
-                                key_input = int(input())
-                                if key_input == -1:
-                                    break
-                                else:
-                                    key_list.append(keys[key_input])
-                            except:
-                                print('Plz check your input.')
-                                continue
-                        file.write('\n# Get jumplist info of specific keys.\n')
-                        file.write('jump_info = jumplist.get_info([')
-                        for i in range(0, len(key_list) - 1):
-                            file.write('\'' + key_list[i] + '\', ')
-                        file.write('\'' + key_list[-1] + '\'])\nfor i in jump_info:\n\tprint(i)\n')
                     else:
                         print('plz input num. ex)1')
             elif answer == 3:
@@ -471,14 +437,14 @@ class Chatbot():
                 file.write('\n# Artifact: Thumnail or iconcache_##\n')
                 file.write("thumbnail = Thumbnail_Iconcache.file_open(r'" + path + "')\n")
                 while True:
-                    print('\nchoose your analysis. \n1.Get data of thumnail\n2.Show information\n3.Get info filtering by dimension\n4.Get hash\n5.Get info\n-1.finish\ninput num: ')
+                    print('\nchoose your analysis. \n1.Get data of thumnail\n2.Show information\n3.Get info filtering by dimension\n4.Get hash\n-1.finish\ninput num: ')
                     analysis = input()
                     try:
                         analysis = int(analysis)
                     except:
                         print('Plz check your input.')
                         continue
-                    if analysis > 5 or analysis == 0 or analysis < -1:
+                    if analysis > 4 or analysis == 0 or analysis < -1:
                         print('Plz check your input.')
                         continue
                     if analysis == -1:
@@ -502,39 +468,20 @@ class Chatbot():
                         file.write('\n# Get hash\n')
                         print('You can check info but it is not saved in variable.')
                         file.write('hash_value = thumbnail.get_hash()\nfor i in hash_value:\n\tprint(i)\n')
-                    elif analysis == 5:
-                        print('You can get info of thumbnail.\nchoose key in [0:num, 1:file_name, 2:entry_hash, 3:size, 4:dimension, 5:header_checksum, 6:data_checksum, 7:system, 8:location, -1:finish]\nInput your key value: ')
-                        keys =  ['num', 'file_name', 'entry_hash', 'size', 'dimension', 'header_checksum', 'data_checksum', 'system', 'location']
-                        key_list = []
-                        while True:
-                            try:
-                                key_input = int(input())
-                                if key_input == -1:
-                                    break
-                                else:
-                                    key_list.append(keys[key_input])
-                            except:
-                                print('Plz check your input.')
-                                continue
-                        file.write('\n# Get thumbnail info of specific keys.\n')
-                        file.write('thumb_info = thumbnail.get_info([')
-                        for i in range(0, len(key_list) - 1):
-                            file.write('\'' + key_list[i] + '\', ')
-                        file.write('\'' + key_list[-1] + '\'])\nfor i in thumb_info:\n\tprint(i)\n')
                     else:
                         print('plz input num. ex)1')
             elif answer == 6:
                 file.write('\n# Artifact: zip file\n')
                 file.write("zip_file = Files.Zip.file_open(r'" + path + "')\n")
                 while True:
-                    print('\nchoose your analysis. \n1.Get all info\n2.Show all info\n3.Get info\n4.Extract file\n5.Get hash\n-1:finish\ninput num: ')
+                    print('\nchoose your analysis. \n1.Get all info\n2.Show all info\n3.Extract file\n4.Get hash\n-1:finish\ninput num: ')
                     analysis = input()
                     try:
                         analysis = int(analysis)
                     except:
                         print('Plz check your input.')
                         continue
-                    if analysis > 5 or analysis == 0 or analysis < -1:
+                    if analysis > 4 or analysis == 0 or analysis < -1:
                         print('Plz check your input.')
                         continue
                     if analysis == -1:
@@ -546,29 +493,9 @@ class Chatbot():
                         file.write('\n# Show information of zip\n')
                         file.write('zip_file.show_all_info()\n')
                     elif analysis == 3:
-                        print(
-                            'You can get info of thumbnail.\nchoose key in [0:TimeZone, 1:Modified, 2:System, 3:version, 4:Compressed, 5:Uncompressed, 6:CRC, 7:Volume, 8:Internal attr, 9:External attr, 10:Header offset, 11:Flag bits, 12:Raw time, -1:finish]\nInput your key value: ')
-                        keys = ['TimeZone', 'Modified', 'System', 'version', 'Compressed', 'Uncompressed', 'CRC', 'Volume', 'Internal attr', 'External attr', 'Header offset', 'Flag bits', 'Raw time']
-                        key_list = []
-                        while True:
-                            try:
-                                key_input = int(input())
-                                if key_input == -1:
-                                    break
-                                else:
-                                    key_list.append(keys[key_input])
-                            except:
-                                print('Plz check your input.')
-                                continue
-                        file.write('\n# Get zip info of specific keys.\n')
-                        file.write('zip_info = zip_file.get_info([')
-                        for i in range(0, len(key_list) - 1):
-                            file.write('\'' + key_list[i] + '\', ')
-                        file.write('\'' + key_list[-1] + '\'])\nfor i in zip_info:\n\tprint(i)\n')
-                    elif analysis == 4:
                         file.write('\n# Extract file\n')
                         file.write('zip_file.extract()\n')
-                    elif analysis == 5:
+                    elif analysis == 4:
                         file.write('\n# Get hash\n')
                         file.write('hash_value = zip_file.get_hash()\nfor i in hash_value:\n\tprint(i)\n')
                     else:
@@ -648,14 +575,14 @@ class Chatbot():
                 elif ana_type == 4:
                     file.write('Cache.file_open(r\''+path+'\')\n')
                 while True:
-                    print('\nchoose your analysis. \n1.Get all info\n2.Get hash value\n3.Show all info\n4.Get specific info\n-1:finish\ninput num: ')
+                    print('\nchoose your analysis. \n1.Get all info\n2.Get hash value\n3.Show all info\n-1:finish\ninput num: ')
                     analysis = input()
                     try:
                         analysis = int(analysis)
                     except:
                         print('Plz check your input.')
                         continue
-                    if analysis > 4 or analysis == 0 or analysis < -1:
+                    if analysis > 3 or analysis == 0 or analysis < -1:
                         print('Plz check your input.')
                         continue
                     if analysis == -1:
@@ -690,85 +617,11 @@ class Chatbot():
                     elif analysis == 3:
                         file.write('\n# Show all information\n')
                         file.write('browser.show_all_info()\n')
-                    elif analysis == 4:
-                        file.write('\n# Get specific key value\n')
-                        if ana_type == 4:
-                            print('You can get info of cache.\nchoose key in [0:index, 1:type, 2:browser, 3:timezone, 4:file_name, 5:url, 6:access_time, 7:creation_time, 8:file_size, 9:file_path, 10:expiry_time, 11:last_modified_time, 12:server_info, -1:finish]\nInput your key value: ')
-                            keys = ['index', 'type', 'browser', 'timezone', 'file_name', 'url', 'access_time', 'creation_time', 'file_size', 'file_path', 'expiry_time', 'last_modified_time', 'server_info']
-                            key_list = []
-                            while True:
-                                try:
-                                    key_input = int(input())
-                                    if key_input == -1:
-                                        break
-                                    else:
-                                        key_list.append(keys[key_input])
-                                except:
-                                    print('Plz check your input.')
-                                    continue
-                            file.write('cache_info = browser.get_info([')
-                            for i in range(0, len(key_list) - 1):
-                                file.write('\'' + key_list[i] + '\', ')
-                            file.write('\'' + key_list[-1] + '\'])\nfor i in cache_info:\n\tprint(i)\n')
-                        elif ana_type == 3:
-                            print('You can get info of download.\nchoose key in [0:index, 1:type, 2:browser, 3:timezone, 4:file name, 5:download_path, 6:download_start_time, 7:download_end_time, 8:file_size, 9:url, 10:guid, 11:opened, 12:state, -1:finish]\nInput your key value: ')
-                            keys = ['index', 'type', 'browser', 'timezone', 'file name', 'download_path', 'download_start_time', 'download_end_time', 'file_size', 'url', 'guid', 'opened', 'state']
-                            key_list = []
-                            while True:
-                                try:
-                                    key_input = int(input())
-                                    if key_input == -1:
-                                        break
-                                    else:
-                                        key_list.append(keys[key_input])
-                                except:
-                                    print('Plz check your input.')
-                                    continue
-                            file.write('download_info = browser.get_info([')
-                            for i in range(0, len(key_list) - 1):
-                                file.write('\'' + key_list[i] + '\', ')
-                            file.write('\'' + key_list[-1] + '\'])\nfor i in download_info:\n\tprint(i)\n')
-                        elif ana_type == 1:
-                            print('You can get info of cookie.\nchoose key in [0:index, 1:type, 2:browser, 3:timezone, 4:name, 5:value, 6:creation_time, 7:last_accessed_time, 8:expiry_time, 9:host, 10:path, 11:is_secure, 12:is_httponly, -1:finish]\nInput your key value: ')
-                            keys = ['index', 'type', 'browser', 'timezone', 'name', 'value', 'creation_time', 'last_accessed_time', 'expiry_time', 'host', 'path', 'is_secure', 'is_httponly']
-                            key_list = []
-                            while True:
-                                try:
-                                    key_input = int(input())
-                                    if key_input == -1:
-                                        break
-                                    else:
-                                        key_list.append(keys[key_input])
-                                except:
-                                    print('Plz check your input.')
-                                    continue
-                            file.write('cookie_info = browser.get_info([')
-                            for i in range(0, len(key_list) - 1):
-                                file.write('\'' + key_list[i] + '\', ')
-                            file.write('\'' + key_list[-1] + '\'])\nfor i in cookie_info:\n\tprint(i)\n')
-                        elif ana_type == 2:
-                            print('You can get info of history.\nchoose key in [0:index, 1:type, 2:browser, 3:timezone, 4:file name, 5:download_path, 6:download_start_time, 7:download_end_time, 8:file_size, 9:url, 10:guid, 11:opened, 12:state, -1:finish]\nInput your key value: ')
-                            keys = ['index', 'type', 'browser', 'timezone', 'file name', 'download_path', 'download_start_time', 'download_end_time', 'file_size', 'url', 'guid', 'opened', 'state']
-                            key_list = []
-                            while True:
-                                try:
-                                    key_input = int(input())
-                                    if key_input == -1:
-                                        break
-                                    else:
-                                        key_list.append(keys[key_input])
-                                except:
-                                    print('Plz check your input.')
-                                    continue
-                            file.write('history_info = browser.get_info([')
-                            for i in range(0, len(key_list) - 1):
-                                file.write('\'' + key_list[i] + '\', ')
-                            file.write('\'' + key_list[-1] + '\'])\nfor i in history_info:\n\tprint(i)\n')
             elif answer == 9:
                 file.write('\n# Artifact: Recycle\n')
                 file.write("recycle = Recycle.file_open(r'" + path + "')\n")
                 while True:
-                    print('\nchoose your analysis. \n1.Show all info\n2.Get all info\n3.Get specific key values\n-1:finish\ninput num: ')
+                    print('\nchoose your analysis. \n1.Show all info\n2.Get all info\n3.Get hash\n-1:finish\ninput num: ')
                     analysis = input()
                     try:
                         analysis = int(analysis)
@@ -787,24 +640,8 @@ class Chatbot():
                         file.write('\n# Get all information\n')
                         file.write('recycle_info = recycle.get_all_info()\nfor i in recycle_info:\n\tprint(i)\n')
                     elif analysis == 3:
-                        file.write('\n# Get specific information\n')
-                        print('You can get info of recycle.\nchoose key in [0:$I Name, 1:File Header, 2:Original File Size, 3:File Deleted Time, 4:Time Zone, 5:Original File Path, -1:finish]\nInput your key value: ')
-                        keys = ['$I Name','File Header','Original File Size','File Deleted Time','Time Zone','Original File Path']
-                        key_list = []
-                        while True:
-                            try:
-                                key_input = int(input())
-                                if key_input == -1:
-                                    break
-                                else:
-                                    key_list.append(keys[key_input])
-                            except:
-                                print('Plz check your input.')
-                                continue
-                        file.write('recycle_info = recycle.get_info([')
-                        for i in range(0, len(key_list) - 1):
-                            file.write('\'' + key_list[i] + '\', ')
-                        file.write('\'' + key_list[-1] + '\'])\nfor i in recycle_info:\n\tprint(i)\n')
+                        file.write('\n# Get hash value\n')
+                        file.write('hash_value = recycle.get_hash()\nfor i in hash_value:\n\tprint(i)\n')
             elif answer == 10:
                 file.write('\n# Artifact: Iconcache\n')
                 file.write("icon_cache = Iconcache.file_open(r'" + path + "')\n")
@@ -816,7 +653,7 @@ class Chatbot():
                     except:
                         print('Plz check your input.')
                         continue
-                    if analysis > 5 or analysis == 0 or analysis < -1:
+                    if analysis > 4 or analysis == 0 or analysis < -1:
                         print('Plz check your input.')
                         continue
                     if analysis == -1:
