@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-class TimeZone()
+class TimeZone:
 
     def __init__(self,time_zone):
         self.__time_split = time_zone
