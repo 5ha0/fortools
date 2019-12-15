@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 class TimeZone()
 
-    def _init_(self,time_zone):
+    def __init__(self,time_zone):
         self.__time_split = time_zone
         self.__time_split = self.__time_split.split(':')
         self.__time_split = int(self.__time_split)
