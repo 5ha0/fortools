@@ -242,19 +242,6 @@ class Thumbnail_analysis_windows:   # windows version check
         print("Getting Data Success!\n")
         return self.thumb_list
 
-    def get_info(self, lists):
-        result = []
-        for i in self.thumb_list:
-            info = dict()
-            try:
-                for j in lists:
-                    info[j] = i[j]
-                result.append(info)
-            except KeyError:
-                print("Plz check your key.")
-                return -1
-        return result
-
     def get_hash(self):
         return self.__hash_value
 

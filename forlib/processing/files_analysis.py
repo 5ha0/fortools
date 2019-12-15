@@ -339,19 +339,6 @@ class ZIPAnalysis:
         for i in self.__info:
             print(i)
 
-    def get_info(self, lists):
-        result = []
-        for i in self.__info:
-            info = dict()
-            try:
-                for j in lists:
-                    info[j] = i[j]
-                result.append(info)
-            except KeyError:
-                print("Plz check your key.")
-                return -1
-        return result
-
     def get_hash(self):
         return self.__hash_value
 

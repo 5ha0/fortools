@@ -1,16 +1,16 @@
 from fortools import *
 
 # input zip path
-path = r'C:\Users\sjms1\Desktop\Desktop.zip'
+# path = r'..\open_test.zip'
 
 # zip file open
-zip = file_open(path)
+zip = file_open(r'..\open_test.zip')
 # Or you can use this
 # path = 'path'
 # file = file_open(path)
 
-####### 1. It shows all the parsing provided by this library at once. #######
-zip.show_info()
+# ####### 1. It shows all the parsing provided by this library at once. #######
+# zip.show_all_info()
 
 ####### 2. It handles all parsing provided by this library at once. #######
 # information = zip.get_all_info()
@@ -30,10 +30,6 @@ zip.show_info()
 # for i in zip.get_hash():
 #     print(i)
 
-####### 6. Used when you want to see only some of the information. #######
-# for i in zip.get_info(['num','FileName']):
-#     print(i)
-
-####### 7.If You want to extract data, Use This. #######
+####### 6.If You want to extract data, Use This. #######
 # zip.extract()
 
