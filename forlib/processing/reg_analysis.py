@@ -114,7 +114,7 @@ class Favorite:
         self.SWAnalysis = SWAnalysis(self.reg)
         self.SAMAnalysis = SAMAnalysis(self.reg)
 
-class NTAnalysis:
+class NTUSER:
     def __init__(self, file):
         self.reg = file
 
@@ -369,7 +369,7 @@ class NTAnalysis:
         return ret_list
 
 
-class SYSAnalysis:
+class SYSTEM:
     def __init__(self, file):
         self.reg = file
 
@@ -534,7 +534,7 @@ class SYSAnalysis:
         return ret_list
 
 
-class SWAnalysis:
+class SOFTWARE:
     def __init__(self, file):
         self.reg = file
 
@@ -629,7 +629,7 @@ class SWAnalysis:
         return ret_list
 
 
-class SAMAnalysis:
+class SAM:
     def __init__(self, file):
         self.reg = file
 
