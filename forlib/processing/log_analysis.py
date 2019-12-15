@@ -5,7 +5,6 @@ import re
 import forlib.calc_hash as calc_hash
 from forlib.processing.filter import Filter
 
-
 # analysis part for event file
 class EventAnalysis:
     time_cnt = []
@@ -82,16 +81,16 @@ class EventAnalysis:
         return result
 
     def date(self, date1, date2):
-        return Filter.date_filter("create Time", [date1, date2], self.evtx_json)
+        return Filter.date("create Time", [date1, date2], self.evtx_json)
 
     def time(self, time1, time2):
-        return Filter.time_filter("create Time", [time1, time2], self.evtx_json)
+        return Filter.time("create Time", [time1, time2], self.evtx_json)
 
     def day(self, day1, day2):
-        return Filter.day_filter("create Time", [day1, day2], self.evtx_json)
+        return Filter.day("create Time", [day1, day2], self.evtx_json)
 
     def xml_with_num(self, num):
-        if num > len(self.evtx_json):
+        if num >len(self.evtx_json):
             print('Plz check idx.')
         else:
             print(self.evtx_file.records[num].get_xml_string())
@@ -120,38 +119,22 @@ class Etc:
 
     # windows error reporting(1001)
     def error_report(self):
-        return EventAnalysis.eventid(self, 1001)
+        return EventAnalysis.eventid(self,1001)
 
     def service_fails(self):
-        return EventAnalysis.eventid(self, 7022) + EventAnalysis.eventid(self, 7023) + EventAnalysis.eventid(self,
-                                                                                                             7024) + EventAnalysis.eventid(
-            self, 7026) + EventAnalysis.eventid(self, 7031) + EventAnalysis.eventid(self, 7032) + EventAnalysis.eventid(
-            self, 7034)
+        return EventAnalysis.eventid(self, 7022) + EventAnalysis.eventid(self, 7023) + EventAnalysis.eventid(self, 7024) + EventAnalysis.eventid(self, 7026) + EventAnalysis.eventid(self, 7031) +EventAnalysis.eventid(self, 7032) + EventAnalysis.eventid(self, 7034)
 
     # rule add(2004), rule change(2005), rule deleted(2006, 2033), fail to load group policy(2009)
     def firewall(self):
-        return EventAnalysis.eventid(self, 2004) + EventAnalysis.eventid(self, 2005) + EventAnalysis.eventid(self,
-                                                                                                             2006) + EventAnalysis.eventid(
-            self, 2009) + EventAnalysis.eventid(self, 2033)
+        return EventAnalysis.eventid(self, 2004)+EventAnalysis.eventid(self, 2005)+EventAnalysis.eventid(self, 2006)+EventAnalysis.eventid(self, 2009)+EventAnalysis.eventid(self, 2033)
 
     # new device(43), new mass storage installation(400, 410)
     def usb(self):
-        return EventAnalysis.eventid(self, 43) + EventAnalysis.eventid(self, 400) + EventAnalysis.eventid(self, 410)
+        return EventAnalysis.eventid(self, 43)+EventAnalysis.eventid(self, 400)+EventAnalysis.eventid(self, 410)
 
     # starting a wireless connection(8000, 8011), successfully connected(8001), disconnect(8003), failed(8002)
     def wireless(self):
-        return EventAnalysis.eventid(self, 8000) + EventAnalysis.eventid(self, 8001) + EventAnalysis.eventid(self,
-                                                                                                             8002) + EventAnalysis.eventid(
-            self, 8003) + EventAnalysis.eventid(self, 8011) + EventAnalysis.eventid(self,
-                                                                                    10000) + EventAnalysis.eventid(self,
-                                                                                                                   10001) + EventAnalysis.eventid(
-            self, 11000) + EventAnalysis.eventid(self, 11001) + EventAnalysis.eventid(self,
-                                                                                      11002) + EventAnalysis.eventid(
-            self, 11004) + EventAnalysis.eventid(self, 11005) + EventAnalysis.eventid(self,
-                                                                                      11006) + EventAnalysis.eventid(
-            self, 11010) + EventAnalysis.eventid(self, 12011) + EventAnalysis.eventid(self,
-                                                                                      12012) + EventAnalysis.eventid(
-            self, 12013)
+        return EventAnalysis.eventid(self, 8000)+EventAnalysis.eventid(self, 8001)+EventAnalysis.eventid(self, 8002)+EventAnalysis.eventid(self, 8003)+EventAnalysis.eventid(self, 8011)+EventAnalysis.eventid(self, 10000)+EventAnalysis.eventid(self, 10001)+EventAnalysis.eventid(self, 11000)+EventAnalysis.eventid(self, 11001)+EventAnalysis.eventid(self, 11002)+EventAnalysis.eventid(self, 11004)+EventAnalysis.eventid(self, 11005)+EventAnalysis.eventid(self, 11006)+EventAnalysis.eventid(self, 11010)+EventAnalysis.eventid(self, 12011)+EventAnalysis.eventid(self, 12012)+EventAnalysis.eventid(self, 12013)
 
 
 class System:
@@ -164,8 +147,8 @@ class System:
 
     # window shut down
     def system_off(self):
-        return EventAnalysis.eventid(self, 4609) + EventAnalysis.eventid(self, 6006) + EventAnalysis.eventid(self, 1100)
-
+        return EventAnalysis.eventid(self, 4609)+EventAnalysis.eventid(self, 6006)+EventAnalysis.eventid(self, 1100)
+    
     # window dirty shut down
     def dirty_shutdown(self):
         return EventAnalysis.eventid(self, 6008)
@@ -197,7 +180,7 @@ class Account:
         return EventAnalysis.eventid(self, 4720)
 
     def add_privileged_group(self):
-        return EventAnalysis.eventid(self, 4728) + EventAnalysis.eventid(self, 4732) + EventAnalysis.eventid(self, 4756)
+        return EventAnalysis.eventid(self, 4728)+EventAnalysis.eventid(self, 4732)+EventAnalysis.eventid(self, 4756)
 
 
 # analysis for LinuxLog
@@ -232,7 +215,7 @@ class ApacheLog:
         def get_all_info(self):
             return self.__json
 
-        def get_info(self, lists):
+        def get_info(self,lists):
             result = []
             for i in self.__json:
                 info = dict()
@@ -325,7 +308,7 @@ class IIS:
     def get_all_info(self):
         return self.__json
 
-    def get_info(self, lists):
+    def get_info(self,lists):
         result = []
         for i in self.__json:
             info = dict()
