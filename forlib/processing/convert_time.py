@@ -10,10 +10,10 @@ def convert_time(int_time):
 def convert_bin_time(int_time):
     int_time = int_time*0.1
     if int_time == 0:
-        date = 'Never'
+        date_time = 'Never'
     else:
-        date = datetime(1601, 1, 1) + timedelta(microseconds=int_time)
-        date = date.strftime('%Y-%m-%d %H:%M:%S')
-    return date
+        date_time = datetime(1601, 1, 1) + timedelta(microseconds=int_time)
+        date_time = date_time.strftime('%Y-%m-%d %H:%M:%S')
+    return date_time
     
     
