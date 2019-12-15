@@ -68,7 +68,7 @@ class Filter():
         return result
 
 
-    def date_filter(key, filter_list, json_list):
+    def date(key, filter_list, json_list):
         __result = []
         for i in range(0, len(json_list)):
             try:
@@ -88,7 +88,7 @@ class Filter():
         return __result
 
 
-    def time_filter(key, filter_list, json_list):
+    def time(key, filter_list, json_list):
         __result = []
         for i in range(0, len(json_list)):
             try:
@@ -107,7 +107,7 @@ class Filter():
         return __result
 
 
-    def day_filter(key, filter_list, json_list):
+    def day(key, filter_list, json_list):
         __result = []
         for i in range(0, len(json_list)):
             try:
