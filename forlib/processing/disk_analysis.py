@@ -22,7 +22,8 @@ class E01Analysis:
             date = 'Never'
         else:
             date = datetime.utcfromtimestamp(int_time)
-        return str(date)
+            date = date.strftime("%Y-%m-%d %H:%M:%S")
+        return date
 
     def get_info(self, dictionary, search_list):
         result = []
@@ -224,7 +225,15 @@ class DDAnalysis:
         self.ret_list = list()
         self.__hash_val = [hash_val]
         self.__cal_hash()
-
+        
+    def __cal_time(self, int_time):
+        if int_time == 0:
+            date = 'Never'
+        else:
+            date = datetime.utcfromtimestamp(int_time)
+            date = date.strftime("%Y-%m-%d %H:%M:%S")
+        return date
+    
     def get_info(self, dictionary, search_list):
         result = []
         for i in dictionary:
