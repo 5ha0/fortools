@@ -162,7 +162,10 @@ class Filter():
         return result
 
 class Show:
-    def __init__(self, json_list):
+    def data(json_list):
         for i in json_list:
             print(i)
+
+    def keys(json_list):
+        print(list(json_list[0].keys()))
 
