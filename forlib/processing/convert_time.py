@@ -13,7 +13,6 @@ def convert_bin_time(int_time):
         date_time = 'Never'
     else:
         date_time = datetime(1601, 1, 1) + timedelta(microseconds=int_time)
-        date_time = date_time.strftime('%Y-%m-%d %H:%M:%S')
     return date_time
     
     
