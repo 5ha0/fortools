@@ -22,9 +22,9 @@ class Filter():
                 result_re = None
                 if type(j[1]) == list:
                     for k in j[1]:
-                        p = re.compile('^'+str(k)+'$')
+                        p = re.compile(str(k))
                         try:
-                            result_re = p.search(str(i[j[0]]))
+                            result_re = p.match(str(i[j[0]]))
                             if result_re is not None:
                                 break;
                         except KeyError:
