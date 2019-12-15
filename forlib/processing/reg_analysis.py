@@ -109,10 +109,10 @@ class Favorite:
     def __init__(self, file):
         self.reg = file
         self.ret_list = list()
-        self.NTAnalysis = NTAnalysis(self.reg)
-        self.SYSAnalysis = SYSAnalysis(self.reg)
-        self.SWAnalysis = SWAnalysis(self.reg)
-        self.SAMAnalysis = SAMAnalysis(self.reg)
+        self.NTAnalysis = NTUSER(self.reg)
+        self.SYSAnalysis = SYSTEM(self.reg)
+        self.SWAnalysis = SOFTWARE(self.reg)
+        self.SAMAnalysis = SAM(self.reg)
 
 class NTUSER:
     def __init__(self, file):
