@@ -170,7 +170,7 @@ class NTUSER:
             reg_obj = {
                 "Version": version,
                 "TimeZone": r_time(recent.timestamp()).strftime('%Z'),
-                "MS key Last Written time": r_time(recent.timestamp()).strftime('%Y-%m-%d %H:%M:%S'),
+                "MS Key Last Written time": r_time(recent.timestamp()).strftime('%Y-%m-%d %H:%M:%S'),
                 "path": file_name[:-1]
             }
             ms_list.append(reg_obj)
