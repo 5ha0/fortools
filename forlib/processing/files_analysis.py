@@ -86,19 +86,6 @@ class JPEGAnalysis:
     def get_all_info(self):
         return [self.__jpeg_json]
 
-    def get_info(self, lists):
-        result = []
-        info = dict()
-        try:
-            for j in lists:
-                info[j] = self.__jpeg_json
-            result.append(info)
-        except KeyError:
-            print("Plz check your key.")
-            return -1
-        return result
-
-
 
 # pdf analysis: author, creator, create Time, modification Time, pdf Version
 class PDFAnalysis:
@@ -122,23 +109,23 @@ class PDFAnalysis:
             info_obj["creator"] = 'None'
         try:
             time_info = info['/CreationDate'].replace("'", ':', 1)
-        except KeyError:
-            time_info = "None"
-        try:
-            time_info = datetime.strptime(time_info[2:-1], "%Y%m%d%H%M%S%z")
-            info_obj["creation"] = time_info.strftime("%Y-%m-%d %H:%M:%S")
+            crt_time = datetime.strptime(time_info[2:-1], "%Y%m%d%H%M%S%z")
+            origin_timezone = set_file_timezone(crt_time.strftime("%Z").replace('UTC+', ''))
+            user_timezone = get_timezone()
+            p_crt_time = crt_time.replace(tzinfo=timezone(timedelta(minutes=user_timezone))) + timedelta(minutes=user_timezone) - timedelta(minutes=origin_timezone)
+            info_obj["TimeZone"] = p_crt_time.strftime("%Z")
+            info_obj["creation"] = p_crt_time.strftime("%Y-%m-%d %H:%M:%S")
         except KeyError:
             info_obj["creation"] = 'None'
         try:
             time_info = info['/ModDate'].replace("'", ':', 1)
             mod_time = datetime.strptime(time_info[2:-1], "%Y%m%d%H%M%S%z")
-            info_obj["modification"] = mod_time.strftime("%Y-%m-%d %H:%M:%S")
+            origin_timezone = set_file_timezone(mod_time.strftime("%Z").replace('UTC+',''))
+            user_timezone = get_timezone()
+            p_mod_time = mod_time.replace(tzinfo=timezone(timedelta(minutes=user_timezone))) + timedelta(minutes=user_timezone) - timedelta(minutes=origin_timezone)
+            info_obj["modification"] = p_mod_time.strftime("%Y-%m-%d %H:%M:%S")
         except KeyError:
             info_obj["modification"] = 'None'
-        try:
-            info_obj["TimeZone"] = mod_time.strftime("%Z")
-        except KeyError:
-            info_obj["TimeZone"] = 'None'
         return info_obj
 
     def __cal_hash(self):
@@ -146,18 +133,6 @@ class PDFAnalysis:
 
     def get_hash(self):
         return self.__hash_value
-
-    def get_info(self, lists):
-        result = []
-        info = dict()
-        try:
-            for j in lists:
-                info[j] = self.__pdf_json[j]
-            result.append(info)
-        except KeyError:
-            print("Plz check your key.")
-            return -1
-        return result
 
     def get_all_info(self):
         return [self.__pdf_json]
@@ -197,18 +172,6 @@ class HWPAnalysis:
 
     def show_all_info(self):
         print(self.__hwp_info)
-
-    def get_info(self, lists):
-        result = []
-        info = dict()
-        try:
-            for j in lists:
-                info[j] = self.__hwp_info[j]
-            result.append(info)
-        except KeyError:
-            print("Plz check your key.")
-            return -1
-        return result
 
     def get_all_info(self):
         return [self.__hwp_info]
@@ -275,18 +238,6 @@ class MSOldAnalysis:
 
     def get_all_info(self):
         return [self.__ms_json]
-
-    def get_info(self, lists):
-        result = []
-        info = dict()
-        try:
-            for j in lists:
-                info[j] = self.__ms_json[j]
-            result.append(info)
-        except KeyError:
-            print("Plz check your key.")
-            return -1
-        return result
 
 
 # zip analysis: filename, comment, MAC time, zip version, Compressed size, Uncompressed size, crc, Raw time
