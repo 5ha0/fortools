@@ -214,6 +214,18 @@ class Favorite:
         info = dict()
         result_list = []
         icon_info = self.__icon_json
+        
+        for i in lists:
+            try:
+                a = int(i)
+                if a > 0 and a<4:
+                    continue
+                else:
+                    raise ValueError
+            except ValueError:
+                print('Plz check your value')
+                return -1
+        
         for i in lists:
             i = int(i)
             if i == 1:
