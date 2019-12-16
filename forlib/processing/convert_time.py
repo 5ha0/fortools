@@ -8,7 +8,7 @@ def set_timezone(timezone):
     mintz = minutestime
 
 
-def __convert_time(int_time):
+def convert_time(int_time):
     if type(int_time) == int:
         int_time = int_time * 0.1
     else:
