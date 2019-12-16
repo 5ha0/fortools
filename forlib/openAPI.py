@@ -41,6 +41,7 @@ def sig_check(path):
 def file_list(path):
     return files_analysis.file_list(path)
 
+
 def file_open(path):
     extension = sig_check(path)
     if extension == 'MS Windows Vista Event Log':
@@ -81,6 +82,7 @@ def file_open(path):
         return FileSystemLog.file_open(path)
     else:
         print('Non sig. Plz check file extension.')
+        
         
 def timezone(time_zone):
     convert_time.set_timezone(time_zone)
