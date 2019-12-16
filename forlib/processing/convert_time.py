@@ -32,6 +32,7 @@ def convert_time_ie_edge_chrome(int_time):
     except:
         return 0
 
-def convert_reg_time(int_time):
-    int_time = int_time.replace(tzinfo = timezone(timedelta(minutes=mintz)))
+def convert_replace_time(int_time):
+    int_time = int_time.replace(tzinfo=timezone(timedelta(minutes=mintz)))
+    int_time = int_time + timedelta(minutes=mintz)
     return int_time
