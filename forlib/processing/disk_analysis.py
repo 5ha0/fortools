@@ -8,10 +8,10 @@ import forlib.calc_hash as calc_hash
 
 class E01Analysis:
     def __init__(self, file, path, hash_val):
-        self.file = file
-        self.partition_list = list()
-        self.img_info = EWFImgInfo(self.file)
-        self.vol = pytsk3.Volume_Info(self.img_info)
+        self.__file = file
+        self.__partition_list = list()
+        self.__img_info = EWFImgInfo(self.__file)
+        self.__vol = pytsk3.Volume_Info(self.__img_info)
         self.__path = path
         self.__hash_val = [hash_val]
         self.__cal_hash()
@@ -23,10 +23,10 @@ class E01Analysis:
     
     def get_path(self, path, length):
         ret_list = list()
-        for partition in self.vol:
-            self.partition_list.append(partition.start)
+        for partition in self.__vol:
+            self.__partition_list.append(partition.start)
 
-        print("please input argument partition start sector : ", self.partition_list)
+        print("please input argument partition start sector : ", self.__partition_list)
 
         try:
             fs = self.open_fs(length)
@@ -111,18 +111,18 @@ class E01Analysis:
         print("[+] Success Extract : " + output_name)
 
     def fslog_extract(self, length):
-        mft_list = self.file_extract(length, '/$MFT', '$MFT')
-        log_list = self.file_extract(length, '/$LogFile', '$LogFile')
+        mft_list = self.__file_extract(length, '/$MFT', '$MFT')
+        log_list = self.__file_extract(length, '/$LogFile', '$LogFile')
         UsnJrnl = self.__UsnJrnl_extract(length, '/$Extend/$UsnJrnl')
 
     def open_fs(self, length):
-        if self.vol is not None:
-            for part in self.vol:
+        if self.__vol is not None:
+            for part in self.__vol:
                 if part.len > length and "Unallocated" not in part.desc.decode() \
                         and "Extended" not in part.desc.decode() \
                         and "Primary Table" not in part.desc.decode():
                     try:
-                        fs = pytsk3.FS_Info(self.img_info, offset=part.start * self.vol.info.block_size)
+                        fs = pytsk3.FS_Info(self.__img_info, offset=part.start * self.__vol.info.block_size)
                         return fs
                     except:
                         print("[-] Unable to open FS")
@@ -136,8 +136,8 @@ class E01Analysis:
 
         e01_list = list()
 
-        headers = self.file.get_header_values()
-        hashes = self.file.get_hash_values()
+        headers = self.__file.get_header_values()
+        hashes = self.__file.get_hash_values()
 
         for head in headers:
             if head == "acquiry_date" or head == "system_date":
@@ -150,9 +150,9 @@ class E01Analysis:
             hash_obj[h] = hashes[h]
 
         e01_obj = {
-            "Bytes per Sector": self.file.bytes_per_sector,
-            "Number of Sector": self.file.get_number_of_sectors(),
-            "Total Size": self.file.get_media_size()
+            "Bytes per Sector": self.__file.bytes_per_sector,
+            "Number of Sector": self.__file.get_number_of_sectors(),
+            "Total Size": self.__file.get_media_size()
         }
 
         head_obj.update(e01_obj)
@@ -165,7 +165,7 @@ class E01Analysis:
 
     def volume_metadata(self):
         ret_list = list()
-        for partition in self.vol:
+        for partition in self.__vol:
             e01_obj = {
                 "Type": partition.desc.decode(),
                 "Num": partition.addr,
@@ -185,7 +185,7 @@ class E01Analysis:
     # def extract_file(self, output_path, file_extension):
     #     self.__open
 
-    # def __open_fs(self.vol, self.file, )
+    # def __open_fs(self.__vol, self.__file, )
 
 
 class EWFImgInfo(pytsk3.Img_Info):
@@ -206,24 +206,27 @@ class EWFImgInfo(pytsk3.Img_Info):
 
 class DDAnalysis:
     def __init__(self, file, hash_val):
-        self.file = file
-        self.img = pytsk3.Img_Info(self.file)
-        self.partition_list = list()
-        self.vol = pytsk3.Volume_Info(self.img)
+        self.__file = file
+        self.img = pytsk3.Img_Info(self.__file)
+        self.__partition_list = list()
+        self.__vol = pytsk3.Volume_Info(self.img)
         self.__hash_val = [hash_val]
         self.__cal_hash()
         
     def __cal_time(self, int_time):
-        date = datetime.utcfromtimestamp(int_time)
-        # date = date.strftime("%Y-%m-%d %H:%M:%S")
+        if int_time == 0:
+            date = 'Never'
+        else:
+            date = datetime.utcfromtimestamp(int_time)
+            # date = date.strftime("%Y-%m-%d %H:%M:%S")
         return date           
         
     def get_path(self, path, length):
         ret_list = list()
-        for partition in self.vol:
-            self.partition_list.append(partition.start)
+        for partition in self.__vol:
+            self.__partition_list.append(partition.start)
 
-        print("please input argument partition start sector : ", self.partition_list)
+        print("please input argument partition start sector : ", self.__partition_list)
         try:
             fs = self.open_fs(length)
         except:
@@ -302,18 +305,18 @@ class DDAnalysis:
         print("[+] Success Extract : " + output_name)
 
     def fslog_extract(self, length):
-        mft_list = self.file_extract(length, '/$MFT', '$MFT')
-        log_list = self.file_extract(length, '/$LogFile', '$LogFile')
+        mft_list = self.__file_extract(length, '/$MFT', '$MFT')
+        log_list = self.__file_extract(length, '/$LogFile', '$LogFile')
         UsnJrnl = self.__UsnJrnl_extract(length, '/$Extend/$UsnJrnl')
 
     def open_fs(self, length):
-        if self.vol is not None:
-            for part in self.vol:
+        if self.__vol is not None:
+            for part in self.__vol:
                 if part.len > length and "Unallocated" not in part.desc.decode() \
                         and "Extended" not in part.desc.decode() \
                         and "Primary Table" not in part.desc.decode():
                     try:
-                        fs = pytsk3.FS_Info(self.img, offset=part.start * self.vol.info.block_size)
+                        fs = pytsk3.FS_Info(self.img, offset=part.start * self.__vol.info.block_size)
                         return fs
                     except:
                         print("[-] Unable to open FS")
@@ -322,7 +325,7 @@ class DDAnalysis:
 
     def volume_metadata(self):
         ret_list = list()
-        for partition in self.vol:
+        for partition in self.__vol:
             dd_obj = {
                 "Type": partition.desc.decode(),
                 "Num": partition.addr,
@@ -334,7 +337,7 @@ class DDAnalysis:
         return ret_list
 
     def __cal_hash(self):
-        after_hash = calc_hash.get_hash(self.file, 'after')
+        after_hash = calc_hash.get_hash(self.__file, 'after')
         self.__hash_val.append(after_hash)
 
     def get_hash(self):
