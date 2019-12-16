@@ -1,15 +1,14 @@
 import pytsk3
 import pyewf
-import json
 import time
 from datetime import datetime, timedelta
+from forlib.processing.convert_time import convert_replace_time as r_time
 import forlib.calc_hash as calc_hash
 
 
 class E01Analysis:
     def __init__(self, file, path, hash_val):
         self.file = file
-        self.ret_list = list()
         self.partition_list = list()
         self.img_info = EWFImgInfo(self.file)
         self.vol = pytsk3.Volume_Info(self.img_info)
@@ -22,10 +21,11 @@ class E01Analysis:
             date = 'Never'
         else:
             date = datetime.utcfromtimestamp(int_time)
-            date = date.strftime("%Y-%m-%d %H:%M:%S")
-        return date  
+            # date = date.strftime("%Y-%m-%d %H:%M:%S")
+        return date
     
     def get_path(self, path, length):
+        ret_list = list()
         for partition in self.vol:
             self.partition_list.append(partition.start)
 
@@ -53,25 +53,27 @@ class E01Analysis:
                         "file_type": file_type,
                         "Type": "Delete",
                         "size": "None",
+                        "TimeZone" : "None",
                         "ctime": "None",
                         "mtime": "None",
                         "atime": "None",
                         "change time": "None"
                     }
-                    self.ret_list.append(f_path_obj)
+                    ret_list.append(f_path_obj)
                 else:
                     f_path_obj = {
                         "file_name": i.info.name.name.decode(),
                         "file_type": file_type,
                         "Type" : "Exist",
                         "size": str(i.info.meta.size),
-                        "ctime": self.__cal_time(i.info.meta.crtime),
-                        "mtime": self.__cal_time(i.info.meta.mtime),
-                        "atime": self.__cal_time(i.info.meta.atime),
-                        "change time": self.__cal_time(i.info.meta.ctime)
+                        "TimeZone": r_time(self.__cal_time(i.info.meta.crtime)).strftime("%Z"),
+                        "ctime": r_time(self.__cal_time(i.info.meta.crtime)).strftime("%Y-%m-%d %H:%M:%S"),
+                        "mtime": r_time(self.__cal_time(i.info.meta.mtime)).strftime("%Y-%m-%d %H:%M:%S"),
+                        "atime": r_time(self.__cal_time(i.info.meta.atime)).strftime("%Y-%m-%d %H:%M:%S"),
+                        "change time": r_time(self.__cal_time(i.info.meta.ctime)).strftime("%Y-%m-%d %H:%M:%S")
                     }
-                    self.ret_list.append(f_path_obj)
-            return self.ret_list
+                    ret_list.append(f_path_obj)
+            return ret_list
 
         except:
             print("[-]  This is not included this path or Not data")
@@ -131,6 +133,7 @@ class E01Analysis:
             pass
 
     def e01_metadata(self):
+        ret_list = list()
         head_obj = dict()
         hash_obj = dict()
 
@@ -159,11 +162,12 @@ class E01Analysis:
         head_obj.update(hash_obj)
         e01_list.append(head_obj)
 
-        self.ret_list = e01_list
+        ret_list = e01_list
 
-        return self.ret_list
+        return ret_list
 
     def volume_metadata(self):
+        ret_list = list()
         for partition in self.vol:
             e01_obj = {
                 "Type": partition.desc.decode(),
@@ -172,8 +176,8 @@ class E01Analysis:
                 "Total Sector": partition.len,
                 "Size": str((partition.len * 512) / 1024 ** 2) + "MB"
             }
-            self.ret_list.append(e01_obj)
-        return self.ret_list
+            ret_list.append(e01_obj)
+        return ret_list
 
     def __cal_hash(self):
         after_hash = calc_hash.get_hash(self.__path, 'after')
@@ -209,7 +213,6 @@ class DDAnalysis:
         self.img = pytsk3.Img_Info(self.file)
         self.partition_list = list()
         self.vol = pytsk3.Volume_Info(self.img)
-        self.ret_list = list()
         self.__hash_val = [hash_val]
         self.__cal_hash()
         
@@ -218,10 +221,11 @@ class DDAnalysis:
             date = 'Never'
         else:
             date = datetime.utcfromtimestamp(int_time)
-            date = date.strftime("%Y-%m-%d %H:%M:%S")
+            # date = date.strftime("%Y-%m-%d %H:%M:%S")
         return date           
         
     def get_path(self, path, length):
+        ret_list = list()
         for partition in self.vol:
             self.partition_list.append(partition.start)
 
@@ -248,28 +252,30 @@ class DDAnalysis:
                         "file_type": file_type,
                         "Type": "Delete",
                         "size": "None",
+                        "TimeZone" : "None",
                         "ctime": "None",
                         "mtime": "None",
                         "atime": "None",
                         "change time": "None"
                     }
-                    self.ret_list.append(f_path_obj)
+                    ret_list.append(f_path_obj)
                 else:
                     f_path_obj = {
                         "file_name": i.info.name.name.decode(),
                         "file_type": file_type,
                         "Type" : "Exist",
                         "size": str(i.info.meta.size),
-                        "ctime": self.__cal_time(i.info.meta.crtime),
-                        "mtime": self.__cal_time(i.info.meta.mtime),
-                        "atime": self.__cal_time(i.info.meta.atime),
-                        "change time": self.__cal_time(i.info.meta.ctime)
+                        "TimeZone": r_time(self.__cal_time(i.info.meta.crtime)).strftime("%Z"),
+                        "ctime": r_time(self.__cal_time(i.info.meta.crtime)).strftime("%Y-%m-%d %H:%M:%S"),
+                        "mtime": r_time(self.__cal_time(i.info.meta.mtime)).strftime("%Y-%m-%d %H:%M:%S"),
+                        "atime": r_time(self.__cal_time(i.info.meta.atime)).strftime("%Y-%m-%d %H:%M:%S"),
+                        "change time": r_time(self.__cal_time(i.info.meta.ctime)).strftime("%Y-%m-%d %H:%M:%S")
                     }
-                    self.ret_list.append(f_path_obj)
-            return self.ret_list
+                    ret_list.append(f_path_obj)
+            return ret_list
 
         except:
-            print("[-] This is not included this path or Not data")
+            print("[-]  This is not included this path or Not data")
             return -1
 
     def __UsnJrnl_extract(self, length, filename):
@@ -321,6 +327,7 @@ class DDAnalysis:
             pass
 
     def volume_metadata(self):
+        ret_list = list()
         for partition in self.vol:
             dd_obj = {
                 "Type": partition.desc.decode(),
@@ -329,8 +336,8 @@ class DDAnalysis:
                 "Total Sector": partition.len,
                 "Size": str((partition.len * 512) / 1024 ** 2) + "MB"
             }
-            self.ret_list.append(dd_obj)
-        return self.ret_list
+            ret_list.append(dd_obj)
+        return ret_list
 
     def __cal_hash(self):
         after_hash = calc_hash.get_hash(self.file, 'after')
