@@ -7,7 +7,7 @@ class Filter():
         for i in json_list:
             info = dict()
             try:
-                for j in lists:
+                for j in key_list:
                     info[j] = i[j]
                 __result.append(info)
             except KeyError:
