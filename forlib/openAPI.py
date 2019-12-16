@@ -28,6 +28,7 @@ from forlib.processing import filesystem_analysis
 from forlib import decompress
 from forlib import signature as sig
 from forlib import calc_hash as calc_hash
+from forlib.processing import convert_time
 
 
 def sig_check(path):
@@ -80,6 +81,13 @@ def file_open(path):
         return FileSystemLog.file_open(path)
     else:
         print('Non sig. Plz check file extension.')
+        
+def timezone(time_zone):
+    convert_time.set_timezone(time_zone)
+
+
+timezone("00:00")
+
 
 class Disk:
     def disk_open(path):
