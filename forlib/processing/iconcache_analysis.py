@@ -223,7 +223,7 @@ class Favorite:
                 else:
                     raise ValueError
             except ValueError:
-                print('Plz check your value')
+                print('[Error] input format error by fortools\n function: show_info_by_section(["section number list"])\n example format: show_info_by_section(["2","3"])')
                 return -1
         
         for i in lists:
