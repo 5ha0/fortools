@@ -26,17 +26,23 @@ class MemAnalysis:
         ret_list = list()
         time_pattern = re.compile("Date")
 
-        for i in range(1, len(reg_list)):
+        for i in range(2, len(reg_list)):
             tmp     = reg_list[i].replace('\n', '')
             tSplit  = tmp.split('\t')
             ret_obj = dict()
 
             for splitIndex, splitValue in enumerate(tSplit):
-                ret_obj[keyList[splitIndex]] = splitValue
-                # if time_pattern.findall(keyList[splitIndex]):
-                #     ret_obj[keyList[splitIndex]] = datetime.strptime(splitValue, "%Y-%m-%d %H:%M:%S.%").date()
-                # else:
-                #     ret_obj[keyList[splitIndex]] = splitValue
+                # ret_obj[keyList[splitIndex]] = splitValue
+                if time_pattern.findall(keyList[splitIndex]):
+                    if splitValue == "N/A":
+                        # print(splitValue)
+                        ret_obj[keyList[splitIndex]] = splitValue
+                    else:
+                        replace_time = datetime.strptime(splitValue[:-1], "%Y-%m-%d %H:%M:%S.%f")
+                        ret_obj["TimeZone"] = r_time(replace_time).strftime("%Z")
+                        ret_obj[keyList[splitIndex]] = r_time(replace_time).strftime("%Y-%m-%d %H:%M:%S")
+                else:
+                    ret_obj[keyList[splitIndex]] = splitValue
             ret_list.append(ret_obj)
         return ret_list
 
