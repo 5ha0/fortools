@@ -535,8 +535,11 @@ class SOFTWARE:
             if v.name() == "CurrentBuild":
                 os_dict['CurrentBuild'] = v.value()
             if v.name() == "InstallDate":
-                os_dict['InstallDate'] = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(v.value()))
-                os_dict['TimeZone'] = time.strftime('%Z', time.gmtime(v.value()))
+                # os_dict['InstallDate'] = reg_time(v.value()).strftime("%Y-%m-%d %H:%M:%S"),
+                # os_dict['TimeZone'] = c_time(v.value()).strftime("%Z")
+                value_time = datetime.fromtimestamp(mktime(time.gmtime(v.value())))
+                os_dict['TimeZone'] = r_time(value_time).strftime("%Z")
+                os_dict['InstallDate'] = r_time(value_time).strftime("%Y-%m-%d %H:%M:%S")
             if v.name() == "RegisteredOwner":
                 os_dict['RegisteredOwner'] = v.value()
             if v.name() == "EditionID":
@@ -548,10 +551,10 @@ class SOFTWARE:
             os_dict['CurrentVersion'] = "N/A"
         if (not 'CurrentBuild' in os_dict) or (os_dict['CurrentBuild'] == ''):
             os_dict['CurrentBuild'] = "N/A"
-        if (not 'InstallDate' in os_dict) or (os_dict['InstallDate'] == ''):
-            os_dict['InstallDate'] = "N/A"
         if (not 'TimeZone' in os_dict) or (os_dict['TimeZone'] == ''):
             os_dict['TimeZone'] = "N/A"
+        if (not 'InstallDate' in os_dict) or (os_dict['InstallDate'] == ''):
+            os_dict['InstallDate'] = "N/A"
         if (not 'RegisteredOwner' in os_dict) or (os_dict['RegisteredOwner'] == ''):
             os_dict['RegisteredOwner'] = "N/A"
         if (not 'EditionID' in os_dict) or (os_dict['EditionID'] == ''):
@@ -562,8 +565,8 @@ class SOFTWARE:
         os_obj = {
             "CurrentVersion" : os_dict['CurrentVersion'],
             "CurrentBuild" : os_dict['CurrentBuild'],
+            "TimeZone" : os_dict['TimeZone'],
             "InstallDate" : os_dict['InstallDate'],
-            "TimeZone" : "UTC",
             "RegisteredOwner" : os_dict['RegisteredOwner'],
             "EditionID" : os_dict['EditionID'],
             "ProductName" : os_dict['ProductName']
