@@ -27,21 +27,16 @@ Uncomment the comment you want to use.
 # # if you show 2, use print()
 # print(prefetch)
 
-####### 3. Used when you want to see only some of the information. #######
-# prefetch = file.get_info(['key list'])
-# # if you show 2. use print()
-# print(prefetch)
-
-####### 4. Use when you want to return the hash value before and after analysis of a file #######
+####### 3. Use when you want to return the hash value before and after analysis of a file #######
 # prefetch = file.get_hash()
 # # if you show 2. use print()
 # print(prefetch)
 
-####### 5. Allows you to find a specific extension file from file list. #######
-# extension = 'extension'
-# prefetch = file.extension_filter(extension)
-# # if you show 6. use print()
-# print(prefetch)
+####### 4. Shows the extension information for all sections of the path information and the number of each extension. #######
+# file.Favorite.show_kind_of_extension
+
+####### 5. It allows you to view only reference list information out of the total information. #######
+# file.Favorite.show_only_ref_path
 
 ####### 6.If You want to make a report, Use This. #######
 # # !caution!Use the script above first
