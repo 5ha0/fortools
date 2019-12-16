@@ -1,11 +1,16 @@
 from datetime import datetime, timedelta, timezone
 
+mintz = 0
 
 def set_timezone(timezone):
     time_split = timezone.split(':')
     minutestime=int(time_split[0])*60+int(time_split[1])
     global mintz
     mintz = minutestime
+    
+    
+def get_timezone():
+    return mintz
 
 
 def convert_time(int_time):
