@@ -224,7 +224,7 @@ class NTUSER:
                         reg_obj = {
                             "Version": a[i],
                             "TimeZone": r_time(recent0.timestamp()).strftime('%Z'),
-                            "MS key Last Written time": r_time(recent0.timestamp()).strftime('%Y-%m-%d %H:%M:%S'),
+                            "MS Key Last Written time": r_time(recent0.timestamp()).strftime('%Y-%m-%d %H:%M:%S'),
                             "path": file_name[:-1]
                         }
                         outlook.append(reg_obj)
@@ -270,7 +270,7 @@ class NTUSER:
                             ret_obj = {
                                 "Version": a[i],
                                 "TimeZone": r_time(recent0.timestamp()).strftime('%Z'),
-                                "MS key Last Written time": r_time(recent0.timestamp()).strftime('%Y-%m-%d %H:%M:%S'),
+                                "MS Key Last Written time": r_time(recent0.timestamp()).strftime('%Y-%m-%d %H:%M:%S'),
                                 "path": v.name()
                             }
                             outlook.append(ret_obj)
@@ -284,7 +284,7 @@ class NTUSER:
                         ret_obj = {
                             "Version": a[i],
                             "TimeZone": r_time(recent0.timestamp()).strftime('%Z'),
-                            "MS key Last Written time": r_time(recent0.timestamp()).strftime('%Y-%m-%d %H:%M:%S'),
+                            "MS Key Last Written time": r_time(recent0.timestamp()).strftime('%Y-%m-%d %H:%M:%S'),
                             "path": v.name()
                         }
                         outlook.append(ret_obj)
