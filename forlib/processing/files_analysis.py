@@ -10,6 +10,7 @@ import sys
 from zipfile import ZipFile
 from forlib import signature as sig
 import magic
+from forlib.processing.convert_time import *
 
 
 def sig_check(path):
@@ -309,11 +310,14 @@ class ZIPAnalysis:
             file_obj['FileName'] = file_name
             file_obj['Comment'] = str(info.comment)
 
-            mod_time = datetime(*info.date_time)
-
+           mod_time = datetime(*info.date_time)
             mtime = str(mod_time.astimezone()).split('+')[1]
-            file_obj['TimeZone'] = "UTC+"+str(mtime)
-            file_obj['Modified'] = str(mod_time)
+            origin_timezone = set_file_timezone(mtime)
+            user_timezone = get_timezone()
+            p_mod_time = mod_time.replace(tzinfo=timezone(timedelta(minutes=user_timezone))) + timedelta(minutes=user_timezone) - timedelta(minutes=origin_timezone)
+
+            file_obj['TimeZone'] = p_mod_time.strftime("%Z")
+            file_obj['Modified'] = p_mod_time.strftime("%Y-%m-%d %H:%M:%S")
             file_obj['System'] = str(info.create_system) + "(0 = Windows, 3 = Unix)"
             file_obj['version'] = str(info.create_version)
             file_obj['Compressed'] = str(info.compress_size) + " bytes"
@@ -398,5 +402,9 @@ def file_list(in_path):
         print("[Error] Path is not found. Check your input")
 
 
+def set_file_timezone(timezone):
+    time_split = timezone.split(':')
+    minutestime=int(time_split[0])*60+int(time_split[1])
+    return minutestime
 
 
