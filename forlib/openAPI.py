@@ -103,7 +103,7 @@ class Disk:
             else:
                 return disk_analysis.DDAnalysis(path, hash_val)
         except:
-            print("Check the file structure or extension")
+            print("[Error] input file error by fortools\nPlease check your file")
             return -1
 
 class Mem:
@@ -122,7 +122,7 @@ class EventLog:
             hash_v = calc_hash.get_hash(path, 'before')
             file = event_open(path)
             return log_analysis.EventAnalysis(file, path, hash_v)
-        print("check your file format. This is not EVTX file.")
+        print("[Error] input file error by fortools\nPlease check your file")
         return -1
 
 
@@ -177,7 +177,7 @@ class Files:
                 hash_v = calc_hash.get_hash(path, 'before')
                 file = ole_open(path)
                 return files_analysis.HWPAnalysis(file, path, hash_v)
-            print("check your file format. This is not HWP file.")
+            print("[Error] input file error by fortools\nPlease check your file")
             return -1
 
     class JPEG:
@@ -188,7 +188,7 @@ class Files:
                 hash_v = calc_hash.get_hash(path, 'before')
                 file = jpeg_open(path)
                 return files_analysis.JPEGAnalysis(file, path, hash_v)
-            print("check your file format. This is not JPEG file.")
+            print("[Error] input file error by fortools\nPlease check your file")
             return -1
 
     class PDF:
@@ -199,7 +199,7 @@ class Files:
                 hash_v = calc_hash.get_hash(path, 'before')
                 file = pdf_open(path)
                 return files_analysis.PDFAnalysis(file, path, hash_v)
-            print("check your file format. This is not PDF file.")
+            print("[Error] input file error by fortools\nPlease check your file")
             return -1
 
     class ZIP:
@@ -210,7 +210,7 @@ class Files:
                 hash_v = calc_hash.get_hash(path, 'before')
                 file = zip_open(path)
                 return files_analysis.ZIPAnalysis(file, path, hash_v)
-            print("check your file format. This is not ZIP file.")
+            print("[Error] input file error by fortools\nPlease check your file")
             return -1
 
     class FileList:
@@ -226,7 +226,7 @@ class Lnk:
             hash_v = calc_hash.get_hash(path, 'before')
             file = lnk_open(path)
             return lnk_analysis.LnkAnalysis(file, path, hash_v)
-        print("check your file format. This is not Lnk file")
+        print("[Error] input file error by fortools\nPlease check your file")
         return -1
 
 
@@ -238,7 +238,7 @@ class Recycle:
             hash_v = calc_hash.get_hash(path, 'before')
             file = recycle_open(path)
             return recycle_analysis.RecycleAnalysis(file, path, hash_v)
-        print("check your file format. This is not Recycle $I file")
+        print("[Error] input file error by fortools\nPlease check your file")
         return -1
 
 
@@ -250,7 +250,7 @@ class Iconcache:
             hash_v = calc_hash.get_hash(path, 'before')
             file = iconcache_open(path)
             return iconcache_analysis.IconcacheAnalysis(file, path, hash_v)
-        print("check your file format. This is not IconCache.db file")
+        print("[Error] input file error by fortools\nPlease check your file")
         return -1
 
 
@@ -288,10 +288,10 @@ class Prefetch:
                 file.seek(0)
                 version = struct.unpack_from('I', file.read(4))[0]
                 if version != 23 and version != 30:
-                    print('error: not supported version')
+                    print('[Error] version error by fortools\nPlease check your version')
                     return -1
             return prefetch_analysis.PrefetchAnalysis(file, path, hash_v)
-        print("check your file format. This is not Prefetch file")
+        print("[Error] input file error by fortools\nPlease check your file")
         return -1
 
 
@@ -312,10 +312,10 @@ class RegistryHive:
             elif Registry.HiveType.SECURITY == file.hive_type():
                 return reg_analysis.RegAnalysis(file, path, hash_val)
             else:
-                print("[-] This is not HiveFile")
+                print("[Error] input file error by fortools\nPlease check your file")
                 return -1
         else:
-            print("[-] This is not Registry file")
+            print("[Error] input file error by fortools\nPlease check your file")
             return -1
 
 
@@ -328,7 +328,7 @@ class JumpList:
             file = ole_open(path)
             return jump_analysis.JumplistAnalysis(file, path, hash_v)
         else:
-            print("check your file format. This is not Jumplist file.")
+            print("[Error] input file error by fortools\nPlease check your file")
             return -1
 
 
@@ -340,7 +340,7 @@ class Thumbnail_Iconcache:
             hash_v = calc_hash.get_hash(path, 'before')
             file = cache_open(path)
             return thumbnail_analysis.Thumbnail_analysis_windows(file, path, hash_v)
-        print("check your file format. This is not Thumbcache file and Iconcache file.")
+        print("[Error] input file error by fortools\nPlease check your file")
         return -1
 
 
@@ -355,7 +355,8 @@ class Browser:
             elif file == "WebCacheV01.dat":
                 return Browser.Ie_Edge.History.file_open(path)
             else:
-                print("PLZ check your file name")
+                print("[Error] input file error by fortools\nPlease check your file")
+                return -1
                 
     class Cache:
         def file_open(path):
@@ -365,7 +366,8 @@ class Browser:
             elif file == "WebCacheV01.dat":
                 return Browser.Ie_Edge.Cache.file_open(path)
             else:
-                print("PLZ check your file name")
+                print("[Error] input file error by fortools\nPlease check your file")
+                return -1
                 
     class Download:
         def file_open(path):
@@ -377,7 +379,8 @@ class Browser:
             elif file == "WebCacheV01.dat":
                 return Browser.Ie_Edge.Download.file_open(path)
             else:
-                print("PLZ check your file name")
+                print("[Error] input file error by fortools\nPlease check your file")
+                return -1
 
     class Cookie:
         def file_open(path):
@@ -389,7 +392,8 @@ class Browser:
             elif file == "WebCacheV01.dat":
                 return Browser.Ie_Edge.Cookie.file_open(path)
             else:
-                print("PLZ check your file name")
+                print("[Error] input file error by fortools\nPlease check your file")
+                return -1
                 
     class Chrome:
         class History:
@@ -477,7 +481,7 @@ class FileSystemLog:
             return filesystem_analysis.UsnJrnl(filesystem_log_open(path), path, hash_v)
         else:
             print('extension: '+str(extension))
-            print("check your file format. This is not File System Log file.")
+            print("[Error] input file error by fortools\nPlease check your file")
             return -1
 
 
@@ -531,7 +535,7 @@ def ie_edge_open(path):
     if pyesedb.check_file_signature(path):
         return pyesedb.open(path, 'rb')
     else:
-        print("please check your file")
+        print("[Error] input file error by fortools\nPlease check your file")
         return -1
 
 
