@@ -22,19 +22,6 @@ class MFTAnalysis:
     def get_all_info(self):
         return self.__result
 
-    def get_info(self, lists):
-        result = []
-        for i in self.__result:
-            info = dict()
-            try:
-                for j in lists:
-                    info[j] = i[j]
-                result.append(info)
-            except KeyError:
-                print("Plz check your key.")
-                return -1
-        return result
-
     def get_hash(self):
         return self.__hash_value
 
@@ -238,19 +225,6 @@ class UsnJrnl:
     def show_all_info(self):
         for i in self.__result:
             print(i)
-
-    def get_info(self, lists):
-        result = []
-        for i in self.__result:
-            info = dict()
-            try:
-                for j in lists:
-                    info[j] = i[j]
-                result.append(info)
-            except KeyError:
-                print("Plz check your key.")
-                return -1
-        return result
 
     def event_filter(self, name):
         return filesys_filter(['Event Info', name], self.__result)
