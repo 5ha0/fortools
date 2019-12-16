@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 import os
 import struct
 import json
+from collections import Counter
 import forlib.calc_hash as calc_hash
 
 
@@ -15,6 +16,7 @@ class PrefetchAnalysis:
         self.__file_version = struct.unpack_from('<I', self.__file.read(4))[0]
         self.__pf_json = self.__make_json()
         self.__cal_hash()
+        self.Favorite = Favorite(self.__file_list())
 
     def __convert_time(self, time):
         time = '%016x' % time
@@ -150,16 +152,7 @@ class PrefetchAnalysis:
 
     # calculate hash value after parsing
     def __cal_hash(self):
-        json_list = []
-        pf_obj = dict()
         self.__hash_value.append(calc_hash.get_hash(self.__path, 'after'))
-        pf_obj['before_sha1'] = self.__hash_value[0]['sha1']
-        pf_obj['before_md5'] = self.__hash_value[0]['md5']
-        pf_obj['after_sha1'] = self.__hash_value[1]['sha1']
-        pf_obj['after_md5'] = self.__hash_value[1]['md5']
-
-        json_list.append(pf_obj)
-        self.__hash_value = json_list
 
     def get_hash(self):
         return self.__hash_value
@@ -205,38 +198,34 @@ class PrefetchAnalysis:
     def get_all_info(self):
         return self.__pf_json
 
-    def get_info(self, list):
-        result = []
-        for i in self.__pf_json:
-            info = dict()
-            try:
-                for j in list:
-                    info[j] = i[j]
-                result.append(info)
-            except KeyError:
-                print("Plz check your key.")
-                return -1
-        return result
 
-    # Use when you only want to see files with certain extensions.
-    def extension_filter(self, extension):
-        extension = str(extension)
-        extension = extension.lower()
-        result = []
-        info = dict()
+# This class shows the information that processed the entire data.
+class Favorite:
 
-        file_list = self.__file_list()
-        for i in range(0, len(file_list)-1):
-            json_info = file_list[i]
+    def __init__(self, json_file_list):
+        self.__file_list_json = json_file_list
+
+    # Shows the extension information for all sections of the path information and the number of each extension.
+    def show_kind_of_extension(self):
+        path_list = []
+
+        for i in range(0, len(self.__file_list_json)):
+            json_info = self.__file_list_json[i]
             path = json_info.get("Ref_file")
             path = path.lower()
             path = path.split('.')[-1]
-            if extension == path:
-                info['Ref_file' + str(i)] = file_list[i]['Ref_file']
+            path_list.append(path)
 
-        result.append(info)
+        result = Counter(path_list)
+        print('The result of analyzing only reference file keys.')
+        for key in result:
+            print (key + str(': ') + str(result[key]))
 
-        if result:
-            return result
-        print('There is no file list with this extension..')
-        return result
+    # It allows you to view only reference list information out of the total information.
+    def show_only_ref_path(self):
+        info = dict()
+
+        for i in range(0, len(self.__file_list_json)):
+            info['Ref_file' + str(i)] = self.__file_list_json[i]['Ref_file']
+
+        print(info)

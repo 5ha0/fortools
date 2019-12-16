@@ -764,16 +764,7 @@ class LnkAnalysis:
 
     # calculate hash value after parsing
     def __cal_hash(self):
-        lnk_list = []
-        lnk_obj = dict()
         self.__hash_value.append(calc_hash.get_hash(self.__path, 'after'))
-        lnk_obj['before_sha1'] = self.__hash_value[0]['sha1']
-        lnk_obj['before_md5'] = self.__hash_value[0]['md5']
-        lnk_obj['after_sha1'] = self.__hash_value[1]['sha1']
-        lnk_obj['after_md5'] = self.__hash_value[1]['md5']
-
-        lnk_list.append(lnk_obj)
-        self.__hash_value = lnk_list
 
     def get_hash(self):
         return self.__hash_value
@@ -837,21 +828,8 @@ class LnkAnalysis:
     def get_all_info(self):
         return self.__lnk_json
 
-    def get_info(self, list):
-        result = []
-        for i in self.__lnk_json:
-            info = dict()
-            try:
-                for j in list:
-                    info[j] = i[j]
-                result.append(info)
-            except KeyError:
-                print("Plz check your key.")
-                return -1
-        return result
-
 def convert_time(time):
     time = '%016x' % time
     time = int(time, 16) / 10.
     time = datetime(1601, 1, 1) + timedelta(microseconds=time)
-    return time        
+    return time

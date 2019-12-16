@@ -101,15 +101,4 @@ class RecycleAnalysis:
     def get_all_info(self):
         return self.__recycle_json
 
-    def get_info(self, lists):
-        result = []
-        for i in self.__recycle_json:
-            info = dict()
-            try:
-                for j in lists:
-                    info[j] = i[j]
-                result.append(info)
-            except KeyError:
-                print("Plz check your key.")
-                return -1
-        return result
+

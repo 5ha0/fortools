@@ -1,7 +1,9 @@
-
+# This is only analysis IconCache.db File- #
+import os
 import struct
 import json
 import binascii
+from collections import Counter
 import forlib.calc_hash as calc_hash
 
 
@@ -19,8 +21,7 @@ class IconcacheAnalysis:
         self.__hash_value = [hash_v]
         self.__icon_json = self.__make_json()
         self.__cal_hash()
-        self.__drive_exe_list = None
-        self.__hard_disk_delete = ["Disk Wipe", 'Drive Wipe', 'DBAN', 'CBL Data Shredder', 'MHDD', 'PCDiskEraser', 'KillDisk', 'Format Command With Write Zero Option', 'Macrorit Data Wiper', 'Eraser', 'WipeDisk', 'MiniTool Partition Wizard', 'KillDisk', 'CCleaner', 'PCDiskEraser', 'Super File Shredder']
+        self.Favorite = Favorite(self.__icon_json)
 
     def __file_version(self):
         json_list = []
@@ -163,18 +164,9 @@ class IconcacheAnalysis:
 
         return json_list
 
-        # calculate hash value after parsing
+    # calculate hash value after parsing
     def __cal_hash(self):
-        icon_list = []
-        icon_obj = dict()
         self.__hash_value.append(calc_hash.get_hash(self.__path, 'after'))
-        icon_obj['before_sha1'] = self.__hash_value[0]['sha1']
-        icon_obj['before_md5'] = self.__hash_value[0]['md5']
-        icon_obj['after_sha1'] = self.__hash_value[1]['sha1']
-        icon_obj['after_md5'] = self.__hash_value[1]['md5']
-
-        icon_list.append(icon_obj)
-        self.__hash_value = icon_list
 
     def get_hash(self):
         return self.__hash_value
@@ -211,82 +203,112 @@ class IconcacheAnalysis:
     def get_all_info(self):
         return self.__icon_json
 
-    def get_info(self, lists):
-        result = []
-        for i in self.__icon_json:
-            info = dict()
-            try:
-                for j in lists:
-                    info[j] = i[j]
-                result.append(info)
-            except KeyError:
-                print("Plz check your key.")
-                return -1
-        return result
 
-    def get_info_by_section(self, lists):
+# This class shows the information that processed the entire data.
+class Favorite:
+    def __init__(self, json):
+        self.__icon_json = json
+
+    # For the convenience of users, only the information of the desired section is displayed.
+    def show_info_by_section(self, lists):
         info = dict()
         result_list = []
         icon_info = self.__icon_json
         for i in lists:
             i = int(i)
             if i == 1:
-                info["Section One Path Num"] = icon_info[0]["Section One Path Num"]
-                end = icon_info[0]["Section One Path Num"]
+                info["Section One Path Num"] = self.__icon_json[0]["Section One Path Num"]
+                end = self.__icon_json[0]["Section One Path Num"]
                 end  = int(end)
                 for i in range(1, end+1):
-                    info["Section One Path" + str(i)] = icon_info[0]["Section One Path" + str(i)]
-                    info["Section One Icon image location" + str(i)] = icon_info[0]["Section One Icon image location" + str(i)]
+                    info["Section One Path" + str(i)] = self.__icon_json[0]["Section One Path" + str(i)]
+                    info["Section One Icon image location" + str(i)] = self.__icon_json[0]["Section One Icon image location" + str(i)]
             elif i == 2:
-                info["Section Two Path Num"] = icon_info[0]["Section Two Path Num"]
-                end = icon_info[0]["Section Two Path Num"]
+                info["Section Two Path Num"] = self.__icon_json[0]["Section Two Path Num"]
+                end = self.__icon_json[0]["Section Two Path Num"]
                 end = int(end)
                 for i in range(1, end+1):
-                    info["Section Two Path" + str(i)] = icon_info[0]["Section Two Path" + str(i)]
-                    info["Section Two Icon image location" + str(i)] = icon_info[0]["Section Two Icon image location" + str(i)]
+                    info["Section Two Path" + str(i)] = self.__icon_json[0]["Section Two Path" + str(i)]
+                    info["Section Two Icon image location" + str(i)] = self.__icon_json[0]["Section Two Icon image location" + str(i)]
             elif i == 3:
-                info["Section Three Path Num"] = icon_info[0]["Section Three Path Num"]
-                end = icon_info[0]["Section Three Path Num"]
+                info["Section Three Path Num"] = self.__icon_json[0]["Section Three Path Num"]
+                end = self.__icon_json[0]["Section Three Path Num"]
                 end = int(end)
                 for i in range(1, end+1):
-                    info["Section Three Path" + str(i)] = icon_info[0]["Section Three Path" + str(i)]
-                    info["Section Three Icon image location" + str(i)] = icon_info[0]["Section Three Icon image location" + str(i)]
+                    info["Section Three Path" + str(i)] = self.__icon_json[0]["Section Three Path" + str(i)]
+                    info["Section Three Icon image location" + str(i)] = self.__icon_json[0]["Section Three Icon image location" + str(i)]
 
-        result_list.append(info)
+        print(info)
 
-        return result_list
-
-
-    # Use when you only want to see files with certain extensions.
-    def extension_filter(self, extension):
+    # Shows the extension information for all sections of the path information and the number of each extension.
+    def show_kind_of_extension(self):
         result = []
         info = dict()
-        extension = str(extension)
-        extension = extension.lower()
-        icon_info = self.__icon_json
+        extension_list = []
 
-        end = icon_info[0]["Section One Path Num"]
+        end = self.__icon_json[0]["Section One Path Num"]
         end = int(end)
         for i in range(1, end + 1):
-            value = icon_info[0]["Section One Path" + str(i)]
+            value = self.__icon_json[0]["Section One Path" + str(i)]
             lower_value = value.lower()
             lower_value = lower_value.split('.')[-1]
-            if extension == lower_value:
-                info["Section One Path" + str(i)] = value
-        end = icon_info[0]["Section Two Path Num"]
+            extension_list.append(lower_value)
+        end = self.__icon_json[0]["Section Two Path Num"]
         end = int(end)
         for i in range(1, end + 1):
-            value = icon_info[0]["Section Two Path" + str(i)]
+            value = self.__icon_json[0]["Section Two Path" + str(i)]
+            lower_value = value.lower()
             lower_value = value.split('.')[-1]
-            if extension == lower_value:
-                info["Section Two Path" + str(i)] = value
-        end = icon_info[0]["Section Three Path Num"]
+            extension_list.append(lower_value)
+        end = self.__icon_json[0]["Section Three Path Num"]
         end = int(end)
         for i in range(1, end + 1):
-            value = icon_info[0]["Section Three Path" + str(i)]
+            value = self.__icon_json[0]["Section Three Path" + str(i)]
+            lower_value = value.lower()
             lower_value = value.split('.')[-1]
-            if extension == lower_value:
-                info["Section Three Path" + str(i)] = value
+            extension_list.append(lower_value)
 
-        result.append(info)
-        return result
+        result = Counter(extension_list)
+        print('The result of analyzing only path keys.')
+        for key in result:
+            print(key + str(': ') + str(result[key]))
+
+    # The path information in all sections shows the drive type information and the number of each drive type.
+    def show_kind_of_dirvetype(self):
+        result = []
+        info = dict()
+        extension_list = []
+
+        end = self.__icon_json[0]["Section One Path Num"]
+        end = int(end)
+        for i in range(1, end + 1):
+            value = self.__icon_json[0]["Section One Path" + str(i)]
+            lower_value = value.lower()
+            if os.path.isabs(lower_value) == True:
+                if ':' in lower_value:
+                    lower_value = os.path.splitdrive(lower_value)
+                    extension_list.append(lower_value[0])
+        end = self.__icon_json[0]["Section Two Path Num"]
+        end = int(end)
+        for i in range(1, end + 1):
+            value = self.__icon_json[0]["Section Two Path" + str(i)]
+            lower_value = value.lower()
+            if os.path.isabs(lower_value) == True:
+                if ':' in lower_value:
+                    lower_value = os.path.splitdrive(lower_value)
+                    extension_list.append(lower_value[0])
+        end = self.__icon_json[0]["Section Three Path Num"]
+        end = int(end)
+        for i in range(1, end + 1):
+            value = self.__icon_json[0]["Section Three Path" + str(i)]
+            lower_value = value.lower()
+            if os.path.isabs(lower_value) == True:
+                if ':' in lower_value:
+                    lower_value = os.path.splitdrive(lower_value)
+                    extension_list.append(lower_value[0])
+
+        result = Counter(extension_list)
+        print('The result of analyzing only path keys.')
+        for key in result:
+            print (key, result[key])
+
