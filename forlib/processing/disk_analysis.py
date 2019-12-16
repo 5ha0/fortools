@@ -23,20 +23,7 @@ class E01Analysis:
         else:
             date = datetime.utcfromtimestamp(int_time)
             date = date.strftime("%Y-%m-%d %H:%M:%S")
-        return date
-
-    def get_info(self, dictionary, search_list):
-        result = []
-        for i in dictionary:
-            info = dict()
-            try:
-                for j in search_list:
-                    info[j] = i[j]
-                result.append(info)
-            except KeyError:
-                print("Plz check your key.")
-                return -1
-        return result   
+        return date  
     
     def get_path(self, path, length):
         for partition in self.vol:
@@ -232,20 +219,7 @@ class DDAnalysis:
         else:
             date = datetime.utcfromtimestamp(int_time)
             date = date.strftime("%Y-%m-%d %H:%M:%S")
-        return date
-    
-    def get_info(self, dictionary, search_list):
-        result = []
-        for i in dictionary:
-            info = dict()
-            try:
-                for j in search_list:
-                    info[j] = i[j]
-                result.append(info)
-            except KeyError:
-                print("Plz check your key.")
-                return -1
-        return result           
+        return date           
         
     def get_path(self, path, length):
         for partition in self.vol:
