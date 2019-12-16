@@ -9,11 +9,8 @@ def set_timezone(timezone):
 
 
 def __convert_time(int_time):
-    if type(int_time) == int:
-        int_time = int_time * 0.1
-    else:
-        int_time = '%016x' % int_time
-        int_time = int(int_time, 16) * 0.1
+    int_time = '%016x' % int_time
+    int_time = int(int_time, 16) * 0.1
 
     date_time = datetime(1601, 1, 1, tzinfo=timezone(timedelta(minutes=mintz))) + timedelta(microseconds=int_time) + timedelta(minutes=mintz)
     return date_time
