@@ -24,12 +24,12 @@ class Chrome:
             try:
                 history_cursor = self.conn.cursor()
             except:
-                print("please check your file")
+                print("[Error] input file error by fortools\nPlease check your file")
                 return -1
             try:
                 visits_open = history_cursor.execute("SELECT visits.from_visit, visits.visit_time, visits.transition, urls.url, urls.title, urls.visit_count, urls.id FROM urls, visits WHERE urls.id = visits.url")
             except:
-                print("This file does not have such tables")
+                print("[Error] input file error by fortools\nPlease check your file")
                 return -1
             no = 0
             for visit in visits_open:
@@ -128,12 +128,12 @@ class Chrome:
                 downloads_cursor = self.conn.cursor()
                 downloads_cursor_row = self.conn.cursor()
             except:
-                print("please check your file")
+                print("[Error] input file error by fortools\nPlease check your file")
                 return -1
             try:
                 downloads_open = downloads_cursor.execute("SELECT downloads.* FROM downloads")
             except:
-                print("This file does not have such tables")
+                print("[Error] input file error by fortools\nPlease check your file")
                 return -1
             downloads_get_row = sqlite_get_schema("downloads", downloads_cursor_row)
 
@@ -223,7 +223,7 @@ class Chrome:
             try:
                 data_0_open = open(self.__path + "\\data_0", 'rb')
             except:
-                print("please check your folder")
+                print("[Error] input file error by fortools\nPlease check your file")
                 return -1
             data_0_open.seek(0x2000)
             while True:
@@ -419,12 +419,12 @@ class Chrome:
                 cookies_cursor = self.conn.cursor()
                 cookies_cursor_row = self.conn.cursor()
             except:
-                print("please check your file")
+                print("[Error] input file error by fortools\nPlease check your file")
                 return -1
             try:
                 cookies_open = cookies_cursor.execute("SELECT * FROM cookies")
             except:
-                print("This file does not have such tables")
+                print("[Error] input file error by fortools\nPlease check your file")
                 return -1
             cookies_get_row = sqlite_get_schema("cookies", cookies_cursor_row)
 
@@ -499,12 +499,12 @@ class Firefox:
             try:
                 visits_cursor = self.conn.cursor()
             except:
-                print("please check your file")
+                print("[Error] input file error by fortools\nPlease check your file")
                 return -1
             try:
                 visits_open = visits_cursor.execute("SELECT moz_places.title, moz_places.url,moz_historyvisits.from_visit,moz_historyvisits.visit_date,moz_places.visit_count,moz_historyvisits.visit_type FROM moz_historyvisits, moz_places WHERE moz_places.id = moz_historyvisits.place_id")
             except:
-                print("This file does not have such tables")
+                print("[Error] input file error by fortools\nPlease check your file")
                 return -1
             no = 0
             for visit in visits_open:
@@ -566,12 +566,12 @@ class Firefox:
                 cookies_cursor = self.conn.cursor()
                 cookies_cursor_row = self.conn.cursor()
             except:
-                print("please check your file")
+                print("[Error] input file error by fortools\nPlease check your file")
                 return -1
             try:
                 cookies_open = cookies_cursor.execute("SELECT * FROM moz_cookies")
             except:
-                print("This file does not have such tables")
+                print("[Error] input file error by fortools\nPlease check your file")
                 return -1
 
             cookies_get_row = sqlite_get_schema("moz_cookies", cookies_cursor_row)
@@ -645,12 +645,12 @@ class Firefox:
             try:
                 moz_places_cursor = self.conn.cursor()
             except:
-                print("please check your file")
+                print("[Error] input file error by fortools\nPlease check your file")
                 return -1
             try:
                 place_id_open = moz_places_cursor.execute("SELECT moz_historyvisits.place_id FROM moz_historyvisits WHERE moz_historyvisits.visit_type=7")
             except:
-                print("This file does not have such tables")
+                print("[Error] input file error by fortools\nPlease check your file")
                 return -1
             no = 0
             for moz_place in place_id_open:
@@ -666,7 +666,7 @@ class Firefox:
                     anno_attribute_cursor = self.conn.cursor()
                     anno_attribute_open = anno_attribute_cursor.execute("SELECT moz_anno_attributes.* FROM moz_anno_attributes")
                 except:
-                    print("This file does not have such tables")
+                    print("[Error] input file error by fortools\nPlease check your file")
                     return -1
                 for anno_attribute in anno_attribute_open:
                     for i in range(0, len(downloads_open)):
@@ -686,7 +686,7 @@ class Firefox:
                 try:
                     url_guid = url_guid_cursor.execute("SELECT moz_places.url, moz_places.guid FROM moz_places WHERE moz_places.id=" + str(moz_place[0])).fetchone()
                 except:
-                    print("This file does not have such tables")
+                    print("[Error] input file error by fortools\nPlease check your file")
                     return -1
                 mkdict["url"] = url_guid[0]
                 mkdict["guid"] = url_guid[1]
