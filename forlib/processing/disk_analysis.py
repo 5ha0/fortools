@@ -17,11 +17,8 @@ class E01Analysis:
         self.__cal_hash()
 
     def __cal_time(self, int_time):
-        if int_time == 0:
-            date = 'Never'
-        else:
-            date = datetime.utcfromtimestamp(int_time)
-            # date = date.strftime("%Y-%m-%d %H:%M:%S")
+        date = datetime.utcfromtimestamp(int_time)
+        # date = date.strftime("%Y-%m-%d %H:%M:%S")
         return date
     
     def get_path(self, path, length):
@@ -217,11 +214,8 @@ class DDAnalysis:
         self.__cal_hash()
         
     def __cal_time(self, int_time):
-        if int_time == 0:
-            date = 'Never'
-        else:
-            date = datetime.utcfromtimestamp(int_time)
-            # date = date.strftime("%Y-%m-%d %H:%M:%S")
+        date = datetime.utcfromtimestamp(int_time)
+        # date = date.strftime("%Y-%m-%d %H:%M:%S")
         return date           
         
     def get_path(self, path, length):
