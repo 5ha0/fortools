@@ -85,19 +85,6 @@ class RegAnalysis:
         ret_list.append(all_value)
         return ret_list
     
-    def get_info(self, dictonary, search_list):
-        ret_list = list()
-        for i in dictonary:
-            info = dict()
-            try:
-                for j in search_list:
-                    info[j] = i[j]
-                ret_list.append(info)
-            except:
-                print("Plz check your key.")
-                return -1
-        return ret_list
-    
     def __cal_hash(self):
         after_hash = calc_hash.get_hash(self.__path, 'after')
         self.__hash_val.append(after_hash)
