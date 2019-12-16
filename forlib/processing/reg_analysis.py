@@ -3,6 +3,8 @@ import re
 import codecs
 from datetime import datetime, timedelta
 import forlib.calc_hash as calc_hash
+from forlib.processing.convert_time import convert_time as c_time
+from forlib.processing.convert_time import convert_reg_time as r_time
 import time
 import binascii
 
@@ -21,20 +23,11 @@ class RegAnalysis:
         int_info = int(bin_to_little_endian, 16)
         return int_info
 
-    def __cal_time(self, info_time):
-        int_time = self.__bin_to_int(info_time)
-        int_time = int_time*0.1
-        if int_time == 0:
-            date = 'Never'
-        else:
-            date = datetime(1601, 1, 1) + timedelta(microseconds=int_time)
-            date = date.strftime('%Y-%m-%d %H:%M:%S')
-        return date
-
     def __print_path(self, find_val, reg_key, ktime):
         split_list = reg_key.split("\\")
         key_obj = {
-            "Last Written Time" : ktime.strftime("%Y-%m-%d %H:%M:%S"),
+            "TimeZone" : r_time(ktime).strftime("%Z"),
+            "Last Written Time" : r_time(ktime).strftime("%Y-%m-%d %H:%M:%S"),
             "Search Keyword" : find_val,
             "Root Key" : split_list[0],
             "Search Key Path" : "\\".join(split_list[1:])
@@ -76,10 +69,11 @@ class RegAnalysis:
 
         for i in key_path.values():
             if time_pattern.findall(i.name()) and i.value_type() == Registry.RegBin:
-                all_value[i.name()] = self.__cal_time(i.value())
+                all_value[i.name()] = c_time(self.__bin_to_int(i.value())).strftime("%Y-%m-%d %H:%M:%S")
             else:
+                all_value["TimeZone"] = r_time(key_path.timestamp()).strftime("%Z")
                 all_value["Key Path"] = key
-                all_value["Last Written Time"] = key_path.timestamp().strftime("%Y-%m-%d %H:%M:%S")
+                all_value["Last Written Time"] = r_time(key_path.timestamp()).strftime("%Y-%m-%d %H:%M:%S")
                 all_value[i.name()] = i.value()
 
         ret_list.append(all_value)
@@ -110,16 +104,6 @@ class NTUSER:
         int_info = int(bin_to_little_endian, 16)
         return int_info
 
-    def __cal_time(self, info_time):
-        int_time = self.__bin_to_int(info_time)
-        int_time = int_time*0.1
-        if int_time == 0:
-            date = 'Never'
-        else:
-            date = datetime(1601, 1, 1) + timedelta(microseconds=int_time)
-            date = date.strftime('%Y-%m-%d %H:%M:%S')
-        return date
-
     def get_recent_docs(self):
         ret_list = list()
         try:
@@ -133,8 +117,8 @@ class NTUSER:
                 continue
             #print(v.value().decode('utf-16'))
             reg_obj  = {
-                    "time" : recent.timestamp().strftime("%Y-%m-%d %H:%M:%S"),
-                    "TimeZone" : "UTC",
+                    "TimeZone": r_time(recent.timestamp()).strftime('%Z'),
+                    "Last Written time": r_time(recent.timestamp()).strftime('%Y-%m-%d %H:%M:%S'),
                     "name" : v.name(),
                     "data" : v.value().decode('utf-16').split('\x00')[0]}
             ret_list.append(reg_obj)
@@ -150,8 +134,8 @@ class NTUSER:
 
         for i, v in enumerate(recent.values()):
             reg_obj  = {
-                    "time" : recent.timestamp().strftime("%Y-%m-%d %H:%M:%S"),
-                    "TimeZone" : "UTC",
+                    "TimeZone": r_time(recent.timestamp()).strftime('%Z'),
+                    "Last Written time": r_time(recent.timestamp()).strftime('%Y-%m-%d %H:%M:%S'),
                     "name" : v.name(),
                     "data" : v.value()}
             ret_list.append(reg_obj)
@@ -183,8 +167,8 @@ class NTUSER:
             file_name = v.raw_data().decode('utf-16').split("*")[1]
             reg_obj = {
                     "Version" : version,
-                    "MS Key Last Written time" : recent.timestamp().strftime('%Y-%m-%d %H:%M:%S'),
-                    "TimeZone" : "UTC",
+                    "TimeZone": r_time(recent.timestamp()).strftime('%Z'),
+                    "MS key Last Written time": r_time(recent.timestamp()).strftime('%Y-%m-%d %H:%M:%S'),
                     "path" : file_name[:-1]
                     }
             ms_list.append(reg_obj)
@@ -237,8 +221,8 @@ class NTUSER:
                         file_name = v.raw_data().decode('utf-16')
                         reg_obj = {
                                 "Version" : a[i],
-                                "MS Key Last Written time" : recent0.timestamp().strftime('%Y-%m-%d %H:%M:%S'),
-                                "TimeZone" : "UTC",
+                                "TimeZone": r_time(recent0.timestamp()).strftime('%Z'),
+                                "MS key Last Written time": r_time(recent0.timestamp()).strftime('%Y-%m-%d %H:%M:%S'),
                                 "path" : file_name[:-1]
                             }
                         outlook.append(reg_obj)
@@ -283,8 +267,8 @@ class NTUSER:
                         for v in recent0.values():
                             ret_obj = {
                                 "Version": a[i],
-                                "MS key Last Written time": str(recent0.timestamp()),
-                                "TimeZone": "UTC",
+                                "TimeZone": r_time(recent0.timestamp()).strftime('%Z'),
+                                "MS key Last Written time": r_time(recent0.timestamp()).strftime('%Y-%m-%d %H:%M:%S'),
                                 "path": v.name()
                             }
                             outlook.append(ret_obj)
@@ -297,8 +281,8 @@ class NTUSER:
                     for v in recent0.values():
                         ret_obj = {
                             "Version" : a[i],
-                            "MS key Last Written time" : str(recent0.timestamp()),
-                            "TimeZone" : "UTC",
+                            "TimeZone" : r_time(recent0.timestamp()).strftime('%Z'),
+                            "MS key Last Written time" : r_time(recent0.timestamp()).strftime('%Y-%m-%d %H:%M:%S'),
                             "path" : v.name()
                         }
                         outlook.append(ret_obj)
@@ -347,8 +331,8 @@ class NTUSER:
                 for userassist_values in userassist_keys.values():
                     file_name = codecs.decode(userassist_values.name(), 'rot_13')
                     reg_obj = {
-                        "Time" : self.__cal_time(userassist_values.value()[60:68]),
-                        "TimeZone" : "UTC",
+                        "TimeZone" : c_time(self.__bin_to_int(userassist_values.value()[60:68])).strftime('%Z'),
+                        "Time" : c_time(self.__bin_to_int(userassist_values.value()[60:68])).strftime('%Y-%m-%d %H:%M:%S'),
                         "Run Count" : self.__bin_to_int(userassist_values.value()[4:8]),
                         "file" : '%s' % file_name
                     }
@@ -525,6 +509,11 @@ class SOFTWARE:
     def __init__(self, file):
         self.reg = file
 
+    def __bin_to_int(self, info):
+        bin_to_little_endian = bytes.decode(binascii.hexlify(info[0:][::-1]))
+        int_info = int(bin_to_little_endian, 16)
+        return int_info
+
     def __control_set_check(self, file):
         key = file.open("Select")
         for v in key.values():
@@ -547,6 +536,7 @@ class SOFTWARE:
                 os_dict['CurrentBuild'] = v.value()
             if v.name() == "InstallDate":
                 os_dict['InstallDate'] = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(v.value()))
+                os_dict['TimeZone'] = time.strftime('%Z', time.gmtime(v.value()))
             if v.name() == "RegisteredOwner":
                 os_dict['RegisteredOwner'] = v.value()
             if v.name() == "EditionID":
@@ -625,16 +615,6 @@ class SAM:
         int_info = int(bin_to_little_endian, 16)
         return int_info
 
-    def __cal_time(self, info_time):
-        int_time = self.__bin_to_int(info_time)
-        int_time = int_time*0.1
-        if int_time == 0:
-            date = 'Never'
-        else:
-            date = datetime(1601, 1, 1) + timedelta(microseconds=int_time)
-            date = date.strftime('%Y-%m-%d %H:%M:%S')
-        return date
-
     def last_login(self):
         ret_list = list()
         try:
@@ -645,7 +625,7 @@ class SAM:
 
         login_list = list()
         for i in range(len(last_list)):
-            if last_list[i]['Last Login'] == "Never":
+            if last_list[i]['Last Login'] == "1601-00-00 00:00:00":
                 pass
             else:
                 login_list.append(last_list[i])
@@ -667,8 +647,8 @@ class SAM:
         for items in user.subkeys():
             user_obj = {
                     'UserName' : items.name(),
-                    'Last Written Time' : items.timestamp().strftime("%Y-%m-%d %H:%M:%S"),
-                    'TimeZone' : "UTC"
+                    'TimeZone' : r_time(items.timestamp()).strftime("%Z"),
+                    'Last Written Time' : r_time(items.timestamp()).strftime("%Y-%m-%d %H:%M:%S")
                 }
             ret_list.append(user_obj)
         return ret_list
@@ -690,10 +670,10 @@ class SAM:
                 if info_key.name() == "F":
                     info_data = info_key.value()
                     user_obj = {
-                        'Last Login' : self.__cal_time(info_data[8:16]),
-                        'Last PW Change' : self.__cal_time(info_data[24:32]),
-                        'Log Fail Time' : self.__cal_time(info_data[40:48]),
-                        'TimeZone' : "UTC",
+                        'TimeZone': c_time(self.__bin_to_int(info_data[8:16])).strftime("%Z"),
+                        'Last Login' : c_time(self.__bin_to_int(info_data[8:16])).strftime("%Y-%m-%d %H:%M:%S"),
+                        'Last PW Change' : c_time(self.__bin_to_int(info_data[24:32])).strftime("%Y-%m-%d %H:%M:%S"),
+                        'Log Fail Time' : c_time(self.__bin_to_int(info_data[40:48])).strftime("%Y-%m-%d %H:%M:%S"),
                         'RID' : self.__bin_to_int(info_data[48:52]),
                         'Logon Success Count' : self.__bin_to_int(info_data[64:66]),
                         'Logon Fail Count' : self.__bin_to_int(info_data[66:68])
