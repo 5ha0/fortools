@@ -450,6 +450,7 @@ class LnkAnalysis:
 
         driveserialnumber = self.__file.read(4)
         driveserialnumber = bytes.decode(binascii.hexlify(driveserialnumber))
+        driveserialnumber = driveserialnumber[::-1]
 
         volumelable_off = self.__file.read(4)
         if volumelable_off == bytes(b'\x10\x00\x00\x00'):
