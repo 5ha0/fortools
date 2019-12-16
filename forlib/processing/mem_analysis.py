@@ -322,19 +322,6 @@ class MemAnalysis:
 
         return result_list
     
-    def get_info(self, dictionary, search_list):
-        result = []
-        for i in dictionary:
-            info = dict()
-            try:
-                for j in search_list:
-                    info[j] = i[j]
-                result.append(info)
-            except KeyError:
-                print("Plz check your key.")
-                return -1
-        return result
-    
     def __cal_hash(self):
         after_hash = calc_hash.get_hash(self.file, 'after')
         self.__hash_val.append(after_hash)
