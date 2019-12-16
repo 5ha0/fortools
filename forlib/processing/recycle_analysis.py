@@ -6,6 +6,7 @@ from datetime import datetime
 from datetime import timedelta
 import json
 import forlib.calc_hash as calc_hash
+import forlib.processing.convert_time as convert_time
 
 
 class RecycleAnalysis:
@@ -50,12 +51,12 @@ class RecycleAnalysis:
         json_list = []
         self.__file.seek(16)
         filedatetime = struct.unpack_from('<q', self.__file.read(8))[0]
-        filedatetime = '%016x' %filedatetime
-        filedatetime = int(filedatetime,16)/10.
-        filedatetime = datetime(1601, 1, 1) + timedelta(microseconds=filedatetime)
-        filedatetime = filedatetime.strftime("%Y-%m-%d %H:%M:%S")
-        rc_obj = {"File Deleted Time": str(filedatetime),
-                  "Time Zone": 'UTC'}
+        filedatetime = convert_time.convert_time(filedatetime)
+        deleted_time = filedatetime.strftime("%Y-%m-%d %H:%M:%S")
+        time_zone = filedatetime.strftime("%Z")
+
+        rc_obj = {"Time Zone": time_zone,
+                  "File Deleted Time": deleted_time}
         json.dumps(rc_obj)
         json_list.append(rc_obj)
 
@@ -86,8 +87,8 @@ class RecycleAnalysis:
         temp['$I Name'] = self.__i_name()[0]['$I Name']
         temp['File Header'] = self.__header()[0]['File Header']
         temp['Original File Size'] = self.__size()[0]['Original File Size']
-        temp['File Deleted Time'] = self.__time()[0]['File Deleted Time']
         temp['Time Zone'] = self.__time()[0]['Time Zone']
+        temp['File Deleted Time'] = self.__time()[0]['File Deleted Time']
         temp['Original File Path'] = self.__original_path()[0]['Original File Path']
 
         info_list.append(temp)

@@ -5,6 +5,7 @@ import os
 import json
 import forlib.calc_hash as calc_hash
 import binascii
+import forlib.processing.convert_time as convert_time
 
 
 class LnkAnalysis:
@@ -236,12 +237,13 @@ class LnkAnalysis:
         self.__file.seek(28)
         c_time = self.__file.read(8)
         c_time = struct.unpack('<q', c_time)
-        c_time = convert_time(c_time)
-        c_time = c_time.strftime("%Y-%m-%d %H:%M:%S")
+        c_time = convert_time.convert_time(c_time)
+        creation_time = c_time.strftime("%Y-%m-%d %H:%M:%S")
+        time_zone = c_time.strftime('%Z')
 
         lnk_list = []
-        lnk_obj = {'Target File Creation Time': c_time,
-                   'TimeZone': 'UTC'}
+        lnk_obj = {'TimeZone': time_zone,
+                   'Target File Creation Time': creation_time}
         json.dumps(lnk_obj)
         lnk_list.append(lnk_obj)
 
@@ -251,12 +253,13 @@ class LnkAnalysis:
         self.__file.seek(36)
         a_time = self.__file.read(8)
         a_time = struct.unpack_from('<q', a_time)[0]
-        a_time = convert_time(a_time)
-        a_time = a_time.strftime("%Y-%m-%d %H:%M:%S")
+        a_time = convert_time.convert_time(a_time)
+        acess_time = a_time.strftime("%Y-%m-%d %H:%M:%S")
+        time_zone = a_time.strftime('%Z')
 
         lnk_list = []
-        lnk_obj = {'Target File Access Time': str(a_time),
-                   "TimeZone": 'UTC'}
+        lnk_obj = {"TimeZone": time_zone,
+                   'Target File Access Time': acess_time}
         json.dumps(lnk_obj)
         lnk_list.append(lnk_obj)
 
@@ -266,12 +269,13 @@ class LnkAnalysis:
         self.__file.seek(44)
         w_time = self.__file.read(8)
         w_time = struct.unpack('<q', w_time)[0]
-        w_time = convert_time(w_time)
-        w_time = w_time.strftime("%Y-%m-%d %H:%M:%S")
+        w_time = convert_time.convert_time(w_time)
+        write_time = w_time.strftime("%Y-%m-%d %H:%M:%S")
+        time_zone = w_time.strftime('%Z')
 
         lnk_list = []
-        lnk_obj = {'Target File Write Time': str(w_time),
-                   "TimeZone": 'UTC'}
+        lnk_obj = {"TimeZone": time_zone,
+                   'Target File Write Time': write_time}
         json.dumps(lnk_obj)
         lnk_list.append(lnk_obj)
 
@@ -284,8 +288,8 @@ class LnkAnalysis:
         c_time = c_time.strftime("%Y-%m-%d %H:%M:%S")
 
         lnk_list = []
-        lnk_obj = {'Link File Creation Time': str(c_time),
-                   "TimeZone": 'SYSTEM TIME'}
+        lnk_obj = {"TimeZone": 'SYSTEM TIME',
+                   'Link File Creation Time': str(c_time)}
         json.dumps(lnk_obj)
         lnk_list.append(lnk_obj)
 
@@ -296,8 +300,8 @@ class LnkAnalysis:
         a_time = a_time.strftime("%Y-%m-%d %H:%M:%S")
 
         lnk_list = []
-        lnk_obj = {'Link File Last Access Time': str(a_time),
-                   "TimeZone": 'SYSTEM TIME'}
+        lnk_obj = {"TimeZone": 'SYSTEM TIME',
+                   'Link File Last Access Time': str(a_time)}
         json.dumps(lnk_obj)
         lnk_list.append(lnk_obj)
 
@@ -308,8 +312,8 @@ class LnkAnalysis:
         w_time = w_time.strftime("%Y-%m-%d %H:%M:%S")
 
         lnk_list = []
-        lnk_obj = {'Link File Write Time': str(w_time),
-                   "TimeZone": 'SYSTEM TIME'}
+        lnk_obj = {"TimeZone": 'SYSTEM TIME',
+                   'Link File Write Time': str(w_time)}
         json.dumps(lnk_obj)
         lnk_list.append(lnk_obj)
 
@@ -777,23 +781,23 @@ class LnkAnalysis:
         for i in range(0, len(file_attribute)):
             info["File Attributes"+ str(i)] = file_attribute[i]['File Attributes']
         t_creation_time = self.__creation_time()
-        info["Target File Creation Time"] = t_creation_time[0]['Target File Creation Time']
         info['Target File Creation TimeZone'] = t_creation_time[0]['TimeZone']
+        info["Target File Creation Time"] = t_creation_time[0]['Target File Creation Time']
         t_access_time = self.__access_time()
-        info["Target File Access Time"] = t_access_time[0]['Target File Access Time']
         info['Target File Access TimeZone'] = t_access_time[0]['TimeZone']
+        info["Target File Access Time"] = t_access_time[0]['Target File Access Time']
         t_write_time = self.__write_time()
-        info['Target File Write Time'] = t_write_time[0]['Target File Write Time']
         info['Target File Write TimeZone'] = t_write_time[0]['TimeZone']
+        info['Target File Write Time'] = t_write_time[0]['Target File Write Time']
         l_creation_time = self.__lnk_creation_time()
-        info['Link File Creation Time'] = l_creation_time[0]['Link File Creation Time']
         info['Link File Creation TimeZone'] = l_creation_time[0]['TimeZone']
+        info['Link File Creation Time'] = l_creation_time[0]['Link File Creation Time']
         l_access_time = self.__lnk_access_time()
-        info['Link File Last Access Time'] = l_access_time[0]['Link File Last Access Time']
         info['Link File Last Access TimeZone'] = l_access_time[0]['TimeZone']
+        info['Link File Last Access Time'] = l_access_time[0]['Link File Last Access Time']
         l_write_time = self.__lnk_write_time()
-        info['Link File Write Time'] = l_write_time[0]['Link File Write Time']
         info['Link File Write TimeZone'] = l_write_time[0]['TimeZone']
+        info['Link File Write Time'] = l_write_time[0]['Link File Write Time']
         info['Target File Size'] = self.__file_size()[0]['Target File Size']
         info["IconIndex"] = self.__iconindex()[0]['IconIndex']
         info["Show Command"] = self.__show_command()[0]['Show Command']
@@ -828,8 +832,3 @@ class LnkAnalysis:
     def get_all_info(self):
         return self.__lnk_json
 
-def convert_time(time):
-    time = '%016x' % time
-    time = int(time, 16) / 10.
-    time = datetime(1601, 1, 1) + timedelta(microseconds=time)
-    return time

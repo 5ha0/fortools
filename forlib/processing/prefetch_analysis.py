@@ -1,9 +1,10 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import os
 import struct
 import json
 from collections import Counter
 import forlib.calc_hash as calc_hash
+import forlib.processing.convert_time as convert_time
 
 
 class PrefetchAnalysis:
@@ -17,12 +18,6 @@ class PrefetchAnalysis:
         self.__pf_json = self.__make_json()
         self.__cal_hash()
         self.Favorite = Favorite(self.__file_list())
-
-    def __convert_time(self, time):
-        time = '%016x' % time
-        time = int(time, 16) / 10.
-        time = datetime(1601, 1, 1) + timedelta(microseconds=time)
-        return time
 
     def __file_name(self):
         json_list = []
@@ -73,9 +68,10 @@ class PrefetchAnalysis:
         volume_device_path_length = struct.unpack_from('<I', self.__file.read(4))[0]
         volume_device_path_length = volume_device_path_length * 2
 
-        volume_creation_time = struct.unpack_from("<Q", self.__file.read(8))[0]
-        volume_creation_time = self.__convert_time(volume_creation_time)
-        volume_creation_time = volume_creation_time.strftime("%Y-%m-%d %H:%M:%S")
+        time = struct.unpack_from("<Q", self.__file.read(8))[0]
+        time = convert_time.convert_time(time)
+        volume_creation_time = time.strftime("%Y-%m-%d %H:%M:%S")
+        time_zone = time.strftime('%Z')
 
         volume_serial_num = struct.unpack_from('<I', self.__file.read(4))[0]
 
@@ -86,8 +82,8 @@ class PrefetchAnalysis:
 
         pf_obj = {"Num Metadata Records": str(num_metadata_record),
                   "Volume Device Path": str(volume_device_path),
+                  "TimeZone": time_zone,
                   "Volume Creation Time": volume_creation_time,
-                  "TimeZone": 'UTC ',
                   "Volume Serial Num": str(volume_serial_num)}
         json.dumps(pf_obj)
         json_list.append(pf_obj)
@@ -104,11 +100,13 @@ class PrefetchAnalysis:
             end = 8
 
         for i in range(0, end):
-            last_launch_time = struct.unpack_from("<Q", self.__file.read(8))[0]
-            last_launch_time = self.__convert_time(last_launch_time)
-            last_launch_time = last_launch_time.strftime("%Y-%m-%d %H:%M:%S")
-            pf_obj = {"File Last Launch Time": last_launch_time,
-                      "TimeZone": 'UTC'}
+            time = struct.unpack_from("<Q", self.__file.read(8))[0]
+            time = convert_time.convert_time(time)
+            last_launch_time = time.strftime("%Y-%m-%d %H:%M:%S")
+            time_zone = time.strftime("%Z")
+
+            pf_obj = {"TimeZone": time_zone,
+                      "File Last Launch Time": last_launch_time}
             json.dumps(pf_obj)
             json_list.append(pf_obj)
 
@@ -118,8 +116,9 @@ class PrefetchAnalysis:
         json_list = []
         c_time = datetime.fromtimestamp(os.path.getctime(self.__path))
         c_time = c_time.strftime("%Y-%m-%d %H:%M:%S")
-        pf_obj = {"File Create Time": c_time,
-                  "TimeZone": 'SYSTEM TIME'}
+
+        pf_obj = {"TimeZone": 'SYSTEM TIME',
+                  "File Create Time": c_time}
         json.dumps(pf_obj)
         json_list.append(pf_obj)
 
@@ -129,8 +128,9 @@ class PrefetchAnalysis:
         json_list = []
         w_time = datetime.fromtimestamp(os.path.getmtime(self.__path))
         w_time = w_time.strftime("%Y-%m-%d %H:%M:%S")
-        pf_obj = {"File Write Time": w_time,
-                  "TimeZone": 'SYSTEM TIME'}
+
+        pf_obj = {"TimeZone": 'SYSTEM TIME',
+                  "File Write Time": w_time}
         json.dumps(pf_obj)
         json_list.append(pf_obj)
 
@@ -157,8 +157,6 @@ class PrefetchAnalysis:
     def get_hash(self):
         return self.__hash_value
 
-
-
     def __make_json(self):
         info_list = []
         info = dict()
@@ -169,22 +167,22 @@ class PrefetchAnalysis:
         metadata_info = self.__metadata_info()
         info["Num Metadata Records"] = metadata_info[0]["Num Metadata Records"]
         info["Volume Device Path"] = metadata_info[0]["Volume Device Path"]
-        info["Volume Creation Time"] = metadata_info[0]["Volume Creation Time"]
         info["Volume Creation TimeZone"] = metadata_info[0]["TimeZone"]
+        info["Volume Creation Time"] = metadata_info[0]["Volume Creation Time"]
         info["Volume Serial Num"] = metadata_info[0]["Volume Serial Num"]
         if self.__file_version == 23:
-            info["File Last Launch Time"] = self.__last_launch_time()[0]["File Last Launch Time"]
             info["File Last Launch TimeZone"] = self.__last_launch_time()[0]["TimeZone"]
+            info["File Last Launch Time"] = self.__last_launch_time()[0]["File Last Launch Time"]
         else:
             for i in range(0, 8):
+                info["File Last Launch TimeZone" + str(i)] = self.__last_launch_time()[i]["TimeZone"]
                 info["File Last Launch Time"+str(i)] = self.__last_launch_time()[i]["File Last Launch Time"]
-                info["File Last Launch TimeZone"+str(i)] = self.__last_launch_time()[i]["TimeZone"]
         create_time = self.__create_time()
-        info["File Create Time"] = create_time[0]["File Create Time"]
         info["File Create TimeZone"] = create_time[0]["TimeZone"]
+        info["File Create Time"] = create_time[0]["File Create Time"]
         write_time = self.__write_time()
-        info["File Write Time"] = write_time[0]["File Write Time"]
         info["File Write TimeZone"] = write_time[0]["TimeZone"]
+        info["File Write Time"] = write_time[0]["File Write Time"]
         info["File Run Count"] = self.__num_launch()[0]["File Run Count"]
 
         info_list.append(info)
