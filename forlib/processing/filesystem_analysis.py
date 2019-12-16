@@ -3,7 +3,6 @@ import struct
 import time
 import os
 import forlib.calc_hash as calc_hash
-# from forlib.processing.jump_analysis import decode_str as de
 from bitstring import BitArray
 
 
@@ -74,12 +73,13 @@ class MFTAnalysis:
             else:  # non-resident
                 self.file.read(48)
             # $STANDARD_INFORMATION
-            info_list["TimeZone"] = "UTC +00:00"
             c_time = struct.unpack("<Q", self.file.read(8))
             if c_time[0] == 0:
                 continue
             try:
-                info_list["SIN Creation Time"] = convert_time(c_time[0]).strftime("%Y-%m-%d %H:%M:%S")
+                sin_creation_time = convert_time(c_time[0])
+                info_list["TimeZone"] = sin_creation_time.strftime("%Z")
+                info_list["SIN Creation Time"] = sin_creation_time.strftime("%Y-%m-%d %H:%M:%S")
             except OverflowError:
                 continue
             m_time = struct.unpack("<Q", self.file.read(8))
@@ -282,7 +282,9 @@ class UsnJrnl:
             if ts_time[0] == 0:
                 continue
             try:
-                info_list["Time"] = convert_time(ts_time[0]).strftime("%Y-%m-%d %H:%M:%S")
+                usn_time = convert_time(ts_time[0])
+                info_list["Timezone"] = usn_time.strftime("%Z")
+                info_list["Time"] = usn_time.strftime("%Y-%m-%d %H:%M:%S")
             except OverflowError:
                 info_list["Time"] = 'none'
             info_list["Event Info"] = self.__reason_flag(self.__file.read(4))

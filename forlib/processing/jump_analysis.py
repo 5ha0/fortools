@@ -173,8 +173,9 @@ class JumplistAnalysis:
         entryidnumber = struct.unpack("<L", self.__destlist[120:124])
         info_list["Netbios"] = decode_str(netbiosname) #netbiosname.replace('\x00','')
         time = struct.unpack("<Q", self.__destlist[132:140])
-        info_list["TimeZone"] = 'UTC +00:00'
-        info_list["Last Access Time"] = convert_time(time[0]).strftime("%Y-%m-%d %H:%M:%S")
+        last_acc_time = convert_time(time[0])
+        info_list["TimeZone"] = last_acc_time.strftime("%Z")
+        info_list["Last Access Time"] = last_acc_time.strftime("%Y-%m-%d %H:%M:%S")
         cnt = struct.unpack("<L", self.__destlist[148:152])
         info_list["Access Count"] = cnt[0]
         if ver == 7:
@@ -214,8 +215,9 @@ class JumplistAnalysis:
                             info_list["netbios"] = 'cannot decode'
                         entryidnumber = struct.unpack("<L", self.__destlist[offset + 88:offset + 92])
                         last_access_time = struct.unpack("<Q", self.__destlist[offset + 100:offset + 108])
-                        info_list["TimeZone"] = 'UTC +00:00'
-                        info_list["last access time"] = convert_time(last_access_time[0]).strftime("%Y-%m-%d %H:%M:%S")
+                        last_acc_time = convert_time(last_access_time[0])
+                        info_list["TimeZone"] = last_acc_time.strftime("%Z")
+                        info_list["last access time"] = last_acc_time.strftime("%Y-%m-%d %H:%M:%S")
                         access_cnt = struct.unpack("<L", self.__destlist[offset + 116:offset + 120])
                         info_list["access count"] = access_cnt[0]
                         len_stringdata = struct.unpack("<H", self.__destlist[offset + 128:offset + 130])
@@ -237,8 +239,9 @@ class JumplistAnalysis:
                                 info_list["netbios"] = 'cannot decode'
                             entryidnumber = struct.unpack("<Q", self.__destlist[offset + 88:offset + 96])
                             last_access_time = struct.unpack("<Q", self.__destlist[offset + 100:offset + 108])
-                            info_list["TimeZone"] = 'UTC +00:00'
-                            info_list["last access time"] = convert_time(last_access_time[0]).strftime("%Y-%m-%d %H:%M:%S")
+                            last_acc_time = convert_time(last_access_time[0])
+                            info_list["TimeZone"] = last_acc_time.strftime("%Z")
+                            info_list["last access time"] = last_acc_time.strftime("%Y-%m-%d %H:%M:%S")
                             len_stringdata = struct.unpack("<H", self.__destlist[offset + 112:offset + 114])
                             offset_new = offset + 114 + 2 * len_stringdata[0]
                             string_data = self.__destlist[offset+114 :offset_new]
@@ -285,7 +288,6 @@ class JumplistAnalysis:
         else:
             print('check your list')
             return -1
-
 
     def show_all_info(self):
         for i in self.__json_list:
