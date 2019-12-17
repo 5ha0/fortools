@@ -8,10 +8,12 @@ Uncomment the comment you want to use.
 
 # # Lists process command line arguments
 # result = file.get_cmdline()
-#
-# # Dumps process memory ranges as DLLs
-# result = file.get_dlldump()
-#
+# # Dumps process memory ranges as DLLs (All)
+# result = file.get_dlldump('all', 'all', 'all')
+# # Dumps process memory ranges as DLLs (pid)
+# result = file.get_dlldump('part', 'all', 'pid')
+# # Dumps process memory ranges as DLLs (pid)
+#  result = file.get_dlldump('part', 'address', 'pid')
 # # Lists the loaded modules in a particular windows memory image
 # result = file.get_dlllist()
 #
