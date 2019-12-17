@@ -91,10 +91,10 @@ class Favorite:
     def __init__(self, file):
         self.__reg = file
         self.__ret_list = list()
-        self.NTAnalysis = NTUSER(self.__reg)
-        self.SYSAnalysis = SYSTEM(self.__reg)
-        self.SWAnalysis = SOFTWARE(self.__reg)
-        self.SAMAnalysis = SAM(self.__reg)
+        self.NTUSER = NTUSER(self.__reg)
+        self.SYSTEM = SYSTEM(self.__reg)
+        self.SOFTWARE = SOFTWARE(self.__reg)
+        self.SAM = SAM(self.__reg)
 
 
 class NTUSER:
@@ -154,8 +154,8 @@ class NTUSER:
         for i, v in enumerate(recent.values()):
             # print(v.value().decode('utf-16'))
             reg_obj = {
-                "time": recent.timestamp().strftime("%Y-%m-%d %H:%M:%S"),
-                "TimeZone": "UTC",
+                "time": r_time(recent.timestamp()).strftime("%Y-%m-%d %H:%M:%S"),
+                "TimeZone": r_time(recent.timestamp()).strftime("%Z"),
                 "data": v.value()}
             ret_list.append(reg_obj)
         return ret_list
