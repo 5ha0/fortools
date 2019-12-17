@@ -7,61 +7,61 @@ Uncomment the comment you want to use.
 '''
 
 # # Lists process command line arguments
-# result = file.cmdline()
+# result = file.get_cmdline()
 #
 # # Dumps process memory ranges as DLLs
-# result = file.dlldump()
+# result = file.get_dlldump()
 #
 # # Lists the loaded modules in a particular windows memory image
-# result = file.dlllist()
+# result = file.get_dlllist()
 #
 # # List IRPs for drivers in a particular windows memory image
-# result = file.driverirp()
+# result = file.get_driverirp()
 #
 # # Scans for drivers present in a particular windows memory image
-# result = file.driverscan()
+# result = file.get_driverscan()
 #
 # # Scans for file objects present in a particular windows memory image
-# result = file.filescan()
+# result = file.get_filescan()
 #
 # # Lists process open handles
-# result = file.handles()
+# result = file.get_handles()
 #
 # # Show OS & kernel details of the memory sample being analyzed
-# result = file.info()
+# result = file.get_info()
 #
 # # Scans for mutexes present in a particular windows memory image
-# result = file.mutantscan()
+# result = file.get_mutantscan()
 #
 # # Lists the processes present in a particular windows memory image
-# result = file.pslist()
+# result = file.get_pslist()
 #
 # # Plugin for listing processes in a tree based on their parent process ID
-# result = file.pstree()
+# result = file.get_pstree()
 #
 # # Scans for processes present in a particular windows memory image
-# result = file.psscan()
+# result = file.get_psscan()
 #
 # # Lists the certificates in the registry's Certificate Store
-# result = file.reg_certificates()
+# result = file.get_reg_certificates()
 #
 # # Lists the registry hives present in a particular memory image
-# result = file.reg_hivelist()
+# result = file.get_reg_hivelist()
 #
 # # Scans for registry hives present in a particular windows memory image
-# result = file.reg_hivescan()
+# result = file.get_reg_hivescan()
 #
 # # Lists the registry keys under a hive or specific key value
-# result = file.reg_printkey()
+# result = file.get_reg_printkey()
 #
 # # Print userassist registry keys and information
-# result = file.reg_userassist()
+# result = file.get_reg_userassist()
 #
 # # Lists process memory ranges
-# result = file.vadinfo()
+# result = file.get_vadinfo()
 #
 #Lists process memory ranges that potentially contain injected code
-result = file.malfind()
+result = file.get_malfind()
 
 ## Runs all relevant plugins that provide time related information and orders the results by time
 #result = file.timeliner()
