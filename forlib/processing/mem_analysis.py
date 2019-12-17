@@ -77,10 +77,20 @@ class MemAnalysis:
 
         return result_list
 
-    def get_dlldump(self):
+    def get_dlldump(self, mode, addr, pid):
         result_list = list()
-        ret      = subprocess.Popen("python %s -f %s windows.dlldump" % (self.__vol_path, self.__file), shell=True, stdin=None,
-                               stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
+        if mode == 'all' and addr == 'all' and pid == 'all':
+            ret      = subprocess.Popen("python %s -f %s windows.dlldump" % (self.__vol_path, self.__file), shell=True, stdin=None,
+                                   stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
+        elif mode == 'part' and addr == 'all':
+            ret      = subprocess.Popen("python %s -f %s windows.dlldump --pid %s" % (self.__vol_path, self.__file, pid), shell=True, stdin=None,
+                                   stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
+        elif mode == 'part':
+            ret      = subprocess.Popen("python %s -f %s windows.dlldump --address %s --pid %s" % (self.__vol_path, self.__file, addr, pid), shell=True, stdin=None,
+                                   stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
+        else:
+            print("[Error] input mode error by procdump\nPlease check your value\n[mod] all file dump : get('all', 'all', 'all') , part file dump (pid) : get('part', 'all', '1143'), part file dump(pid, addr) : get('part', '0xabcd', '114")
+
         keyList  = ["PID", "Process", "Result"]
 
         reg_list = self.__regx(ret)
