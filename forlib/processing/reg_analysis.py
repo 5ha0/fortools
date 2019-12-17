@@ -142,7 +142,59 @@ class NTUSER:
                 "data": v.value()}
             ret_list.append(reg_obj)
         return ret_list
+    
+    def __print_hwp(self, recent, version):
+        hwp_list = list()
+        # print("recent.values : ", dir(recent.values()[0]))
+        # print("raw_data      : ", recent.values()[0].raw_data())
+        # print("raw_data      : ", recent.values()[0].raw_data().decode("utf-16"))
+        for i, v in enumerate(recent.values()):
+            if v.value_type() == Registry.RegBin:
+                reg_obj = {
+                    "Version": version,
+                    "TimeZone": r_time(recent.timestamp()).strftime('%Z'),
+                    "MS Key Last Written time": r_time(recent.timestamp()).strftime('%Y-%m-%d %H:%M:%S'),
+                    "Name": v.name(),
+                    "Path": v.value().decode("utf-16").split("\x00")[0]
+                }
+                hwp_list.append(reg_obj)
+            else:
+                pass
+        return hwp_list
 
+    def get_HWP(self):
+        ret_list = list()
+        ret_dict = dict()
+        try:
+            path = "Software\Hnc\Hwp"
+            recent = self.__reg.open(path)
+        except:
+            print("Plz Check the file. This file is ", self.__reg.hive_type())
+            return -1
+
+        temp_list = list()
+        a = list()
+        for items in recent.subkeys():
+            float(items.name())
+            a.append(items.name())
+
+        for i in range(len(a)):
+            if a[i] == '7.0' or a[i] == '8.0':
+                try:
+                    recent1 = self.__reg.open(path + "\\%s\\HwpFrame\\RecentFile" % (a[i]))
+                    temp_list = self.__print_hwp(recent1, a[i])
+                except:
+                    temp_list = []
+
+            if a[i] == '9.0':
+                try:
+                    recent1 = self.__reg.open(path + "\\%s\\HwpFrame_KOR\\RecentFile" % (a[i]))
+                    temp_list = self.__print_hwp(recent1, a[i])
+                except:
+                    temp_list = []
+            ret_list = ret_list + temp_list
+        return ret_list
+    
     def get_IE_visit(self):
         ret_list = list()
         try:
