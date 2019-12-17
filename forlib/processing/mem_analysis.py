@@ -102,7 +102,25 @@ class MemAnalysis:
         result_list = self.__processing(reg_list, keyList)
 
         return result_list
+    
+    def get_procdump(self, mode, pid):
+        result_list = list()
+        if mode == 'all' and pid == 'all':
+            ret      = subprocess.Popen("python %s -f %s windows.procdump" % (self.__vol_path, self.__file), shell=True, stdin=None,
+                                   stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
+        elif mode == 'part':
+            ret      = subprocess.Popen("python %s -f %s windows.procdump --pid %s" % (self.__vol_path, self.__file, pid), shell=True, stdin=None,
+                                   stdout=subprocess.PIPE, universal_newlines=True, bufsize=-1, encoding="utf-8")
+        else:
+            print("[Error] input mode error by procdump\nPlease check your value\n[mod] all file dump : get('all', 'all') , part file dump : get('part', '1143')")
 
+        keyList  = ["PID", "Process", "Result"]
+
+        reg_list = self.__regx(ret)
+        result_list = self.__processing(reg_list, keyList)
+
+        return result_list
+    
     def get_filescan(self):
         result_list = list()
         ret = subprocess.Popen("python %s -f %s windows.filescan" % (self.vol_path, self.file), shell=True, stdin=None,
