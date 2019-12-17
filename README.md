@@ -127,16 +127,16 @@ Now, this module analyzes Windows 7/10. And parse only meanigful contents in for
 - [Idx, eventID, create Time, TimeZone, level, source, computer Info, SID]
 
 **JumpList**  
-- get_info: [TimeZone, create time, access time, write time, file size, target file size, Local Path, drive type, drive serial number, Volume Label]  
+- keys: [TimeZone, create time, access time, write time, file size, target file size, Local Path, drive type, drive serial number, Volume Label]  
 - get_summary: [Total Num of JumpList, otal Num of Add/Delete/Open action, Netbios, TimeZone, Last Access Time, Access Count, Data String]  
 - get_destlist_data:[MAC(new), MAC(birth), netbios, TimeZone, last access time, access count, data]  
 
 **Filesystem Log**  
-- get_info($MFT): [LSN, TimeZone, SIN Creation Time, SIN Modified Time, SIN MFT Modified Time, SIN Last Accessed Time, FIN Creation Time, FIN Modified Time, FIN MFT Modified Time, FIN Last Accessed Time, File Size, Name, Parent]  
-- get_info($J): [USN, TimeZone, Time, Source, File Attribute, Filename]  
+- keys($MFT): [LSN, TimeZone, SIN Creation Time, SIN Modified Time, SIN MFT Modified Time, SIN Last Accessed Time, FIN Creation Time, FIN Modified Time, FIN MFT Modified Time, FIN Last Accessed Time, File Size, Name, Parent]  
+- keys($J): [USN, TimeZone, Time, Event Info, Source, File Attribute, Filename]  
 
 **Thumbcache && Iconcache**
-- get_info: [num, file_name, entry_hash, size, dimension, header_checksum, data_checksum, system, location]  
+- keys: [num, file_name, entry_hash, size, dimension, header_checksum, data_checksum, system, location]  
 - dimension: [width, height]
 
 **Files**  
@@ -147,7 +147,7 @@ Now, this module analyzes Windows 7/10. And parse only meanigful contents in for
 - get_info(ZIP): [TimeZone, Modified, System, version, Compressed, Uncompressed, CRC, Volume, Internal attr, External attr, Header offset, Flag bits, Raw time]  
 
 **Disk**  
-- get_info: [file_name, file_type, Type, size, ctime, mtime, atime, chage time]  
+- keys: [file_name, file_type, Type, size, ctime, mtime, atime, chage time]  
 - e01_metadata:  [case_number, description, examiner_name, evidence_number, notes, acquiry_date, system_date, acquiry_operating_system, acquiry_software_Version, extents, Bytes per Sector, Number of Sector, Total Size, MD5, SHA1]  
 - volume_metadata : [Type, Num, Start Sector, Total Sector, Size]  
 
