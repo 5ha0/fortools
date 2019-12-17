@@ -88,7 +88,7 @@ If you extract file in disk, you need to check start sector with volume_metadata
 **Memory**   
 You need to install volatility3. Plz download it and put it in path forlib/processing. This analysis is only available for the current window memory file. 
 
-When using a procdump, it must be entered in the following format :
+When using a procdump, it must be entered in the following format
 - all procdump : get_procdump('all', 'all')
 - part procdump : get_procdump('part', 'pid number')
 (please, this pid number's type is str)
@@ -153,7 +153,7 @@ Now, this module analyzes Windows 7/10. And parse only meanigful contents in for
 - get_IE_visit  : [time, TimeZone, data]  
 - get_ms_office : [Version, MS Key Last Written time, TimeZone, path]  
 - get_userassist : [Time, TimeZone, Run Count, file]  
-
+- get_HWP : [Viersion, TimeZone, MS Key Last Wrtten time, Name, Path]
 *Favorite.SYSAnalysis*
 - get_computer_info : [ICSDomain, DataBasePath, Hostname, DhcpNameServer, DhcpDomain]  
 - get_USB : [Device Name, DeviceDesc, Capabilities, HardwareID, CompatibleIDs, ContainerID, ConfigFlags, ClassGUID, Driver, Class, Mfg, Service, FriendlyName]  
