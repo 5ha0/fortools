@@ -66,7 +66,7 @@ class Chrome:
 
                 if mkdict["keyword_search"] == []:
                     mkdict["keyword_search"] = ""
-                c_time = convert_time.convert_time(visit[1])
+                c_time = convert_time.convert_time_chrome(visit[1])
                 mkdict["visit_time"] = c_time.strftime("%Y-%m-%d %H:%M:%S")
                 mkdict["timezone"]=c_time.strftime("%Z")
                 mkdict["visit_count"] = visit[5]
@@ -165,10 +165,10 @@ class Chrome:
                 mkdict["timezone"]="UTC"
                 mkdict["file_name"] = download[current_path].split("\\")[-1]
                 mkdict["download_path"] = download[current_path]
-                c_time=convert_time.convert_time(download[start_time])
+                c_time=convert_time.convert_time_chrome(download[start_time])
                 mkdict["download_start_time"] = c_time.strftime("%Y-%m-%d %H:%M:%S")
                 mkdict["timezone"]=c_time.strftime("%Z")
-                mkdict["download_end_time"] = convert_time.convert_time(download[end_time]).strftime("%Y-%m-%d %H:%M:%S")
+                mkdict["download_end_time"] = convert_time.convert_time_chrome(download[end_time]).strftime("%Y-%m-%d %H:%M:%S")
                 mkdict["file_size"] = download[received_bytes]
                 downloads_url_chains_cursor = self.conn.cursor()
                 mkdict["url"] = downloads_url_chains_cursor.execute(
@@ -311,7 +311,7 @@ class Chrome:
                                     access = convert_time.convert_replace_time(access)
                         else:
                             access=0
-                            access=convert_time.convert_time(access)
+                            access=convert_time.convert_time_chrome(access)
 
                         expires_regex=re.search("657870697265733a+\w{50}",meta_data)
                         if expires_regex:
@@ -327,7 +327,7 @@ class Chrome:
                                     expiry = convert_time.convert_replace_time(expiry)
                         else:
                             expiry=0
-                            expiry=convert_time.convert_time(expiry)
+                            expiry=convert_time.convert_time_chrome(expiry)
 
                         last_modified_regex=re.search("6c6173742d6d6f6469666965643a+\w{50}",meta_data)
                         if last_modified_regex:
@@ -344,7 +344,7 @@ class Chrome:
                                     last_modify = convert_time.convert_replace_time(last_modify)
                         else:
                             last_modify=0
-                            last_modify=convert_time.convert_time(last_modify)
+                            last_modify=convert_time.convert_time_chrome(last_modify)
 
                 # get data/file_path and file_name
                 file_path=""
@@ -458,10 +458,10 @@ class Chrome:
                 mkdict["timezone"]="UTC"
                 mkdict["name"] = cookie[name]
                 mkdict["value"] = cookie[value]
-                mkdict["creation_time"] = convert_time.convert_time(cookie[creation_utc]).strftime("%Y-%m-%d %H:%M:%S")
-                mkdict["timezone"] = convert_time.convert_time(cookie[creation_utc]).strftime("%Z")
-                mkdict["last_accessed_time"] = convert_time.convert_time(cookie[last_access_utc]).strftime("%Y-%m-%d %H:%M:%S")
-                mkdict["expiry_time"] = convert_time.convert_time(cookie[expires_utc]).strftime("%Y-%m-%d %H:%M:%S")
+                mkdict["creation_time"] = convert_time.convert_time_chrome(cookie[creation_utc]).strftime("%Y-%m-%d %H:%M:%S")
+                mkdict["timezone"] = convert_time.convert_time_chrome(cookie[creation_utc]).strftime("%Z")
+                mkdict["last_accessed_time"] = convert_time.convert_time_chrome(cookie[last_access_utc]).strftime("%Y-%m-%d %H:%M:%S")
+                mkdict["expiry_time"] = convert_time.convert_time_chrome(cookie[expires_utc]).strftime("%Y-%m-%d %H:%M:%S")
                 mkdict["host"] = cookie[host_key]
                 mkdict["path"] = cookie[cookie_path]
                 mkdict["is_secure"] = cookie[secure]
