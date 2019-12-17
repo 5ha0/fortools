@@ -86,7 +86,12 @@ ex) find_key("Uninstall") --> Microsoft\\Windows\\CurrentVersion\\Uninstall (thi
 If you extract file in disk, you need to check start sector with volume_metadata() function's data.
 
 **Memory**   
-You need to install volatility3. Plz download it and put it in path forlib/processing. This analysis is only available for the current window memory file.
+You need to install volatility3. Plz download it and put it in path forlib/processing. This analysis is only available for the current window memory file. 
+
+When using a procdump, it must be entered in the following format :
+- all procdump : get_procdump('all', 'all')
+- part procdump : get_procdump('part', 'pid number')
+(please, this pid number's type is str)
 
 **Recycle**  
 This module will analyze only $I files among the recycle bin files. And now, this module analyzes Windows 7/8/10.
@@ -167,6 +172,7 @@ Now, this module analyzes Windows 7/10. And parse only meanigful contents in for
 **Memory**
 - cmdline : [PID, Process, Args]  
 - dlldump : [PID, Process, Result]  
+- procdump : [PID, Process, Result]
 - dlllist : [PID, Process, Base, Size, Name, Path]  
 - driverirp : [Offset, Driver Name, IRP, Address, Module, Symbol]  
 - driverscan : [Offset, Start, Size, Service Key, Driver Name, Name]  
