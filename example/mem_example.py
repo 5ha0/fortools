@@ -63,6 +63,12 @@ Uncomment the comment you want to use.
 #Lists process memory ranges that potentially contain injected code
 result = file.get_malfind()
 
+# #Dumps process executable images. (All)
+# result = file.get_procdump('all', 'all')
+
+# #Dumps process executable images. (PID)
+# result = file.get_procdump('part', 'pid number')
+
 ## Runs all relevant plugins that provide time related information and orders the results by time
 #result = file.timeliner()
 
