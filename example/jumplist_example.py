@@ -41,11 +41,3 @@ Uncomment the comment you want to use.
 # jump_hash = jumplist.get_hash()
 # for i in jump_hash:
 # 	print(i)
-#
-# # ------------------------6. Get specifin info.---------------------------
-# # You need to input window_version 7 or 10 according your os
-# jump_hash = jumplist.get_info(['key1', 'key2', ...])
-# for i in jump_hash:
-# 	print(i)
-
-

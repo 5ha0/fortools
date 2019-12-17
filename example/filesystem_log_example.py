@@ -21,9 +21,4 @@ Uncomment the comment you want to use.
 #
 # # ------------------------3. Print information of filesystem log.---------------------------
 # filesys_log.show_all_info()
-#
-# # ------------------------4. Get information of specific key.---------------------------
-# # You need to input list of keys in get_info function.
-# file_syslog_info = filesys_log.get_info(['Name', 'Parent'])
-# for i in file_syslog_info:
-# 	print(i)
+

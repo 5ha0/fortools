@@ -93,9 +93,3 @@ Uncomment the comment you want to use.
 # event_info = log_file.get_all_info()
 # for i in event_info:
 #     print(i)
-#
-# # -------------------------------------11. Get specific info --------------------------------------------------------
-# # With this function, you can get index, eventID, create Time, level, source, computer Information, SID.
-# event_info = log_file.get_info([key1, key2])
-# for i in event_info:
-#     print(i)
