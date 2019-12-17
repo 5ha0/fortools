@@ -93,6 +93,12 @@ When using a procdump, it must be entered in the following format
 - part procdump : get_procdump('part', 'pid number')
 (please, this pid number's type is str)
 
+When using a vaddump, it must be entered in the following format
+- all vaddump : get_vaddump('all', 'all', 'all')
+- part vaddump (you know pid number) : get_vaddump('part', 'all', 'pid number')
+- part vaddump (you know pid number and address) : get_vaddump('part', 'address number', 'pid number')
+(please, this pid number's type and address number's type are str)
+
 **Recycle**  
 This module will analyze only $I files among the recycle bin files. And now, this module analyzes Windows 7/8/10.
   About functions  
