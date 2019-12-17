@@ -452,7 +452,7 @@ class SYSTEM:
         ret_list = list()
         stor_list = list()
         usb_obj = dict()
-
+        temp_list = list()
         try:
             path = "ControlSet00%s\\Enum\\USBSTOR" % self.__control_set_check(self.__reg)
             recent = self.__reg.open(path)
@@ -466,8 +466,11 @@ class SYSTEM:
         for i in stor_list:
             key2 = self.__reg.open(path + "\\%s" % i)
             for v in key2.subkeys():
+                usb_obj = dict()
                 key3 = self.__reg.open(path + "\\%s\\%s" % (i, v.name()))
                 for k in key3.values():
+                    usb_obj["TimeZone"] = r_time(key3.timestamp()).strftime("%Z")
+                    usb_obj["Last Written Time"] = r_time(key3.timestamp()).strftime("%Y-%m-%d %H:%M:%S")
                     usb_obj["Device Name"] = i
                     usb_obj[k.name()] = k.value()
                 ret_list.append(usb_obj)
