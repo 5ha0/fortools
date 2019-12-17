@@ -124,7 +124,7 @@ Now, this module analyzes Windows 7/10. And parse only meanigful contents in for
 
 # Key Info
 **Event Log**  
-- [Idx, eventID, create Time, TimeZone, level, source, computer Info, SID]
+- [number, eventID, create Time, TimeZone, level, source, computer Info, SID]
 
 **JumpList**  
 - keys: [TimeZone, create time, access time, write time, file size, target file size, Local Path, drive type, drive serial number, Volume Label]  
