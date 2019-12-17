@@ -1,6 +1,7 @@
 import subprocess
 import re, os
 import forlib.calc_hash as calc_hash
+from forlib.processing.convert_time import convert_replace_time as r_time
 from datetime import datetime
 
 class MemAnalysis:
