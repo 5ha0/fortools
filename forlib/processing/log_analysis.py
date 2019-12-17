@@ -141,7 +141,7 @@ class Etc:
 
     # new device(43), new mass storage installation(400, 410)
     def usb(self):
-        return EventAnalysis.eventid(self, 43) + EventAnalysis.eventid(self, 400) + EventAnalysis.eventid(self, 410)
+        return EventAnalysis.eventid(self, 43) + EventAnalysis.eventid(self, 400) + EventAnalysis.eventid(self, 410)+ EventAnalysis.eventid(self, 20001) + EventAnalysis.eventid(self,  20003)
 
     # starting a wireless connection(8000, 8011), successfully connected(8001), disconnect(8003), failed(8002)
     def wireless(self):
