@@ -291,6 +291,7 @@ class Prefetch:
             version = struct.unpack_from('I', file.read(4))[0]
             if version == 23:
                 file = prefetch_open(path)
+                path2 = None
             else:
                 dirname = os.path.dirname(path)
                 basename = os.path.basename(path)
@@ -298,13 +299,14 @@ class Prefetch:
                 basename = base[0]
                 exetension = base[-1]
                 file = prefetch_open(dirname + '\\' + basename + '-1' + exetension)
+                path2 = dirname + '\\' + basename + '-1' + exetension
                 file.seek(0)
                 version = struct.unpack_from('I', file.read(4))[0]
                 if version != 23 and version != 30:
-                    print('[Error] version error by fortools\nPlease check your version')
+                    print('error: not supported version')
                     return -1
-            return prefetch_analysis.PrefetchAnalysis(file, path, hash_v)
-        print("[Error] input file error by fortools\nPlease check your file")
+            return prefetch_analysis.PrefetchAnalysis(file, path, path2, hash_v)
+        print("check your file format. This is not Prefetch file")
         return -1
 
 
