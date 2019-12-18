@@ -134,7 +134,7 @@ Now, this module analyzes Windows 7/10. And parse only meanigful contents in for
 
 **Filesystem Log**  
 - keys($MFT): [LSN, TimeZone, SIN Creation Time, SIN Modified Time, SIN MFT Modified Time, SIN Last Accessed Time, FIN Creation Time, FIN Modified Time, FIN MFT Modified Time, FIN Last Accessed Time, File Size, Name, Parent]  
-- keys($J): [USN, TimeZone, Time, Event Info, Source, File Attribute, Filename]  
+- keys($J): [USN, Timeone, Time, Event Info, Source, File Attribute, Filename]  
 
 **Thumbcache && Iconcache**
 - keys: [num, file_name, entry_hash, size, dimension, header_checksum, data_checksum, system, location]  
