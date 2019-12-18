@@ -974,7 +974,7 @@ class Ie_Edge:
                     continue
 
                 # get only Histroy.IE5, MSHist###
-                directory = re.compile('^MSHist|History.IE5')
+                directory = re.compile('^MSHist|History')
                 if directory.search(history_container_id.get(containerid).split("\\")[-2]) is None:
                     continue
                 for visit in history_container.records:
