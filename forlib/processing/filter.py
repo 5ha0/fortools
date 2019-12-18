@@ -72,7 +72,7 @@ class Filter():
         __result = []
         for i in range(0, len(json_list)):
             try:
-                c_date = json_list[i][key].split('.')[0]
+                c_date = json_list[i][key]
             except KeyError:
                 print('Key Error. You need to check your key.')
                 return -1
@@ -92,7 +92,7 @@ class Filter():
         __result = []
         for i in range(0, len(json_list)):
             try:
-                c_date = json_list[i][key].split('.')[0].split(' ')[1]
+                c_date = json_list[i][key].split(' ')[1]
             except KeyError:
                 print('Key Error. You need to check your key.')
             try:
@@ -110,10 +110,7 @@ class Filter():
     def day(key, filter_list, json_list):
         __result = []
         for i in range(0, len(json_list)):
-            try:
-                c_date = json_list[i][key].split('.')[0]
-            except KeyError:
-                print('Key Error. You need to check your key.')
+            c_date = json_list[i][key]
             try:
                 if datetime.datetime.strptime(filter_list[0], "%Y-%m-%d %H:%M:%S") <= \
                         datetime.datetime.strptime(c_date, "%Y-%m-%d %H:%M:%S") \
