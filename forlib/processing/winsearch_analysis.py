@@ -1,6 +1,5 @@
 import pyesedb
 import binascii
-from datetime import *
 import forlib.calc_hash as calc_hash
 import forlib.processing.convert_time as convert_time
 
@@ -59,7 +58,6 @@ class WinSearchAnalysis:
                 # data1 = row.get_value_data(193)
                 # data = bytes.decode(binascii.hexlify(row.get_value_data(193)))
 
-            #     mkdict["System_Search_AutoSummary"]=bytes.fromhex(data).decode("utf-16")
             mkdict["System_ItemTypeText"] = row.get_value_data_as_string(253)
             mkdict["System_FileExtension"] = row.get_value_data_as_string(262)
             mkdict["System_ItemPathDisplayNarrow"] = row.get_value_data_as_string(284)
