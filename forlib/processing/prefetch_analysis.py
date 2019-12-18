@@ -18,6 +18,7 @@ class PrefetchAnalysis:
         self.__pf_json = self.__make_json()
         self.__cal_hash()
         self.Favorite = Favorite(self.__file_list())
+        os.remove(path)
 
     def __file_name(self):
         json_list = []
