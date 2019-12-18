@@ -9,16 +9,19 @@ import forlib.processing.convert_time as convert_time
 
 class PrefetchAnalysis:
 
-    def __init__(self, file, path, hash_v):
+    def __init__(self, file, path, path2, hash_v):
         self.__file = file
         self.__path = path
+        self.__path2 = path2
         self.__hash_value = [hash_v]
         self.__file.seek(0)
         self.__file_version = struct.unpack_from('<I', self.__file.read(4))[0]
         self.__pf_json = self.__make_json()
         self.__cal_hash()
         self.Favorite = Favorite(self.__file_list())
-        os.remove(path)
+
+        if not self.__path2:
+            os.remove(path2)
 
     def __file_name(self):
         json_list = []
@@ -115,6 +118,7 @@ class PrefetchAnalysis:
 
     def __create_time(self):
         json_list = []
+        self.__path
         c_time = datetime.fromtimestamp(os.path.getctime(self.__path))
         c_time = c_time.strftime("%Y-%m-%d %H:%M:%S")
 
