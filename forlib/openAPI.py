@@ -91,6 +91,12 @@ def timezone(time_zone):
 timezone("00:00")
 
 
+class WinSearch:
+    def file_open(path):
+        hash_v = calc_hash.get_hash(path, 'before')
+        file = ie_edge_open(path)
+        return winsearch_analysis.WinSearchAnalysis(file, path, hash_v)
+
 class Disk:
     def disk_open(path):
         hash_val = calc_hash.get_hash(path, 'before')
