@@ -14,18 +14,18 @@ class EventAnalysis:
     def __init__(self, file, path, hash_v):
         self._result = []
         self.__evtx_file = file
-        self.__evtx_json = self.__make_json()
-        self.Favorite = Favorite(self.__evtx_json)
+        self.evtx_json = self.__make_json()
+        self.Favorite = Favorite(self.evtx_json)
         self.__hash_value = [hash_v]
         self.__path = path
         self.__cal_hash()
 
     def show_all_info(self):
-        for i in self.__evtx_json:
+        for i in self.evtx_json:
             print(i)
 
     def get_all_info(self):
-        return self.__evtx_json
+        return self.evtx_json
 
     def __make_json(self):
         json_list = []
@@ -73,29 +73,29 @@ class EventAnalysis:
         if type(num) is not int:
             print('Parameter of eventid() is int variable.\nPlz check your input.')
             return -1
-        for i in range(0, len(self.__evtx_json)):
-            if self.__evtx_json[i]['eventID'] == num:
-                result.append(self.__evtx_json[i])
+        for i in range(0, len(self.evtx_json)):
+            if self.evtx_json[i]['eventID'] == num:
+                result.append(self.evtx_json[i])
         return result
 
     def level(self, num):
         result = []
-        for i in range(0, len(self.__evtx_json)):
-            if self.__evtx_json[i]['level'] == num:
-                result.append(self.__evtx_json[i])
+        for i in range(0, len(self.evtx_json)):
+            if self.evtx_json[i]['level'] == num:
+                result.append(self.evtx_json[i])
         return result
 
     def date(self, date1, date2):
-        return Filter.date("create Time", [date1, date2], self.__evtx_json)
+        return Filter.date("create Time", [date1, date2], self.evtx_json)
 
     def time(self, time1, time2):
-        return Filter.time("create Time", [time1, time2], self.__evtx_json)
+        return Filter.time("create Time", [time1, time2], self.evtx_json)
 
     def day(self, day1, day2):
-        return Filter.day("create Time", [day1, day2], self.__evtx_json)
+        return Filter.day("create Time", [day1, day2], self.evtx_json)
 
     def xml_with_num(self, num):
-        if num > len(self.__evtx_json):
+        if num > len(self.evtx_json):
             print('Plz check idx.')
         else:
             print(self.__evtx_file.records[num].get_xml_string())
@@ -104,15 +104,15 @@ class EventAnalysis:
 # favorite method for evtx log
 class Favorite:
     def __init__(self, json):
-        self.__evtx_json = json
-        self.Account = Account(self.__evtx_json)
-        self.System = System(self.__evtx_json)
-        self.Etc = Etc(self.__evtx_json)
+        self.evtx_json = json
+        self.Account = Account(self.evtx_json)
+        self.System = System(self.evtx_json)
+        self.Etc = Etc(self.evtx_json)
 
 
 class Etc:
     def __init__(self, evtx_json):
-        self.__evtx_json = evtx_json
+        self.evtx_json = evtx_json
 
     # detect remote logon record
     def remote(self):
@@ -160,7 +160,7 @@ class Etc:
 
 class System:
     def __init__(self, evtx_json):
-        self.__evtx_json = evtx_json
+        self.evtx_json = evtx_json
 
     # window start
     def system_on(self):
@@ -178,7 +178,7 @@ class System:
 # filtering based on logon type
 class Account:
     def __init__(self, evtx_json):
-        self.__evtx_json = evtx_json
+        self.evtx_json = evtx_json
 
     # detect valid logon record
     def logon(self):
