@@ -141,7 +141,7 @@ class Etc:
 
     # new device(43), new mass storage installation(400, 410)
     def usb(self):
-        return EventAnalysis.eventid(self, 43) + EventAnalysis.eventid(self, 400) + EventAnalysis.eventid(self, 410)+ EventAnalysis.eventid(self, 20001) + EventAnalysis.eventid(self,  20003)
+        return EventAnalysis.eventid(self, 43) + EventAnalysis.eventid(self, 400)+EventAnalysis.eventid(self, 410)+ EventAnalysis.eventid(self, 20001) + EventAnalysis.eventid(self,  20003)
 
     # starting a wireless connection(8000, 8011), successfully connected(8001), disconnect(8003), failed(8002)
     def wireless(self):
@@ -208,25 +208,39 @@ class Account:
 # analysis for LinuxLog
 class LinuxLogAnalysis:
     class AuthLog:
-        def __init__(self, file):
+        def __init__(self, file, path, hash_v):
             self.__file = file
             self.__parse()
 
         def __parse(self):
             log_parse(self.__file)
+
+        def show_all_info(self):
+            for i in range(0, len(self.__json)):
+                print(self.__json[i])
+
+        def get_all_info(self):
+            return self.__json
 
     class SysLog:
-        def __init__(self, file):
+        def __init__(self, file, path, hash_v):
             self.__file = file
             self.__parse()
 
         def __parse(self):
             log_parse(self.__file)
+
+        def show_all_info(self):
+            for i in range(0, len(self.__json)):
+                print(self.__json[i])
+
+        def get_all_info(self):
+            return self.__json
 
 
 class ApacheLog:
     class Error:
-        def __init__(self, file):
+        def __init__(self, file, path, hash_v):
             self.__file = file
             self.__json = err_parse(self.__file)
 
@@ -237,35 +251,8 @@ class ApacheLog:
         def get_all_info(self):
             return self.__json
 
-        def get_info(self, lists):
-            result = []
-            for i in self.__json:
-                info = dict()
-                try:
-                    for j in lists:
-                        info[j] = i[j]
-                    result.append(info)
-                except KeyError:
-                    print("Plz check your key.")
-                    return -1
-            return result
-
-        def date(self, date):
-            result = []
-            for i in range(1, len(self.__json)):
-                if self.__json[i]["date"] == date:
-                    result.append(self.__json[i])
-            return result
-
-        def pid(self, pid):
-            result = []
-            for i in range(1, len(self.__json)):
-                if self.__json[i]["pid"] == pid:
-                    result.append(self.__json[i])
-            return result
-
     class Access:
-        def __init__(self, file):
+        def __init__(self, file, path, hash_v):
             self.__file = file
             self.__json = access_parse(self.__file)
 
@@ -276,50 +263,9 @@ class ApacheLog:
         def get_all_info(self):
             return self.__json
 
-        def get_info(self, lists):
-            result = []
-            for i in self.__json:
-                info = dict()
-                try:
-                    for j in lists:
-                        info[j] = i[j]
-                    result.append(info)
-                except KeyError:
-                    print("Plz check your key.")
-                    return -1
-            return result
-
-        def date(self, date):
-            result = []
-            for i in range(1, len(self.__json)):
-                if self.__json[i]["date"] == date:
-                    result.append(self.__json[i])
-            return result
-
-        def ip(self, ip):
-            result = []
-            for i in range(1, len(self.__json)):
-                if self.__json[i]["ip"] == ip:
-                    result.append(self.__json[i])
-            return result
-
-        def method(self, method):
-            result = []
-            for i in range(1, len(self.__json)):
-                if self.__json[i]["method"] == method:
-                    result.append(self.__json[i])
-            return result
-
-        def respond(self, respond):
-            result = []
-            for i in range(1, len(self.__json)):
-                if int(self.__json[i]["respond code"]) == respond:
-                    result.append(self.__json[i])
-            return result
-
 
 class IIS:
-    def __init__(self, file):
+    def __init__(self, file, path, hash_v):
         self.__file = file
         self.__json = iis_parse(self.__file)
 
@@ -330,46 +276,54 @@ class IIS:
     def get_all_info(self):
         return self.__json
 
-    def get_info(self, lists):
-        result = []
+class Others:
+    def __init__(self, file, path, hash_v):
+        self.__file = file
+        self.__hash_value = [hash_v]
+        self.__path = path
+        self.__json = self.__parse()
+        self.__cal_hash()
+
+    def __parse(self):
+        return other_parse(self.__file)
+
+    def show_all_info(self):
         for i in self.__json:
-            info = dict()
-            try:
-                for j in lists:
-                    info[j] = i[j]
-                result.append(info)
-            except KeyError:
-                print("Plz check your key.")
-                return -1
-        return result
+            print(i)
 
-    def date(self, date):
-        result = []
-        for i in range(0, len(self.__json)):
-            if self.__json[i]['no' + str(i)]['date'] == date:
-                result.append(self.__json[i])
-        return result
+    def get_all_info(self):
+        return self.__json
 
-    def cs_method(self, method):
-        result = []
-        for i in range(0, len(self.__json)):
-            if self.__json[i]['no' + str(i)]['cs-method'] == method:
-                result.append(self.__json[i])
-        return result
+    def __cal_hash(self):
+        self.__hash_value.append(calc_hash.get_hash(self.__path, 'after'))
 
-    def s_port(self, port):
-        result = []
-        for i in range(0, len(self.__json)):
-            if self.__json[i]['no' + str(i)]['s-port'] == port:
-                result.append(self.__json[i])
-        return result
+    def get_hash(self):
+        return self.__hash_value
 
-    def sc_status(self, status):
-        result = []
-        for i in range(0, len(self.__json)):
-            if self.__json[i]['no' + str(i)]['sc-status'] == status:
-                result.append(self.__json[i])
-        return result
+
+def other_parse(file):
+    date_r = r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}'
+    pid = r'pid=+\d+'
+    # path = r'\w+:\\\\.+'
+    result = []
+    while True:
+        line = file.readline()
+        if line == '':
+            break
+        try:
+            log_obj = dict()
+            date = datetime.strptime(str(re.search(date_r, line).group()), "%Y-%m-%d %H:%M:%S")
+            log_obj["date"] = date.strftime('%Y-%m-%d')
+            log_obj["time"] = date.strftime('%H:%M:%S')
+            log_obj["TimeZone"] = 'system Time'
+            log_obj["pid"] = re.search(pid, line).group()[4:]
+            log_obj["info"] = line.split('  ')[-1]
+        except:
+            continue
+        result.append(log_obj)
+    return result
+
+
 
 
 def iis_parse(file):
@@ -407,7 +361,7 @@ def err_parse(file):
             break
         try:
             log_obj = dict()
-            date = datetime.datetime.strptime(str(re.search(date_r, line).group()), "%a %b %d %H:%M:%S.%f %Y")
+            date = datetime.strptime(str(re.search(date_r, line).group()), "%a %b %d %H:%M:%S.%f %Y")
             log_obj["date"] = date.strftime('%m/%d')
             log_obj["time"] = date.strftime('%H:%M:%S')
             log_obj["TimeZone"] = 'system Time'
@@ -437,7 +391,7 @@ def access_parse(file):
         try:
             log_obj["ip"] = re.search(ip, line).group()
             date = re.search(date_r, line).group()
-            date = datetime.datetime.strptime(date, '%d/%b/%Y:%H:%M:%S %z')
+            date = datetime.strptime(date, '%d/%b/%Y:%H:%M:%S %z')
             log_obj["date"] = str(date.strftime('%Y/%m/%d'))
             log_obj["TimeZone"] = 'system Time'
             log_obj["time"] = str(date.strftime('%H:%M:%S'))
@@ -466,7 +420,7 @@ def log_parse(file):
         line_parse = line.split(' ')
         log_obj = dict()
         info = ''
-        date = datetime.datetime.strptime(line_parse[0] + line_parse[1] + line_parse[2], "%b%d%H:%M:%S")
+        date = datetime.strptime(line_parse[0] + line_parse[1] + line_parse[2], "%b%d%H:%M:%S")
         log_obj["date"] = date.strftime('%m/%d')
         log_obj["time"] = date.strftime('%H:%M:%S')
         log_obj["TimeZone"] = 'System Time'
