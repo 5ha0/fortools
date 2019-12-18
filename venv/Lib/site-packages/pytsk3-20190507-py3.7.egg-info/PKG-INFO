@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: pytsk3
+Version: 20190507
+Summary: Python bindings for the sleuthkit
+Home-page: https://github.com/py4n6/pytsk/
+Author: Michael Cohen and Joachim Metz
+Author-email: scudette@gmail.com, joachim.metz@gmail.com
+License: Apache 2.0
+Description: Python bindings for the sleuthkit (http://www.sleuthkit.org/)
+Platform: UNKNOWN
