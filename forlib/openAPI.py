@@ -126,40 +126,46 @@ class EventLog:
         return -1
 
 
+class OtherLog:
+    def file_open(path):
+        hash_v = calc_hash.get_hash(path, 'before')
+        file = normal_file_oepn(path)
+        return log_analysis.Others(file, path, hash_v)
+
 class LinuxLog:
     class SysLog:
         def file_open(path):
-            calc_hash.get_hash(path, 'before')
+            hash_v = calc_hash.get_hash(path, 'before')
             file = normal_file_oepn(path)
-            return log_analysis.LinuxLogAnalysis.SysLog(file)
+            return log_analysis.LinuxLogAnalysis.SysLog(file, path, hash_v)
 
     class AuthLog:
         def file_open(path):
-            calc_hash.get_hash(path, 'before')
+            hash_v = calc_hash.get_hash(path, 'before')
             file = normal_file_oepn(path)
-            return log_analysis.LinuxLogAnalysis.AuthLog(file)
+            return log_analysis.LinuxLogAnalysis.AuthLog(file, path, hash_v)
 
 
 class Apache:
     class AccessLog:
         def file_open(path):
-            calc_hash.get_hash(path, 'before')
+            hash_v = calc_hash.get_hash(path, 'before')
             file = normal_file_oepn(path)
-            return log_analysis.ApacheLog.Access(file)
+            return log_analysis.ApacheLog.Access(file, path, hash_v)
 
     class ErrLog:
         def file_open(path):
-            calc_hash.get_hash(path, 'before')
+            hash_v = calc_hash.get_hash(path, 'before')
             file = normal_file_oepn(path)
-            return log_analysis.ApacheLog.Error(file)
+            return log_analysis.ApacheLog.Error(file, path, hash_v)
 
 
 # class IIS:
 class IIS:
     def file_open(path):
-        calc_hash.get_hash(path, 'before')
+        hash_v = calc_hash.get_hash(path, 'before')
         file = normal_file_oepn(path)
-        return log_analysis.IIS(file)
+        return log_analysis.IIS(file, path, hash_v)
 
 
 class Files:
@@ -477,7 +483,7 @@ class FileSystemLog:
         if extension == 'MFT':
             print('extension: MFT')
             return filesystem_analysis.MFTAnalysis(filesystem_log_open(path), path, hash_v)
-        elif extension == -1 or extension == 'data':
+        elif extension == 'None in our sig DB' or extension == 'data':
             return filesystem_analysis.UsnJrnl(filesystem_log_open(path), path, hash_v)
         else:
             print('extension: '+str(extension))
