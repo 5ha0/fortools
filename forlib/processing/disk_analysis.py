@@ -23,10 +23,11 @@ class E01Analysis:
     
     def get_path(self, path, length):
         ret_list = list()
+        partition_list = list()
         for partition in self.__vol:
-            self.__partition_list.append(partition.start)
+            partition_list.append(partition.start)
 
-        print("please input argument partition start sector : ", self.__partition_list)
+        print("please input argument partition start sector : ", partition_list)
 
         try:
             fs = self.open_fs(length)
