@@ -174,6 +174,9 @@ signatures = [{
 def sig_check(path):
     with open(path, "rb") as f:
         header = f.read(32)
+        if header is r'':
+            print('[Error] input file error by fortools\nPlease check your file')
+            return -1
     for sig in signatures:
         for i in range(0, sig['len']):
             if sig['hex'][i] != hex(header[sig['offset']+i]):
