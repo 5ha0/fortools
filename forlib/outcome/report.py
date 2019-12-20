@@ -22,6 +22,9 @@ class MdExport:
 
     def add_text(self, contents):
         self.file.write('\n'+contents+'\n\n')
+       
+    def add_img(self, path):
+        self.file.write('\n![img_name]('+ path+')\n')
 
     def emphasis(self, contents):
         self.file.write('\n\n**'+str(contents)+'**\n\n')
