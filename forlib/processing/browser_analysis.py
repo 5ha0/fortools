@@ -16,7 +16,7 @@ class Chrome:
             self.history_list = []
             if self.__parse() == -1:
                 self.history_list=""
-            self.__hash_value = {'before':hash_v}
+            self.__hash_value = [hash_v]
             self.__path = file
             self.__cal_hash()
 
