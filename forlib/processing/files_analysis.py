@@ -301,10 +301,10 @@ class ZIPAnalysis:
                 print("Uncompress Success!")
 
     def get_all_info(self):
-        return self.__info
+        return self.zipinfo_list
 
     def show_all_info(self):
-        for i in self.__info:
+        for i in self.zipinfo_list:
             print(i)
 
     def get_hash(self):
