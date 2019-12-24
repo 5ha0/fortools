@@ -11,6 +11,7 @@ from zipfile import ZipFile
 from forlib import signature as sig
 import magic
 from forlib.processing.convert_time import *
+import zipfile
 
 
 def sig_check(path):
@@ -245,7 +246,7 @@ class ZIPAnalysis:
     def __init__(self, file, path, hash_v):
         self.__file = file
         self.__path = path
-        self.__info = self.__parse()
+        self.zipinfo_list = self.__parse()
         self.__hash_value = [hash_v]
 
     def __cal_hash(self):
@@ -286,6 +287,18 @@ class ZIPAnalysis:
             num += 1
         return json_list
 
+    def extract(self):
+        zip_name = []
+        for i in range(0, len(self.zipinfo_list)):
+            if (self.zipinfo_list[i]['FileName'].split('.')[1] == 'zip'):
+                zip_name.append(self.zipinfo_list[i]['FileName'])
+                # print(self.zipinfo_list[i]['FileName'])
+                with zipfile.ZipFile(self.__path) as zf:
+                    zf.extractall()
+        for i in range(0, len(zip_name)):
+            with zipfile.ZipFile(zip_name[i]) as zf:
+                zf.extractall()
+                print("Uncompress Success!")
 
     def get_all_info(self):
         return self.__info
