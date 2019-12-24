@@ -1,10 +1,12 @@
 from fortools import *
-
+import time
 # input zip path
 # path = r'..\open_test.zip'
 
 # zip file open
+
 zip = file_open(r'..\open_test.zip')
+
 # Or you can use this
 # path = 'path'
 # file = file_open(path)
