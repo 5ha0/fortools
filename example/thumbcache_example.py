@@ -7,7 +7,7 @@ path = r'..\thumbcache_32.db'
 thumbnail = file_open(path)
 
 ####### 1. It shows all the parsing provided by this library at once. #######
-# thumbnail.show_info()
+# thumbnail.show_all_info()
 
 ####### 2. It handles all parsing provided by this library at once. #######
 # information = thumbnail.get_all_info()
