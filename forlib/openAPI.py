@@ -354,7 +354,7 @@ class Thumbnail_Iconcache:
         if extension == 'Thumb_Icon':
             hash_v = calc_hash.get_hash(path, 'before')
             file = cache_open(path)
-            return thumbnail_analysis.Thumbnail_analysis_windows(file, path, hash_v)
+            return thumbnail_analysis.ThumbnailAnalysis_windows(file, path, hash_v)
         print("[Error] input file error by fortools\nPlease check your file")
         return -1
 

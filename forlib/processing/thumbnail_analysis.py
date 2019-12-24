@@ -2,19 +2,19 @@ import math
 from forlib.processing.internal import check
 import forlib.calc_hash as calc_hash
 
-class Thumbnail_analysis:
+class ThumbnailAnalysis:
     def __init__(self):
         self.os = None
         self.analysis = None
 
     def check_os(self, os):     # os check
         if os == "win":
-            self.analysis = Thumbnail_analysis_windows()
+            self.analysis = ThumbnailAnalysis_windows()
 
         if self.analysis == None:
             return False
 
-class Thumbnail_analysis_windows:   # windows version check
+class ThumbnailAnalysis_windows:   # windows version check
     def __init__(self, file, path, hash_v):
         self.file = file
         self.window_version = { "Windows_7": 0x15,
